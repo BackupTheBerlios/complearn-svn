@@ -618,6 +618,7 @@ static VALUE secretrbth_new(struct TreeHolder *tomakeruby)
 {
   volatile VALUE tdata;
 /* TODO: figure out how come this segfaults with ruby tth.rb when freeTreeHolder is used */
+//  TODO: Ara Howard: can you help us?
 //  tdata= Data_Wrap_Struct(cTreeHolder, 0, freeTreeHolder, tomakeruby);
   tdata = Data_Wrap_Struct(cTreeHolder, 0, 0, tomakeruby);
   rb_obj_call_init(tdata, 0, 0);
