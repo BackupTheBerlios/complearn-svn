@@ -7,7 +7,7 @@
  *
  *  Click links at top to explore docs.
  *
- *  \section sect_comp Different Ways to Interface External Compressors with CompLearn
+ *  \section sect_comp Five Different Ways to Interface External Compressors with CompLearn
  *
  *  \subsection sub_builtin Builtin Compressors: bzip or zlib
  *  requires installation of bzip2 and/or zlib libraries
