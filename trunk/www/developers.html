@@ -1,0 +1,92 @@
+<html>
+<head>
+  <title>CompLearn Developers</title>
+  <link rel="stylesheet" href="complearn.css" type="text/css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+<div id="container">
+
+<div id="header">
+<div id="logo"><a href="index.html"><img src="images/logoleft.gif"></a></div>
+<div id="navbar">
+  <ul>
+    <li><a href="index.html"> Home</a></li>
+    <li><a href="download.html">Download</a></li>
+    <li><a href="documentation.html">Documentation</a></li>
+    <li><a href="ncd.html">NCD</a></li>
+    <li><a href="developers.html">Developers</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</div>
+</div>
+<div class="cleaner">&nbsp;</div>
+
+<!-- MAIN BEGIN -->
+<div id="main">
+<h1>Notes for Developers</h1>
+
+<h3>Packaging</h3>
+
+<p><strong>CompLearn</strong> was packaged using <a
+href="http://www.gnu.org/software/autoconf/" target="_blank">Autoconf</a>
+and compile scripts are generated through <a href="http://www.gnu.org/software/automake/" target="_blank">Automake</a>.</p>
+
+<h3>Gang of Four's Design Patterns</h3>
+
+<p><strong>CompLearn</strong> was written using several object-oriented design
+patterns as recognized by the <a href="http://c2.com/cgi/wiki?GangOfFour"
+target="_blank">Gang of Four</a> in their classic publication <em>Design
+Patterns: Elements of Reusable Object-Oriented Software</em>. Singletons,
+Factory Methods, and Iterators are just a handful of such solutions implemented
+in <strong>CompLearn</strong>.  The Adapter pattern, in particular, as seen in
+the classes <strong>CompAdaptor</strong> and <strong>TreeAdaptor</strong>, were
+employed to enhance flexibility and expandability.</p>
+
+<p>Need more info on Design Patterns?  Try these links:</p>
+
+<ul>
+<li><a href="http://www.dofactory.com/Patterns/Patterns.aspx" target="_blank">data & object factory: Software Design Patterns</a></li>
+<li><a href="http://www.tml.hut.fi/~pnr/Tik-76.278/gof/html/" target="_blank">Gang of Four Design Patterns</a></li>
+</ul>
+
+<h3>Naming Conventions</h3>
+
+<p>Several styles are used in <strong>CompLearn</strong>'s implementation.</p>
+
+<ul>
+<li><strong>Classes and Structs</strong> - Pascal Case. First letter is
+uppercase. e.g., <strong>DataBlock</strong>, <strong>EnvMap</strong>
+
+<li><strong>Functions</strong> - Camel Case. First letter is lowercase. e.g.,
+<strong>loadDoubleDoubler()</strong>, <strong>getValueAt()</strong>
+
+<li><strong>Variables and Parameters</strong> - Lowercase, unless a flag
+variable.
+
+<li><strong>Flags</strong> - Camel Case. <em>f</em> is the first letter. e.g.,
+<strong>fIsRooted</strong>, <strong>fBinary</strong>
+
+</ul>
+
+<h3>Commenting</h3>
+
+<p><strong>CompLearn</strong> comments are compatible with <a
+href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>, the
+auto-documentation system.  For more information on how to document
+<strong>CompLearn</strong>, please see <a
+href="http://www.stack.nl/~dimitri/doxygen/docblocks.html"
+target="_blank">Documenting the code</a> at Doxygen's homepage.
+
+<h3>License</h3>
+<p>
+<a href="license.html"><img src="images/opensource-55x48.png" align="left" hspace="5" vspace="0" border="="></a>
+<strong>CompLearn</strong> is released under the <a href="license.html">Berkeley Software Distribution (BSD) license</a>.</p>
+
+</div><!-- MAIN END -->
+</div>
+</body>
+</html>

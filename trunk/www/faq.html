@@ -1,0 +1,109 @@
+<html>
+<head>
+  <title>CompLearn FAQ</title>
+  <link rel="stylesheet" href="complearn.css" type="text/css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+<div id="container">
+
+<div id="header">
+<div id="logo"><a href="index.html"><img src="images/logoleft.gif"></a></div>
+<div id="navbar">
+  <ul>
+    <li><a href="index.html"> Home</a></li>
+    <li><a href="download.html">Download</a></li>
+    <li><a href="documentation.html">Documentation</a></li>
+    <li><a href="ncd.html">NCD</a></li>
+    <li><a href="developers.html">Developers</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</div>
+</div>
+<div class="cleaner">&nbsp;</div>
+
+<!-- MAIN BEGIN -->
+<div id="main">
+
+<h1>Frequently Asked Questions</h1>
+<img src="images/questionmark.gif" align="right">
+<h3>1. What is CompLearn?</h3>
+<p>CompLearn is a software system built to support compression-based learning
+in a wide variety of applications.  It provides this support in the form of a
+library written in highly portable ANSI C that runs in most modern computer
+environments with minimal confusion.  It also supplies a small suite of simple,
+composable command-line utilities as simple applications that use this library.
+Together with other commonly used machine-learning tools such as LibSVM and
+GraphViz, CompLearn forms an attractive offering in machine-learning frameworks
+and toolkits.  It is designed to be extensible in a variety of ways including
+modular dynamic-linking plugins (like those used in the Apache webserver) and a
+language-neutral SOAP interface to supply instant access to core functionality
+in every major language.</p>
+
+<h3>2. Why did the version numbers skip so far between 0.6.4 and 0.8.12?</h3>
+<p>In early 2005 a major rewrite occurred.  This was due to poor organization
+of the original complearn package, leading to compilation and installation
+difficulties in far too many situations.  This issue was addressed by using a
+complete rewrite from the ground up of all functionality; earlier versions
+used a combination of C and Ruby to deliver tree searching.  The new version
+delivers all core functionality, such as NCD and tree searching, in a pure
+C library.  On top of this library is layered a variety of other interfaces
+such as SOAP and a new in-process direct-extension CompLearn Ruby binding layer.
+But all dependencies have been reworked and are now modularized so that
+Ruby and almost every other software package is now optional and a variety
+of different configurations will compile cleanly.</p>
+
+<p>Another major enhancement in the new complearn is the addition of a
+Google compressor to calculate NGD.  This has opened up whole new areas of
+Quantitative Subjective Analysis (QSA) to complement our existing more
+classically pure statistical methods in earlier gzip-style NCD research.
+By querying the Google webserver through a SOAP layer we may convert page
+counts of search terms to virtual file lengths that can be used to determine
+semantic relationships between terms.  Please see the paper
+Automatic Meaning Discovery Using Google for more information.</p>
+
+<h3>3. I can't get the Google compressor to work.  When I type ncd -L, it's not
+even listed as one of the builtin compressors.  What am I doing wrong?</h3>
+
+<p>You may not have the <strong>csoap</strong> library installed, which is
+necessary for the Google compressor to work. You can check this
+when you run your <strong>./configure</strong> command during the
+<strong>CompLearn</strong> installation phase.  A "NO" in the
+<strong>CompLearn</strong> dependency table for <strong>csoap</strong>
+indicates you need to install the <strong>csoap</strong> library.</p>
+
+<p>You can download <strong>csoap</strong> at the following link:</p>
+
+<p><a href="http://sourceforge.net/project/showfiles.php?group_id=74977"
+target="_blank">
+http://sourceforge.net/project/showfiles.php?group_id=74977</a></p>
+
+<p>Once <strong>csoap</strong> is installed, you will need to run the
+<strong>./configure</strong> command again (for CompLearn), perhaps with a
+"--with-csoap" option depending on the location of the <strong>csoap</strong>
+installation.  For more options, you can type</p>
+
+<pre>./configure --help</pre>
+
+<p>Please see our <a href="download.html">Dependencies section</a> for more
+information on <strong>CompLearn</strong> library dependencies.</p>
+
+<h3>4. The Windows demo isn't working for me?  Why not?</h3>
+
+<p>If you have <a href="http://cygwin.com/" target="_blank">cygwin</a>
+installed on your computer, it's very likely you need to update it.  The
+<strong>CompLearn</strong> Windows demo uses version 1.5.17 of the cygwin dll;
+any previous versions are not compatible with the demo.  To update your cygwin,
+go to <a href="http://cygwin.com/" target="_blank">http://cygwin.com</a> and
+hit the <strong>Install or Update now link.</strong></p>
+
+<p>You may also need to download and install <a href="http://www.microsoft.com/windows/directx/default.aspx" target="_blank"> DirectX</a>.</p>
+
+
+</div><!-- MAIN END -->
+</div>
+</body>
+</html>

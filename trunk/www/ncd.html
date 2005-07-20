@@ -1,0 +1,139 @@
+<html>
+<head>
+  <title>CompLearn NCD</title>
+  <link rel="stylesheet" href="complearn.css" type="text/css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+<div id="container">
+
+<div id="header">
+<div id="logo"><a href="index.html"><img src="images/logoleft.gif"></a></div>
+<div id="navbar">
+  <ul>
+    <li><a href="index.html"> Home</a></li>
+    <li><a href="download.html">Download</a></li>
+    <li><a href="documentation.html">Documentation</a></li>
+    <li><a href="ncd.html">NCD</a></li>
+    <li><a href="developers.html">Developers</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</div>
+</div>
+<div class="cleaner">&nbsp;</div>
+
+<!-- MAIN BEGIN -->
+<div id="main">
+<h1>What is NCD?</h1>
+
+<p><strong>Normalized Compression Distance (NCD)</strong> is actually a family
+of functions which take as arguments two objects (literal files, Google search
+terms) and evaluate a fixed formula expressed in terms of the compressed
+versions of these objects, separately and combined.  Hence this family of
+functions is parametrized by the compressor used. If <strong>x</strong> and
+<strong>y</strong> are the two objects concerned, and <strong>C(x)</strong> is
+the length of the compressed version of <strong>x</strong> using compressor
+<strong>C</strong>, then the</p>
+
+<div align="center"><img src="images/ncd.gif"></div>
+
+<p>The method is the outcome of a mathematical theoretical developments based
+on <strong>Kolmogorov complexity</strong>.</p>
+
+<p>The family of <strong>NCD</strong>'s includes the</p>
+<ul>
+  <li><strong>NID</strong> Normalized Information Distance when the compressor
+  reaches the <strong>Kolmogorov complexity</strong> of the data, so <img
+  src="images/kolmogorov-complexity.gif" style="margin:0px 0px -4px 0px;">, the
+  Kolmogorov complexity of <strong>x</strong>, and we use so to speak the
+  <strong>Kolmogorov complexity compressor</strong></li>
+  <li><strong>NGD</strong> Normalized Google Distance when Google is used to
+  determine a probability density function over search terms that yields a
+  <strong>Shannon-Fano code</strong> length by taking the negative log of the
+  probability of a term. This process of deriving a code length from a search
+  term can be considered as a <strong>Google compressor</strong>.</li>
+</ul>
+
+<h3>Further Reading</h3>
+
+<p><a href="http://www.cwi.nl/~paulv/papers/music.ps"
+target="_blank">Algorithmic Clustering of Music</a> - This early paper focuses
+on unsupervised music analysis such as genre recognition, composer
+identification, and others.</p>
+
+<p><a href="http://www.cwi.nl/~paulv/papers/cluster.pdf"
+target="_blank">Clustering by Compression</a> - This paper shores up the theory
+of normal compressors and establishes in detail several important theoretical
+properties of <strong>NCD</strong> and <strong>NID</strong>. It also provides
+solid evidence of robustness and generality with an extensive body of
+experiments. The method is implemented and available as public software, and is
+robust under choice of different compressors.  We substantiate our claims of
+universality and robustness, by reporting evidence of successful application in
+areas as diverse as genomics, virology, languages, literature, music,
+handwritten digits, astronomy, and combinations of objects from completely
+different domains, using statistical, dictionary, and block sorting
+compressors. It also foreshadows things to come with the first supervised
+NCD-type algorithm using a Support Vector Machine with gzip to do the
+handwriting recognition.</p>
+
+<p><a href="http://www.cwi.nl/~paulv/papers/amdug.pdf"
+target="_blank">Automatic Meaning Discovery Using Google</a> - In this
+surprising paper we explore in greater detail the supervised learning
+capabilities of <strong>NGD</strong>, the Normalized Google Distance. We
+explore examples in language, emergency classification, and unsupervised
+concept clustering. We compare against Word Net semantic categories created by
+human experts. And we allude to potential applications of the new
+techniques.</p>
+
+<h3>Bibliography</h3>
+<p>D. Benedetto, E. Caglioti, and V. Loreto. Language trees and zipping,
+Physical Review Letters, 88:4(2002) 048702. C.H. Bennett, P. Gacs, M. Li,
+P.M.B. Vitanyi, and W. Zurek. Information Distance, IEEE Transactions on
+Information Theory, 44:4(1998), 1407--1423. C.H. Bennett, M. Li, B. Ma, Chain
+letters and evolutionary histories, Scientific American, June 2003, 76--81.</p>
+
+<p>X. Chen, B. Francia, M. Li, B. McKinnon, A. Seker, Shared information and program plagiarism detection, IEEE Trans. Inform. Th., 50:7(2004), 1545--1551.</p>
+
+<p>R. Cilibrasi, P.M.B. Vitanyi, R. de Wolf, Algorithmic clustering of music
+based on string compression, Computer Music Journal,  28:4(2004), 49-67. R.
+Cilibrasi, P.M.B. Vitanyi, Clustering by compression, IEEE Trans. Inform. Th.,
+51:4(2005) R. Cilibrasi, P.M.B. Vitanyi, Automatic meaning discovery using
+Google, <a href="http://xxx.lanl.gov/abs/cs.CL/0412098" target="_blank">
+http://xxx.lanl.gov/abs/cs.CL/0412098 (2004)</a></p>
+
+<p>E. Keogh, S. Lonardi, and C.A. Rtanamahatana, Toward parameter-free data
+mining, In: Proc. 10th ACM SIGKDD  Intn'l Conf. Knowledge Discovery and Data
+Mining, Seattle, Washington, USA, August 22---25, 2004, 206--215. M. Li, J.H.
+Badger, X. Chen, S. Kwong, P. Kearney, and H. Zhang. An information-based
+sequence distance and  its application to whole mitochondrial genome phylogeny,
+Bioinformatics, 17:2(2001), 149--154. M. Li and P.M.B. Vitanyi, Reversibility
+and adiabatic computation: trading time and space for energy, Proc. Royal
+Society of London, Series A, 452(1996), 769-789.</p>
+
+<p>M. Li and P.M.B Vitanyi. Algorithmic Complexity, pp. 376--382 in:
+International Encyclopedia of the Social &amp; Behavioral Sciences, N.J. Smelser
+and P.B. Baltes, Eds., Pergamon, Oxford, 2001/2002.</p>
+
+<p>M. Li, X. Chen, X. Li, B. Ma, P.M.B. Vitanyi. The similarity metric, IEEE Trans. Inform. Th., 50:12(2004), 3250- 3264.</p>
+
+<p>M. Li and P.M.B. Vitanyi. An Introduction to Kolmogorov Complexity and its
+Applications, Springer-Verlag, New York, 2nd Edition, 1997.</p>
+
+<p>A.Londei, V. Loreto, M.O. Belardinelli, Music style and authorship
+categorization by informative compressors,  Proc. 5th Triannual Conference of
+the European Society for the Cognitive Sciences of Music (ESCOM), September
+8-13, 2003, Hannover, Germany, pp. 200-203.</p>
+
+<p>S. Wehner, Analyzing network traffic and worms using compression,
+Manuscript, CWI, 2004. Partially available
+<a href="http://arxiv.org/pdf/cs.CR/0504045" target="_blank">
+http://arxiv.org/pdf/cs.CR/0504045</a></p>
+
+
+</div><!-- MAIN END -->
+</div>
+</body>
+</html>
