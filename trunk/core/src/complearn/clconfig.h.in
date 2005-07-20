@@ -1,0 +1,39 @@
+#define SYSTEMDATAFILE ((const char *)("@DATA_DIR@" "/" "config.yml"))
+#define DEVTESTDIR (("@top_srcdir@" "/" "test" ))
+#define TESTPGDIR(x) ((TESTDIR "/" "pg" #x ))
+
+#if CSOAP_RDY
+
+#define SOAPWORKING 1
+
+#ifdef PACKAGE_BUGREPORT
+#undef PACKAGE_BUGREPORT
+#endif
+/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT "complearn-bugs@complearn.org"
+
+/* Define to the full name of this package. */
+#ifdef PACKAGE_NAME
+#undef PACKAGE_NAME
+#endif
+#define PACKAGE_NAME "complearn"
+
+/* Define to the full name and version of this package. */
+#ifdef PACKAGE_STRING
+#undef PACKAGE_STRING
+#endif
+#define PACKAGE_STRING (PACKAGE_NAME ## "-" ## PACKAGE_VERSION )
+
+/* Define to the one symbol short name of this package. */
+#ifdef PACKAGE_TARNAME
+#undef PACKAGE_TARNAME
+#endif
+#define PACKAGE_TARNAME (PACKAGE_STRING ## "-1")
+
+/* Define to the version of this package. */
+#ifdef PACKAGE_VERSION
+#undef PACKAGE_VERSION
+#endif
+#define PACKAGE_VERSION "@VERSION@"
+
+#endif

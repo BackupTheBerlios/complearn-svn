@@ -1,0 +1,47 @@
+Using this building libraries doc:
+http://www.openismus.com/documents/linux/building_libraries/building_libraries.shtml
+Using this for Ruby extension memory management:
+http://rubygarden.org/ruby/ruby?GCAndExtensions
+
+To cross-compile:
+
+./scripts/reconf.zsh --target=i586-mingw32
+
+This will build for windows.
+
+(note you may have to do an svn up before you will be allowed to svn ci)
+svn propset svn:ignore -F .svnignore .
+
+apt-get install \
+libbz2-dev \
+zlib1g-dev \
+libxml2-dev \
+libgsl0-dev \
+libgdbm-dev \
+libsdl1.2-dev \
+libsdl-ttf2.0-dev \
+freeglut3-dev \
+xlibmesa-glu-dev \
+xlibmesa-gl-dev
+
+download csoap from
+http://sourceforge.net/project/showfiles.php?group_id=74977
+
+customize scripts/reconf.zsh and execute to compile CompLearn
+
+dmalloc -l dmalloclogfile.txt -i 1 high
+
+TODO:
+- find and fix many memory leaks
+
+perl /usr/share/doc/libdmalloc4-dev/contrib/ra_info.pl dmalloclog ./src/runtests
+
+TODO:
+  use this license and put on berlios.de project complearn:
+http://www.opensource.org/licenses/bsd-license.html
+
+I think put this license in every file? not sure. look at other example.
+Must figure out owner field. etc.
+TODO:
+add these packages to support drag and drop under debian
+     sudo apt-get install libglib2.0-dev libglib2.0-doc  libglib2.0-data libgtk2.0-dev libgtk2.0-doc libatk1.0-doc libpango1.0-doc libglib2.0-0

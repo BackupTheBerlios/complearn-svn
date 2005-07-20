@@ -1,0 +1,106 @@
+.TH COMPLEARN 5
+.SH NAME
+complearn \- file format for the complearn configuration file
+.SH SYNOPSIS
+.B $HOME/.complearn/config.yml
+- controls options for CompLearn
+.SH DESCRIPTION
+
+The CompLearn toolkit is a suite of utilities to analyze arbitrary data.
+The commands
+.BR ncd (1),
+.BR maketree (1),
+all use the \fBconfig.yml\fR configuration file.
+First, the user home directory (\fI$HOME\fR) is searched for a directory called
+\fB.complearn\fR.  Within this directory, CompLearn reads a file called
+\fBconfig.yml\fR, a text file structured in the YAML format.  If CompLearn can
+not locate this file, default values are used.  The path to a configuration
+file may also be specified by the \fB-c\fR option. A configuration file
+specified in this manner overrides all other options.
+
+For more information on the CompLearn project, please see
+\fIhttp://www.complearn.org\fR
+
+The format of this file is as follows:
+
+\fB<VariableName>: <value>\fR
+
+Blank lines are allowed.  Comments are designated with a \fB#\fR sign.
+Variables come in one of four types: boolean, integer, or string.
+
+The following VariableNames are valid.
+
+.TP
+\fBcompressor\fR: string (ncd (1))
+The builtin compressor to be used.  Valid values are: \fBbzip\fR, \fBzlib\fR,
+and \fBgoogle\fR.
+
+.TP
+\fBGoogleKey\fR: string (ncd (1), google compressor)
+Key necessary to perform search queries against Google database.  Can be
+obtained directory from Google at http://www.google.com/apis/.
+
+.TP
+\fBblocksize\fR: int (ncd (1), bzip compressor)
+An integer from 1 to 9. 9 gives the best compression but takes the most memory.
+Default 9.
+
+.TP
+\fBworkfactor\fR: int (ncd (1), bzip compressor)
+An integer from 0 to 250 and controls how the compression phase behaves when
+presented with the worst case, highly repetitive, input date.  CompLearn's
+default value of 30 gives reasonable behavior over a wide range of
+circumstances.
+
+.TP
+\fBbzverbosity\fR: int (ncd (1), bzip compressor)
+An integer from 0 and 4. 0 is silent and greater numbers give increasingly
+verbose monitoring/debugging output. Default 0.
+
+.TP
+\fBzliblevel\fR: int (ncd (1), zlib compressor)
+An integer from 1 to 9. 1 is the fastest and produces the least compression. 9
+is the slowest and produces the most compression. Default 9.
+
+.TP
+\fBisRooted\fR: bool (maketree (1))
+Whether or not to create a rooted binary tree. Default 0.
+
+.TP
+\fBisOrdered\fR: bool (maketree (1))
+Whether or not to order the nodes. Default 0.
+
+.TP
+\fBselfAgreementTermination\fR: bool (maketree (1))
+Whether or not to insist \fIk\fR number of trees must reach an agreed score
+before the program exits. Default 1.
+
+.TP
+\fBmaxFailCount\fR: int (maketree (1))
+An integer specifying how many failed batches of trees must occur in succession
+before the program exits.  Only used when selfAgreementTermination is off.
+Default 100000.
+
+.SH EXAMPLE
+
+.nf
+#
+# comments are written like this
+#
+GoogleKey:                A/OGsJTQFHSpufko/rRS/KLA7NAT8UNf
+compressor:               bzip
+blocksize:                5
+workfactor:               100
+isRooted:                 1
+selfAgreementTermination: 0
+maxFailCount:             50000
+# etc
+
+.fi
+
+.SH FILES
+.I $HOME/.complearn/config.yml
+.RS per-user configuration file, overrides systemwide default
+.SH "SEE ALSO"
+.BR ncd (1),
+.BR maketree (1)

@@ -1,0 +1,71 @@
+.TH MAKETREE 1
+.SH NAME
+maketree \- perform Quartet Tree Reconstruction on a distance matrix to produce
+a binary tree
+.SH SYNOPSIS
+.B maketree [-ROFT]
+.I distmatrix.clb
+.SH DESCRIPTION
+.B maketree
+tries to find an optimal tree to represent an input distance matrix \fBmatrix.txt\fR.
+It uses the Quartet Tree Reconstruction method.  The program starts with a
+random tree, and continues to try small modifications to improve the tree
+score.  Eventually, the tree will stop easily improving.  The algorithm will
+then write the best tree it found to \fBtreefile.dot\fR.  This is a
+\fB.dot\fR-format file, which means that it can be used with the \fBgraphviz\fR
+package tools such as \fBdot (1)\fR or \fBneato (1)\fR. If the distance matrix
+is unlabelled, the external nodes are labelled with K-i, i starting at 0.
+
+The following configuration variables are relevant to this command:
+
+.TP
+\fBisRooted\fR: bool
+Whether or not to create a rooted binary tree. Default 0.
+
+.TP
+\fBisOrdered\fR: bool
+Whether or not to order the nodes. Default 0.
+
+.TP
+\fBselfAgreementTermination\fR: bool
+Whether or not to insist \fIk\fR number of trees must reach an agreed score
+before the program exits. Default 1.
+
+.TP
+\fBmaxFailCount\fR: int
+An integer specifying how many failed batches of trees must occur in succession
+before the program exits.  Only used when selfAgreementTermination is off.
+Default 100000.
+
+.PP
+Input files for this program can be created by \fBncd (1)\fR.
+.PP
+For more information on the details of this algorithm, please see
+\fIAlgorithmic Clustering of Music\fR by \fBCilibrasi, Vitanyi,\fR and \fBde Wolf\fR at \fBhttp://www.arxiv.org/abs/cs.SD/0303025\fR
+.SH OPTIONS
+.TP
+\fB\-R\fR, \fB\-\-rooted\fR
+generate a rooted binary tree
+.TP
+\fB\-O\fR, \fB\-\-ordered\fR
+generate an ordered tree
+.TP
+\fB\-T\fR, \fB\-\-text\fR
+distance matrix is in text format
+.TP
+\fB\-F\fR
+disable self agreement termination and enable max fail count
+
+.SH FILES
+.I $HOME/.complearn/config.yml
+.RS per-user configuration file, overrides systemwide default
+see
+.BR complearn (5)
+for further details.
+.SH ENVIRONMENT
+none
+.SH DIAGNOSTICS
+If any of the files cannot be read, an error will be printed and the program exits with a nonzero exit code.
+.SH "SEE ALSO"
+.BR complearn (5),
+.BR ncd (1)

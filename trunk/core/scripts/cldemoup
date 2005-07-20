@@ -1,0 +1,28 @@
+#!/home/webuser/bin/ruby
+
+require 'fileutils'
+
+scriptdir = File.dirname(__FILE__)
+nsiscript = scriptdir + "/complearndemo.nsi"
+nsibackup = scriptdir + "/complearndemo.nsi.bak"
+
+def bumpup_version(filename,backup)
+  src = IO.readlines(filename)
+  File.rename(filename, backup)
+  output = File.new(filename,"w")
+  src.each { |line|
+    if line=~/_VERSION \"(\d+).(\d+).(\d+)/ || line=~/cldemo-(\d+).(\d+).(\d+)/
+      major, minor, micro = $1.to_i, $2.to_i, $3.to_i
+      line.gsub!(/(\d+).(\d+).(\d+)/,major.to_s + '.' + minor.to_s + '.' + (micro+1).to_s)
+      @version ||= "#{major}.#{minor}.#{micro+1}"
+    end
+    output.write(line)
+  }
+  puts "Bumping version number to #{@version} in #{filename}" if @version
+  output.close
+end
+
+bumpup_version(nsiscript,nsibackup)
+
+cmd = scriptdir + "/demomake.zsh #{@version}.exe"
+system(cmd)

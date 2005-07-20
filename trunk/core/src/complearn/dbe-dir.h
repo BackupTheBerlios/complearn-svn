@@ -1,0 +1,16 @@
+#ifndef __DBE_DIR_H
+#define __DBE_DIR_H
+
+#include <complearn/complearn.h>
+
+/** \brief Given a directory name whose contents contains files to be read,
+ *  returns pointer to newly initialized DataBlockEnumeration.
+ *
+ *  \param dirname pointer to string directory name
+ *  \return pointer to new DataBlockEnumeration
+ */
+struct DataBlockEnumeration *loadDirectoryDBE(const char *dirname);
+
+int isDirectory(const char *dirname);
+
+#endif

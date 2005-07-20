@@ -1,0 +1,1 @@
+	cl  "-IC:\Program Files\Microsoft Visual C++ Toolkit 2003\include" "-Ic:\\Program Files\\Java\\jdk1.5.0_03\\include" "-Ic:\\Program Files\\Java\\jdk1.5.0_03\\include\\win32" -LD CompLearnJImp.c -Fecomplearnj.dll -link "/LIBPATH:C:\Program Files\Microsoft Visual C++ Toolkit 2003\lib"

@@ -1,0 +1,64 @@
+#ifndef __ENVIRONMENT_H
+#define __ENVIRONMENT_H
+
+#include <complearn/cltypes.h>
+#include <complearn/uclconfig.h>
+#include <stdio.h>
+
+/** \brief Where configuration details are stored.
+ *  \struct GeneralConfig
+ */
+
+#include <complearn/datablockenum.h>
+#if GETOPT_RDY
+#include <getopt.h>
+#endif
+
+struct GeneralConfig {
+  int fVerbose;
+  int fAscii;
+  int fBinary;
+  int fDoExponentiate;
+  int fJustSize;
+  int fSVD;
+  int fHTML;
+  int fAddNL, fAddNLAtString;
+  int fUsingFilenames;
+  int fSuppressVisibleDetails;
+  int fShowLabels;
+  int fTextToStdout;
+  int fDoBothOutputs;
+
+  double M, multiplier;
+
+  char *output_tree_fname;
+  char *config_filename;
+  struct EnvMap *em;
+  struct StringStack *cmdKeeper;
+  char *compressor_name;
+  struct CompAdaptor *ca;
+  void *vptr;
+  t_freeappconfig freeappcfg;
+  t_updateappemtoconfig upappcfg;
+  t_updateappconfigtoem upappem;
+  t_printapphelp printapphelp;
+  t_printappenvironment printappenv;
+};
+
+#if GETOPT_RDY
+int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
+                const struct option *longopts, int *longindex,
+                struct GeneralConfig *cfg);
+#endif
+
+struct GeneralConfig *loadDefaultEnvironment(void);
+struct EnvMap *getEnvMap(struct GeneralConfig *g);
+void printActiveEnvironment(void);
+void freeDefaultEnvironment(struct GeneralConfig *g);
+void printOptionHelp(void);
+char *addNL(const char *inp);
+struct StringStack *loadDefaultDotParams(void);
+void updateConfigToEM(struct GeneralConfig *env);
+void updateEMToConfig(struct GeneralConfig *env);
+
+#endif
