@@ -1,4 +1,5 @@
 #include <complearn/complearn.h>
+#include <sys/stat.h>
 
 #if ZLIB_RDY
 
@@ -48,15 +49,25 @@ static int ungz_predicate(struct DataBlock db)
 
 static struct DataBlock ungz_transform(struct DataBlock src)
 {
+  const char *dirs[] = { "/tmp","/temp", "."};
 	struct DataBlock result;
 	unsigned char *dbuff=NULL;
 	int p = 0;
-  int fd;
-	char *tmpfile;
-	int err, written;
+  int fd, i, err, written;
 	FILE *fp;
 	gzFile gzfp;
-	tmpfile = (char*)gstrdup("/tmp/clgztmp-XXXXXX");
+  struct stat sbuf;
+	char tmpfile[1024];
+  char pbuf[1024];
+
+  for(i = 0; dirs[i]; i += 1) {
+    sprintf(pbuf,"%s",dirs[i]);
+     if (stat(pbuf, &sbuf) == 0)
+       break;
+  }
+
+//	tmpfile = (char*)gstrdup("/tmp/clgztmp-XXXXXX");
+  sprintf(tmpfile, "%s/clgztmp-XXXXXX", pbuf);
   fd = mkstemp(tmpfile);
   close(fd);
  	fp = clfopen(tmpfile,"wb");
@@ -87,7 +98,6 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	}
 	gzclose(gzfp);
 	unlink(tmpfile);
-	free(tmpfile);
 	result.size = p;
 	result.ptr = gmalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
