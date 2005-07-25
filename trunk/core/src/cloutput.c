@@ -328,6 +328,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     pushSS(dotacc, lab);
   }
   /* Perimeter walker */
+  if (flips)
   {
     int i;
     struct DoubleA *dapairs;
