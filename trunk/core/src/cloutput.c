@@ -204,10 +204,9 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
   return ss;
 }
 
-struct DataBlock *convertTreeToDot(struct TreeHolder *th, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm)
+struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm)
 {
   int i, j;
-  struct TreeAdaptor *ta = getCurTree(th);
   struct LabelPerm *labelperm = treegetlabelpermTRA(ta);
   struct AdjA *ad = treegetadjaTRA(ta);
   struct DoubleA *nodes;
@@ -240,7 +239,7 @@ struct DataBlock *convertTreeToDot(struct TreeHolder *th, struct StringStack *la
   sprintf(con1, "%s%s version %s%s", startparamstr, PACKAGE_NAME,
       PACKAGE_VERSION, endparamstr);
   pushSS(dotacc, con1);
-  sprintf(con1, "%stree score S(T) = %f%s", startparamstr, getCurScore(th),
+  sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
       endparamstr);
   pushSS(dotacc, con1);
 
@@ -317,7 +316,7 @@ struct DataBlock *convertTreeToDot(struct TreeHolder *th, struct StringStack *la
       sprintf(con2, "%d", n2);
       if (n1 > n2 && adjaGetConState(ad, n1, n2)) {
         char buf[4096];
-        sprintf(buf, "%s -- %s;", con1, con2);
+        sprintf(buf, "%s -- %s [weight=\"2\"];", con1, con2);
         pushSS(dotacc, buf);
       }
     }
@@ -327,6 +326,24 @@ struct DataBlock *convertTreeToDot(struct TreeHolder *th, struct StringStack *la
     pushSS(dotacc, lab);
     sprintf(lab,"%d -- %d;", 9999, rootnode);
     pushSS(dotacc, lab);
+  }
+  /* Perimeter walker */
+  {
+    int i;
+    struct DoubleA *dapairs;
+    dapairs = treeperimpairsTRA(ta, flips);
+    for (i = 0; i < getSize(dapairs); i += 1) {
+      int dmx = getColumnIndexForNodeIDLP(labelperm,getValueAt(dapairs,i).ip.x);
+      int dmy = getColumnIndexForNodeIDLP(labelperm,getValueAt(dapairs,i).ip.y);
+      double disthere = gsl_matrix_get(dm, dmx, dmy);
+      sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
+      pushSS(dotacc, lab);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, getValueAt(dapairs, i).ip.x);
+      pushSS(dotacc, lab);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, getValueAt(dapairs, i).ip.y);
+      pushSS(dotacc, lab);
+    }
+    freeDoubleDoubler(dapairs);
   }
   pushSS(dotacc, "}");
   result = gcalloc(sizeof(struct DataBlock), 1);

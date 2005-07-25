@@ -52,7 +52,7 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
  * column indicator in order
  * \return pointer to a new DataBlock holding the .dot-format tree
  */
-struct DataBlock *convertTreeToDot(struct TreeHolder *th, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm);
+struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm);
 
 FILE *clfopen(const char *fname, char *mode);
 void clfclose(FILE *fp);

@@ -63,7 +63,7 @@ static void setBestPtr(struct TreeMaster *tm)
         }
       tm->best = cloneTreeHolder(tm->th[i]);
     }
-  if (getCurScore(tm->best) >= tm->printedScore) {
+  if (getCurScore(tm->best) > tm->printedScore) {
     tm->printedScore = getCurScore(tm->best);
     callImprovedFunctionMaybe(tm);
   }

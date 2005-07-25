@@ -5,10 +5,11 @@
 #include "complearn/maketreeapp.h"
 
 struct StringStack *labels;
-struct CLNodeSet *dotflips;
+//struct CLNodeSet *dotflips;
 struct TreeHolder *dotth;
 struct TreeMaster *globtm;
 struct GeneralConfig *cur;
+gsl_matrix *dm;
 
 static void freedotth (struct TreeHolder *dotth)
 {
@@ -17,6 +18,7 @@ static void freedotth (struct TreeHolder *dotth)
     dotth = NULL;
   }
 }
+
 static void maketree_freeappconfig(struct GeneralConfig *cur) {
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->vptr;
   gfreeifpresent(maketreecfg->output_tree_fname);
@@ -38,12 +40,12 @@ static void maketree_printapphelp(struct GeneralConfig *cur) {
   printf("%s",s);
 }
 
-static void writeDotFile(struct TreeHolder *th)
+static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet *dotflips)
 {
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->vptr;
   struct DataBlock *dotdb;
   assert(th);
-  dotdb = convertTreeToDot(th, labels, dotflips, cur, globtm);
+  dotdb = convertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
   writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
   freeDataBlockPtr(dotdb);
 }
@@ -51,7 +53,7 @@ static void writeDotFile(struct TreeHolder *th)
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
   printf("Just got new tree with score %f\n", getCurScore(th));
-  writeDotFile(th);
+  writeDotFile(getCurTree(th), getCurScore(th), NULL);
   freedotth(dotth);
   dotth = cloneTreeHolder(th);
 }
@@ -73,16 +75,16 @@ void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struc
   printf("order improvement Or(T) = %f\n", getScoreScaledTM(th));
 //  printf("With flips set:\n");
 //  printCLNodeSet(flips);
-  writeDotFile(dotth);
+  writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
 }
 
 void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
 {
-  dotflips = flips;
   printf("Score done to Or(T) = %f\n", getScoreScaledTM(th));
 //  printf("With flips set:\n");
 //  printCLNodeSet(flips);
-  writeDotFile(dotth);
+  writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
+  //writeDotFile(dotth, flips);
 }
 
 struct TreeOrderObserver too = { NULL, funcstart, funcordimproved, funcorddone };
@@ -133,7 +135,6 @@ int main(int argc, char **argv)
   double s;
   char *fname = NULL;
   struct MakeTreeConfig *maketreecfg;
-  gsl_matrix *dm;
   cur = loadMakeTreeEnvironment();
   maketreecfg = (struct MakeTreeConfig *) cur->vptr;
 
