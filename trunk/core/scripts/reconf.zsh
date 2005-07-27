@@ -42,14 +42,15 @@ case $HOST in
    SDLPREFIX=/usr
    SDLTTFPREFIX=/usr
     ;;
-  "miso")
-   SOAPREFIX=/home/alcruz/mySoftware/csoap
+  "miso.rhouse.local")
+   echo "miso-specific config enabled."
    XMLPREFIX=/home/alcruz/mySoftware/xml2
+   SOAPREFIX=/home/alcruz/mySoftware/csoap
    GSLPREFIX=/home/alcruz/mySoftware/gsl
    BZ2PREFIX=/home/alcruz/mySoftware/bzip2
    ZLIBPREFIX=/home/alcruz/mySoftware/zlib
    GDBMPREFIX=/home/alcruz/mySoftware/gdbm
-   GTKPREFIX=/home/alcruz/mySoftware/gtk
+   GTKPREFIX=/usr
    SDLPREFIX=/usr
    SDLTTFPREFIX=/usr
     ;;
