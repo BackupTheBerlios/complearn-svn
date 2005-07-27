@@ -77,12 +77,13 @@ void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struc
   writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
 }
 
-void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
+void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
 {
-  printf("Score done to Or(T) = %f\n", getScoreScaledTM(th));
+  printf("Score done to Or(T) = %f\n", getScoreScaledTM(tm));
 //  printf("With flips set:\n");
 //  printCLNodeSet(flips);
-  writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
+  assert(dotth);
+  writeDotFile(getCurTreeTM(tm), getCurScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
 
