@@ -9,7 +9,7 @@ AC_CHECK_PROG(MKTEMP, mktemp, mktemp)
 
 AC_CHECK_PROG(SDLCONFIG, sdl-config, missing)
 
-if test "x$SDLCONFIG" = "xmissing" ; then
+if test "x$SDLCONFIG" = "x" -o "x$SDLCONFIG" = "xmissing"; then
   echo "No sdl-config found in path"
 else
   LIBS="$LIBS `$SDLCONFIG --libs`"
