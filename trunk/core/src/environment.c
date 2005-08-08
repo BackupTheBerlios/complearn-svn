@@ -212,7 +212,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
     optind = oldoptind;
     if (longindex)
       *longindex = oldlongind;
-    const char *const def_short_options="C:c:T:BhVjsbPHrU:Sx";
+    const char *const def_short_options="C:c:T:BhVvjsbPHrU:Sx";
     static struct option def_long_options[] = {
       { "config-file", 1, NULL, 'c' },
       { "version", 0, NULL, 'V' },

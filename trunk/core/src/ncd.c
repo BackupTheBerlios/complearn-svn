@@ -120,11 +120,10 @@ int main(int argc, char **argv)
   struct NCDConfig *ncdcfg;
   int next_option, whichLongOpt;
   void testGSoapReq(void);
-  const char *const ncd_short_options="f:l:Lp:t:d:w:gDo:v";
+  const char *const ncd_short_options="f:l:Lp:t:d:w:gDo:";
   struct option ncd_long_options[] = {
       { "file-mode", 1, NULL, 'f' },
-      { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */
-      { "list", 0, NULL, 'L' },         /* list compressors */
+      { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */ { "list", 0, NULL, 'L' },         /* list compressors */
       { "plainlist-mode", 1, NULL, 'p' },
       { "termlist-mode", 1, NULL, 't' },
       { "directory-mode", 1, NULL, 'd' },

@@ -3,6 +3,11 @@
 
 #include <complearn/cltypes.h>
 
+/** \brief Adjacency matrix interface
+ *
+ * \struct AdjA
+ *
+ */
 struct AdjA {
   void *ptr;
   t_adjaprint adjaprint;
