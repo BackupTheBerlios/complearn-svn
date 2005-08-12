@@ -3,7 +3,8 @@
 
 /*! \file adjmatrix.h */
 
-/** \brief AdjMatrix represents a symmetric, undirected adjacency matrix \sa adjmatrix.c
+/** \brief AdjMatrix represents a symmetric, undirected adjacency matrix
+ *  \sa adjmatrix.c
  *
  * \struct AdjMatrix
  *
@@ -106,7 +107,7 @@ int getNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
  */
 int getNeighborCount(const struct AdjMatrix *adj, int from);
 
-/** \brief Returns the size of a given AdjMatrix)
+/** \brief Returns the size of a given AdjMatrix
  *
  *  This function returns the size of a dimension of an AdjMatrix.  This
  *  number is the same value passed to newAdjMatrix() when a newly initialized
