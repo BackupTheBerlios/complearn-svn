@@ -24,7 +24,6 @@ src/complearn/adjlist.h \
 src/builtin.c \
 src/builtinca-bzlib.c \
 src/builtinca-google.c \
-src/builtinca-ppmcomp.c \
 src/builtinca-realcomp.c \
 src/builtinca-soap.c \
 src/builtinca-virtcomp.c \
@@ -93,18 +92,12 @@ src/complearn/maketreeapp.h \
 src/complearn/matfact.h \
 src/mutate.c \
 src/complearn/mutate.h \
-src/modelnode.c \
-src/complearn/modelnode.h \
 src/ncd.c \
 src/ncd-calc.c \
 src/complearn/ncd-calc.h \
 src/complearn/ncdapp.h \
 src/pathkeeper.c \
 src/complearn/pathkeeper.h \
-src/ppmcomp.c \
-src/complearn/ppmcomp.h \
-src/ppmencoder.c \
-src/complearn/ppmencoder.h \
 src/quartet.c \
 src/complearn/quartet.h \
 src/complearn/quartetobs.h \

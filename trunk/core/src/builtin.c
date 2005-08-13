@@ -20,7 +20,6 @@
 
 struct CompAdaptor *builtin_BZIP(void);
 struct CompAdaptor *builtin_GOOG(void);
-struct CompAdaptor *builtin_PPM(void);
 struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *method);
 struct CompAdaptor *builtin_ZLIB(void);
 struct CompAdaptor *builtin_RealComp(const char *cmd);
@@ -42,11 +41,6 @@ struct CompAdaptor *loadSOAPAdaptor(const char *url, const char *urn)
 #else
   return NULL;
 #endif
-}
-
-struct CompAdaptor *loadPPMAdaptor(void)
-{
-  return builtin_PPM();
 }
 
 struct CompAdaptor *loadBZipAdaptor(void)
@@ -95,8 +89,6 @@ struct CompAdaptor *loadBuiltinCA(const char *name)
   if (strcmp(name, "google") == 0)
     result = loadGoogleAdaptor();
 #endif
-  if (strcmp(name, "ppm") == 0)
-    result = loadPPMAdaptor();
   return result;
 }
 

@@ -74,12 +74,9 @@ complearn/incrdm.h \
 complearn/labelmaker.h \
 complearn/labelperm.h \
 complearn/matfact.h \
-complearn/modelnode.h \
 complearn/mutate.h \
 complearn/ncd-calc.h \
 complearn/pathkeeper.h \
-complearn/ppmcomp.h \
-complearn/ppmencoder.h \
 complearn/quartet.h \
 complearn/quartetobs.h \
 complearn/rootedbinary.h \
@@ -110,7 +107,6 @@ builtinca-realcomp.c \
 builtinca-soap.c \
 builtinca-virtcomp.c \
 builtinca-zlib.c \
-builtinca-ppmcomp.c \
 builtinta-unbzip.c \
 builtinta-ungz.c \
 builtinta-unzlib.c \
@@ -139,12 +135,9 @@ incrdm.c \
 labelmaker.c \
 labelperm.c \
 matfact.c \
-modelnode.c \
 mutate.c \
 ncd-calc.c \
 pathkeeper.c \
-ppmcomp.c \
-ppmencoder.c \
 quartet.c \
 rootedbinary.c \
 springball.c \
