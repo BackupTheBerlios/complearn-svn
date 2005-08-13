@@ -81,8 +81,38 @@ void printEM(struct EnvMap *uem);
  */
 char *readValForEM(struct EnvMap *em, const char *key);
 
+/** \brief Converts an EnvMap to a file-writable DataBlock
+ *
+ *  dumpEnvMap() returns a pointer to a DataBlock which then can be written to
+ *  a file using the function writeDataBlockToFile().  This resulting DataBlock
+ *  is also appropriate for when using the function package_DataBlocks().
+ *
+ *  To convert the resulting DataBlock back into an EnvMap, use loadEnvMap()
+ *  function.
+ *  \param em pointer to EnvMap
+ *  \return pointer to DataBlock which can be written to file
+ *
+ */
 struct DataBlock dumpEnvMap(struct EnvMap *em);
+
+/** \brief Converts a DataBlock created by dumpEnvMap() back into an EnvMap
+ *
+ *  loadEnvMap() will take as an argument a pointer to a DataBlock, which was
+ *  most likely created by the dumpEnvMap() function, and convert the DataBlock
+ *  into an EnvMap. A pointer to the EnvMap is returned.
+ *
+ *  An option to loadEnvMap() is the fmustbe flag, which, if set to 1, forces
+ *  the function to check for the special EnvMap tag created by dumpEnvMap().
+ *  If the tag is not found, an error message is printed to stdout and the
+ *  program will exit.  Set fmustbe to 0 to ignore the tag check.
+ *
+ *  \param db pointer to DataBlock
+ *  \param fmustbe 1 if the DataBlock must contain the identifying EnvMap flag;
+ *  0 if not
+ *  \return pointer to new EnvMap
+ */
 struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe);
+
 union pctypes getKeyValAt(struct EnvMap *em, int where);
 int findIndexForKey(struct EnvMap *em, const char *key);
 void setKeyPrivateEM(struct EnvMap *em, const char *key);

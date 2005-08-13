@@ -620,29 +620,6 @@ void testNCDPair()
   freeDataBlock(dbb);
 }
 
-#if GDBM_RDY
-void testGDBMHelper()
-{
-  struct GDBMHelper *gh;
-  struct DataBlock *dbval;
-  gh = cldbopen("goofy.dat");
-  assert(gh != NULL);
-  cldbDeleteString(gh, "dog");
-  dbval = cldbFetchString(gh, "dog");
-/*  printf("Got back %p\n", dbval);
-  printf("Got back size %d\n", dbval->size); */
-  assert(dbval == NULL);
-  cldbStoreStrings(gh, "dog", "spot");
-  dbval = cldbFetchString(gh, "dog");
-  assert(dbval != NULL);
-  assert(dbval->size == 4);
-  assert(dbval->ptr[0] == 's');
-//  printf("About to close.\n");
-  cldbclose(gh);
-  freeDataBlockPtr(dbval);
-}
-#endif
-
 void testDateTime(void)
 {
   struct CLDateTime *td;
@@ -1268,10 +1245,6 @@ int main(int argc, char **argv)
   testSS();
   testEM();
   testDataBlock();
-
-#if GDBM_RDY
-  testGDBMHelper();
-#endif
 
 #if BZIP2_RDY
   testBZipCA();

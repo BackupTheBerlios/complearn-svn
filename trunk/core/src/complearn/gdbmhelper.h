@@ -16,11 +16,7 @@ struct GDBMHelper;
 struct GDBMHelper *cldbopen(const char *filename);
 void cldbunlink(const char *filename);
 struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key);
-struct DataBlock *cldbFetchString(struct GDBMHelper *gh, const char *str);
-int cldbdelete(struct GDBMHelper *gh, struct DataBlock key);
 void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val);
 int cldbclose(struct GDBMHelper *gh);
-void cldbDeleteString(struct GDBMHelper *gh, const char *str);
-void cldbStoreStrings(struct GDBMHelper *gh, const char *s1, const char *s2);
 
 #endif

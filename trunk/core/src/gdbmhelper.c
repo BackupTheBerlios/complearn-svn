@@ -74,15 +74,6 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key)
   return NULL;
 }
 
-struct DataBlock *cldbFetchString(struct GDBMHelper *gh, const char *str)
-{
-  struct DataBlock db, *result;
-  db = convertStringToDataBlock("dog");
-  result = cldbfetch(gh, db);
-  freeDataBlock(db);
-  return result;
-}
-
 void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val)
 {
   datum gkey;
@@ -91,15 +82,6 @@ void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val
       convertDataBlockToDatum(key),
       convertDataBlockToDatum(val),
       GDBM_REPLACE);
-}
-void cldbStoreStrings(struct GDBMHelper *gh, const char *s1, const char *s2)
-{
-  struct DataBlock db1, db2;
-  db1 = convertStringToDataBlock(s1);
-  db2 = convertStringToDataBlock(s2);
-  cldbstore(gh, db1, db2);
-  freeDataBlock(db1);
-  freeDataBlock(db2);
 }
 
 int cldbclose(struct GDBMHelper *gh)
@@ -110,28 +92,11 @@ int cldbclose(struct GDBMHelper *gh)
   return 0;
 }
 
-int cldbdelete(struct GDBMHelper *gh, struct DataBlock key)
-{
-  return gdbm_delete(gh->db, convertDataBlockToDatum(key));
-}
-
-void cldbDeleteString(struct GDBMHelper *gh, const char *str)
-{
-  struct DataBlock db;
-  db = convertStringToDataBlock(str);
-  cldbdelete(gh, db);
-  freeDataBlock(db);
-}
-
 #else
 
 #include <complearn/complearn.h>
 struct GDBMHelper { int ignoreMe; };
 
-int cldbdelete(struct GDBMHelper *gh, struct DataBlock key)
-{
-  assert("No GDBM installed." && 0);
-}
 struct GDBMHelper *cldbopen(const char *userfilename)
 {
   assert("No GDBM installed." && 0);
