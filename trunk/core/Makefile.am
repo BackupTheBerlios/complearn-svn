@@ -5,7 +5,10 @@ EXTRA_DIST = \
 $(src) \
 $(doc) \
 $(examples) \
+$(debstuff) \
 $(scripts)
+
+
 
 man_MANS = \
 doc/man/complearn.5 \
@@ -135,6 +138,7 @@ src/complearn/yamlparser.h
 
 doc = \
 doc/notes.txt \
+doc/howtos.txt \
 doc/man/complearn.5 \
 doc/man/maketree.1 \
 doc/man/ncd.1
@@ -215,3 +219,26 @@ scripts/reconf.zsh \
 scripts/testrealcomp.sh \
 scripts/testvirtcomp.zsh
 
+debstuff = \
+debian/changelog \
+debian/compat \
+debian/control \
+debian/copyright \
+debian/dirs \
+debian/docs \
+debian/libcomplearn1.dirs \
+debian/libcomplearn1.install \
+debian/libcomplearn-dev.dirs \
+debian/libcomplearn-dev.install \
+debian/libcomplearn.doc-base.EX \
+debian/manpage.1.ex \
+debian/manpage.sgml.ex \
+debian/manpage.xml.ex \
+debian/menu \
+debian/postinst \
+debian/postrm \
+debian/preinst \
+debian/prerm \
+debian/README.Debian \
+debian/rules \
+debian/shlibs.local
