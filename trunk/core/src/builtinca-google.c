@@ -26,6 +26,20 @@ struct googCompInstance {
   double m;
 };
 
+/** \brief Initializes a GOOGLE CompAdaptor instance
+ *
+ *  builtin_GOOG() allocates memory to a GOOGLE CompAdaptor instance. The
+ *  GOOGLE CompAdaptor is required for NGD calculations.
+ *
+ *  For the GOOGLE CompAdaptor to work properly, a GoogleKey is required and
+ *  must be set in the CompLearn configuration file. You may obtain a key from
+ *  Google here http://www.google.com/apis/. If a GoogleKey is not set in the
+ *  CompLearn configuration file, a error message will be printed to stdout.
+ *  For details on how to create a configuration file, see
+ *  http://www.complearn.org/config.html
+ *
+ *  \return pointer to newly initialized GOOGLE CompAdaptor instance
+ */
 struct CompAdaptor *builtin_GOOG(void)
 {
 	struct CompAdaptor c =

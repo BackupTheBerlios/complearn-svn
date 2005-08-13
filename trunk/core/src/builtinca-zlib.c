@@ -24,7 +24,21 @@ struct zlibCompInstance {
 	int level; // 0 - 9
 };
 
-
+/** \brief Initializes a ZLIB CompAdaptor instance
+ *
+ *  builtin_ZLIB() allocates memory to a ZLIB CompAdaptor instance. The
+ *  ZLIB CompAdaptor is required for use in computing NCDs with the zlib
+ *  compression library.
+ *
+ *  One option can be set for the ZLIB CompAdaptor: level. By default, level is
+ *  set to 9.
+ *
+ *  builtin_ZLIB() will also read a CompLearn configuration file to override
+ *  the option defaults. For details on how to create a configuration file, see
+ *  http://www.complearn.org/config.html
+ *
+ *  \return pointer to newly initialized ZLIB CompAdaptor instance
+ */
 struct CompAdaptor *builtin_ZLIB(void)
 {
 	struct CompAdaptor c =

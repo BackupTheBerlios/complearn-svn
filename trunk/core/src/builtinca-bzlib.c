@@ -15,8 +15,7 @@ static int bz2a_apiver(void);
 
 /* bzip2 compression interface */
 
-/**
- *  \brief The BZIP2 compression adaptor instance
+/** \brief The BZIP2 compression adaptor instance
  *  \struct bz2aCompInstance
  *
  *  This structure holds all the persistent configuration information
@@ -36,6 +35,22 @@ struct bz2aCompInstance {
                        or encourage the printing of status or other messages.*/
 };
 
+/** \brief Initializes a BZIP2 CompAdaptor instance
+ *
+ *  builtin_BZIP() allocates memory to a BZIP2 CompAdaptor instance. The
+ *  BZIP2 CompAdaptor is required for use in computing NCDs with the bzip2
+ *  compression library.
+ *
+ *  There are 3 options that can be set for the bzip2 CompAdaptor: blocksize,
+ *  workfactor, and verbosity.  By default, blocksize is set to 9, workfactor
+ *  is set to 30, and verbosity is set to 0.
+ *
+ *  builtin_BZIP() will also read a CompLearn configuration file to override
+ *  the option defaults. For details on how to create a configuration file, see
+ *  http://www.complearn.org/config.html
+ *
+ *  \return pointer to newly initialized BZIP2 CompAdaptor instance
+ */
 struct CompAdaptor *builtin_BZIP(void)
 {
 	struct CompAdaptor c =
