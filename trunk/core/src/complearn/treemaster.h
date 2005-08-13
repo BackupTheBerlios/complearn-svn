@@ -41,6 +41,11 @@ struct TreeObserver *getTreeObserver(struct TreeMaster *tm);
 
 struct CLDateTime *getEndTimeTM(struct TreeMaster *tm);
 struct CLDateTime *getStartTimeTM(struct TreeMaster *tm);
+
+/** \brief Aborts current search for better tree
+ *
+ *  Interrupts search for better tree. Used for multi-threaded processing.
+ */
 void abortTreeSearch(struct TreeMaster *tm);
 
 #endif

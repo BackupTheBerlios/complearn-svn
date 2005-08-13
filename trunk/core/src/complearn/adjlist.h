@@ -1,9 +1,10 @@
 #ifndef __ADJLIST_H
 #define __ADJLIST_H
 
-/*! \file adjmatrix.h */
+/*! \file adjlist.h */
 
-/** \brief AdjList represents a symmetric, undirected adjacency matrix \sa adjmatrix.c
+/** \brief AdjList represents a symmetric, undirected adjacency matrix
+ *  \sa adjmatrix.c
  *
  * \struct AdjList
  *

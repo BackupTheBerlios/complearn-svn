@@ -4,7 +4,7 @@
 #include <complearn/cltypes.h>
 
 /** \brief Adjacency matrix interface to CompLearn.
- * \sa adjaptor.c
+ * \sa adjadaptor.c
  *
  * \struct AdjA
  *
