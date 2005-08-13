@@ -56,6 +56,14 @@ struct EnvMap *getEnvMap(struct GeneralConfig *g);
 void printActiveEnvironment(void);
 void freeDefaultEnvironment(struct GeneralConfig *g);
 void printOptionHelp(void);
+
+/** \brief Adds a newline to an input string
+ *
+ *   Allocates a new block of memory to which the contents of the input string
+ *   are copied and a newline added to the end.
+ *  \param inp string
+ *  \return pointer to new string
+ */
 char *addNL(const char *inp);
 struct StringStack *loadDefaultDotParams(void);
 void updateConfigToEM(struct GeneralConfig *env);

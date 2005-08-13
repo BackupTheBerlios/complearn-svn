@@ -88,10 +88,13 @@ struct DataBlock dumpString(const char *s);
 /* if fmustbe, function exits when tagnum does not match. else, returns NULL */
 char *loadString(struct DataBlock d, int fmustbe);
 void verifyDoubleDoubler(const struct DoubleA *da);
-void addDoubleDestructor(struct DoubleA *d, t_doublefreefunc func, void *udata);
 
 int isInDAqb(const struct DoubleA *da, qbase_t which);
 void printIntPairList(const struct DoubleA *da);
+
+/** \brief Adds node label to DoubleA if not already there
+ *  \param which node label to be added
+ */
 void addIfNewqb(struct DoubleA *da, qbase_t which);
 int sizeCLNodeSet(const struct CLNodeSet *cl);
 

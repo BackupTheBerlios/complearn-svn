@@ -378,14 +378,6 @@ char *loadString(struct DataBlock db, int fmustbe)
   return result;
 }
 
-void addDoubleDestructor(struct DoubleA *d, t_doublefreefunc func, void *udata)
-{
-  assert(d);
-  assert(func);
-  d->func = func;
-  d->udata = udata;
-}
-
 int isInDAqb(const struct DoubleA *da, qbase_t which)
 {
   int i;

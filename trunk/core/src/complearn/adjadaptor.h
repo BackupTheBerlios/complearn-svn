@@ -120,7 +120,7 @@ int adjaGetNeighborCount(struct AdjA *aa, int i);
  * This function stores, into a given buffer, the integer labels for each
  * neighbor of the given node.
  *
- * \param aa a pointer to the AdjA to be queried
+ * \param aa pointer to the AdjA to be queried
  * \param from the label of the node whose neighbors must be found
  * \param nbuf pointer to a buffer to contain the neighbors
  * \param nsize pointer to in/out parameter that starts with size of buffer
@@ -130,9 +130,12 @@ int adjaGetNeighborCount(struct AdjA *aa, int i);
  * \return CL_OK if the buffer was big enough, or CL_ERRFULL if it wasn't.
  */
 int adjaGetNeighbors(struct AdjA *aa, int i, int *nbuf, int *nsize);
+
+/** \brief Returns the SPM Map for a given AdjA with a PathKeeper on top
+ *  \param aa pointer to the AdjA
+ */
 struct DoubleA *adjaSPMMap(struct AdjA *aa);
 
-/* Returns the SPM Map for a given AdjA with a PathKeeper on top */
 
 #define SPMMAPFOR(adjaptr) (adjaptr->adjaspmmap(adjaptr))
 

@@ -35,6 +35,11 @@ double compfuncCA(struct CompAdaptor *ca, struct DataBlock src);
 void freeCA(struct CompAdaptor *ca);
 char *shortNameCA(struct CompAdaptor *ca);
 char *longNameCA(struct CompAdaptor *ca);
+
+/** \brief Returns API version of CompAdaptor interface
+ *  \param ca pointer to CompAdaptor
+ *  \return int API version number
+ */
 int apiverCA(struct CompAdaptor *ca);
 
 #endif
