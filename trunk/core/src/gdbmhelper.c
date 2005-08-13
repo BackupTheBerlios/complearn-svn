@@ -27,7 +27,7 @@ const char *getHomeDir(void)
 datum convertDataBlockToDatum(struct DataBlock d)
 {
   datum gd;
-  gd.dptr = d.ptr;
+  gd.dptr = (char *) d.ptr;
   gd.dsize = d.size;
   return gd;
 }
@@ -67,7 +67,7 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key)
   result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));
   if (result.dptr) {
     struct DataBlock *dbr = gcalloc(sizeof(struct DataBlock), 1);
-    dbr->ptr = result.dptr;
+    dbr->ptr = (unsigned char *) result.dptr;
     dbr->size = result.dsize;
     return dbr;
   }
@@ -86,7 +86,7 @@ struct DataBlock *cldbFetchString(struct GDBMHelper *gh, const char *str)
 void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val)
 {
   datum gkey;
-  gkey.dptr = key.ptr;
+  gkey.dptr = (char *) key.ptr;
   gdbm_store(gh->db,
       convertDataBlockToDatum(key),
       convertDataBlockToDatum(val),

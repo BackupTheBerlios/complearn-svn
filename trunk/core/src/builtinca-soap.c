@@ -132,7 +132,7 @@ static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	//int s;
   double compsize;
   char *str = gcalloc(1,src.size+1);
-  str = src.ptr;
+  str = (char *) src.ptr;
 
   memcpy(str, src.ptr, src.size);
 

@@ -354,7 +354,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   result->ptr = gcalloc(result->size, 1);
   j = 0;
   for (i = 0; i < sizeSS(dotacc); i += 1)
-    j += sprintf(result->ptr + j, "%s\n", readAtSS(dotacc, i));
+    j += sprintf((char *) (result->ptr + j), "%s\n", readAtSS(dotacc, i));
   freeSS(dotacc);
   freeSS(params);
   freeDoubleDoubler(nodes);

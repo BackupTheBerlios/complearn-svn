@@ -148,5 +148,7 @@ struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
       return dbclone;
     }
   }
+  db.ptr = NULL;
+  db.size = 0;
   return db;
 }

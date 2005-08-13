@@ -355,7 +355,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 
 	p = src.size*1.001 + 12; 
 	dbuff = (unsigned char*)gmalloc(p);
-	s = compress2(dbuff,(long*)&p,src.ptr,src.size,0);
+	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,0);
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enough!\n");
 		exit(1);
@@ -365,7 +365,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 		exit(1);
 	}
 	result.size = p;
-	result.ptr = (char*)gmalloc(result.size);
+	result.ptr = (unsigned char *) gmalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
 	return result;

@@ -68,7 +68,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     while (node) {
   //    printf("Node is %p, name is %p\n", node, node ? node->name : 0);
   //    printf("cur->name: %s\n", node->name);
-      if (!xmlStrcmp(node->name, "estimatedTotalResultsCount")) {
+      if (!xmlStrcmp(node->name, (const xmlChar *) "estimatedTotalResultsCount")) {
         estStr = (char*)xmlNodeListGetString(node->doc, node->xmlChildrenNode, 1);
         break;
       }

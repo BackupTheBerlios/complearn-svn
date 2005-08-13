@@ -55,7 +55,7 @@ static struct DataBlock unbz2a_transform(struct DataBlock src)
     if (dbuff != NULL)
       gfreeandclear(dbuff);
     dbuff = (unsigned char*)gmalloc(p);
-    i = BZ2_bzBuffToBuffDecompress(dbuff,&p,src.ptr,src.size, 0, 0);
+    i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) src.ptr,src.size, 0, 0);
     p = 2*p;
   } while (i == BZ_OUTBUFF_FULL);
   result.size = p;

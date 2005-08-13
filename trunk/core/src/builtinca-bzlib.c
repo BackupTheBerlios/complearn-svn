@@ -92,7 +92,7 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 	p = src.size*1.02+600; 
 	dbuff = (unsigned char*)gmalloc(p);
-	s = BZ2_bzBuffToBuffCompress(dbuff,&p,src.ptr,src.size,
+	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) src.ptr,src.size,
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
 	if (s == BZ_OUTBUFF_FULL) {
 		printf ("destLen not big enough!\n");

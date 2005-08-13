@@ -55,7 +55,7 @@ static struct DataBlock unzlib_transform(struct DataBlock src)
 			free(dbuff);
 		dbuff = (unsigned char*)gmalloc(p);
     p = triedp;
-		i = uncompress(dbuff,(uLongf*)&p,src.ptr,src.size);
+		i = uncompress(dbuff,(uLongf *) &p,src.ptr,src.size);
 		triedp = 2*triedp;
 	} while (i == Z_BUF_ERROR);
 	result.size = triedp;
