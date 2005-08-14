@@ -111,7 +111,7 @@ void free_DataBlock_package ( struct DoubleA *da, void *udata)
 {
   int i;
   for ( i = 0; i < getSize(da) ; i += 1) {
-    freeDataBlock(getValueAt(da,i).idbp.db);
+    freeDataBlockPtr(getValueAt(da,i).idbp.db);
   }
 }
 
@@ -126,7 +126,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db)
   while (getCurDataBlock(tm, &cur)) {
     union pctypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
-    p.idbp.db = cur;
+    p.idbp.db = cloneDataBlockPtr(&cur);
     pushValue(result, p);
     stepNextDataBlock(tm);
   }
@@ -143,7 +143,7 @@ struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
   for (i = 0; i < getSize(dd); i += 1) {
     curtnum = getValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
-      db = getValueAt(dd,i).idbp.db;
+      db = *getValueAt(dd,i).idbp.db;
       dbclone =  cloneDataBlock(db);
       return dbclone;
     }

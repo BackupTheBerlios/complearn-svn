@@ -107,7 +107,7 @@ gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
 
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
-  dbda = getValueAt(dd,0).idbp.db;
+  dbda = *getValueAt(dd,0).idbp.db;
   m = loadGSLMatrix(dbdm, 1);
   freeDoubleDoubler(dd);
   freeDataBlock(dbdm);

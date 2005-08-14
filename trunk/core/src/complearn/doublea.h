@@ -15,7 +15,7 @@
  * The DoubleA automatically doubles its sizes and reallocates with a
  * (flat, shallow) copy of all the old information whenever it is
  * necessary.  The DoubleA supports a variety of different types, of
- * sizes up to 12 bytes.  The union pctypes contains all possible
+ * sizes up to 8 bytes.  The union pctypes contains all possible
  * value types that may be used within this dynamic container class.
  */
 struct DoubleA;
@@ -42,12 +42,12 @@ struct strpair { char *key; char *val; };
  */
 struct intpair { int x; int y; };
 
-/** \brief holds the tagnum and a DataBlock
+/** \brief holds the tagnum and a pointer to a DataBlock
  * \struct intdbpair
- * This structure holds a tagnum and a "dumped" DataBlock whose type is
- * described by tagnum.
+ * This structure holds a tagnum and a pointer to a "dumped" DataBlock whose
+ * type is described by tagnum.
  */
-struct intdbpair { int tnum ; struct DataBlock db; };
+struct intdbpair { int tnum ; struct DataBlock *db; };
 
 /** \brief the basic polymorphic types supported by DoubleA
  * \union pctypes
@@ -58,7 +58,8 @@ struct intdbpair { int tnum ; struct DataBlock db; };
  * a pointer to a nested DoubleA as <b>ar</b> <br>
  * a strpair <b>sp</b> containing <b>sp.key</b> and <b>sp.val</b> <br>
  * a intpair <b>ip</b> containing <b>x</b> and <b>y</b> <br>
- * a intdbpair <b>idbp</b> containing <b>tnum</b> and <b>db</b> <br>
+ * a intdbpair <b>idbp</b> containing <b>tnum</b> and <b>*db</b> <br>
+ * a DataBlock <b>db</b>
  * a pointer to a TransAdaptor <b>ta</b>
  *
  * When using a pctypes, it is important to remember that you may only
@@ -184,7 +185,7 @@ void setDValueAt(struct DoubleA *a, int where, double val);
 int getSize(const struct DoubleA *a);
 
 /** \brief Creates a copy of a multi-level DoubleA
- *  \param pointer to DoubleA to be copied
+ *  \param ptr pointer to DoubleA to be copied
  *  \param level number of levels starting at 0
  *  \return pointer to new DoubleA
  */
@@ -193,31 +194,70 @@ struct DoubleA *deepCopyLvl(const struct DoubleA *ptr, int lvl);
 /** \brief Creates a copy of a single-level DoubleA
  *
  *  Same as using deepCopyLvl(da,0)
- *  \param pointer to DoubleA to be copied
+ *  \param ptr pointer to DoubleA to be copied
  *  \return pointer to new DoubleA
  */
 struct DoubleA *cloneDoubler(const struct DoubleA *ptr);
 
 /** \brief Returns element at given index
- *  \param pointer to DoubleA
+ *  \param da pointer to DoubleA
  *  \param where index
- *  \return pctype
+ *  \return pctype instance
  */
 union pctypes getValueAt(const struct DoubleA *da, int where);
 
-/** \brief Sets a pctype at a given index
- *  \param a pointer to DoubleA
+/** \brief Sets a pctypes instance at a given index
+ *  \param da pointer to DoubleA
  *  \param where index
- *  \param val pctype to set
+ *  \param val pctypes instance to set
  */
 void setValueAt(struct DoubleA *da, int where, union pctypes p);
 
+/** \brief Adds a pctypes instance to bottom of array (at index 0)
+ *  \param da pointer to DoubleA
+ *  \param p pctypes instance to set
+ */
 void unshiftValue(struct DoubleA *da, union pctypes p);
+
+/** \brief Adds a pctypes instance to top of array (at index size)
+ *  \param da pointer to DoubleA
+ *  \param p pctypes instance to set
+ */
 void pushValue(struct DoubleA *da, union pctypes p);
+
+/** \brief Removes pctypes instance from bottom of array (at index 0)
+ *  \param da pointer to DoubleA
+ *  \return pctypes instance from bottom of array
+ */
 union pctypes shiftDoubleDoubler(struct DoubleA *da);
+
+/** \brief Removes pctypes instance from top of array (at index size)
+ *  \param da pointer to DoubleA
+ *  \return pctypes instance from top of array
+ */
 union pctypes popDoubleDoubler(struct DoubleA *da);
+
+/** \brief Returns random pctypes instance from array
+ *  \param da pointer to DoubleA
+ *  \return pctypes instance randomly chosen from array
+ */
 union pctypes getRandomElement(const struct DoubleA *da);
+
+/** \brief Swaps values at given two indeces
+ *
+ *  swapValues() will take two indeces of an array and swap their contents.
+ *  Returns CL_OK upon success.
+ *  \param da pointer to DoubleA
+ *  \param inda first index
+ *  \param indb second index
+ *  \return CL_OK
+ */
 int swapValues(struct DoubleA *da, int inda, int indb);
+
+/** \brief Prints to stdout list of integers stored in DoubleA
+ *  printNodeList() only works if the DoubleA consists of integers
+ *  \param da pointer to DoubleA
+ */
 void printNodeList(const struct DoubleA *da);
 struct DataBlock dumpString(const char *s);
 /* if fmustbe, function exits when tagnum does not match. else, returns NULL */

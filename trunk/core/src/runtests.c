@@ -1040,12 +1040,12 @@ void testALTagFile(void)
     curtnum = getValueAt(dd,i).idbp.tnum;
     switch (curtnum) {
       case TAGNUM_STRING:
-        result = loadString(getValueAt(dd,i).idbp.db, 1);
+        result = loadString(*getValueAt(dd,i).idbp.db, 1);
         assert(strcmp(s,result) == 0);
         gfreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
-        ngm = loadGSLMatrix(getValueAt(dd,i).idbp.db, 1);
+        ngm = loadGSLMatrix(*getValueAt(dd,i).idbp.db, 1);
         assert(gm != ngm);
         assert(gm->size1 == ngm->size1);
         assert(gm->size2 == ngm->size2);
@@ -1054,7 +1054,7 @@ void testALTagFile(void)
         gsl_matrix_free(ngm);
         break;
       case TAGNUM_STRINGSTACK:
-        nes = loadStringStack(getValueAt(dd,i).idbp.db, 1);
+        nes = loadStringStack(*getValueAt(dd,i).idbp.db, 1);
         assert(strcmp(readAtSS(nes,0), readAtSS(ss,0)) == 0);
         assert(strcmp(readAtSS(nes,1), readAtSS(ss,1)) == 0);
         assert(strcmp(readAtSS(nes,2), readAtSS(ss,2)) == 0);
