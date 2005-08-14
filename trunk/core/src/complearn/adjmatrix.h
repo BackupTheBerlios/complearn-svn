@@ -24,7 +24,6 @@ struct DoubleA;
 
 /** \brief Create a new AdjMatrix with a given size
  *
- * \struct AdjMatrix
  * This function creates a new AdjMatrix with the given dimension on a side.
  * This memory should be freed using freeAdjMatrix when it is no longer needed.
  * An AdjMatrix of size n supports node-labels in the range 0 to n-1, inclusive.

@@ -8,6 +8,7 @@
 
 const union pctypes zeropct;
 const union pctypes onepcti = { .i = 1 };
+void makeSizeFor(struct DoubleA *da, int where);
 
 struct DoubleA {
   int alloc, size, elemsize;

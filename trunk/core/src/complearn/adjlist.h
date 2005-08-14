@@ -24,7 +24,6 @@ struct DoubleA;
 
 /** \brief Create a new AdjList with a given size
  *
- * \struct AdjList
  * This function creates a new AdjList with the given dimension on a side.
  * This memory should be freed using freeAdjList when it is no longer needed.
  * An AdjList of size n supports node-labels in the range 0 to n-1, inclusive.

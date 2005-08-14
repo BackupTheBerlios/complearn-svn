@@ -15,16 +15,38 @@
  * The DoubleA automatically doubles its sizes and reallocates with a
  * (flat, shallow) copy of all the old information whenever it is
  * necessary.  The DoubleA supports a variety of different types, of
- * sizes up to 8 bytes.  The union pctypes contains all possible
+ * sizes up to 12 bytes.  The union pctypes contains all possible
  * value types that may be used within this dynamic container class.
  */
 struct DoubleA;
+
+/** \brief Tag added to a "dump" of a DoubleA.
+ *  \struct ddHdr
+ *
+ *  This structure is embedded within the resulting DataBlock returned by the
+ *  functions dumpDoubleDoubler() and dumpDeepDoubleDoubler(), both of which
+ *  are used to write a DoubleA to file. ddHdr contains information necessary
+ *  for the conversion of a "dumped" DataBlock, using dumpDoubleDoubler() and
+ *  dumpDeepDoubleDoubler(), back into a DoubleA.
+ */
+struct ddHdr;
 
 /** \brief a basic key, value pair
  * \struct strpair
  * This structure holds a key and an associated value as two associated pointers */
 struct strpair { char *key; char *val; };
+
+/** \brief a integer pair
+ * \struct intpair
+ * This structure holds two integers.
+ */
 struct intpair { int x; int y; };
+
+/** \brief holds the tagnum and a DataBlock
+ * \struct intdbpair
+ * This structure holds a tagnum and a "dumped" DataBlock whose type is
+ * described by tagnum.
+ */
 struct intdbpair { int tnum ; struct DataBlock db; };
 
 /** \brief the basic polymorphic types supported by DoubleA
@@ -35,6 +57,8 @@ struct intdbpair { int tnum ; struct DataBlock db; };
  * a character pointer or string <b>str</b> <br>
  * a pointer to a nested DoubleA as <b>ar</b> <br>
  * a strpair <b>sp</b> containing <b>sp.key</b> and <b>sp.val</b> <br>
+ * a intpair <b>ip</b> containing <b>x</b> and <b>y</b> <br>
+ * a intdbpair <b>idbp</b> containing <b>tnum</b> and <b>db</b> <br>
  * a pointer to a TransAdaptor <b>ta</b>
  *
  * When using a pctypes, it is important to remember that you may only
@@ -63,20 +87,131 @@ union pctypes {
  */
 const extern union pctypes zeropct, onepcti;
 
+/** \brief Creates a new DoubleA
+ *
+ *  Allocates memory and returns a pointer to for a new DoubleA.  Free memory
+ *  allocated by a DoubleA using freeDoubleDoubler().
+ *  \return pointer to DoubleA
+ */
 struct DoubleA *newDoubleDoubler(void);
+
+/** \brief Frees a DoubleA from memory.
+ *  \param ptr pointer to DoubleA
+ */
 void freeDoubleDoubler(struct DoubleA *ptr);
+
+/** \brief Converts a "dumped" DoubleA DataBlock back into a DoubleA
+ *
+ *  loadDoubleDoubler() will take as an argument a pointer to a DataBlock,
+ *  which was created by the dumpDoubleDoubler() or the dumpDeepDoubleDoubler()
+ *  function, and convert the DataBlock into an DoubleA, even if originally a
+ *  multi-level DoubleA. A pointer to the DoubleA is returned.
+ *
+ *  An option to loadDoubleDoubler() is the fmustbe flag, which, if set to 1,
+ *  forces the function to check for the special DoubleA tag created by
+ *  dumpDoubleDoubler() or dumpDeepDoubleDoubler().  If the tag is not found,
+ *  an error message is printed to stdout and the program will exit.  Set
+ *  fmustbe to 0 to ignore the tag check.
+ *
+ *  \param db pointer to DataBlock
+ *  \param fmustbe 1 if the DataBlock must contain the identifying DoubleA flag;
+ *  0 if not
+ *  \return pointer to new DoubleA
+ */
 struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
+
+/** \brief Converts a single-level DoubleA to a file-writable DataBlock
+ *
+ *  dumpDoubleDoubler() returns a pointer to a DataBlock which then can be
+ *  written to a file using the function writeDataBlockToFile().  This
+ *  resulting DataBlock is also appropriate for when using the function
+ *  package_DataBlocks().
+ *
+ *  To convert the resulting DataBlock back into a DoubleA, use
+ *  loadDoubleDoubler() function.
+ *
+ *  Same as using dumpDeepDoubleDoubler(da,0).
+ *  \param em pointer to DoubleA
+ *  \return pointer to DataBlock which can be written to file
+ *
+ */
 struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
+
+/** \brief Converts a multi-level DoubleA to a file-writable DataBlock
+ *
+ *  dumpDeepDoubleDoubler() returns a pointer to a DataBlock which then can be
+ *  written to a file using the function writeDataBlockToFile().  This
+ *  resulting DataBlock is also appropriate for when using the function
+ *  package_DataBlocks().
+ *
+ *  To convert the resulting DataBlock back into a DoubleA, use
+ *  loadDoubleDoubler() function.
+ *  \param em pointer to DoubleA
+ *  \param level number of levels starting at 0; 0 indicates a single level, 1
+ *  indicates a 2-level and so on
+ *  \return pointer to DataBlock which can be written to file
+ *
+ */
 struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level);
+
+/** \brief Frees a multi-level DoubleA from memory
+ *  \param ptr pointer to DoubleA
+ *  \param lvl number of levels starting at 0; 0 indicates a single level, 1
+ *  indidicates a 2-level, and so on
+ */
 void freeDeepDoubleDoubler(struct DoubleA *ptr, int lvl);
+
+/** \brief Returns a double, for a DoubleA of doubles, at a given index
+ *
+ *  This function is a shortcut used for a DoubleA of doubles.  Same as
+ *  using getValueAt(da, where).d
+ *  \param da pointer to DoubleA
+ *  \param where index
+ */
 double getDValueAt(struct DoubleA *da, int where);
+
+/** \brief Sets a double, for a Doublea of doubles, at a given index
+ *  \param a pointer to DoubleA
+ *  \param where index
+ *  \param val double to set
+ */
 void setDValueAt(struct DoubleA *a, int where, double val);
+
+/** \brief Returns number of elements in DoubleA.
+ *  \param a pointer to DoubleA
+ *  \return size
+ */
 int getSize(const struct DoubleA *a);
+
+/** \brief Creates a copy of a multi-level DoubleA
+ *  \param pointer to DoubleA to be copied
+ *  \param level number of levels starting at 0
+ *  \return pointer to new DoubleA
+ */
 struct DoubleA *deepCopyLvl(const struct DoubleA *ptr, int lvl);
+
+/** \brief Creates a copy of a single-level DoubleA
+ *
+ *  Same as using deepCopyLvl(da,0)
+ *  \param pointer to DoubleA to be copied
+ *  \return pointer to new DoubleA
+ */
 struct DoubleA *cloneDoubler(const struct DoubleA *ptr);
-void makeSizeFor(struct DoubleA *da, int where);
+
+/** \brief Returns element at given index
+ *  \param pointer to DoubleA
+ *  \param where index
+ *  \return pctype
+ */
 union pctypes getValueAt(const struct DoubleA *da, int where);
+
+/** \brief Sets a pctype at a given index
+ *  \param a pointer to DoubleA
+ *  \param where index
+ *  \param val pctype to set
+ */
 void setValueAt(struct DoubleA *da, int where, union pctypes p);
+
 void unshiftValue(struct DoubleA *da, union pctypes p);
 void pushValue(struct DoubleA *da, union pctypes p);
 union pctypes shiftDoubleDoubler(struct DoubleA *da);

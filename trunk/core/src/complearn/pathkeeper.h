@@ -60,7 +60,6 @@ struct AdjA;
 
 /** \brief Create a new PathKeeper with a given size
  *
- * \struct PathKeeper
  * This function creates a new PathKeeper with the given dimension on a side.
  * This memory should be freed using freePathKeeper when it is no longer needed.
  * An PathKeeper of size n supports node-labels in the range 0 to n-1, inclusive.
