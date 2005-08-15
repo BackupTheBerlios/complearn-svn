@@ -118,12 +118,15 @@ char *popSS(struct StringStack *ss);
 char *readAtSS(struct StringStack *ss, int i);
 
 /** \brief merges two StringStacks.
- *  \param ssa stringstcack
- *  \param ssb stringstcack
+ *  \param ssa StringStack
+ *  \param ssb StringStack
  *  \return pointer to new StringStack containing combination
  */
 struct StringStack *mergeSS(struct StringStack *ssa, struct StringStack *ssb);
 
+/** \brief Prints the contents of a StringStack, newline separated, to stdout
+ *  \param ss pointer to StringStack
+ */
 void printSS(struct StringStack *ss);
 
 #endif

@@ -103,10 +103,10 @@ void freeDoubleDoubler(struct DoubleA *ptr);
 
 /** \brief Converts a "dumped" DoubleA DataBlock back into a DoubleA
  *
- *  loadDoubleDoubler() will take as an argument a pointer to a DataBlock,
- *  which was created by the dumpDoubleDoubler() or the dumpDeepDoubleDoubler()
- *  function, and convert the DataBlock into a DoubleA, even if originally a
- *  multi-level DoubleA. A pointer to the DoubleA is returned.
+ *  loadDoubleDoubler() will take as an argument a DataBlock, which was created
+ *  by the dumpDoubleDoubler() or the dumpDeepDoubleDoubler() function, and
+ *  convert the DataBlock into a DoubleA, even if originally a multi-level
+ *  DoubleA. A pointer to the DoubleA is returned.
  *
  *  An option to loadDoubleDoubler() is the fmustbe flag, which, if set to 1,
  *  forces the function to exit when check for the special DoubleA tag created
@@ -121,9 +121,9 @@ void freeDoubleDoubler(struct DoubleA *ptr);
  */
 struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
 
-/** \brief Converts a single-level DoubleA to a file-writable DataBlock
+/** \brief Serializes a single-level DoubleA into a DataBlock
  *
- *  dumpDoubleDoubler() returns a pointer to a DataBlock which then can be
+ *  dumpDoubleDoubler() returns a DataBlock which then can be
  *  written to a file using the function writeDataBlockToFile().  This
  *  resulting DataBlock is also appropriate for when using the function
  *  package_DataBlocks().
@@ -133,13 +133,13 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
  *
  *  Same as using dumpDeepDoubleDoubler(da,0).
  *  \param d pointer to DoubleA
- *  \return pointer to DataBlock which can be written to file
+ *  \return a DataBlock which can be written to file
  */
 struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
 
-/** \brief Converts a multi-level DoubleA to a file-writable DataBlock
+/** \brief Serializes a multi-level DoubleA into a DataBlock
  *
- *  dumpDeepDoubleDoubler() returns a pointer to a DataBlock which then can be
+ *  dumpDeepDoubleDoubler() returns a DataBlock which then can be
  *  written to a file using the function writeDataBlockToFile().  This
  *  resulting DataBlock is also appropriate for when using the function
  *  package_DataBlocks().
@@ -149,7 +149,7 @@ struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
  *  \param em pointer to DoubleA
  *  \param level number of levels starting at 0; 0 indicates a single level, 1
  *  indicates a 2-level and so on
- *  \return pointer to DataBlock which can be written to file
+ *  \return a DataBlock which can be written to file
  *
  */
 struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level);
@@ -261,16 +261,15 @@ void printNodeList(const struct DoubleA *da);
 
 /** \brief Converts a character string to a file-writable DataBlock
  *
- *  dumpString() returns a pointer to a DataBlock which then can be
- *  written to a file using the function writeDataBlockToFile().  This
- *  resulting DataBlock is also appropriate for when using the function
- *  package_DataBlocks().
+ *  dumpString() returns a DataBlock which then can be written to a file using
+ *  the function writeDataBlockToFile().  This resulting DataBlock is also
+ *  appropriate for when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use
  *  loadString() function.
  *
  *  \param s pointer to character string
- *  \return pointer to DataBlock which can be written to file
+ *  \return a DataBlock which can be written to file
  */
 struct DataBlock dumpString(const char *s);
 
@@ -308,6 +307,11 @@ void verifyDoubleDoubler(const struct DoubleA *da);
  */
 int isInDAqb(const struct DoubleA *da, qbase_t which);
 
+/** \brief Prints to stdout a DoubleA of intpairs separated by spaces
+ *
+ *  printInPairList() will only work with a DoubleA of intpair objects.
+ *  \param da pointer to DoubleA
+ */
 void printIntPairList(const struct DoubleA *da);
 
 /** \brief Adds node label to DoubleA if not already there
