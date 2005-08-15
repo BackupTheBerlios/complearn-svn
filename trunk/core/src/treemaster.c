@@ -31,18 +31,6 @@ int getKTM(struct TreeMaster *tm)
   return tm->k;
 }
 
-int getNodeCountTM(struct TreeMaster *tm)
-{
-  assert(tm);
-  return tm->nodecount;
-}
-
-int getLabelCountTM(struct TreeMaster *tm)
-{
-  assert(tm);
-  return tm->dm->size1;
-}
-
 static void callImprovedFunctionMaybe(struct TreeMaster *tm)
 {
   if (tm->tob && tm->tob->treeimproved) {
