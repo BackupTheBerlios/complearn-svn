@@ -43,8 +43,33 @@ struct StringStack *loadDMLabels(struct DataBlock db, int fmustbe);
  *  \return StringStack of distance matrix labels
  */
 struct StringStack *get_labels_from_clb(char *fname);
+
+/** \brief Returns StringStack of distance matrix labels from a ASCII text file
+ *
+ *  get_labels_from_clb() is a high level function which reads a text file,
+ *  formatted in the same way as output from the ncd command, and returns a
+ *  StringStack of labels for the distance matrix.
+ *  \param fname path to text file
+ *  \return StringStack of distance matrix labels
+ */
 struct StringStack *get_labels_from_txt(char *fname);
+
+/** \brief Dumps a StringStack of commands into a serialized DataBlock
+ *
+ *  Used to capture commands when using the ncd and maketree commands.
+ *  \param ss pointer to StringStack of commands
+ *  \return DataBlock
+ */
 struct DataBlock dumpCommands(struct StringStack *ss);
+
+/** \brief Returns StringStack of commands from a CompLearn binary file
+ *
+ *  get_clcmds() is a high level function which reads a CompLearn binary (clb)
+ *  file, generated from the ncd -b command, and returns a StringStack of
+ *  commands.
+ *  \param fname path CompLearn binary file
+ *  \return StringStack of commands
+ */
 struct StringStack *get_clcmds_from_clb(char *fname);
 
 #endif
