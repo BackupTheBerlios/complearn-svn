@@ -1,8 +1,6 @@
 #ifndef __ROOTEDBINARY_H
 #define __ROOTEDBINARY_H
 
-/* A suggested maximum number of neighbors per node.  This is not enforced. */
-
 #include <complearn/quartet.h>
 
 /*! \file rootedbinary.h */
@@ -13,10 +11,9 @@
  *
  * \sa rootedbinary.h
  *
- * An RootedBinary holds the connection information associated with a
+ * A RootedBinary holds the connection information associated with a
  * particular tree.  Each node has either 1 or 3 neighbors; leaves have only
- * 1, and the rest are kernel nodes with 3 neighbors each.  There is no
- * root.
+ * 1, and the rest are kernel nodes with 3 neighbors each.
  */
 struct RootedBinary;
 struct LabelPerm;

@@ -8,6 +8,7 @@
 /*! \file springball.h */
 
 /** \brief charged ball and spring physical simulation for animation effect
+ *
  * \struct SpringBallSystem
  *
  * The SpringBallSystem evolves a multibody phsyical simulation over time
