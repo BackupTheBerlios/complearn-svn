@@ -1,15 +1,14 @@
 #ifndef __SPRINGBALL_H
 #define __SPRINGBALL_H
 
-#if GSL_RDY
 #include <gsl/gsl_odeiv.h>
 #include <gsl/gsl_vector.h>
 
 /*! \file springball.h */
 
-/** \brief charged ball and spring physical simulation for animation effect
+/** \brief Charged ball and spring physical simulation for animation effect
  *
- * \struct SpringBallSystem
+ *  \struct SpringBallSystem
  *
  * The SpringBallSystem evolves a multibody phsyical simulation over time
  * using a numerical approximation of the differential equations due to
@@ -24,6 +23,9 @@
  * smooth animation.  Each ball has a charge equal to that of every other
  * ball, so all balls naturally repel one another.  Only the springs may hold
  * them within proximity of one another.
+ *
+ * \sa springball.h
+ *
  */
 struct SpringBallSystem;
 
@@ -183,7 +185,5 @@ void evolveForward(struct SpringBallSystem *sbs);
  * \return number of balls in this SpringBallSystem
  */
 int getNodeCountSBS(struct SpringBallSystem *sbs);
-
-#endif
 
 #endif

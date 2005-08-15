@@ -5,7 +5,6 @@
 #define AJAC_PARITY 0
 #define TWODFORCESTR 5.00
 
-#if GSL_RDY
 #include <gsl/gsl_vector.h>
 
 const double BASECHARGE = 4.0;
@@ -575,15 +574,6 @@ void evolveForward(struct SpringBallSystem *sbs)
   }
   //updateMaxVal(clo);
 }
-
-#else
-
-struct SpringBallSystem *newSBS(struct TreeAdaptor *ta)
-{
-	assert (0 && "gsl not supported; no springball system available");
-	return NULL;
-}
-#endif
 
 void doSBS3Test(void)
 {
