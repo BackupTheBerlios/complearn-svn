@@ -1,6 +1,8 @@
 #ifndef __TREEHOLDER_H
 #define __TREEHOLDER_H
 
+/*! \file treeholder.h */
+
 struct TreeHolder;
 struct TreeAdaptor;
 

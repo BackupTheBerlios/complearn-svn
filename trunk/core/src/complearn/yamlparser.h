@@ -4,6 +4,8 @@
 #include <complearn/stringstack.h>
 #include <complearn/envmap.h>
 
+/*! \file yamlparser.h */
+
 struct StringStack *getDefaultFileList(void);
 
 /* These functions assume you have already created your own EnvMap to

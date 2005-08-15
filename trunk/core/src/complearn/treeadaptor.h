@@ -3,6 +3,8 @@
 
 #include <complearn/cltypes.h>
 
+/*! \file treeadaptor.h */
+
 struct TreeAdaptor {
   void *ptr;
   t_treemutate treemutate;

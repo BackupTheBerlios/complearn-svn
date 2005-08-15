@@ -1,6 +1,8 @@
 #ifndef __MUTATE_H
 #define __MUTATE_H
 
+/*! \file mutate.h */
+
 struct AdjA;
 struct LabelPerm;
 

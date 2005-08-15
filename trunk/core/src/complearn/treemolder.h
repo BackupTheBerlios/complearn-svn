@@ -3,6 +3,8 @@
 
 #include <complearn/cltypes.h>
 
+/*! \file treemolder.h */
+
 struct TreeMolder;
 
 #if GSL_RDY

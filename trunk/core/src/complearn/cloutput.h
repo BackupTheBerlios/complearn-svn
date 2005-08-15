@@ -1,6 +1,7 @@
 #ifndef __CLOUTPUT_H
 #define __CLOUTPUT_H
 
+
 #include <math.h>
 #include <complearn/datablockenum.h>
 #include <complearn/uclconfig.h>
@@ -9,6 +10,8 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 #endif
+
+/*! \file cloutput.h */
 
 #if GSL_RDY
 gsl_matrix *svdProject(gsl_matrix *a);

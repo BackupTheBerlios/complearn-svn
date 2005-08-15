@@ -2,6 +2,8 @@
 #define __GDBMHELPER_H
 
 #include <complearn/datablock.h>
+/*! \file gdbmhelper.h */
+
 /** \brief a simple encapsulation of the GDBM database system
  * \struct GDBMHelper
  *

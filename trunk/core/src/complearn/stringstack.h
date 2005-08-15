@@ -3,6 +3,8 @@
 
 #include <complearn/datablock.h>
 
+/*! \file stringstack.h */
+
 /** \brief Container of strings.
  *  \struct StringStack
  *

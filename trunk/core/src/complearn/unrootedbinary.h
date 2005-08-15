@@ -1,6 +1,8 @@
 #ifndef __CLTREE_H
 #define __CLTREE_H
 
+/*! \file unrootedbinary.h */
+
 /* A suggested maximum number of neighbors per node.  This is not enforced. */
 #define MAXNEIGHBORS 16
 

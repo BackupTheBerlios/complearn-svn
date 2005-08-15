@@ -3,6 +3,8 @@
 
 #include <gsl/gsl_matrix.h>
 
+/*! \file incrdm.h */
+
 struct IncrementalDistMatrix;
 
 struct IncrementalDistMatrix *newIDM(struct CompAdaptor *ca);

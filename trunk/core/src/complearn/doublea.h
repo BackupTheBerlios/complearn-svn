@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <complearn/datablock.h>
 #include <complearn/cltypes.h>
+
 /*! \file doublea.h */
 
 /** \brief a dynamically resizing, doubling polymorphic array
@@ -51,6 +52,7 @@ struct intdbpair { int tnum ; struct DataBlock *db; };
 
 /** \brief the basic polymorphic types supported by DoubleA
  * \union pctypes
+ *
  * a DoubleA can hold any number of different objects.  The choices include
  * a double <b>d</b> <br>
  * an integer <b>i</b> <br>
@@ -125,7 +127,7 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
  *
  *  dumpDoubleDoubler() returns a DataBlock which then can be
  *  written to a file using the function writeDataBlockToFile().  This
- *  resulting DataBlock is also appropriate for when using the function
+ *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DoubleA, use
@@ -141,7 +143,7 @@ struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
  *
  *  dumpDeepDoubleDoubler() returns a DataBlock which then can be
  *  written to a file using the function writeDataBlockToFile().  This
- *  resulting DataBlock is also appropriate for when using the function
+ *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DoubleA, use
@@ -263,7 +265,7 @@ void printNodeList(const struct DoubleA *da);
  *
  *  dumpString() returns a DataBlock which then can be written to a file using
  *  the function writeDataBlockToFile().  This resulting DataBlock is also
- *  appropriate for when using the function package_DataBlocks().
+ *  appropriate when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use
  *  loadString() function.

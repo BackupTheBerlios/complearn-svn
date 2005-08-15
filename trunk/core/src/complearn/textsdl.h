@@ -10,6 +10,8 @@
 
 #define MAXTEX 30
 
+/*! \file textsdl.h */
+
 struct CLTexture {
   SDL_Surface *initial;
   SDL_Surface *intermediary;

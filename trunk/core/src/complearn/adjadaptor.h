@@ -2,6 +2,7 @@
 #define __ADJADAPTOR_H
 
 #include <complearn/cltypes.h>
+/*! \file adjadaptor.h */
 
 /** \brief Adjacency matrix interface to CompLearn.
  * \sa adjadaptor.c

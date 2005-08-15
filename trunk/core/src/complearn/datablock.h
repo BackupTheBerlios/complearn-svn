@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+/*! \file datablock.h */
+
 /** \brief The basic data object of CompLearn.
  *  \struct DataBlock
  *

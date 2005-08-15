@@ -1,6 +1,8 @@
 #ifndef __DBE_FACTORY_H
 #define __DBE_FACTORY_H
 
+/*! \file dbe-factory.h */
+
 struct DataBlockEnumeration *buildQuotedDBE(const char *str);
 struct DataBlockEnumeration *buildFileDBE(const char *str);
 

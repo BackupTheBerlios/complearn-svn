@@ -3,6 +3,8 @@
 
 #include <complearn/environment.h>
 
+/*! \file ncd-calc.h */
+
 /** \brief Returns the NCD of a pair of DataBlocks.
  *
  *  The ncd formula is as follows:

@@ -8,6 +8,8 @@
 #include <gsl/gsl_blas.h>
 #endif
 
+/*! \file treeblaster.h */
+
 struct TreeBlaster;
 
 #if GSL_RDY

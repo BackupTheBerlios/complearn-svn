@@ -4,6 +4,8 @@
 #include <complearn/uclconfig.h>
 #include <complearn/environment.h>
 
+/*! \file builtin.h */
+
 /** \brief Returns pointer to a builtin compressor interface.
  *
  * The loadBuiltinCA() function takes a char *name and matches it against a

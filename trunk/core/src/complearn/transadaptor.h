@@ -3,6 +3,8 @@
 
 #include <complearn/complearn.h>
 
+/*! \file transadaptor.h */
+
 /** \brief Transform interface.
  *  \struct TransAdaptor
  *

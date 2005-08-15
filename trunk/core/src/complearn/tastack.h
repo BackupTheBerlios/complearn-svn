@@ -1,6 +1,8 @@
 #ifndef __TASTACK_H
 #define __TASTACK_H
 
+/*! \file tastack.h */
+
 /** \brief Container of TransAdaptors.
  *  \struct TAstack
  *

@@ -3,6 +3,8 @@
 
 #include <complearn/stringstack.h>
 
+/*! \file googlecache.h */
+
 /** \brief Cache of Google count samples over time
  *  \struct GoogleCache
  *

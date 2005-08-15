@@ -5,6 +5,8 @@
 
 #define MAXDB 16
 
+/*! \file datablockenum.h */
+
 /** \brief The DataBlockEnumerationIterator indicates the current position of
  *   the DataBlock in a private enumeration instance.
  *  \struct DataBlockEnumerationIterator

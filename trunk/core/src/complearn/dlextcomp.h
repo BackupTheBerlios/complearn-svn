@@ -9,6 +9,8 @@
 #include <complearn/envmap.h>
 #include <complearn/compadaptor.h>
 
+/*! \file dlextcomp.h */
+
 /* These are the names of functions that a dynamic-library compression plugin
  * must define in order to be compatible with this system.
  */

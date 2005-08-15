@@ -8,6 +8,8 @@
 #include <gsl/gsl_blas.h>
 #endif
 
+/*! \file matfact.h */
+
 #if GSL_RDY
 /** \brief Clones a given gsl_matrix to make an independent copy.
  *

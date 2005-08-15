@@ -3,6 +3,8 @@
 
 #include <complearn/complearn.h>
 
+/*! \file dbe-array.h */
+
 /** \brief Given an array of DataBlocks, returns pointer to newly initialized
  *  DataBlockEnumeration.
  *

@@ -3,6 +3,8 @@
 
 #include <complearn/complearn.h>
 
+/*! \file dbe-dir.h */
+
 /** \brief Given a directory name whose contents contains files to be read,
  *  returns pointer to newly initialized DataBlockEnumeration.
  *

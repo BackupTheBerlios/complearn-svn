@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+/*! \file galloc.h */
+
 #if NOGALLOC
 #include <dmalloc.h>
 

@@ -1,6 +1,8 @@
 #ifndef __LABELPERM_H
 #define __LABELPERM_H
 
+/*! \file labelperm.h */
+
 struct LabelPerm;
 
 struct LabelPerm *newLabelPerm(struct DoubleA *labelledNodes);

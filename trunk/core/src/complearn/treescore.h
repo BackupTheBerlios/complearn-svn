@@ -7,6 +7,8 @@
 #include <gsl/gsl_matrix.h>
 #endif
 
+/*! \file treescore.h */
+
 struct TreeScore;
 struct TreeAdaptor;
 struct AdjA;

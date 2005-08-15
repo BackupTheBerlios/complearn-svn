@@ -5,6 +5,8 @@
 #include <complearn/cltypes.h>
 #include <complearn/datablock.h>
 
+/*! \file tagfile.h */
+
 struct tagHdr {
   t_tagtype tagnum;
   unsigned int size;

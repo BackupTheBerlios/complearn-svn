@@ -3,6 +3,8 @@
 
 #define MAXNODES 1024
 
+/*! \file quartet.h */
+
 struct UnrootedBinary;
 struct DoubleA;
 

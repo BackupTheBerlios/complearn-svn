@@ -3,6 +3,8 @@
 
 #include <complearn/complearn.h>
 
+/*! \file dbe-singleton.h */
+
 /** \brief Given a single DataBlock, returns pointer to newly initialized
  *  DataBlockEnumeration.
  *

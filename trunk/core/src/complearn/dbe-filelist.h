@@ -3,6 +3,8 @@
 
 #include <complearn/complearn.h>
 
+/*! \file dbe-filelist.h */
+
 /** \brief Given a filename whose contents contain a list of files to be read,
  *  returns pointer to newly initialized DataBlockEnumeration.
  *

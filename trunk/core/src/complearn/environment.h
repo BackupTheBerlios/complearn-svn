@@ -5,6 +5,8 @@
 #include <complearn/uclconfig.h>
 #include <stdio.h>
 
+/*! \file environment.h */
+
 /** \brief Where configuration details are stored.
  *  \struct GeneralConfig
  */

@@ -1,7 +1,9 @@
-#ifndef __ENVSTACK_H
-#define __ENVSTACK_H
+#ifndef __ENVMAP_H
+#define __ENVMAP_H
 
 #include <complearn/datablock.h>
+
+/*! \file envmap.h */
 
 /** \brief Container of key-value pairs which set the compression environment.
  *  \struct EnvMap
@@ -88,7 +90,7 @@ char *readValForEM(struct EnvMap *em, const char *key);
  *
  *  dumpEnvMap() a DataBlock which then can be written to a file using the
  *  function writeDataBlockToFile().  This resulting DataBlock is also
- *  appropriate for when using the function package_DataBlocks().
+ *  appropriate when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into an EnvMap, use loadEnvMap()
  *  function.

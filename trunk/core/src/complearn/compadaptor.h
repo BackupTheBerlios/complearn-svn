@@ -5,6 +5,8 @@
 #include <complearn/datablock.h>
 #include <complearn/cltypes.h>
 
+/*! \file compadaptor.h */
+
 /** \brief Compressor interface to CompLearn.
  *  \struct CompAdaptor
  *

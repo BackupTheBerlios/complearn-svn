@@ -1,6 +1,8 @@
 #ifndef __QUARTETOBS_H
 #define __QUARTETOBS_H
 
+/*! \file quartetobs.h */
+
 /** \brief a QuartetObserver allows for an ordered traversal of quartets
  *
  * \struct QuartetObserver
