@@ -1,6 +1,5 @@
-usr/include/*
-usr/include/*/*
-usr/include/*/*/*
+usr/include/complearn-1.0/*
+usr/include/complearn-1.0/*/*
 usr/lib/lib*.a
 usr/lib/lib*.so
 usr/lib/pkgconfig/*

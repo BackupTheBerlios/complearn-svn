@@ -38,11 +38,14 @@ config.status: configure
 	# Add here commands to configure the package.
 	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
+Makefile: config.status
 
 build: build-stamp
-build-stamp:  config.status
+
+build-stamp:  config.status Makefile
 	dh_testdir
 
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 	# Add here commands to compile the package.
 	$(MAKE)
 
@@ -68,11 +71,11 @@ endif
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+#	dh_clean -k
 	dh_installdirs
 	# Add here commands to install the package into debian/tmp
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-
+	dh_install --sourcedir=$(CURDIR)
 
 # Build architecture-independent files here.
 binary-indep: build install
