@@ -102,9 +102,9 @@ struct DataBlock dumpEnvMap(struct EnvMap *em);
  *  into an EnvMap. A pointer to the EnvMap is returned.
  *
  *  An option to loadEnvMap() is the fmustbe flag, which, if set to 1, forces
- *  the function to check for the special EnvMap tag created by dumpEnvMap().
- *  If the tag is not found, an error message is printed to stdout and the
- *  program will exit.  Set fmustbe to 0 to ignore the tag check.
+ *  the function to exit if the check for the special EnvMap tag created by
+ *  dumpEnvMap() fails.  If the tag is not found, an error message is printed to
+ *  stdout. Set fmustbe to 0 to return NULL instead.
  *
  *  \param db pointer to DataBlock
  *  \param fmustbe 1 if the DataBlock must contain the identifying EnvMap flag;

@@ -31,6 +31,7 @@ int isNodeInSet(const struct CLNodeSet *cl, qbase_t which);
 void printCLNodeSet(struct CLNodeSet *cl);
 struct DoubleA *CLNodeSetToDoubleA(const struct CLNodeSet *cl);
 struct CLNodeSet *DoubleAToCLNodeSet(const struct DoubleA *da);
+int sizeCLNodeSet(const struct CLNodeSet *cl);
 
 #endif
 

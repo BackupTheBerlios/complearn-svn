@@ -105,14 +105,14 @@ void freeDoubleDoubler(struct DoubleA *ptr);
  *
  *  loadDoubleDoubler() will take as an argument a pointer to a DataBlock,
  *  which was created by the dumpDoubleDoubler() or the dumpDeepDoubleDoubler()
- *  function, and convert the DataBlock into an DoubleA, even if originally a
+ *  function, and convert the DataBlock into a DoubleA, even if originally a
  *  multi-level DoubleA. A pointer to the DoubleA is returned.
  *
  *  An option to loadDoubleDoubler() is the fmustbe flag, which, if set to 1,
- *  forces the function to check for the special DoubleA tag created by
- *  dumpDoubleDoubler() or dumpDeepDoubleDoubler().  If the tag is not found,
- *  an error message is printed to stdout and the program will exit.  Set
- *  fmustbe to 0 to ignore the tag check.
+ *  forces the function to exit when check for the special DoubleA tag created
+ *  by dumpDoubleDoubler() or dumpDeepDoubleDoubler() fails.  If the tag is not
+ *  found, an error message is printed to stdout.  Set fmustbe to 0 to return
+ *  NULL instead.
  *
  *  \param db pointer to DataBlock
  *  \param fmustbe 1 if the DataBlock must contain the identifying DoubleA flag;
@@ -132,9 +132,8 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
  *  loadDoubleDoubler() function.
  *
  *  Same as using dumpDeepDoubleDoubler(da,0).
- *  \param em pointer to DoubleA
+ *  \param d pointer to DoubleA
  *  \return pointer to DataBlock which can be written to file
- *
  */
 struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
 
@@ -259,19 +258,62 @@ int swapValues(struct DoubleA *da, int inda, int indb);
  *  \param da pointer to DoubleA
  */
 void printNodeList(const struct DoubleA *da);
+
+/** \brief Converts a character string to a file-writable DataBlock
+ *
+ *  dumpString() returns a pointer to a DataBlock which then can be
+ *  written to a file using the function writeDataBlockToFile().  This
+ *  resulting DataBlock is also appropriate for when using the function
+ *  package_DataBlocks().
+ *
+ *  To convert the resulting DataBlock back into a character string, use
+ *  loadString() function.
+ *
+ *  \param s pointer to character string
+ *  \return pointer to DataBlock which can be written to file
+ */
 struct DataBlock dumpString(const char *s);
-/* if fmustbe, function exits when tagnum does not match. else, returns NULL */
+
+/** \brief Converts a "dumped" string DataBlock back into a string
+ *
+ *  loadString() will take as an argument a pointer to a DataBlock,
+ *  which was created by the dumpString() function
+ *  and convert the DataBlock into a chracter string. A pointer to the string
+ *  is returned.
+ *
+ *  An option to loadString() is the fmustbe flag, which, if set to 1,
+ *  forces the function to exit when the check for the special string tag
+ *  created by dumpString() fails.  If the tag is not found, an error message
+ *  is printed to stdout.  Set fmustbe to 0 to return NULL instead.
+ *
+ *  \param db pointer to DataBlock
+ *  \param fmustbe 1 if the DataBlock must contain the identifying DoubleA flag;
+ *  0 if not
+ *  \return pointer to new DoubleA
+ */
 char *loadString(struct DataBlock d, int fmustbe);
+
+/** \brief Consistency function, to ensure a DoubleA is memory safe
+ *  If input DoubleA is memory corrupt in any way, program will exit and an
+ *  error message will be printed to stdout.
+ *  \param da pointer to DoubleA
+ */
 void verifyDoubleDoubler(const struct DoubleA *da);
 
+/** \brief Checks if a qbase_t node label is in DoubleA
+ *  If qbase_t node label is found in DoubleA, returns 1. If not, returns 0.
+ *  \param da pointer to DoubleA
+ *  \param which node label in question
+ *  \returns 1 if node label is stored in DoubleA, 0 if not
+ */
 int isInDAqb(const struct DoubleA *da, qbase_t which);
+
 void printIntPairList(const struct DoubleA *da);
 
 /** \brief Adds node label to DoubleA if not already there
  *  \param which node label to be added
  */
 void addIfNewqb(struct DoubleA *da, qbase_t which);
-int sizeCLNodeSet(const struct CLNodeSet *cl);
 
 #define ALLNODES(sz, i) \
   for (i = 0; i < sz; i += 1)
