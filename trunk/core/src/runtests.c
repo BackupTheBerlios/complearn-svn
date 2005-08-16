@@ -732,8 +732,6 @@ void testQuartet(void)
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
-  struct TreeFactory *tf;
-  tf = newTreeFactory(0);
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
@@ -763,7 +761,7 @@ void testQuartet(void)
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
-    struct TreeAdaptor *tra = newTreeTF(tf,dm->size1);
+    struct TreeAdaptor *tra = newTreeTRA(0,dm->size1);
     th = newTreeHolder(dm, tra);
     for (i = 0; i < 100; i += 1) {
       score = getCurScore(th);
@@ -1118,8 +1116,6 @@ void testTreeMolder()
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
-  struct TreeFactory *tf;
-  tf = newTreeFactory(1);
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
@@ -1140,7 +1136,7 @@ void testTreeMolder()
     ts = initTreeScore(ta);
     {
       struct TreeMolder *tmolder;
-      struct TreeAdaptor *tram = newTreeTF(tf,dm->size1);
+      struct TreeAdaptor *tram = newTreeTRA(1,dm->size1);
       tmolder = newTreeMolder(dm, tram);
       for (i = 0; i < 100; i += 1) {
         score = getScoreScaledTM(tmolder);
@@ -1189,8 +1185,7 @@ void printGSLMatrix(gsl_matrix *m){
 }
 void testSmoothing()
 {
-  struct TreeFactory *tf = newTreeFactory(0);
-  struct TreeAdaptor *ta = newTreeTF(tf, 6);
+  struct TreeAdaptor *ta = newTreeTRA(0, 6);
   int i;
   gsl_matrix *m;
   m = convertAdjAToGSLMatrix(treegetadjaTRA(ta));

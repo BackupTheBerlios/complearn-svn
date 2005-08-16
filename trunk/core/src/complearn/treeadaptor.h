@@ -19,13 +19,9 @@ struct TreeAdaptor {
   t_treeperimpairs treeperimpairs;
 };
 
-struct TreeFactory;
-struct TreeFactory *newTreeFactory(int isRooted);
-struct TreeAdaptor *newTreeTF(struct TreeFactory *tf, int howManyNodes);
-void freeTreeFactory(struct TreeFactory *tf);
-
 void treemutateTRA(struct TreeAdaptor *tra);
 void treefreeTRA(struct TreeAdaptor *tra);
+struct TreeAdaptor *newTreeTRA(int isRooted, int howbig);
 struct TreeAdaptor *treecloneTRA(struct TreeAdaptor *tra);
 struct LabelPerm *treegetlabelpermTRA(struct TreeAdaptor *tra);
 struct AdjA *treegetadjaTRA(struct TreeAdaptor *tra);

@@ -103,7 +103,6 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
   struct TreeAdaptor *tra;
   struct TreeMaster *tm = gcalloc(sizeof(struct TreeMaster), 1);
-  struct TreeFactory *tf = newTreeFactory(isRooted);
   struct AdjA *aa;
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
@@ -123,7 +122,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
     tm->k += 1;
   if (gsl->size1 <= 5)
     tm->k += 1;
-  tra = newTreeTF(tf, howbig);
+  tra = newTreeTRA(isRooted, howbig);
   aa = treegetadjaTRA(tra);
   tm->nodecount = adjaSize(aa);
   for (i = 0; i < tm->k; i += 1) {
@@ -132,7 +131,6 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
     scrambleTreeHolder(tm->th[i]);
   }
   tm->activeConfig = tmc;
-  freeTreeFactory(tf);
   treefreeTRA(tra);
   setBestPtr(tm);
   return tm;

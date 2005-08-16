@@ -6,6 +6,14 @@ void treemutateTRA(struct TreeAdaptor *tra)
   tra->treemutate(tra);
 }
 
+struct TreeAdaptor *newTreeTRA(int isRooted, int howbig)
+{
+  if (isRooted)
+    return loadNewRootedTRA(howbig);
+  else
+    return loadNewUnrootedTRA(howbig);
+}
+
 void treefreeTRA(struct TreeAdaptor *tra)
 {
   assert(tra);
@@ -59,34 +67,6 @@ struct DoubleA *treeperimpairsTRA(struct TreeAdaptor *tra, struct CLNodeSet *fli
 {
   assert(tra);
   return tra->treeperimpairs(tra, flips);
-}
-
-struct TreeFactory
-{
-  int isRooted;
-};
-
-struct TreeFactory *newTreeFactory(int isRooted)
-{
-  struct TreeFactory *tf = (struct TreeFactory *) gcalloc(sizeof(*tf), 1);
-  tf->isRooted = isRooted;
-  return tf;
-}
-
-
-struct TreeAdaptor *newTreeTF(struct TreeFactory *tf, int howManyNodes)
-{
-  assert(tf);
-  if (tf->isRooted)
-    return loadNewRootedTRA(howManyNodes);
-  else
-    return loadNewUnrootedTRA(howManyNodes);
-}
-
-void freeTreeFactory(struct TreeFactory *tf)
-{
-  assert(tf);
-  gfreeandclear(tf);
 }
 
 int treeGetNodeCountTRA(struct TreeAdaptor *tra)
