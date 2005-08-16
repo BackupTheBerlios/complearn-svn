@@ -4,7 +4,6 @@
 /*! \file adjlist.h */
 
 /** \brief AdjList represents a symmetric, undirected adjacency matrix
- *  \sa adjmatrix.c
  *
  * \struct AdjList
  *
@@ -16,7 +15,7 @@
  * at this location (i,j) as well as the transposed location, (j,i).
  * This structure does not change size after it is created.
  *
- * \sa adjlist.c
+ *  \sa adjlist.h
  */
 struct AdjList;
 struct AdjA;

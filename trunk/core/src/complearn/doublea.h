@@ -18,6 +18,8 @@
  * necessary.  The DoubleA supports a variety of different types, of
  * sizes up to 8 bytes.  The union pctypes contains all possible
  * value types that may be used within this dynamic container class.
+ *
+ * \sa doublea.h
  */
 struct DoubleA;
 

@@ -5,7 +5,6 @@
 /*! \file adjadaptor.h */
 
 /** \brief Adjacency matrix interface to CompLearn.
- * \sa adjadaptor.c
  *
  * \struct AdjA
  *
@@ -18,6 +17,8 @@
  *
  *  AdjA contains pointers to 9 functions which are defined in an
  *  external adjacency module.
+ *
+ * \sa adjadaptor.h
  */
 struct AdjA {
   void *ptr;

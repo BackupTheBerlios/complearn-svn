@@ -47,14 +47,14 @@ int pathFinder(struct AdjA *ad, qbase_t from, qbase_t to, int *pathbuf, int *buf
  */
 int isIdenticalTree(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *adj2, struct LabelPerm *lab2);
 
-/** \brief PathKeeper holds an SPM for an AdjA as a decorator \sa pathkeeper.c
+/** \brief PathKeeper holds an SPM for an AdjA as a decorator
  *
  * \struct PathKeeper
  *
  * An PathKeeper is a simple, fast data structure that allows for efficient
  * path calculation over a polymorphic adjacency container.
  *
- * \sa pathkeeper.c
+ * \sa pathkeeper.h
  */
 struct AdjA;
 

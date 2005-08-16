@@ -25,6 +25,8 @@
  *  may only have one value per unique key. By default, the builtin
  *  CompAdaptor interfaces give precedence to the top-most key-value pair in an
  *  EnvMap.
+ *
+ * \sa envmap.h
  */
 struct EnvMap;
 

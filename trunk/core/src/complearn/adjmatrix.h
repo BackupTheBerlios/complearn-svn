@@ -4,7 +4,6 @@
 /*! \file adjmatrix.h */
 
 /** \brief AdjMatrix represents a symmetric, undirected adjacency matrix
- *  \sa adjmatrix.c
  *
  * \struct AdjMatrix
  *
@@ -16,7 +15,7 @@
  * at this location (i,j) as well as the transposed location, (j,i).
  * This structure does not change size after it is created.
  *
- * \sa adjmatrix.c
+ *  \sa adjmatrix.h
  */
 struct AdjMatrix;
 struct AdjA;

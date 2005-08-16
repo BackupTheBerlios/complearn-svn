@@ -12,6 +12,8 @@
  *  count, date, and time are all retained.  This allows for programs to be
  *  adjusted and re-run without waiting for another query of the Google
  *  server, and also can cut down on total server requests substantially.
+ *
+ *  \sa googlecache.h
  */
 struct GoogleCache;
 
