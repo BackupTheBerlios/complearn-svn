@@ -7,15 +7,17 @@
 
 /*! \file environment.h */
 
-/** \brief Where configuration details are stored.
- *  \struct GeneralConfig
- */
-
 #include <complearn/datablockenum.h>
 #if GETOPT_RDY
 #include <getopt.h>
 #endif
 
+/** \brief Where configuration details are stored.
+ *
+ *  \struct GeneralConfig
+ *
+ *  \sa environment.h
+ */
 struct GeneralConfig {
   int fVerbose;
   int fAscii;

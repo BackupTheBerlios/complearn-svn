@@ -1,6 +1,8 @@
 #ifndef __TAGTYPES_H
 #define __TAGTYPES_H
 
+/*! \file tagtypes.h */
+
 #define TAGNUM_TAGMASTER     0x348a4913
 #define TAGNUM_GSLMATRIX     0x348a4914
 #define TAGNUM_CLDISTMATRIX  0x348a4915
