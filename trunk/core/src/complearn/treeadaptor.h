@@ -9,7 +9,7 @@
  *
  * \struct TreeAdaptor
  *
- * The TreeAdaptor holds the basic tree topology and allows for maniplation.
+ * The TreeAdaptor holds the basic tree topology and allows for manipulation.
  *
  * The adaptor provides a simple direct polymorphism capability to extend
  * tree capabilities over certain restricted classes of simple graphs.  For

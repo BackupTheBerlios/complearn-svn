@@ -28,12 +28,6 @@ t_tagtype getCurTagNum(const struct TagManager *tm)
   return h->tagnum;
 }
 
-int getCurTagHdrSize(const struct TagManager *tm)
-{
-  struct tagHdr *h = (struct tagHdr *) tm->cur;
-  return h->size;
-}
-
 void stepNextDataBlock(struct TagManager *tm)
 {
   struct tagHdr *h = (struct tagHdr *) tm->cur;

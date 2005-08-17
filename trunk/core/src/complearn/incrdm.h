@@ -24,7 +24,16 @@ void addDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db);
  */
 void freeIncrementalDistMatrix(struct IncrementalDistMatrix *idm);
 
+/** \brief Retrieves current snapshop the IncrementalDistMatrix is holding
+ *  \param idm pointer to IncrementalDistMatrix
+ *  \return pointer to gsl_matrix
+ */
 gsl_matrix *getDistMatrixIDM(struct IncrementalDistMatrix *idm);
+
+/** \brief Retrieve size of IncrementalDistMatrix
+ *  \param idm pointer to IncrementalDistMatrix
+ *  \return int size of IncrementalDistMatrix
+ */
 int getSizeIDM(struct IncrementalDistMatrix *idm);
 
 #endif
