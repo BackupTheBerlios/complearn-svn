@@ -22,8 +22,10 @@ struct CompAdaptor *builtin_BZIP(void);
 struct CompAdaptor *builtin_GOOG(void);
 struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *method);
 struct CompAdaptor *builtin_ZLIB(void);
+struct CompAdaptor *builtin_blocksort(void);
 struct CompAdaptor *builtin_RealComp(const char *cmd);
 struct CompAdaptor *builtin_VirtComp(const char *cmd);
+
 
 struct CompAdaptor *loadGoogleAdaptor(void)
 {
@@ -50,6 +52,11 @@ struct CompAdaptor *loadBZipAdaptor(void)
 #else
   return NULL;
 #endif
+}
+
+struct CompAdaptor *loadBlocksortAdaptor(void) 
+{
+  return builtin_blocksort();
 }
 
 
@@ -89,6 +96,8 @@ struct CompAdaptor *loadBuiltinCA(const char *name)
   if (strcmp(name, "google") == 0)
     result = loadGoogleAdaptor();
 #endif
+  if (strcmp(name, "blocksort") == 0)
+    result = loadBlocksortAdaptor();
   return result;
 }
 
@@ -109,6 +118,7 @@ struct StringStack *listBuiltinCA(void)
   addIfPresent(ss, "zlib");
   addIfPresent(ss, "bzip");
   addIfPresent(ss, "google");
+  addIfPresent(ss, "blocksort");
   return ss;
 }
 

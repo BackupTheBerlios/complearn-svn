@@ -31,6 +31,8 @@ src/builtinca-realcomp.c \
 src/builtinca-soap.c \
 src/builtinca-virtcomp.c \
 src/builtinca-zlib.c \
+src/builtinca-blocksort.c \
+src/qsufsort.c \
 src/complearn/builtin.h \
 src/builtinta-unbzip.c \
 src/builtinta-ungz.c \

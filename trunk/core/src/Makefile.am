@@ -106,6 +106,8 @@ builtinca-google.c \
 builtinca-realcomp.c \
 builtinca-soap.c \
 builtinca-virtcomp.c \
+builtinca-blocksort.c \
+qsufsort.c \
 builtinca-zlib.c \
 builtinta-unbzip.c \
 builtinta-ungz.c \
