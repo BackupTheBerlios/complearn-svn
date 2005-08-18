@@ -232,6 +232,31 @@ void testBZipCA()
   testCANamed("bzip");
 }
 
+void testBlockSortCA()
+{
+#define REPS 10
+#define MAX_BLKSIZE 200
+  int i;
+  struct CompAdaptor *ca = loadBuiltinCA("blocksort");
+  assert(ca != NULL);
+  srand( time(NULL) );
+    assert(ca->cf != NULL);
+  for (i = 0; i < REPS; i +=1) {
+    struct DataBlock db;
+    int c;
+    double v;
+    db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    db.ptr = (unsigned char*)gmalloc(db.size);
+    c = (int) 65+((double)rand()/((double)RAND_MAX + 1) * 26);
+    memset(db.ptr, c, db.size);
+    v = compfuncCA(ca,db);
+    if (gconf->fVerbose)
+      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
+    freeDataBlock(db);
+  }
+  freeCA(ca);
+}
+
 void testYamlParser()
 {
   struct EnvMap *em;
@@ -1240,6 +1265,7 @@ int main(int argc, char **argv)
   testSS();
   testEM();
   testDataBlock();
+  testBlockSortCA();
 
 #if BZIP2_RDY
   testBZipCA();

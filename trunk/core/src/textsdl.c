@@ -72,11 +72,6 @@ void init_sdltext()
     exit (1);
   }
 }
-/* this function is never called */
-void close_sdltext(TTF_Font *font)
-{
-  TTF_CloseFont(font);
-}
 
 void SDL_GL_RenderText(char *text,
                       TTF_Font *font,

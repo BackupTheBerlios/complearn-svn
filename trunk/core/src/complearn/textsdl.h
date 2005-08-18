@@ -21,10 +21,9 @@ struct CLTexture {
 };
 
 void init_sdltext(void);
-void close_sdltext(TTF_Font *font);
 void draw_sdltext(char *str, struct CLTexture *clt, gsl_vector *p);
 void setTextPos(double x, double y, double z);
-void  draw_sdlhelp(void);
+void draw_sdlhelp(void);
 
 #endif
 

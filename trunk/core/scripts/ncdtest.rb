@@ -61,6 +61,12 @@ class CL_NCDTest < Test::Unit::TestCase
     cmd = "./src/ncd -C zlib #{__FILE__} -f #{__FILE__}" ; result2 = `#{cmd}`
     assert(result == result2, "zlib compressor option busted")
     isNCDPairResult?(result)
+
+    # blocksort
+    cmd = "./src/ncd -C blocksort #{__FILE__} #{__FILE__}" ; result = `#{cmd}`
+    cmd = "./src/ncd -C blocksort #{__FILE__} -f #{__FILE__}" ; result2 = `#{cmd}`
+    assert(result == result2, "blocksort compressor option busted")
+    isNCDPairResult?(result)
   end
 
   def test_literal_mode
