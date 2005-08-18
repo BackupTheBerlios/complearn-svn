@@ -236,19 +236,44 @@ void testBlockSortCA()
 {
 #define REPS 10
 #define MAX_BLKSIZE 200
-  int i;
+  int i, j, c;
   struct CompAdaptor *ca = loadBuiltinCA("blocksort");
+  struct DataBlock db;
+  double v;
   assert(ca != NULL);
   srand( time(NULL) );
     assert(ca->cf != NULL);
+
+  /* Blocks only 0 or 1 byte in size */
   for (i = 0; i < REPS; i +=1) {
-    struct DataBlock db;
-    int c;
-    double v;
+    db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
+    db.ptr = (unsigned char*)gmalloc(db.size);
+    c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
+    memset(db.ptr, c, db.size);
+    v = compfuncCA(ca,db);
+    if (gconf->fVerbose)
+      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
+    freeDataBlock(db);
+  }
+
+  /* Blocks with the same character repeated */
+  for (i = 0; i < REPS; i +=1) {
     db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
     db.ptr = (unsigned char*)gmalloc(db.size);
-    c = (int) 65+((double)rand()/((double)RAND_MAX + 1) * 26);
+    c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
+    v = compfuncCA(ca,db);
+    if (gconf->fVerbose)
+      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
+    freeDataBlock(db);
+  }
+
+  /* Blocks with randomly generated characters */
+  for (i = 0; i < REPS; i +=1) {
+    db.ptr = (unsigned char*)gmalloc(db.size);
+    for (j = 0; j < db.size ; j +=1 ) {
+      db.ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
+    }
     v = compfuncCA(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);

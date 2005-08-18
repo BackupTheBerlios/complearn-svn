@@ -22,7 +22,7 @@ void *gmalloc(size_t size)
 {
   void *ptr;
   int whoami;
-  assert(size > 0);
+  assert(size >= 0);
   assert(size < 10000000);
   ptr = malloc(size);
   whoami = getuid();
