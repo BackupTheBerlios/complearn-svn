@@ -346,7 +346,7 @@ static void doDroppedFiles(HANDLE dragDrop)
   int fileCount;
   if (gc == NULL) {
     gc = loadDefaultEnvironment();
-    gc->ca = loadBuiltinCA("bzip");
+    gc->ca = loadBuiltinCA("blocksort");
   }
   fileCount = DragQueryFile(dragDrop, 0xffffffff, NULL, 0);
   for (i = 0; i < fileCount; ++i) {

@@ -97,7 +97,7 @@ struct GeneralConfig *loadDefaultEnvironment()
     *curEnv = defaultConfig;
     curEnv->em = newEnvMap();
     curEnv->cmdKeeper = newStringStack();
-    curEnv->compressor_name = gstrdup("bzip");
+    curEnv->compressor_name = gstrdup("blocksort");
     readDefaultConfig(curEnv->em);
     updateEMToConfig(curEnv);
   }
