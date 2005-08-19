@@ -13,6 +13,14 @@
 #define CREDULITY 52
 #define STATELOGBASE 1.532
 
+/*! \file builtinca-blocksort.c */
+
+/** \brief blocksort compressor instance
+ *
+ * \struct bs_compressor_instance
+ *
+ * \sa builtinca-blocksort.c
+ */
 struct bs_compressor_instance {
   int code2state[256];
   int nstates;

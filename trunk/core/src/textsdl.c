@@ -18,6 +18,13 @@
 #define GL_BGR 0x80E0
 #define GL_BGRA 0x80E1
 
+/*! \file textsdl.c */
+
+/** \brief contains an SDL Text Rendering style with a given color and font
+ * \struct CLTextStyle
+ *
+ * \sa textsdl.c
+ */
 struct CLTextStyle {
   SDL_Color *color;
   TTF_Font *font;

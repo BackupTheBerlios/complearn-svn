@@ -4,6 +4,8 @@
  * Distributed under terms of the LGPL. 
  */
 
+/*! \file sdlgl.c */
+
 #include <assert.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
@@ -102,18 +104,6 @@ int F1 = 1, F2 = 1, F3=1, F4=1, F5=1;
 static void draw_screen(void);
 static void process_events(void);
 
-struct CLMusicBox
-{
-  HMIDIOUT mididev;
-  int curPitch, lastNote;
-  double successProb;
-  double lastTime;
-  double tempoBeat;
-  int goodStep, badStep;
-  int lowPitch, highPitch;
-};
-
-struct CLMusicBox *clmb;
 struct TreeAdaptor *ta, *nextbest;
 struct StringStack *labels;
 struct SpringBallSystem *sbs;
@@ -124,12 +114,10 @@ static int fTwoDForce;
 static int LoD=2;   /* Level of Detail, 1 = Low, 2 = High */
 struct TreeMaster *tm;
 
-void setSuccessProbMB(struct CLMusicBox *clmb, double howGood);
 int isCalculatingDM(void);
 static void doDroppedFile(char *buf);
 static void realDoDroppedFile(char *buf);
 static void setup_shading(void);
-struct CLMusicBox *newMusicBox(int midiport);
 
 int countThreeSlashes(char *buf)
 {
@@ -144,79 +132,23 @@ int countThreeSlashes(char *buf)
   return -1;
 }
 
-struct CLMusicBox *newMusicBox(int midiport)
-{
-  struct CLMusicBox *clmb = calloc(sizeof(*clmb), 1);
-  clmb->curPitch = 60;
-  clmb->successProb = 0.33;
-  clmb->goodStep = 8;
-  clmb->tempoBeat = 1.6;
-  clmb->badStep = 7;
-  clmb->lowPitch = clmb->curPitch - 3*12;
-  clmb->highPitch = clmb->curPitch + 3*12;
-#if MIDIBONUS
-  flag = midiOutOpen(&clmb->mididev, midiport, 0, 0, CALLBACK_NULL);
-  if (flag != MMSYSERR_NOERROR) {
-            printf("Warning: MIDI Output is not open.\n");
-  }
-#endif
-  return clmb;
-}
 
-void setSuccessProbMB(struct CLMusicBox *clmb, double howGood)
-{
-  clmb->successProb = howGood;
-}
-
-void noteOn(HMIDIOUT device, int pitch, int vol)
-{
-  union { unsigned long word; unsigned char data[4]; } message;
-  message.data[0] = 0x90;
-  message.data[1] = pitch;
-  message.data[2] = vol;
-  message.data[3] = 0;
-#if MIDIBONUS
-  flag = midiOutShortMsg(device, message.word);
-  if (flag != MMSYSERR_NOERROR) {
-            printf("Warning: MIDI OutShortMsg failed...\n");
-  }
-#endif
-}
-
-void playNoteMB(struct CLMusicBox *clmb)
-{
-  noteOn(clmb->mididev, clmb->lastNote, 0);
-  noteOn(clmb->mididev, clmb->lastNote+5, 0);
-  noteOn(clmb->mididev, clmb->lastNote+12, 0);
-  noteOn(clmb->mididev, clmb->lastNote-5, 0);
-  noteOn(clmb->mididev, clmb->lastNote-12, 0);
-  noteOn(clmb->mididev, clmb->curPitch, 100);
-  int sm;
-  if ((rand() % 2) == 0)
-    sm = 1;
-  else
-    sm = -1;
-  if (clmb->successProb > 0.9)
-    noteOn(clmb->mididev, clmb->curPitch + 5 * sm, 100);
-  if (clmb->successProb > 0.95)
-    noteOn(clmb->mididev, clmb->curPitch + 12 * sm, 100);
-  clmb->lastNote = clmb->curPitch;
-  int ss;
-  if ((rand() % 1000) > clmb->successProb * 1000)
-    ss = clmb->badStep + rand() % 3;
-  else
-    ss = clmb->goodStep;
-  if ((rand() % 2) == 0)
-    sm = 1;
-  else
-    sm = -1;
-  clmb->curPitch += ss*sm;
-  if (clmb->curPitch < clmb->lowPitch)
-    clmb->curPitch += 12;
-  if (clmb->curPitch > clmb->highPitch)
-    clmb->curPitch -= 12;
-}
-
+/** \brief viewer (camera) settings and parameters
+ *
+ * \struct Camera
+ *
+ * This function maintains all state associated with viewer position and
+ * orientation. The orientation is controlled by two angles, angle1 and
+ * angle2.  angle1 represents horizontal heading (as on a horizontal compass)
+ * and angle2 represents vertical pitch above or below the horizon.
+ *
+ * There is also a parameter radius representing the distance from the
+ * viewer to the origon.  The viewer is always looking diretly towards the
+ * origin of the coordinate system.
+ *
+ * \sa sdlgl.c
+ *
+ */
 struct Camera {
   double angle1, angle2;
   double *curChanging;
@@ -379,6 +311,14 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
 }
 
 #define MAXTREESIZE 100
+
+/** \brief holds a small array of DataBlock
+ *
+ * \struct DataBlockKeeper
+ *
+ * \sa sdlgl.c
+ * \sa DataBlock
+ */
 struct DataBlockKeeper {
   struct DataBlock db[MAXTREESIZE];
   int size;
@@ -679,7 +619,6 @@ static void draw_screen(void)
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
   double score = getCurScore(th);
-  setSuccessProbMB(clmb, score);
   if (getTreeIndexTH(th) == 0)
     nextbest = treecloneTRA(getCurTree(th));
 }
@@ -820,10 +759,6 @@ static void setupCameraAngle(void) {
     gluPerspective( 60.0, ratio, 1.0, 1024.0 );
     gluLookAt(cam.radius*sin(cam.angle1)*cos(cam.angle2),cam.radius*sin(cam.angle2), cam.radius*cos(cam.angle1), 0, 0, 0, 0, 1, 0);
   double curtime = cldtGetStaticTimer();
-  if ((int) (curtime * clmb->tempoBeat) != (int)(clmb->lastTime * clmb->tempoBeat)) {
-    clmb->lastTime = curtime;
-    playNoteMB(clmb);
-  }
   if (cam.curChanging) {
     double dt = curtime - cam.lastTime;
     cam.lastTime = curtime;
@@ -1018,7 +953,6 @@ int main( int argc, char* argv[] )
 #endif
   distmatglob = newIDM(NULL);
   myPI = atan(1.0)*4;
-  clmb = newMusicBox(1);
   /* Information about the current video settings. */
   const SDL_VideoInfo* info = NULL;
   /* Dimensions of our window. */
