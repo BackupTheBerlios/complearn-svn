@@ -34,6 +34,10 @@
 struct TreeMaster;
 
 /** \brief Contains persistent configuration options to TreeMaster
+ *
+ * \struct TreeMasterConfig
+ *
+ * \sa treemaster.h
  */
 struct TreeMasterConfig;
 

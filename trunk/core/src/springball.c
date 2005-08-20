@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <string.h>
 
+/*! \file springball.c */
+
 #define AJAC_PARITY 0
 #define TWODFORCESTR 5.00
 
@@ -13,6 +15,12 @@ double massScale  = 1.0;
 
 struct SBS4;
 
+/** \brief ODE for charged spring ball system evolving over time
+ *
+ * \struct SpringBallSystem
+ *
+ * \sa springball.h
+ */
 struct SpringBallSystem {
   struct SBS4 *sbs4;
   gsl_odeiv_system sys;
@@ -25,6 +33,31 @@ struct SpringBallSystem {
   double modelSpeed;
 };
 
+/** \brief half-force 2-ball system centered on object-ball (ball 1)
+ *
+ * This structure is the basic building block for all larger systems.
+ * Two of these structures (one and its inverse with ball 1 and ball 2
+ * exchanged and thus i, j, etc) together make one complete 2 ball system.
+ * Several of these superimposed on top of each other yield a larger
+ * multibody system.  Each 2-ball system has the following adjustments:
+ *
+ * it may or may not have a spring
+ *
+ * a rest length for the spring if it exists
+ *
+ * each ball may hold a positive or negative charge
+ *
+ * each ball has its own mass, and position
+ *
+ * ball 1 has a velocity used for calculating viscous drag
+ *
+ * there is a drag flag/coefficient used to make sure drag is calculated
+ * only once despite "n choose 2" * 2 different SBS3 to calculate each round
+ *
+ * \struct SBS3
+ *
+ * \sa springball.h
+ */
 struct SBS3 {
   int i, j;
   gsl_vector_view p1, p2, v1; /* x1 == position of ball 1 */
@@ -38,6 +71,16 @@ struct SBS3 {
   /* scratch regs */
 };
 
+/** \brief maintains additional simulation parameters such a k (spring) and 2D
+ * force
+ *
+ * This is used for simulating an experimental flattening force.  And also
+ * smoothing the k values yielded from the evolving TreeAdaptors.
+ *
+ * \struct SBS4
+ *
+ * \sa springball.h
+ */
 struct SBS4 {
   struct DoubleA *subsys;
   int d;
