@@ -21,7 +21,7 @@ static int goog_apiver(void);
 /* bzip2 compression interface */
 
 /** \brief The Google compression adaptor instance
- *  \struct CompInstance
+ *  \struct googCompInstance
  *
  *  This structure holds all the persistent configuration information
  *  necessary for the Google compressor to work.
