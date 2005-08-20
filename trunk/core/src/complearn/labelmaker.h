@@ -46,7 +46,7 @@ struct StringStack *get_labels_from_clb(char *fname);
 
 /** \brief Returns StringStack of distance matrix labels from a ASCII text file
  *
- *  get_labels_from_clb() is a high level function which reads a text file,
+ *  get_labels_from_txt() is a high level function which reads a text file,
  *  formatted in the same way as output from the ncd command, and returns a
  *  StringStack of labels for the distance matrix.
  *  \param fname path to text file

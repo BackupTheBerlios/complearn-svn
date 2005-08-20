@@ -29,8 +29,8 @@ struct DoubleA;
  *  This structure is embedded within the resulting DataBlock returned by the
  *  functions dumpDoubleDoubler() and dumpDeepDoubleDoubler(), both of which
  *  are used to write a DoubleA to file. ddHdr contains information necessary
- *  for the conversion of a "dumped" DataBlock, using dumpDoubleDoubler() and
- *  dumpDeepDoubleDoubler(), back into a DoubleA.
+ *  for the conversion of a "dumped" DataBlock, using loadDoubleDoubler(),
+ *  back into a DoubleA.
  */
 struct ddHdr;
 

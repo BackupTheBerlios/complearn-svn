@@ -18,10 +18,16 @@ static char *goog_shortname(void);
 static char *goog_longname(void);
 static int goog_apiver(void);
 
-/* soap compression interface */
+/* bzip2 compression interface */
 
+/** \brief The Google compression adaptor instance
+ *  \struct CompInstance
+ *
+ *  This structure holds all the persistent configuration information
+ *  necessary for the Google compressor to work.
+ */
 struct googCompInstance {
-  char *gkey;
+  char *gkey;    /*!< GoogleKey which must be obtained by Google */
   char *daystr;
   double m;
 };

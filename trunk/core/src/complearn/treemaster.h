@@ -33,6 +33,10 @@
  */
 struct TreeMaster;
 
+/** \brief Contains persistent configuration options to TreeMaster
+ */
+struct TreeMasterConfig;
+
 /** \brief allocates a new TreeMaster with default options and an explicit rootedness flag
  *
  * This function returns a pointer to a newly allocated TreeMaster that
