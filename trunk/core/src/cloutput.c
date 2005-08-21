@@ -353,10 +353,10 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   }
   pushSS(dotacc, "}");
   result = gcalloc(sizeof(struct DataBlock), 1);
-  result->size = 1; /* for the terminal nul */
+  result->size = 0;
   for (i = 0; i < sizeSS(dotacc); i += 1)
     result->size += strlen(readAtSS(dotacc, i)) + 1; /* for the \n */
-  result->ptr = gcalloc(result->size, 1);
+  result->ptr = gcalloc(result->size+1, 1); /* extra byte for temporary \0 */
   j = 0;
   for (i = 0; i < sizeSS(dotacc); i += 1)
     j += sprintf((char *) (result->ptr + j), "%s\n", readAtSS(dotacc, i));
