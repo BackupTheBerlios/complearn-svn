@@ -233,13 +233,6 @@ static VALUE rbcompa_longname(VALUE self)
   return rb_str_new2(ca->ln());
 }
 
-static VALUE rbcompa_compparam(VALUE self)
-{
-  struct CompAdaptor *ca;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(ca->cp(ca));
-}
-
 static VALUE rbcompa_apiver(VALUE self)
 {
   struct CompAdaptor *ca;
@@ -857,7 +850,6 @@ void Init_complearn4r(void)
   rb_define_method(cCompAdaptor, "shortname", rbcompa_shortname, 0);
   rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
   rb_define_method(cCompAdaptor, "apiver", rbcompa_apiver, 0);
-  rb_define_method(cCompAdaptor, "compparam", rbcompa_compparam, 0);
   cTreeAdaptor = rb_define_class_under(mCompLearn,"TreeAdaptor", rb_cObject);
   rb_define_singleton_method(cTreeAdaptor, "new", rbtra_new, 1);
   rb_define_method(cTreeAdaptor, "initialize", rbtra_init, 0);

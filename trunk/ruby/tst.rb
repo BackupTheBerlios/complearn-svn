@@ -30,15 +30,15 @@ input = "hello world\n"
 
 bzca = CompAdaptor.new("bzip")
 puts "#{bzca.shortname}, #{bzca.longname}: #{bzca.compfunc(input)}"
-puts "Version: #{bzca.apiver}, Params: #{bzca.compparam}"
+puts "Version: #{bzca.apiver}"
 
 zca = CompAdaptor.new("zlib")
 puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
-puts "Version: #{zca.apiver}, Params: #{zca.compparam}"
+puts "Version: #{zca.apiver}"
 
 gca = CompAdaptor.new("google")
 puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
-puts "Version: #{gca.apiver}, Params: #{gca.compparam}"
+puts "Version: #{gca.apiver}"
 
 t = TreeAdaptor.new(6)
 tadja = t.adja
