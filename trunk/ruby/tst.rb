@@ -37,9 +37,9 @@ puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
 puts "Version: #{zca.apiver}"
 
 # TODO: find and fix the memory double free / corruption bug commented out here
-#gca = CompAdaptor.new("google")
-#puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
-#puts "Version: #{gca.apiver}"
+gca = CompAdaptor.new("google")
+puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
+puts "Version: #{gca.apiver}"
 
 t = TreeAdaptor.new(6)
 tadja = t.adja

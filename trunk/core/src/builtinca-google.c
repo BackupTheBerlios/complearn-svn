@@ -18,9 +18,8 @@ static char *goog_shortname(void);
 static char *goog_longname(void);
 static int goog_apiver(void);
 
-/* bzip2 compression interface */
-
 /** \brief The Google compression adaptor instance
+ *
  *  \struct googCompInstance
  *
  *  This structure holds all the persistent configuration information
@@ -156,10 +155,7 @@ static void goog_freecompfunc(struct CompAdaptor *ca)
 	struct googCompInstance *sci = (struct googCompInstance *) ca->cptr;
   gfreeandclear(sci->gkey);
   gfreeandclear(sci->daystr);
-
   gfreeandclear(sci);
-
-	gfreeandclear(ca->cptr);
 	gfreeandclear(ca);
 }
 
