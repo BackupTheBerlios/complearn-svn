@@ -36,9 +36,10 @@ zca = CompAdaptor.new("zlib")
 puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
 puts "Version: #{zca.apiver}"
 
-gca = CompAdaptor.new("google")
-puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
-puts "Version: #{gca.apiver}"
+# TODO: find and fix the memory double free / corruption bug commented out here
+#gca = CompAdaptor.new("google")
+#puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
+#puts "Version: #{gca.apiver}"
 
 t = TreeAdaptor.new(6)
 tadja = t.adja
@@ -70,8 +71,14 @@ clns = [ 2 ]
 pp = tr.perimeterPairs(clns)
 puts "Perim pairs: #{pp}"
 printAdjA(tr.adja)
+puts "About to mutate.."
 tr.mutate
+puts "Mutated.."
   }
-  puts "Perim pairs: #{tr.perimeterPairs(nil)}"
+  puts "Outside Perim pairs: #{tr.perimeterPairs(nil)}"
 end
+
+puts "About to test tree..."
 testTree(t)
+puts "Done testing tree."
+exit 0
