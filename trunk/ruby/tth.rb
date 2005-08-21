@@ -1,12 +1,15 @@
+module CompLearn
+class TreeObserver
+end
+end
 require 'complearn4r'
 require 'curses'
 require 'date'
 require 'matrix'
 
-include CompLearn
-include Curses
+#include CompLearn
 
-class TreeObserverPrinter < TreeObserver
+class TreeObserverPrinter < CompLearn::TreeObserver
   def initialize(tm)
     @tm = tm
     @li = 6
@@ -26,8 +29,8 @@ class TreeObserverPrinter < TreeObserver
     t.strftime("%H:%M:%S")
   end
   def mvaddstr(i,j,str)
-    setpos(i,j)
-    addstr(str)
+    Curses::setpos(i,j)
+    Curses::addstr(str)
   end
   def redrawTime()
     @curtime = getTimeNow
@@ -45,7 +48,7 @@ class TreeObserverPrinter < TreeObserver
   def redrawParams()
     mvaddstr(@topy + 0, @leftcolx, "         K  = #{nf(@tm.k,@li)}")
     mvaddstr(@topy + 4, @leftcolx, "Label count = #{nf(@tm.labelcount,@li)}")
-    mvaddstr(@topy + 5, @leftcolx, "Node  count = #{nf(@tm.nodecount,@li)}")
+#    mvaddstr(@topy + 5, @leftcolx, "Node  count = #{nf(@tm.nodecount,@li)}")
   end
   def redrawStats()
   if @th
@@ -55,30 +58,29 @@ class TreeObserverPrinter < TreeObserver
     mvaddstr(@topy + 2, @leftcolx, "Trees total = #{nf(@tm.examinedcount,@li)}")
   end
   def treeSearchStarted()
-    init_screen
     @starttime = getTimeNow()
     redrawParams
     redrawTime
     redrawStats
-    refresh
+    Curses::refresh
   end
   def treeRejected()
     redrawTime
     redrawStats
-    refresh
+    Curses::refresh
   end
   def treeImproved(th)
     @th = th
     redrawTime
     redrawStats
-    refresh
+    Curses::refresh
   end
   def treeDone(th)
     @th = th
     @donetime = getTimeNow()
     redrawTime
     drawDoneMessage
-    refresh
+    Curses::refresh
   end
   def clearToBottom
     10.times { |i|
@@ -94,7 +96,6 @@ class TreeObserverPrinter < TreeObserver
       theta2 = s * @lf2
       yco = 6*Math.sin(theta1) + 16
       xco = 39 + 38*Math.cos(theta2)
-      setpos(yco, xco)
       mvaddstr(yco, xco, ch)
       s += instep
     end
@@ -109,7 +110,7 @@ class TreeObserverPrinter < TreeObserver
   end
 end
 
-t = TreeAdaptor.new(4)
+t = CompLearn::TreeAdaptor.new(4)
 tadja = t.adja
 nodes = t.nodes
 descs = [ ]
@@ -139,12 +140,13 @@ def makeNewMat(howbig)
   Matrix.rows(rows)
 end
 
-m = TreeMaster.loadMatrix("distmatrix.clb")
-th = TreeHolder.new(m,t)
-tm = TreeMaster.new(m, 1)
+m = CompLearn::TreeMaster.loadMatrix("distmatrix.clb")
+th = CompLearn::TreeHolder.new(m,t)
+tm = CompLearn::TreeMaster.new(m, 1)
 toptreeoh = TreeObserverPrinter.new(tm)
-#tm.setTreeObserver(toptreeoh)
+tm.setTreeObserver(toptreeoh)
+Curses::init_screen
 f = tm.findTree
 t = f.tree
-puts "Got tree: #{t.to_dot}"
+File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
 

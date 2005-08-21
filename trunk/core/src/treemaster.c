@@ -259,7 +259,11 @@ struct TreeObserver *getTreeObserver(struct TreeMaster *tm)
 
 void setTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
 {
-  tm->tob = tob;
+  if (tm->tob) {
+    gfreeandclear(tm->tob);
+  }
+  tm->tob = gcalloc(sizeof(*tob), 1);
+  *(tm->tob) = *tob;
 }
 
 void setUserDataTM(struct TreeMaster *tm, void *val)
@@ -288,6 +292,11 @@ struct TreeHolder *getTreeAtIndex(struct TreeMaster *tm, int i)
   assert(i >= 0);
   assert(i < tm->k);
   return cloneTreeHolder(tm->th[i]);
+}
+
+int getLabelCountTM(struct TreeMaster *tm)
+{
+  return tm->dm->size1;
 }
 
 #else

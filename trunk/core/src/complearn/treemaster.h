@@ -258,4 +258,13 @@ struct CLDateTime *getStartTimeTM(struct TreeMaster *tm);
  */
 void abortTreeSearch(struct TreeMaster *tm);
 
+/** \brief returns the number of labelled nodes in this TreeMaster
+ *
+ * This function may be used to determine the number of labelled objects
+ * in the TreeMaster.
+ *
+ * \param tm pointer to the TreeMaster instance to inspect
+ * \return integer indicating number of labelled objects
+ */
+int getLabelCountTM(struct TreeMaster *tm);
 #endif

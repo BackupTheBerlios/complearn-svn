@@ -59,7 +59,6 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   return result;
 }
 
-struct TreeObserver toom;
 static dummySOAP(void)
 {
   soap_client_init_args(1,NULL);
@@ -506,8 +505,19 @@ struct TreeObserverState {
 static void rbtmto_treesearchstarted(struct TreeObserver *tob)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  if (tos->obs != Qnil)
-    rb_funcall(tos->obs, rb_intern("treeSearchStarted"), 0);
+  printf("About to call treeSearchStarted.. with obs %p.\n", tos->obs);
+  printf("Here it is: \n");
+  rb_p(tos->obs);
+  printf("There it was.\n");
+  if (tos->obs != Qnil) {
+    if (rb_obj_is_kind_of(tos->obs, cTreeObserver)) {
+      printf("It is a TreeObserver.\n");
+      rb_funcall(tos->obs, rb_intern("treeSearchStarted"), 0);
+    }
+    else
+      printf("Some kind of error, tos->obs is invalid.\n");
+  }
+  printf("called it.\n");
 }
 
 static void rbtmto_treerejected(struct TreeObserver *tob)
@@ -520,7 +530,7 @@ static void rbtmto_treerejected(struct TreeObserver *tob)
 static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  volatile VALUE vth = secretrbth_new(th);
+  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
     rb_funcall(tos->obs, rb_intern("treeImproved"), 1, vth);
@@ -531,7 +541,7 @@ static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
 static void rbtmto_treedone(struct TreeObserver *tob, struct TreeHolder *th)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  volatile VALUE vth = secretrbth_new(th);
+  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
     rb_funcall(tos->obs, rb_intern("treeDone"), 1, vth);
@@ -547,11 +557,17 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   Data_Get_Struct(self, struct TreeMaster, tm);
   to = gcalloc(sizeof(*to), 1);
   tos = gcalloc(sizeof(*tos), 1);
-  tos->obs = obs;
+  if (rb_obj_is_kind_of(obs, cTreeObserver))
+    tos->obs = obs;
+  else {
+    tos->obs = Qnil;
+    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in setTreeObserver");
+  }
   tos->th = Qnil;
 //  rb_gc_mark(tos->obs);
   to->ptr = tos;
   to->treesearchstarted = rbtmto_treesearchstarted;
+  // TODO: fix me by remove next 3 comment indicators
   to->treeimproved = rbtmto_treeimproved;
   to->treedone = rbtmto_treedone;
   to->treerejected = rbtmto_treerejected;
@@ -562,6 +578,7 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
 void markTreeMaster(void *ptr)
 {
   struct TreeMaster *tm = (struct TreeMaster *) ptr;
+#if 0
   struct TreeObserver *obs = getTreeObserver(tm);
   //printf("Marking in TreeMaster...\n");
   if (obs) {
@@ -573,6 +590,7 @@ void markTreeMaster(void *ptr)
     }
   }
 //  printf("Done.\n");
+#endif
 }
 
 VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
@@ -842,7 +860,8 @@ static VALUE rbtoo_done(VALUE self, VALUE donetm) /* the tree molder is done */
 
 void Init_complearn4r(void)
 {
-  mCompLearn = rb_define_module("CompLearn");
+  //mCompLearn = rb_define_module("CompLearn");
+  mCompLearn = rb_const_get(rb_cObject, rb_intern("CompLearn"));
 
   rb_require("matrix");
   cMatrix = rb_const_get(rb_cObject, rb_intern("Matrix"));
@@ -898,8 +917,10 @@ void Init_complearn4r(void)
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
 
-  cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
-  rb_define_method(cTreeObserver, "treeSearchStarted", rbto_searchstarted, 0);
+  //cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
+  cTreeObserver = rb_const_get(mCompLearn, rb_intern("TreeObserver"));
+//  cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
+//  rb_define_method(cTreeObserver, "treeSearchStarted", rbto_searchstarted, 0);
   rb_define_method(cTreeObserver, "treeImproved", rbto_improved, 1);
   rb_define_method(cTreeObserver, "treeRejected", rbto_rejected, 0);
   rb_define_method(cTreeObserver, "treeDone", rbto_done, 1);
