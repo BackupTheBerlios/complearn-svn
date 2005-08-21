@@ -143,7 +143,8 @@ m = TreeMaster.loadMatrix("distmatrix.clb")
 th = TreeHolder.new(m,t)
 tm = TreeMaster.new(m, 1)
 toptreeoh = TreeObserverPrinter.new(tm)
-tm.setTreeObserver(toptreeoh)
+#tm.setTreeObserver(toptreeoh)
 f = tm.findTree
 t = f.tree
+puts "Got tree: #{t.to_dot}"
 

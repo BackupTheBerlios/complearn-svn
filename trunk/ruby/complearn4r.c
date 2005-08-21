@@ -429,6 +429,21 @@ static VALUE rbtra_getnodes(VALUE self)
   return nodes;
 }
 
+static VALUE rbtra_to_dot(VALUE self)
+{
+  struct TreeAdaptor *ta;
+  struct DataBlock *dotdb;
+  volatile VALUE result;
+  Data_Get_Struct(self, struct TreeAdaptor, ta);
+  printf("About to write tree at %p...\n", ta);
+  dotdb = convertTreeToDot(ta, 0.0, NULL, NULL, NULL, NULL, NULL);
+  printf("Got datablock of size %d\n", dotdb->size);
+//  writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
+  result = rb_str_new((char *) dotdb->ptr, dotdb->size);
+  freeDataBlockPtr(dotdb);
+  return result;
+}
+
 static VALUE rbtra_getadja(VALUE self)
 {
   struct AdjA *adja;
@@ -859,6 +874,7 @@ void Init_complearn4r(void)
   rb_define_method(cTreeAdaptor, "isFlippable", rbtra_isflippable, 1);
   rb_define_method(cTreeAdaptor, "columnToNode", rbtra_coltonode, 1);
   rb_define_method(cTreeAdaptor, "nodeToColumn", rbtra_nodetocol, 1);
+  rb_define_method(cTreeAdaptor, "to_dot", rbtra_to_dot, 0);
   rb_define_method(cTreeAdaptor, "mutate", rbtra_mutate, 0);
   rb_define_method(cTreeAdaptor, "mutationCount", rbtra_mutationcount, 0);
   rb_define_method(cTreeAdaptor, "perimeterPairs", rbtra_perimpairs, 1);

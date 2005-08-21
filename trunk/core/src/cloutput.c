@@ -214,7 +214,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   static char lab[1024];
   struct DataBlock *result;
   struct StringStack *dotacc;
-  struct StringStack *params;
+  struct StringStack *params = NULL;
   char con1[1024];
   int dasize;
   char *startparamstr, *endparamstr;
@@ -229,7 +229,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   assert(labelperm);
 
   pushSS(dotacc, "graph \"tree\" {");
-  if (cur->fSuppressVisibleDetails) {
+  if (cur && cur->fSuppressVisibleDetails) {
     startparamstr = "/* "; endparamstr = " */";
   } else {
     pushSS(dotacc, "label=\"\\");
@@ -239,21 +239,26 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   sprintf(con1, "%s%s version %s%s", startparamstr, PACKAGE_NAME,
       PACKAGE_VERSION, endparamstr);
   pushSS(dotacc, con1);
-  sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
-      endparamstr);
-  pushSS(dotacc, con1);
+  if (score != 0.0) {
+    sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
+        endparamstr);
+    pushSS(dotacc, con1);
+  }
+  if (cur) {
+    params = convertParamsToStringStack(cur->em, startparamstr, endparamstr);
+    for (i = 0; i < sizeSS(params); i += 1)
+      pushSS(dotacc, readAtSS(params,i));
+  }
 
-  params = convertParamsToStringStack(cur->em, startparamstr, endparamstr);
-  for (i = 0; i < sizeSS(params); i += 1)
-    pushSS(dotacc, readAtSS(params,i));
-
-  if (!cur->fSuppressVisibleDetails)
+  if (!(cur && cur->fSuppressVisibleDetails))
     pushSS(dotacc, "\";");
 
-  for (i = 0; i < sizeSS(cur->cmdKeeper); i += 1) {
-    char *cmd = readAtSS(cur->cmdKeeper, i);
-    sprintf(con1, "/* Step %d: %s */", i+1, cmd);
-    pushSS(dotacc, con1);
+  if (cur) {
+    for (i = 0; i < sizeSS(cur->cmdKeeper); i += 1) {
+      char *cmd = readAtSS(cur->cmdKeeper, i);
+      sprintf(con1, "/* Step %d: %s */", i+1, cmd);
+      pushSS(dotacc, con1);
+    }
   }
   if (tm) {
     int t0, tf, dt;
@@ -356,7 +361,8 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   for (i = 0; i < sizeSS(dotacc); i += 1)
     j += sprintf((char *) (result->ptr + j), "%s\n", readAtSS(dotacc, i));
   freeSS(dotacc);
-  freeSS(params);
+  if (cur && params)
+    freeSS(params);
   freeDoubleDoubler(nodes);
   return result;
 }
