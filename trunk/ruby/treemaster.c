@@ -195,7 +195,8 @@ static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
 
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
-  rb_define_method(cTreeMaster, "setTreeObserverTM", rbtm_settreeobserver, 1);
+  rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
+  rb_define_method(cTreeMaster, "observer=", rbtm_settreeobserver, 1);
   rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);

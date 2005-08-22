@@ -1,7 +1,3 @@
-module CompLearn
-class TreeObserver
-end
-end
 require 'complearn4r'
 require 'curses'
 require 'date'

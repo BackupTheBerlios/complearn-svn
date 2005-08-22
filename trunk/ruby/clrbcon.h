@@ -3,6 +3,10 @@
 
 #include <ruby.h>
 #include <complearn/complearn.h>
+#include "conversions.h"
+
+#include <gsl/gsl_odeiv.h>
+#include <gsl/gsl_vector.h>
 
 extern VALUE mCompLearn;
 
