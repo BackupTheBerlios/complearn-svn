@@ -276,27 +276,6 @@ VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
-
-static VALUE rbto_searchstarted(VALUE self)
-{
-  return Qnil;
-}
-
-static VALUE rbto_rejected(VALUE self)
-{
-  return Qnil;
-}
-
-static VALUE rbto_improved(VALUE self, VALUE improvement)
-{
-  return Qnil;
-}
-
-static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
-{
-  return Qnil;
-}
-
 #if 0
 static VALUE rbtmo_tree(VALUE tree)
 {
@@ -446,7 +425,6 @@ VALUE rbtbl_new(VALUE cl, VALUE dm, VALUE rtra)
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
-#endif
 
 static VALUE rbtoo_searchstarted(VALUE self)
 {
@@ -462,6 +440,7 @@ static VALUE rbtoo_done(VALUE self, VALUE donetm) /* the tree molder is done */
 {
   return Qnil;
 }
+#endif
 
 void Init_complearn4r(void)
 {
@@ -475,6 +454,7 @@ void Init_complearn4r(void)
   doInitCompa();
   doInitTRA();
   doInitTH();
+  doInitTreeObserver();
 
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
 
@@ -491,11 +471,7 @@ void Init_complearn4r(void)
 
   //cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
 //  cTreeObserver = rb_const_get(mCompLearn, rb_intern("TreeObserver"));
-  cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
 //  rb_define_method(cTreeObserver, "treeSearchStarted", rbto_searchstarted, 0);
-  rb_define_method(cTreeObserver, "treeImproved", rbto_improved, 1);
-  rb_define_method(cTreeObserver, "treeRejected", rbto_rejected, 0);
-  rb_define_method(cTreeObserver, "treeDone", rbto_done, 1);
 
 #if 0
   cTreeMolder = rb_define_class_under(mCompLearn,"TreeMolder", rb_cObject);
@@ -512,10 +488,10 @@ void Init_complearn4r(void)
   rb_define_method(cTreeBlaster, "nodecount", rbtbl_nodecount, 0);
   rb_define_method(cTreeBlaster, "labelcount", rbtbl_labelcount, 0);
   rb_define_method(cTreeBlaster, "setTreeOrderObserver", rbtbl_settreeorderobserver, 1);
-#endif
 
   cTreeOrderObserver = rb_define_class_under(mCompLearn,"TreeOrderObserver", rb_cObject);
   rb_define_method(cTreeOrderObserver, "treeOrderSearchStarted", rbtoo_searchstarted, 0);
   rb_define_method(cTreeOrderObserver, "treeOrderImproved", rbtoo_improved, 1);
   rb_define_method(cTreeOrderObserver, "treeOrderDone", rbtoo_done, 1);
+#endif
 }
