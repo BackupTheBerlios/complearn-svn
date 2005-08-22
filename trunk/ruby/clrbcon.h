@@ -18,4 +18,6 @@ extern VALUE cTreeOrderObserver;
 
 extern VALUE cMatrix;
 
+struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz);
+VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev);
 #endif

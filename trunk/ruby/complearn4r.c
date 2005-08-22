@@ -2,7 +2,6 @@
 #include <gsl/gsl_odeiv.h>
 #include <gsl/gsl_vector.h>
 
-
 VALUE mCompLearn;
 
 VALUE cAdjA;
@@ -81,7 +80,7 @@ static gsl_matrix *convertRubyMatrixTogsl_matrix(VALUE rbm)
   return gslm;
 }
 
-static VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev)
+VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev)
 {
   int i;
   volatile VALUE result = rb_ary_new();
@@ -98,33 +97,7 @@ static VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev)
   return result;
 }
 
-static VALUE rbtra_treemutate(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
-  return Qnil;
-}
-
-static VALUE rbtra_init(VALUE self)
-{
-}
-
-static VALUE secretrbtra_new(struct TreeAdaptor *tra)
-{
-//  volatile VALUE tdata = Data_Wrap_Struct(cTreeAdaptor, 0, 0, tra);
-  volatile VALUE tdata = Data_Wrap_Struct(cTreeAdaptor, 0, tra->treefree, tra);
-  rb_obj_call_init(tdata, 0, 0);
-  return tdata;
-}
-
-static VALUE rbtra_new(VALUE cl, VALUE sz)
-{
-  struct TreeAdaptor *tra = loadNewRootedTRA(NUM2INT(sz));
-  return secretrbtra_new(tra);
-}
-
-static struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
+struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
 {
   struct CLNodeSet *clns = newCLNodeSet(maxsz);
   int i;
@@ -140,150 +113,6 @@ static struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
     }
   }
   return clns;
-}
-
-static VALUE rbtra_diffscore(VALUE self, VALUE vtra2)
-{
-  struct TreeAdaptor *tra1, *tra2;
-  Data_Get_Struct(self, struct TreeAdaptor, tra1);
-  Data_Get_Struct(vtra2, struct TreeAdaptor, tra2);
-  return rb_float_new(getTreeDifferenceScore(tra1, tra2));
-}
-
-static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
-{
-  volatile VALUE result = Qnil;
-  struct TreeAdaptor *ta;
-  struct CLNodeSet *clns;
-  struct DoubleA *pairs;
-  int i;
-  clns = convertFromRubyArray(flips, 1024);
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  /* TODO: fix this hard limit */
-
-  pairs = treeperimpairsTRA(ta, clns);
-
-  if (pairs) {
-    result = rb_ary_new();
-    for (i = 0; i < getSize(pairs); i += 1) {
-
-      volatile VALUE gi = rb_ary_new();
-
-      union pctypes p = getValueAt(pairs, i);
-
-      rb_ary_push(gi, INT2NUM(p.ip.x));
-      rb_ary_push(gi, INT2NUM(p.ip.y));
-
-      rb_ary_push(result, gi);
-    }
-  freeDoubleDoubler(pairs);
-  pairs = NULL;
-  }
-  freeCLNodeSet(clns);
-
-  return result;
-}
-
-static VALUE rbtra_mutationcount(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
-  return INT2FIX(treegetmutecountTRA(ta));
-}
-
-static VALUE rbtra_mutate(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
-  return Qnil;
-}
-
-static VALUE rbtra_nodetocol(VALUE self, VALUE vn)
-{
-  struct LabelPerm *lp;
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  n = NUM2INT(vn);
-  lp = treegetlabelpermTRA(ta);
-  return INT2FIX(getColumnIndexForNodeIDLP(lp, n));
-}
-
-static VALUE rbtra_coltonode(VALUE self, VALUE vn)
-{
-  struct LabelPerm *lp;
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  n = NUM2INT(vn);
-  lp = treegetlabelpermTRA(ta);
-  return INT2FIX(getNodeIDForColumnIndexLP(lp, n));
-}
-
-static VALUE rbtra_isflippable(VALUE self, VALUE vn)
-{
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  n = NUM2INT(vn);
-  if (treeIsFlippable(ta, n))
-    return Qtrue;
-  else
-    return Qnil;
-
-}
-
-static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
-{
-  struct TreeAdaptor *ta;
-  int n;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  n = NUM2INT(vn);
-  if (treeIsQuartettable(ta, n))
-    return Qtrue;
-  else
-    return Qnil;
-}
-
-static VALUE rbtra_getnodes(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  struct AdjA *adja;
-  volatile VALUE nodes = rb_ary_new();
-  int i;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  adja = treegetadjaTRA(ta);
-  for (i = 0; i < adja->adjasize(adja); i += 1)
-    rb_ary_push(nodes, INT2FIX(i));
-  return nodes;
-}
-
-static VALUE rbtra_to_dot(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  struct DataBlock *dotdb;
-  volatile VALUE result;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  printf("About to write tree at %p...\n", ta);
-  dotdb = convertTreeToDot(ta, 0.0, NULL, NULL, NULL, NULL, NULL);
-  printf("Got datablock of size %d\n", dotdb->size);
-//  writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
-  result = rb_str_new((char *) dotdb->ptr, dotdb->size);
-  freeDataBlockPtr(dotdb);
-  return result;
-}
-
-static VALUE rbtra_getadja(VALUE self)
-{
-  struct AdjA *adja;
-  struct TreeAdaptor *ta;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  adja = treegetadjaTRA(ta);
-  return rbadja_secretnew(cAdjA, adja->adjaclone(adja));
 }
 
 static VALUE rbtm_init(VALUE self)
@@ -528,6 +357,7 @@ static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
   return Qnil;
 }
 
+#if 0
 static VALUE rbtmo_tree(VALUE tree)
 {
   struct TreeMolder *tmo;
@@ -613,7 +443,6 @@ static VALUE rbtbl_findtreeorder(VALUE self)
   result = DoubleAOfIntsToRubyArray(CLNodeSetToDoubleA(clns), 0);
   return result;
 }
-
 static void rbtmtoo_treeordersearchstarted(struct TreeOrderObserver *tob)
 {
   struct TreeOrderObserverState *tos = (struct TreeOrderObserverState *) tob->ptr;
@@ -677,6 +506,8 @@ VALUE rbtbl_new(VALUE cl, VALUE dm, VALUE rtra)
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
+#endif
+
 static VALUE rbtoo_searchstarted(VALUE self)
 {
   return Qnil;
@@ -702,20 +533,7 @@ void Init_complearn4r(void)
 
   doInitAdja();
   doInitCompa();
-  cTreeAdaptor = rb_define_class_under(mCompLearn,"TreeAdaptor", rb_cObject);
-  rb_define_singleton_method(cTreeAdaptor, "new", rbtra_new, 1);
-  rb_define_method(cTreeAdaptor, "initialize", rbtra_init, 0);
-  rb_define_method(cTreeAdaptor, "adja", rbtra_getadja, 0);
-  rb_define_method(cTreeAdaptor, "nodes", rbtra_getnodes, 0);
-  rb_define_method(cTreeAdaptor, "isQuartetable", rbtra_isquartetable, 1);
-  rb_define_method(cTreeAdaptor, "isFlippable", rbtra_isflippable, 1);
-  rb_define_method(cTreeAdaptor, "columnToNode", rbtra_coltonode, 1);
-  rb_define_method(cTreeAdaptor, "nodeToColumn", rbtra_nodetocol, 1);
-  rb_define_method(cTreeAdaptor, "to_dot", rbtra_to_dot, 0);
-  rb_define_method(cTreeAdaptor, "mutate", rbtra_mutate, 0);
-  rb_define_method(cTreeAdaptor, "mutationCount", rbtra_mutationcount, 0);
-  rb_define_method(cTreeAdaptor, "perimeterPairs", rbtra_perimpairs, 1);
-  rb_define_method(cTreeAdaptor, "treeDifferenceScore", rbtra_diffscore, 1);
+  doInitTRA();
   cTreeHolder = rb_define_class_under(mCompLearn,"TreeHolder", rb_cObject);
   rb_define_singleton_method(cTreeHolder, "new", rbth_new, 2);
   rb_define_method(cTreeHolder, "initialize", rbth_init, 0);
@@ -743,6 +561,7 @@ void Init_complearn4r(void)
   rb_define_method(cTreeObserver, "treeRejected", rbto_rejected, 0);
   rb_define_method(cTreeObserver, "treeDone", rbto_done, 1);
 
+#if 0
   cTreeMolder = rb_define_class_under(mCompLearn,"TreeMolder", rb_cObject);
   rb_define_singleton_method(cTreeMolder, "new", rbtmo_new, 2);
   rb_define_method(cTreeMolder, "initialize", rbtmo_init, 0);
@@ -757,6 +576,7 @@ void Init_complearn4r(void)
   rb_define_method(cTreeBlaster, "nodecount", rbtbl_nodecount, 0);
   rb_define_method(cTreeBlaster, "labelcount", rbtbl_labelcount, 0);
   rb_define_method(cTreeBlaster, "setTreeOrderObserver", rbtbl_settreeorderobserver, 1);
+#endif
 
   cTreeOrderObserver = rb_define_class_under(mCompLearn,"TreeOrderObserver", rb_cObject);
   rb_define_method(cTreeOrderObserver, "treeOrderSearchStarted", rbtoo_searchstarted, 0);
