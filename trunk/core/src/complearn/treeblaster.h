@@ -15,7 +15,7 @@
  * \struct TreeBlaster
  *
  * The TreeBlaster permutes child-ordering in the nodes of a TreeAdaptor
- * randomly and searches for the lowest permiter-pair NCD sum.  For a given
+ * randomly and searches for the lowest perimiter-pair NCD sum.  For a given
  * traversal, the leaf nodes will form a ring and every adjacent pair of
  * leaf nodes in this traversal is summed.  The traversal order is determined
  * by a flips array that contains only those nodes who are visitted in reversed

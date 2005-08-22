@@ -114,7 +114,7 @@ int main(int argc, char **argv)
   const char *const short_options = "ROTFo:";
   static struct option long_options[] = {
       { "rooted", 0, NULL, 'R' },
-      { "ordered", 0, NULL, 'O' },
+      { "unordered", 0, NULL, 'u' },
       { "text", 0, NULL, 'T' },
       { "outfile", 1, NULL, 'o' },
       { NULL, 0, NULL, 0 },
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
   struct TreeAdaptor *ub;
   int j;
   int isRooted = 0;
-  int isOrdered = 0;
+  int isOrdered = 1;
   int isEnablingMaxFailCount = 0;
   int isText = 0;
   double s;
@@ -151,9 +151,9 @@ int main(int argc, char **argv)
         isEnablingMaxFailCount = 1;
         setKeyValEM(cur->em, "selfAgreementTermination", "0");
         break;
-      case 'O':
-        isOrdered = 1;
-        setKeyValEM(cur->em, "isOrdered", "1");
+      case 'u':
+        isOrdered = 0;
+        setKeyValEM(cur->em, "isOrdered", "0");
         break;
       case 'T':
         isText = 1;

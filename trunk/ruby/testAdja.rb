@@ -28,13 +28,21 @@ printAdjA(ad)
 
 input = "hello world\n"
 
-bzca = CompAdaptor.new("bzip")
-puts "#{bzca.shortname}, #{bzca.longname}: #{bzca.compfunc(input)}"
-puts "Version: #{bzca.apiver}"
-
-zca = CompAdaptor.new("zlib")
-puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
-puts "Version: #{zca.apiver}"
+CompAdaptor.names.sort.each { |compname|
+bzca = CompAdaptor.new(compname)
+s1 = 'block'
+s2 = 'flock'
+ln = bzca.longname
+puts "Testing #{compname}: #{bzca.compfunc(input)} (#{ln})"
+puts "Version: #{bzca.apiver}, NCD(#{s1},#{s2})=#{bzca.ncd(s1,s2)}"
+}
+#zca = CompAdaptor.new("zlib")
+#puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
+#puts "Version: #{zca.apiver}"
+#
+#zca = CompAdaptor.new("blocksort")
+#puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
+#puts "Version: #{zca.apiver}, NCD: #{zca.ncd('block', 'flock')}"
 
 # TODO: find and fix the memory double free / corruption bug commented out here
 gca = CompAdaptor.new("google")
