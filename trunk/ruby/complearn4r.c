@@ -128,19 +128,13 @@ struct TreeObserverState {
 static void rbtmto_treesearchstarted(struct TreeObserver *tob)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  printf("About to call treeSearchStarted.. with obs %p.\n", tos->obs);
-  printf("Here it is: \n");
-  rb_p(tos->obs);
-  printf("There it was.\n");
   if (tos->obs != Qnil) {
     if (rb_obj_is_kind_of(tos->obs, cTreeObserver)) {
-      printf("It is a TreeObserver.\n");
       rb_funcall(tos->obs, rb_intern("treeSearchStarted"), 0);
     }
     else
-      printf("Some kind of error, tos->obs is invalid.\n");
+      fprintf(stderr, "Some kind of error, tos->obs is invalid.\n");
   }
-  printf("called it.\n");
 }
 
 static void rbtmto_treerejected(struct TreeObserver *tob)

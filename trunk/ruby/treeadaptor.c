@@ -152,9 +152,7 @@ static VALUE rbtra_to_dot(VALUE self)
   struct DataBlock *dotdb;
   volatile VALUE result;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  printf("About to write tree at %p...\n", ta);
   dotdb = convertTreeToDot(ta, 0.0, NULL, NULL, NULL, NULL, NULL);
-  printf("Got datablock of size %d\n", dotdb->size);
 //  writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
   result = rb_str_new((char *) dotdb->ptr, dotdb->size);
   freeDataBlockPtr(dotdb);
