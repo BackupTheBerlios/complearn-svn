@@ -83,6 +83,26 @@ VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
   return tdata;
 }
 
+static VALUE rbto_searchstarted(VALUE self)
+{
+  return Qnil;
+}
+
+static VALUE rbto_rejected(VALUE self)
+{
+  return Qnil;
+}
+
+static VALUE rbto_improved(VALUE self, VALUE improvement)
+{
+  return Qnil;
+}
+
+static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
+{
+  return Qnil;
+}
+
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
@@ -91,5 +111,11 @@ void doInitTreeMaster(void) {
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);
   rb_define_method(cTreeMaster, "k", rbtm_k, 0);
   rb_define_method(cTreeMaster, "labelcount", rbtm_labelcount, 0);
+  rb_define_method(cTreeMaster, "size", rbtm_labelcount, 0);
   rb_define_method(cTreeMaster, "nodecount", rbtm_nodecount, 0);
+
+  cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
+  rb_define_method(cTreeObserver, "treeImproved", rbto_improved, 1);
+  rb_define_method(cTreeObserver, "treeRejected", rbto_rejected, 0);
+  rb_define_method(cTreeObserver, "treeDone", rbto_done, 1);
 }

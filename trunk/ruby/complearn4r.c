@@ -368,7 +368,6 @@ void Init_complearn4r(void)
   doInitCompa();
   doInitTRA();
   doInitTH();
-  doInitTreeObserver();
   doInitTreeMaster();
 
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);

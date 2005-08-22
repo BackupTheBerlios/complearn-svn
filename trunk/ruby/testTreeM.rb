@@ -47,7 +47,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
   end
   def redrawParams()
     mvaddstr(@topy + 0, @leftcolx, "         K  = #{nf(@tm.k,@li)}")
-    mvaddstr(@topy + 4, @leftcolx, "Label count = #{nf(@tm.labelcount,@li)}")
+    mvaddstr(@topy + 4, @leftcolx, "Label count = #{nf(@tm.size,@li)}")
 #    mvaddstr(@topy + 5, @leftcolx, "Node  count = #{nf(@tm.nodecount,@li)}")
   end
   def redrawStats()
