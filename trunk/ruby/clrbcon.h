@@ -15,7 +15,6 @@ extern VALUE cTreeObserver;
 extern VALUE cTreeMolder;
 extern VALUE cTreeBlaster;
 extern VALUE cTreeOrderObserver;
-
 extern VALUE cMatrix;
 
 struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz);
