@@ -206,6 +206,13 @@ static VALUE rbtm_getendtime(VALUE self)
   return convertCLDateTimeToTime(getEndTimeTM(tm));
 }
 
+static VALUE rbtm_aborttreesearch(VALUE self)
+{
+  struct TreeMaster *tm;
+  Data_Get_Struct(self, struct TreeMaster, tm);
+  abortTreeSearchTM(tm);
+}
+
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
@@ -221,6 +228,7 @@ void doInitTreeMaster(void) {
   rb_define_method(cTreeMaster, "labelcount", rbtm_labelcount, 0);
   rb_define_method(cTreeMaster, "size", rbtm_labelcount, 0);
   rb_define_method(cTreeMaster, "nodecount", rbtm_nodecount, 0);
+  rb_define_method(cTreeMaster, "abortTreeSearch", rbtm_aborttreesearch, 0);
 
   cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
   rb_define_method(cTreeObserver, "treeImproved", rbto_improved, 1);

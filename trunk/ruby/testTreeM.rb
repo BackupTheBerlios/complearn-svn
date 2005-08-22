@@ -30,6 +30,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
   end
   def redrawTime()
     @curtime = getTimeNow
+    @starttime = @tm.startTime
     if (@curtime.to_i != @starttime.to_i)
       treespeed = @tm.examinedcount / (@curtime.to_i - @starttime.to_i)
       mvaddstr(@topy + 3, @leftcolx, "Trees/sec   = #{nf(treespeed,@li)}") if @curtime.to_i != @starttime.to_i
@@ -141,7 +142,11 @@ tm = CompLearn::TreeMaster.new(m, 1)
 toptreeoh = TreeObserverPrinter.new(tm)
 tm.setTreeObserver(toptreeoh)
 Curses::init_screen
-f = tm.findTree
-t = f.tree
 Curses::close_screen
-File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
+zthread = Thread.new {
+  f = tm.findTree
+  t = f.tree
+  File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
+}
+sleep 2   # maximum time to wait for tree
+tm.abortTreeSearch
