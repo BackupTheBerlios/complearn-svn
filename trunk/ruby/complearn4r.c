@@ -425,7 +425,6 @@ void Init_complearn4r(void)
 
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
-  rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
 
   //cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
