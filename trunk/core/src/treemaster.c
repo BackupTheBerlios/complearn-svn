@@ -276,7 +276,7 @@ void *getUserDataTM(struct TreeMaster *tm)
   return tm->udata;
 }
 
-void abortTreeSearch(struct TreeMaster *tm)
+void abortTreeSearchTM(struct TreeMaster *tm)
 {
   tm->fAbortNow = 1;
 }

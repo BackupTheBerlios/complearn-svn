@@ -23,7 +23,7 @@
  * Callers have the option of registering a callback listener to receive
  * tree-changed events during the findTree() call.  This allows for interactive
  * or realtime visualizations to occur before the final termination condition
- * is reached.  In these cases abortTreeSearch() may be useful to cut short
+ * is reached.  In these cases abortTreeSearchTM() may be useful to cut short
  * a search while in-progress.
  *
  * There are three ways to create a new TreeMaster :
@@ -97,7 +97,7 @@ struct TreeHolder *getStarterTree(struct TreeMaster *tm);
  *  if the tree it is holding has a better tree score than the tree previously
  *  found in the last call of findTree().
  *
- *  If needed, abortTreeSearch(), can be called in a separate thread to
+ *  If needed, abortTreeSearchTM(), can be called in a separate thread to
  *  prematurely interrupt findTree().
  *
  *  \param tm pointer to TreeMaster
@@ -256,7 +256,7 @@ struct CLDateTime *getStartTimeTM(struct TreeMaster *tm);
  *  TreeMaster.
  *  \param tm pointer to TreeMaster
  */
-void abortTreeSearch(struct TreeMaster *tm);
+void abortTreeSearchTM(struct TreeMaster *tm);
 
 /** \brief returns the number of labelled nodes in this TreeMaster
  *

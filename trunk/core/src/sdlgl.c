@@ -330,7 +330,7 @@ static void doNextTree(void)
   assert(curFiles);
   assert(curFiles->size > 0);
   if (tm) {
-    abortTreeSearch(tm);
+    abortTreeSearchTM(tm);
     tm = NULL;
   }
 }
