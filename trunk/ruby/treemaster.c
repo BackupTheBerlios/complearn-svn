@@ -1,5 +1,9 @@
 #include "clrbcon.h"
 
+static VALUE rbtm_init(VALUE self)
+{
+}
+
 static VALUE rbtm_findtree(VALUE self)
 {
   struct TreeMaster *tm;
@@ -37,8 +41,52 @@ static VALUE rbtm_labelcount(VALUE self)
   return INT2FIX(getLabelCountTM(tm));
 }
 
+void markTreeMaster(void *ptr)
+{
+  struct TreeMaster *tm = (struct TreeMaster *) ptr;
+#if 0
+  struct TreeObserver *obs = getTreeObserver(tm);
+  //printf("Marking in TreeMaster...\n");
+  if (obs) {
+    struct TreeObserverState *tos = (struct TreeObserverState *) obs->ptr;
+    if (tos->obs != Qnil) {
+      rb_gc_mark(tos->obs);
+      if (tos->th != Qnil)
+        rb_gc_mark(tos->th);
+    }
+  }
+//  printf("Done.\n");
+#endif
+}
+
+VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
+{
+  struct TreeMaster *tm;
+  gsl_matrix *gdm = NULL;
+  int fIsRooted = 1;
+  volatile VALUE tdata;
+  //Check_Type(dm, T_OBJECT);
+  if (cMatrix == rb_class_of(dm)) {
+    gdm = convertRubyMatrixTogsl_matrix(dm);
+  } else {
+    printf("About to throw..\n");
+    rb_raise(rb_eTypeError, "Error, must have matrix to make TreeMaster!");
+    printf("thrown...\n");
+  }
+  if (isRooted == Qnil || isRooted == Qfalse)
+    fIsRooted = 0;
+  tm = newTreeMaster(gdm, fIsRooted);
+  tdata = Data_Wrap_Struct(cl, markTreeMaster, freeTreeMaster, tm);
+//  tdata = Data_Wrap_Struct(cl, 0, 0, tm);
+  setUserDataTM(tm, (void *) tdata);
+  rb_obj_call_init(tdata, 0, 0);
+  return tdata;
+}
+
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
+  rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
+  rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
   rb_define_method(cTreeMaster, "findTree", rbtm_findtree, 0);
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);
   rb_define_method(cTreeMaster, "k", rbtm_k, 0);

@@ -55,6 +55,7 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   return result;
 }
 
+
 static dummySOAP(void)
 {
   soap_client_init_args(1,NULL);
@@ -111,9 +112,6 @@ struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
     }
   }
   return clns;
-}
-static VALUE rbtm_init(VALUE self)
-{
 }
 
 struct TreeOrderObserverState {
@@ -192,48 +190,6 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   setTreeObserver(tm, to);
 }
 
-void markTreeMaster(void *ptr)
-{
-  struct TreeMaster *tm = (struct TreeMaster *) ptr;
-#if 0
-  struct TreeObserver *obs = getTreeObserver(tm);
-  //printf("Marking in TreeMaster...\n");
-  if (obs) {
-    struct TreeObserverState *tos = (struct TreeObserverState *) obs->ptr;
-    if (tos->obs != Qnil) {
-      rb_gc_mark(tos->obs);
-      if (tos->th != Qnil)
-        rb_gc_mark(tos->th);
-    }
-  }
-//  printf("Done.\n");
-#endif
-}
-
-
-VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
-{
-  struct TreeMaster *tm;
-  gsl_matrix *gdm = NULL;
-  int fIsRooted = 1;
-  volatile VALUE tdata;
-  //Check_Type(dm, T_OBJECT);
-  if (cMatrix == rb_class_of(dm)) {
-    gdm = convertRubyMatrixTogsl_matrix(dm);
-  } else {
-    printf("About to throw..\n");
-    rb_raise(rb_eTypeError, "Error, must have matrix to make TreeMaster!");
-    printf("thrown...\n");
-  }
-  if (isRooted == Qnil || isRooted == Qfalse)
-    fIsRooted = 0;
-  tm = newTreeMaster(gdm, fIsRooted);
-  tdata = Data_Wrap_Struct(cl, markTreeMaster, freeTreeMaster, tm);
-//  tdata = Data_Wrap_Struct(cl, 0, 0, tm);
-  setUserDataTM(tm, (void *) tdata);
-  rb_obj_call_init(tdata, 0, 0);
-  return tdata;
-}
 #if 0
 static VALUE rbtmo_tree(VALUE tree)
 {
@@ -415,11 +371,8 @@ void Init_complearn4r(void)
   doInitTreeObserver();
   doInitTreeMaster();
 
-  cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
-
-  rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
-  rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
+  rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
 
   //cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);
 //  cTreeObserver = rb_const_get(mCompLearn, rb_intern("TreeObserver"));
