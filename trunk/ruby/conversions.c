@@ -1,5 +1,15 @@
 #include "clrbcon.h"
 
+VALUE convertCLDateTimeToTime(struct CLDateTime *cldt)
+{
+  if (cldt) {
+    unsigned long i = cldt_to_i(cldt);
+    return rb_funcall(cTime, rb_intern("at"), 1, UINT2NUM(i));
+  }
+  else
+    return Qnil;
+}
+
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm)
 {
   int i, j;

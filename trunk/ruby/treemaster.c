@@ -13,7 +13,6 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   dm = loadCLDistMatrix(dbdm, 1);
   assert(dm);
   result = convertgslmatrixToRubyMatrix(dm);
-//  printf("Aout to return..\n");
   gsl_matrix_free(dm);
   return result;
 }
@@ -193,6 +192,20 @@ static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
   return Qnil;
 }
 
+static VALUE rbtm_getstarttime(VALUE self)
+{
+  struct TreeMaster *tm;
+  Data_Get_Struct(self, struct TreeMaster, tm);
+  return convertCLDateTimeToTime(getStartTimeTM(tm));
+}
+
+static VALUE rbtm_getendtime(VALUE self)
+{
+  struct TreeMaster *tm;
+  Data_Get_Struct(self, struct TreeMaster, tm);
+  return convertCLDateTimeToTime(getEndTimeTM(tm));
+}
+
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
   rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
@@ -201,6 +214,8 @@ void doInitTreeMaster(void) {
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
   rb_define_method(cTreeMaster, "findTree", rbtm_findtree, 0);
+  rb_define_method(cTreeMaster, "startTime", rbtm_getstarttime, 0);
+  rb_define_method(cTreeMaster, "endTime", rbtm_getendtime, 0);
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);
   rb_define_method(cTreeMaster, "k", rbtm_k, 0);
   rb_define_method(cTreeMaster, "labelcount", rbtm_labelcount, 0);

@@ -19,7 +19,9 @@ extern VALUE cTreeObserver;
 extern VALUE cTreeMolder;
 extern VALUE cTreeBlaster;
 extern VALUE cTreeOrderObserver;
+
 extern VALUE cMatrix;
+extern VALUE cTime;
 
 struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz);
 VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev);

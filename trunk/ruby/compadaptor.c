@@ -73,6 +73,7 @@ void doInitCompa(void) {
   cCompAdaptor = rb_define_class_under(mCompLearn,"CompAdaptor", rb_cObject);
   rb_define_method(cCompAdaptor, "initialize", rbcompa_init, 0);
   rb_define_singleton_method(cCompAdaptor, "new", rbcompa_new, 1);
+  rb_define_singleton_method(cCompAdaptor, "loadBuiltin", rbcompa_new, 1);
   rb_define_singleton_method(cCompAdaptor, "names", rbcompa_names, 0);
   rb_define_singleton_method(cCompAdaptor, "listBuiltin", rbcompa_names, 0);
   rb_define_method(cCompAdaptor, "compfunc", rbcompa_compfunc, 1);

@@ -13,6 +13,7 @@ VALUE cTreeBlaster;
 VALUE cTreeOrderObserver;
 
 VALUE cMatrix;
+VALUE cTime;
 
 static dummySOAP(void)
 {
@@ -29,6 +30,8 @@ void Init_complearn4r(void)
 
   rb_require("matrix");
   cMatrix = rb_const_get(rb_cObject, rb_intern("Matrix"));
+
+  cTime = rb_const_get(rb_cObject, rb_intern("Time"));
 
   doInitAdja();
   doInitCompa();

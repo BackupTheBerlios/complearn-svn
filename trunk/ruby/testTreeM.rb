@@ -34,9 +34,9 @@ class TreeObserverPrinter < CompLearn::TreeObserver
       treespeed = @tm.examinedcount / (@curtime.to_i - @starttime.to_i)
       mvaddstr(@topy + 3, @leftcolx, "Trees/sec   = #{nf(treespeed,@li)}") if @curtime.to_i != @starttime.to_i
     end
-    mvaddstr(@topy + 0, @midcolx, "Time   now: #{formatTime(@curtime)}") if @starttime
-    mvaddstr(@topy + 1, @midcolx, "Time start: #{formatTime(@starttime)}") if @starttime
-    mvaddstr(@topy + 2, @midcolx, "Time  done: #{formatTime(@donetime)}") if @donetime
+    mvaddstr(@topy + 0, @midcolx, "Time   now: #{formatTime(@curtime)}")
+    mvaddstr(@topy + 1, @midcolx, "Time start: #{formatTime(@tm.startTime)}") if @tm.startTime
+    mvaddstr(@topy + 2, @midcolx, "Time  done: #{formatTime(@tm.endTime)}") if @tm.endTime
   end
   def nf(n, i)
     format("%#{i}d", n)
@@ -54,7 +54,6 @@ class TreeObserverPrinter < CompLearn::TreeObserver
     mvaddstr(@topy + 2, @leftcolx, "Trees total = #{nf(@tm.examinedcount,@li)}")
   end
   def treeSearchStarted()
-    @starttime = getTimeNow()
     redrawParams
     redrawTime
     redrawStats
@@ -145,6 +144,4 @@ Curses::init_screen
 f = tm.findTree
 t = f.tree
 Curses::close_screen
-puts "\n**\nThis ends the curses session.\n**"
 File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
-
