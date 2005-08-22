@@ -9,14 +9,14 @@ def printAdjA(ad)
   sz = ad.size
   sz.times  { |i|
     sz.times { |j|
-print ad.getconstate(i,j) ? '*' : '.'
-}
-puts
+      print ad.getconstate(i,j) ? '*' : '.'
+  }
+  puts
 }
 end
 
 ad = AdjA.new(11)
-
+ad = ad.clone  # quick test clone
 puts "First it is "
 printAdjA(ad)
 ad.setconstate(2,3,1)

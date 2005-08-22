@@ -41,7 +41,7 @@ static VALUE rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
   Data_Get_Struct(self, struct AdjA, adja);
   i = NUM2INT(vi);
   j = NUM2INT(vj);
-  return adja->adjagetconstate(adja, i, j)?Qtrue:Qnil;
+  return adjaGetConState(adja, i, j)?Qtrue:Qnil;
 }
 
 static VALUE rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
@@ -51,7 +51,7 @@ static VALUE rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
   Data_Get_Struct(self, struct AdjA, adja);
   i = NUM2INT(vi);
   j = NUM2INT(vj);
-  adja->adjasetconstate(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
+  adjaSetConState(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
 }
 
 static VALUE rbadja_getneighborcount(VALUE self, VALUE vi)
@@ -70,7 +70,7 @@ static VALUE rbadja_spmmap(VALUE self)
   volatile VALUE result;
   Data_Get_Struct(self, struct AdjA, adja);
   if (adja->adjaspmmap)
-    da = adja->adjaspmmap(adja);
+    da = adjaSPMMap(adja);
   if (da) {
     result = DoubleAOfIntsToRubyArray(da, 1);
   } else {
@@ -88,13 +88,13 @@ static VALUE rbadja_getneighbors(VALUE self, VALUE vwhich)
   int nc, i;
   Data_Get_Struct(self, struct AdjA, adja);
   which = NUM2INT(vwhich);
-  nc = adja->adjagetneighborcount(adja, which);
+  nc = adjaGetNeighborCount(adja, which);
 
   if (nc > 0) {
     int bufsize = sizeof(int) * nc;
     int *nbuf = malloc(bufsize);
     int retval;
-    retval = adja->adjagetneighbors(adja,which,nbuf, &bufsize);
+    retval = adjaGetNeighbors(adja,which,nbuf, &bufsize);
     assert(retval == CL_OK);
     for (i = 0; i < nc; i += 1)
       rb_ary_push(result, INT2FIX(nbuf[i]));
@@ -113,11 +113,20 @@ VALUE rbadja_new(VALUE cl, VALUE sz)
   return rbadja_secretnew(cl, adja);
 }
 
+static VALUE rbadja_clone(VALUE self)
+{
+  struct AdjA *adja;
+  Data_Get_Struct(self, struct AdjA, adja);
+  adja = adjaClone(adja);
+  return rbadja_secretnew(cAdjA, adja);
+}
+
 void doInitAdja(void) {
   cAdjA = rb_define_class_under(mCompLearn, "AdjA", rb_cObject);
   rb_define_method(cAdjA, "initialize", rbadja_init, 0);
   rb_define_singleton_method(cAdjA, "new", rbadja_new, 1);
   rb_define_method(cAdjA, "initialize", rbadja_init, 0);
+  rb_define_method(cAdjA, "clone", rbadja_clone, 0);
   rb_define_method(cAdjA, "getneighbors", rbadja_getneighbors, 1);
   rb_define_method(cAdjA, "getneighborcount", rbadja_getneighborcount, 1);
   rb_define_method(cAdjA, "getconstate", rbadja_getconstate, 2);
