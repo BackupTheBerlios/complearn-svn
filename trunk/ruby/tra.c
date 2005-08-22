@@ -12,7 +12,7 @@ static VALUE rbtra_init(VALUE self)
 {
 }
 
-static VALUE secretrbtra_new(struct TreeAdaptor *tra)
+VALUE secretrbtra_new(struct TreeAdaptor *tra)
 {
 //  volatile VALUE tdata = Data_Wrap_Struct(cTreeAdaptor, 0, 0, tra);
   volatile VALUE tdata = Data_Wrap_Struct(cTreeAdaptor, 0, tra->treefree, tra);
