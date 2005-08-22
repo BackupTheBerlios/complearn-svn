@@ -41,7 +41,9 @@ gca = CompAdaptor.new("google")
 puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
 puts "Version: #{gca.apiver}"
 
+puts "Making new tree."
 t = TreeAdaptor.new(6)
+puts "Made new AdjA"
 tadja = t.adja
 puts "Tree Adja:"
 printAdjA(tadja)
