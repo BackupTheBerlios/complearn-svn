@@ -144,5 +144,7 @@ tm.setTreeObserver(toptreeoh)
 Curses::init_screen
 f = tm.findTree
 t = f.tree
+Curses::close_screen
+puts "\n**\nThis ends the curses session.\n**"
 File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
 

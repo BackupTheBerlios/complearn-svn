@@ -49,11 +49,9 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 
 static VALUE rbcompa_names(VALUE kl)
 {
+  VALUE result;
   struct StringStack *ss = listBuiltinCA();
-  VALUE result = rb_ary_new();
-  int i;
-  for (i = 0; i < sizeSS(ss); i += 1)
-    rb_ary_push(result, rb_str_new2(readAtSS(ss, i)));
+  result = convertStringStackToRubyArray(ss);
   freeSS(ss);
   return result;
 }
