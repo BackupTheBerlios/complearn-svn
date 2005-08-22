@@ -76,7 +76,7 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
     tos->obs = obs;
   else {
     tos->obs = Qnil;
-    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in setTreeObserver");
+    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in setTreeObserverTM");
   }
   tos->th = Qnil;
 //  rb_gc_mark(tos->obs);
@@ -86,8 +86,8 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   to->treeimproved = rbtmto_treeimproved;
   to->treedone = rbtmto_treedone;
   to->treerejected = rbtmto_treerejected;
-  //rb_raise(rb_eTypeError, "Error setTreeObserver disabled.");
-  setTreeObserver(tm, to);
+  //rb_raise(rb_eTypeError, "Error setTreeObserverTM disabled.");
+  setTreeObserverTM(tm, to);
 }
 
 static VALUE rbtm_init(VALUE self)
@@ -135,7 +135,7 @@ void markTreeMaster(void *ptr)
 {
   struct TreeMaster *tm = (struct TreeMaster *) ptr;
 #if 0
-  struct TreeObserver *obs = getTreeObserver(tm);
+  struct TreeObserver *obs = getTreeObserverTM(tm);
   //printf("Marking in TreeMaster...\n");
   if (obs) {
     struct TreeObserverState *tos = (struct TreeObserverState *) obs->ptr;
@@ -195,7 +195,7 @@ static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
 
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
-  rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
+  rb_define_method(cTreeMaster, "setTreeObserverTM", rbtm_settreeobserver, 1);
   rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);

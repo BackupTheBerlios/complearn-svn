@@ -1,5 +1,6 @@
 #!/bin/zsh
-if [[ $# < 2 ]] ; then
+if test $# -lt 3 ; then
+  echo "Error, have $# arguments..."
   echo "Usage: $0 oldpattern newpattern files ..."
   exit 1
 fi

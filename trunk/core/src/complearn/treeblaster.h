@@ -93,7 +93,7 @@ struct TreeOrderObserver {
  * to calculate in one thread and display the intermediate results in
  * realtime in another thread.
  *
- * \sa setTreeObserver()
+ * \sa setTreeObserverTM()
  * \param tbl pointer to the TreeBlaster to observe
  * \param tob pointer to the TreeOrderObserver to connect to tbl
  */

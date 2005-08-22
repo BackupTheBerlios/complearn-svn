@@ -252,12 +252,12 @@ void freeTreeMaster(struct TreeMaster *tm)
   gfreeandclear(tm);
 }
 
-struct TreeObserver *getTreeObserver(struct TreeMaster *tm)
+struct TreeObserver *getTreeObserverTM(struct TreeMaster *tm)
 {
   return tm->tob;
 }
 
-void setTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
+void setTreeObserverTM(struct TreeMaster *tm, struct TreeObserver *tob)
 {
   if (tm->tob) {
     gfreeandclear(tm->tob);

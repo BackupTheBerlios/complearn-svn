@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
   tm = newTreeMasterEx(dm, isRooted, cur->em);
   globtm = tm;
-  setTreeObserver(tm, &tob);
+  setTreeObserverTM(tm, &tob);
   th = findTree(tm);
   ub = getCurTree(th);
   s = getCurScore(th);

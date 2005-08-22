@@ -656,7 +656,7 @@ int calcThreadFunc(void *unused)
       }
       tm = newTreeMaster(getDistMatrixIDM(distmatglob), 0);
       nextbest = getCurTree(getStarterTree(tm));
-      setTreeObserver(tm, &tob);
+      setTreeObserverTM(tm, &tob);
     }
     if (tm) {
       findTree(tm);

@@ -220,14 +220,14 @@ struct TreeObserver {
  * \param tm pointer to the TreeMaster instance to observe
  * \param tob pointer to an already filled-in TreeObserver structure
  */
-void setTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob);
+void setTreeObserverTM(struct TreeMaster *tm, struct TreeObserver *tob);
 
 /** \brief returns the currently attached TreeObserver or NULL if none
  *
  * \param tm pointer to the TreeMaster instance to inspect
  * \return pointer to a TreeObserver structure or NULL if none has been set
  */
-struct TreeObserver *getTreeObserver(struct TreeMaster *tm);
+struct TreeObserver *getTreeObserverTM(struct TreeMaster *tm);
 
 /** \brief returns the time when the most recent findTree() call finished
  *

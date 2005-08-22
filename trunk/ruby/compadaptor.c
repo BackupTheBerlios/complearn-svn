@@ -76,6 +76,7 @@ void doInitCompa(void) {
   rb_define_method(cCompAdaptor, "initialize", rbcompa_init, 0);
   rb_define_singleton_method(cCompAdaptor, "new", rbcompa_new, 1);
   rb_define_singleton_method(cCompAdaptor, "names", rbcompa_names, 0);
+  rb_define_singleton_method(cCompAdaptor, "listBuiltin", rbcompa_names, 0);
   rb_define_method(cCompAdaptor, "compfunc", rbcompa_compfunc, 1);
   rb_define_method(cCompAdaptor, "shortname", rbcompa_shortname, 0);
   rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
