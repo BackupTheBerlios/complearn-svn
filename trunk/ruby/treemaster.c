@@ -1,5 +1,95 @@
 #include "clrbcon.h"
 
+static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
+{
+  char *fname = STR2CSTR(rfname);
+  struct DataBlock db = convertFileToDataBlock(fname);
+  struct DataBlock dbdm;
+  struct DoubleA *dd;
+  volatile VALUE result;
+  gsl_matrix *dm;
+  dd = load_DataBlock_package(db);
+  dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
+  dm = loadCLDistMatrix(dbdm, 1);
+  assert(dm);
+  result = convertgslmatrixToRubyMatrix(dm);
+//  printf("Aout to return..\n");
+  gsl_matrix_free(dm);
+  return result;
+}
+
+struct TreeObserverState {
+  volatile VALUE obs;
+  volatile VALUE th;
+};
+
+static void rbtmto_treesearchstarted(struct TreeObserver *tob)
+{
+  struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
+  if (tos->obs != Qnil) {
+    if (rb_obj_is_kind_of(tos->obs, cTreeObserver)) {
+      rb_funcall(tos->obs, rb_intern("treeSearchStarted"), 0);
+    }
+    else
+      fprintf(stderr, "Some kind of error, tos->obs is invalid.\n");
+  }
+}
+
+static void rbtmto_treerejected(struct TreeObserver *tob)
+{
+  struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
+  if (tos->obs != Qnil)
+    rb_funcall(tos->obs, rb_intern("treeRejected"), 0);
+}
+
+static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
+{
+  struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
+  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
+  if (tos->obs != Qnil) {
+    tos->th = vth;
+    rb_funcall(tos->obs, rb_intern("treeImproved"), 1, vth);
+    tos->th = Qnil;
+  }
+}
+
+static void rbtmto_treedone(struct TreeObserver *tob, struct TreeHolder *th)
+{
+  struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
+  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
+  if (tos->obs != Qnil) {
+    tos->th = vth;
+    rb_funcall(tos->obs, rb_intern("treeDone"), 1, vth);
+    tos->th = Qnil;
+  }
+}
+
+static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
+{
+  struct TreeObserver *to;
+  struct TreeObserverState *tos;
+  struct TreeMaster *tm;
+  Data_Get_Struct(self, struct TreeMaster, tm);
+  to = gcalloc(sizeof(*to), 1);
+  tos = gcalloc(sizeof(*tos), 1);
+  if (rb_obj_is_kind_of(obs, cTreeObserver))
+    tos->obs = obs;
+  else {
+    tos->obs = Qnil;
+    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in setTreeObserver");
+  }
+  tos->th = Qnil;
+//  rb_gc_mark(tos->obs);
+  to->ptr = tos;
+  to->treesearchstarted = rbtmto_treesearchstarted;
+  // TODO: fix me by remove next 3 comment indicators
+  to->treeimproved = rbtmto_treeimproved;
+  to->treedone = rbtmto_treedone;
+  to->treerejected = rbtmto_treerejected;
+  //rb_raise(rb_eTypeError, "Error setTreeObserver disabled.");
+  setTreeObserver(tm, to);
+}
+
 static VALUE rbtm_init(VALUE self)
 {
 }
@@ -105,6 +195,8 @@ static VALUE rbto_done(VALUE self, VALUE doneth) /* the tree holder is done */
 
 void doInitTreeMaster(void) {
   cTreeMaster = rb_define_class_under(mCompLearn,"TreeMaster", rb_cObject);
+  rb_define_method(cTreeMaster, "setTreeObserver", rbtm_settreeobserver, 1);
+  rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
   rb_define_method(cTreeMaster, "findTree", rbtm_findtree, 0);
