@@ -22,7 +22,7 @@ VALUE secretrbtra_new(struct TreeAdaptor *tra)
 
 static VALUE rbtra_new(VALUE cl, VALUE sz)
 {
-  struct TreeAdaptor *tra = loadNewRootedTRA(NUM2INT(sz));
+  struct TreeAdaptor *tra = loadNewUnrootedTRA(NUM2INT(sz));
   return secretrbtra_new(tra);
 }
 

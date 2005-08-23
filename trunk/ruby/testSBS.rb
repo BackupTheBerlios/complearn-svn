@@ -15,8 +15,6 @@ class TreeObserverPrinter < CompLearn::TreeObserver
     @topy = 2
     @tstep = 0.01
     @treetopy = 9
-    @lf1 = (rand(0) + 3) / 14.0
-    @lf2 = (rand(0) + 5) / 11.0
   end
   def getTimeNow()
     Time.new
@@ -86,13 +84,37 @@ class TreeObserverPrinter < CompLearn::TreeObserver
       addch('\n')
     }
   end
+  def ballToScreen(ballco)
+    yco = 10 + ballco[1]
+    xco = 40 + 3 * ballco[2]
+    [yco, xco]
+  end
+  def findPoint(c1, c2, t)
+    res = [ ]
+    c1.size.times { |i| res[i] = (1.0-t) * c1[i] + (c2[i]*t) }
+    res.map { |i| i.to_i }
+  end
+  def drawLine(c1, c2)
+    steps=7
+    steps.times { |st|
+      t = st.to_f / (steps.to_f-1.0)
+      pt = findPoint(c1, c2, t)
+      mvaddstr(pt[0], pt[1], '+')
+    }
+  end
   def drawIt()
     Curses.clear
     if @shownsbs
       @shownsbs.size.times { |i|
+        @shownsbs.size.times { |j|
+          if i < j && @shownsbs.springSmooth(i,j) > 0.3
+            drawLine(ballToScreen(@shownsbs[i]), ballToScreen(@shownsbs[j]))
+          end
+        }
+      }
+      @shownsbs.size.times { |i|
         ballco = @shownsbs[i]
-        yco = 10 + ballco[1]
-        xco = 40 + 3 * ballco[2]
+        yco, xco = ballToScreen(ballco)
         ch = " #{i} "
         mvaddstr(yco, xco, ch)
       }

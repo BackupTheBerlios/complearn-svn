@@ -79,7 +79,7 @@ def testTree(tr)
 puts "About to call pp"
 clns = [ 2 ]
 pp = tr.perimeterPairs(clns)
-puts "Perim pairs: #{pp}"
+puts "Perim pairs: #{pp.inspect}"
 printAdjA(tr.adja)
 puts "About to mutate.."
 tr.mutate
@@ -87,13 +87,14 @@ puts "Mutated.."
 m = tr.adja.to_matrix
 puts "Got matrix: #{m.inspect}"
   }
-  puts "Outside Perim pairs: #{tr.perimeterPairs(nil)}"
+  puts "Outside Perim pairs: #{tr.perimeterPairs(nil).inspect}"
 end
 
 puts "About to test tree..."
 testTree(t)
 puts "Done testing tree."
 
+#d = Marshal.dump(t.adja)
 #puts "Making SpringBallSystem"
 #m = SpringBallSystem.new(t)
 #puts "Done."
