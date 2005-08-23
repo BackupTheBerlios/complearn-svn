@@ -13,7 +13,7 @@ File.rename(filename, backup)
 output = File.new(filename,"w")
 
 src.each { |line|
-  if line =~ /AM_INIT_AUTOMAKE\(complearn[^,]*, (\d+).(\d+).(\d+)/
+  if line =~ /AM_INIT_AUTOMAKE\(libcomplearn[^,]*, (\d+).(\d+).(\d+)/
     major, minor, micro = $1.to_i, $2.to_i, $3.to_i
     line.gsub!(/(\d+).(\d+).(\d+)/,major.to_s + '.' + minor.to_s + '.' + (micro+1).to_s)
     puts "Bumping version number to #{major}.#{minor}.#{micro+1}..."
