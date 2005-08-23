@@ -37,13 +37,13 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
   struct CompAdaptor *ca;
   double result;
-  struct DataBlock dba = convertStringToDataBlock(STR2CSTR(stra));
-  struct DataBlock dbb = convertStringToDataBlock(STR2CSTR(strb));
+  struct DataBlock *dba = convertRubyStringToDataBlock(stra);
+  struct DataBlock *dbb = convertRubyStringToDataBlock(strb);
 
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  result = ncdCA(ca, dba, dbb);
-  freeDataBlock(dba);
-  freeDataBlock(dbb);
+  result = ncdCA(ca, *dba, *dbb);
+  freeDataBlockPtr(dba);
+  freeDataBlockPtr(dbb);
   return rb_float_new(result);
 }
 
