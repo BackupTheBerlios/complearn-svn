@@ -5,7 +5,8 @@ struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz);
 VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev);
 gsl_matrix *convertRubyMatrixTogsl_matrix(VALUE rbm);
 VALUE secretrbth_new(struct TreeHolder *tomakeruby);
-VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
+VALUE convertStringStackToRubyArray(struct StringStack *ss);
+VALUE convertCLDateTimeToTime(struct CLDateTime *cldt);
 VALUE convertgslvectorToRubyVector(gsl_vector *v);
 #endif
 

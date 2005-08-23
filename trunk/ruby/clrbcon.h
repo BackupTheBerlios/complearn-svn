@@ -20,9 +20,11 @@ extern VALUE cTreeMolder;
 extern VALUE cTreeBlaster;
 extern VALUE cTreeOrderObserver;
 extern VALUE cSpringBallSystem;
+extern VALUE cIncrementalDistMatrix;
 
 extern VALUE cMatrix;
 extern VALUE cVector;
 extern VALUE cTime;
 
+VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
 #endif
