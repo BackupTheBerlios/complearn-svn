@@ -20,6 +20,49 @@ static VALUE rbth_score(VALUE self)
   return rb_float_new(getCurScore(th));
 }
 
+static VALUE rbth_scramble(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  scrambleTreeHolder(th);
+  return Qnil;
+}
+
+static VALUE rbth_improve(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  return tryToImprove(th) ? Qtrue : Qfalse;
+}
+
+static VALUE rbth_failcount(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  return INT2FIX(getSuccessiveFailCount(th));
+}
+
+static VALUE rbth_treecount(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  return INT2FIX(getTotalTreeCount(th));
+}
+
+static VALUE rbth_clone(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  return secretrbth_new(cloneTreeHolder(th));
+}
+
+static VALUE rbth_distmatrix(VALUE self)
+{
+  struct TreeHolder *th;
+  Data_Get_Struct(self, struct TreeHolder, th);
+  return convertgslmatrixToRubyMatrix(getDistMatrixTH(th));
+}
+
 static VALUE rbth_init(VALUE self)
 {
 }
@@ -64,4 +107,10 @@ void doInitTH(void) {
   rb_define_method(cTreeHolder, "initialize", rbth_init, 0);
   rb_define_method(cTreeHolder, "tree", rbth_tree, 0);
   rb_define_method(cTreeHolder, "score", rbth_score, 0);
+  rb_define_method(cTreeHolder, "scramble", rbth_scramble, 0);
+  rb_define_method(cTreeHolder, "distmatrix", rbth_distmatrix, 0);
+  rb_define_method(cTreeHolder, "improve", rbth_improve, 0);
+  rb_define_method(cTreeHolder, "clone", rbth_clone, 0);
+  rb_define_method(cTreeHolder, "treecount", rbth_treecount, 0);
+  rb_define_method(cTreeHolder, "failcount", rbth_failcount, 0);
 }

@@ -138,6 +138,19 @@ end
 
 m = CompLearn::TreeMaster.loadMatrix("distmatrix.clb")
 th = CompLearn::TreeHolder.new(m,t)
+
+# simple method calls to see if errors are generated
+th.scramble
+th.improve
+th.treecount
+th.failcount
+tclone = th.clone
+
+unless m == tclone.distmatrix && th.treecount == tclone.treecount && th.failcount == tclone.failcount
+  puts "cloned treeholder and original do not match"
+  exit(1)
+end
+
 tm = CompLearn::TreeMaster.new(m, 1)
 toptreeoh = TreeObserverPrinter.new(tm)
 tm.setTreeObserver(toptreeoh)
@@ -148,5 +161,5 @@ zthread = Thread.new {
   t = f.tree
   File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
 }
+
 sleep 2   # maximum time to wait for tree
-tm.abortTreeSearch
