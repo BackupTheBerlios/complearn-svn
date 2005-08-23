@@ -14,6 +14,7 @@ case $HOST in
   "wax.rhouse.local")
     ;;
   "ns1.alcruz.com")
+    RUBYLOC=/home/webuser/bin/ruby
     ;;
   "miso.rhouse.local")
    echo "miso-specific config enabled."
@@ -37,4 +38,5 @@ fi
 aclocal && autoconf && \
 automake && \
 ./configure --with-complearn=$HOME/tmp/complearntest \
+            --with-rubycmd=$RUBYLOC \
             "${EXTRAOPT}"
