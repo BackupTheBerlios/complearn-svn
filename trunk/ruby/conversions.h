@@ -1,11 +1,10 @@
 #ifndef __CONVERSIONS_H
 #define __CONVERSIONS_H
 
-VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
-gsl_matrix *convertRubyMatrixTogsl_matrix(VALUE rbm);
-VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev);
-VALUE convertStringStackToRubyArray(struct StringStack *ss);
 struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz);
-
+VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev);
+gsl_matrix *convertRubyMatrixTogsl_matrix(VALUE rbm);
+VALUE secretrbth_new(struct TreeHolder *tomakeruby);
+VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
 #endif
 
