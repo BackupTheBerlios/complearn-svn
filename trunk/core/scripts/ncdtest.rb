@@ -71,7 +71,7 @@ class CL_NCDTest < Test::Unit::TestCase
 
   def test_literal_mode
     # bzip
-    cmd = "./src/ncd -l horse rider" ; result = `#{cmd}`
+    cmd = "./src/ncd --compressor=bzip -l horse rider" ; result = `#{cmd}`
     cmd = "./src/ncd -C bzip -l horse rider" ; result2 = `#{cmd}`
     assert(result == result2, "bzip compressor option busted")
     isNCDPairResult?(result)

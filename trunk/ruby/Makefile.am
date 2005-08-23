@@ -14,4 +14,9 @@ src/incrdm.c \
 src/springball.c \
 src/treeadaptor.c \
 src/treeholder.c \
-src/treemaster.c
+src/treemaster.c \
+tests/simpletest.rb \
+tests/testAdja.rb \
+tests/testIncrDM.rb \
+tests/testSBS.rb \
+tests/testTreeM.rb

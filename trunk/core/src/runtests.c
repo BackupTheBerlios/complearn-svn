@@ -39,8 +39,8 @@ struct GeneralConfig *loadNCDEnvironment()
   if (!gconf) {
     struct NCDConfig *ncdcfg;
     gconf = loadDefaultEnvironment();
-    gconf->vptr = gcalloc(sizeof(struct NCDConfig),1);
-    ncdcfg = (struct NCDConfig *) gconf->vptr;
+    gconf->ptr = gcalloc(sizeof(struct NCDConfig),1);
+    ncdcfg = (struct NCDConfig *) gconf->ptr;
     *ncdcfg = defaultNCDConfig;
   }
   return gconf;

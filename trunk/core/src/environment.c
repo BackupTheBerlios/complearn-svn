@@ -22,7 +22,7 @@ void printActiveEnvironment(void)
 void freeDefaultEnvironment(struct GeneralConfig *g)
 {
   assert(g == curEnv);
-  if (curEnv->vptr && curEnv->freeappcfg)
+  if (curEnv->ptr && curEnv->freeappcfg)
     curEnv->freeappcfg(curEnv);
   gfreeifpresent(curEnv->compressor_name);
   if (curEnv->em) {
@@ -84,7 +84,7 @@ struct GeneralConfig *loadDefaultEnvironment()
     compressor_name: NULL,
     ca: NULL,
 
-    vptr:      NULL,
+    ptr:      NULL,
     freeappcfg:   NULL,
     upappcfg:     NULL,
     upappem:      NULL,

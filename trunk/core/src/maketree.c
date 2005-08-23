@@ -20,7 +20,7 @@ static void freedotth (struct TreeHolder *dotth)
 }
 
 static void maketree_freeappconfig(struct GeneralConfig *cur) {
-  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->vptr;
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   gfreeifpresent(maketreecfg->output_tree_fname);
   gfreeandclear(maketreecfg);
 }
@@ -42,7 +42,7 @@ static void maketree_printapphelp(struct GeneralConfig *cur) {
 
 static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet *dotflips)
 {
-  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->vptr;
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   struct DataBlock *dotdb;
   dotdb = convertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
   writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
@@ -98,8 +98,8 @@ struct GeneralConfig *loadMakeTreeEnvironment()
   if (!cur) {
     struct MakeTreeConfig *maketreecfg;
     cur = loadDefaultEnvironment();
-    cur->vptr = gcalloc(sizeof(struct MakeTreeConfig),1);
-    maketreecfg = (struct MakeTreeConfig *) cur->vptr;
+    cur->ptr = gcalloc(sizeof(struct MakeTreeConfig),1);
+    maketreecfg = (struct MakeTreeConfig *) cur->ptr;
     *maketreecfg = defaultMakeTreeConfig;
     maketreecfg->output_tree_fname = gstrdup("treefile.dot");
     cur->freeappcfg = maketree_freeappconfig;
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
   char *fname = NULL;
   struct MakeTreeConfig *maketreecfg;
   cur = loadMakeTreeEnvironment();
-  maketreecfg = (struct MakeTreeConfig *) cur->vptr;
+  maketreecfg = (struct MakeTreeConfig *) cur->ptr;
 
   while (1) {
     next_option = complearn_getopt_long(argc, argv, short_options, long_options, NULL, cur);

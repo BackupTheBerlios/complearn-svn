@@ -17,7 +17,7 @@
 static struct GeneralConfig *cur;
 
 static void ncd_freeappconfig(struct GeneralConfig *cur) {
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->vptr;
+  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   gfreeifpresent(ncdcfg->output_distmat_fname);
   gfreeandclear(ncdcfg);
 }
@@ -48,7 +48,7 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 
 void loadCompressor(struct GeneralConfig *cur)
 {
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->vptr;
+  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   if (cur->ca == NULL) {
     if (cur->fVerbose)
       printf("About to load %s..\n", cur->compressor_name);
@@ -77,7 +77,7 @@ void printCounts(struct DataBlockEnumeration *a)
   const char *fmtString = "%06.1f ";
   struct DataBlockEnumerationIterator *ia;
   struct DataBlock *dba;
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->vptr;
+  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
     double pg;
     if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && dba->size == 1 && (dba->ptr[0] == 'm' || dba->ptr[0] == 'M')) {
@@ -104,8 +104,8 @@ struct GeneralConfig *loadNCDEnvironment()
   if (!cur) {
     struct NCDConfig *ncdcfg;
     cur = loadDefaultEnvironment();
-    cur->vptr = gcalloc(sizeof(struct NCDConfig),1);
-    ncdcfg = (struct NCDConfig *) cur->vptr;
+    cur->ptr = gcalloc(sizeof(struct NCDConfig),1);
+    ncdcfg = (struct NCDConfig *) cur->ptr;
     *ncdcfg = defaultNCDConfig;
     ncdcfg->output_distmat_fname = gstrdup("distmatrix.clb");
     cur->freeappcfg = ncd_freeappconfig;
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
       { NULL, 0, NULL, 0 },
   };
   cur = loadNCDEnvironment();
-  ncdcfg = (struct NCDConfig *) cur->vptr;
+  ncdcfg = (struct NCDConfig *) cur->ptr;
 #if CSOAP_RDY
 //  testGSoapReq();
 #endif

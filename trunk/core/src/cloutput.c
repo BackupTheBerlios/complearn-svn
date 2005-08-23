@@ -126,7 +126,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   struct DataBlockEnumerationIterator *dei = a->newenumiter(a);
   struct StringStack *labels = newStringStack();
   struct DataBlock *curdb;
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->vptr;
+  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   gsl_matrix *gres;
   while ( ( curdb = a->istar(a, dei) ) ) {
     pushSS(labels, a->ilabel(a, dei));

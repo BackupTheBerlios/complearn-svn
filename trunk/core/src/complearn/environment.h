@@ -43,12 +43,19 @@ struct GeneralConfig {
   struct StringStack *cmdKeeper; /*!< Growing list of commands in this experiment */
   char *compressor_name; /*!< name of desired compressor */
   struct CompAdaptor *ca; /*!< loaded CompAdaptor to use */
-  void *vptr;
-  t_freeappconfig freeappcfg;
-  t_updateappemtoconfig upappcfg;
-  t_updateappconfigtoem upappem;
-  t_printapphelp printapphelp;
-  t_printappenvironment printappenv;
+  void *ptr;              /*!< pointer to application specific configuration */
+  t_freeappconfig freeappcfg; /*!< pointer to function which frees application
+                                   specific config */
+  t_updateappemtoconfig upappcfg; /*!< pointer to function which moves the
+                                       EnvMap environment to application
+                                       configuration*/
+  t_updateappconfigtoem upappem;  /*!< pointer to function which moves
+                                       application configure to EnvMap */
+  t_printapphelp printapphelp;    /*!< pointer to function which prints
+                                       application specific help */
+  t_printappenvironment printappenv; /*!< pointer to function which prints
+                                          environment specific to an
+                                          application */
 };
 
 #if GETOPT_RDY
