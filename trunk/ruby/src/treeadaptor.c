@@ -74,7 +74,7 @@ static VALUE rbtra_mutationcount(VALUE self)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   treemutateTRA(ta);
-  return INT2FIX(treegetmutecountTRA(ta));
+  return INT2FIX(treemutecountTRA(ta));
 }
 
 static VALUE rbtra_mutate(VALUE self)

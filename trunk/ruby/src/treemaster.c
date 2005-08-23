@@ -116,13 +116,6 @@ static VALUE rbtm_k(VALUE self)
   return INT2FIX(getKTM(tm));
 }
 
-static VALUE rbtm_nodecount(VALUE self)
-{
-  struct TreeMaster *tm;
-  Data_Get_Struct(self, struct TreeMaster, tm);
-  return INT2FIX(getNodeCountTM(tm));
-}
-
 static VALUE rbtm_labelcount(VALUE self)
 {
   struct TreeMaster *tm;
@@ -227,7 +220,6 @@ void doInitTreeMaster(void) {
   rb_define_method(cTreeMaster, "k", rbtm_k, 0);
   rb_define_method(cTreeMaster, "labelcount", rbtm_labelcount, 0);
   rb_define_method(cTreeMaster, "size", rbtm_labelcount, 0);
-  rb_define_method(cTreeMaster, "nodecount", rbtm_nodecount, 0);
   rb_define_method(cTreeMaster, "abortTreeSearch", rbtm_aborttreesearch, 0);
 
   cTreeObserver = rb_define_class_under(mCompLearn,"TreeObserver", rb_cObject);

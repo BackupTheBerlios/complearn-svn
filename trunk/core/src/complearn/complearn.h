@@ -45,7 +45,6 @@
 #include <complearn/rootedbinary.h>
 #include <complearn/springball.h>
 #include <complearn/tagfile.h>
-#include <complearn/textsdl.h>
 #include <complearn/treeadaptor.h>
 #include <complearn/treeholder.h>
 #include <complearn/treeblaster.h>
