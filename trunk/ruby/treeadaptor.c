@@ -177,6 +177,13 @@ static VALUE rbtra_isroot(VALUE self, VALUE vn)
   return treeIsRoot(ta, n) ? Qtrue : Qfalse;
 }
 
+static VALUE rbtra_clone(VALUE self)
+{
+  struct TreeAdaptor *ta;
+  Data_Get_Struct(self, struct TreeAdaptor, ta);
+  return secretrbtra_new(treecloneTRA(ta));
+}
+
 void doInitTRA(void) {
   cTreeAdaptor = rb_define_class_under(mCompLearn,"TreeAdaptor", rb_cObject);
   rb_define_singleton_method(cTreeAdaptor, "new", rbtra_new, 1);
@@ -194,4 +201,5 @@ void doInitTRA(void) {
   rb_define_method(cTreeAdaptor, "treeDifferenceScore", rbtra_diffscore, 1);
   rb_define_method(cTreeAdaptor, "nodeCount", rbtra_nodecount, 0);
   rb_define_method(cTreeAdaptor, "isRoot", rbtra_isroot, 1);
+  rb_define_method(cTreeAdaptor, "clone", rbtra_clone, 0);
 }
