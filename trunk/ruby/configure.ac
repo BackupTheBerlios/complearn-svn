@@ -43,7 +43,7 @@ then
   CFLAGS="$CFLAGS -fno-strict-aliasing"
 fi
 
-AC_ARG_WITH(complearn,[--with-complearn=PREFIX   where complearn is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include -I$withval/include/complearn-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_WITH(complearn,[--with-complearn=PREFIX   where complearn is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include -I$withval/include/complearn-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib" ; clinclude="$withval/include/complearn-1.0" ; cllib="$withval/lib"])
 
 fcomplearn_lib=0;      fcomplearn_h=0
 
@@ -66,7 +66,8 @@ fi
 export CFLAGS
 export LDFLAGS
 
-(cd src ; ruby extconf.rb --with-complearn-lib=/home/cilibrar/tmp/complearntest/lib --with-complearn-include=/home/cilibrar/tmp/complearntest/include/complearn-1.0 
+#(cd src ; ruby extconf.rb --with-complearn-lib=/home/cilibrar/tmp/complearntest/lib --with-complearn-include=/home/cilibrar/tmp/complearntest/include/complearn-1.0 
+( cd src ; /home/webuser/bin/ruby extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
 cat <<EOF >>Makefile
 
 distdir:
