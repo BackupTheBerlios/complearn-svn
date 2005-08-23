@@ -19,6 +19,7 @@ extern VALUE cTreeObserver;
 extern VALUE cTreeMolder;
 extern VALUE cTreeBlaster;
 extern VALUE cTreeOrderObserver;
+extern VALUE cSpringBallSystem;
 
 extern VALUE cMatrix;
 extern VALUE cTime;

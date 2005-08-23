@@ -121,6 +121,18 @@ static VALUE rbadja_clone(VALUE self)
   return rbadja_secretnew(cAdjA, adja);
 }
 
+static VALUE rbadja_tomatrix(VALUE self)
+{
+  struct AdjA *adja;
+  gsl_matrix *mat;
+  VALUE result;
+  Data_Get_Struct(self, struct AdjA, adja);
+  mat = convertAdjAToGSLMatrix(adja);
+  result = convertgslmatrixToRubyMatrix(mat);
+  gsl_matrix_free(mat);
+  return result;
+}
+
 void doInitAdja(void) {
   cAdjA = rb_define_class_under(mCompLearn, "AdjA", rb_cObject);
   rb_define_method(cAdjA, "initialize", rbadja_init, 0);
@@ -134,6 +146,7 @@ void doInitAdja(void) {
   rb_define_method(cAdjA, "size", rbadja_size, 0);
   rb_define_method(cAdjA, "spmmap", rbadja_spmmap, 0);
   rb_define_method(cAdjA, "path", rbadja_path, 2);
+  rb_define_method(cAdjA, "to_matrix", rbadja_tomatrix, 0);
 }
 
 /* used in tree.adja */

@@ -84,6 +84,8 @@ printAdjA(tr.adja)
 puts "About to mutate.."
 tr.mutate
 puts "Mutated.."
+m = tr.adja.to_matrix
+puts "Got matrix: #{m.inspect}"
   }
   puts "Outside Perim pairs: #{tr.perimeterPairs(nil)}"
 end
