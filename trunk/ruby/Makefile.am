@@ -10,6 +10,7 @@ src/adja.c \
 src/compadaptor.c \
 src/complearn4r.c \
 src/conversions.c \
+src/incrdm.c \
 src/springball.c \
 src/treeadaptor.c \
 src/treeholder.c \
