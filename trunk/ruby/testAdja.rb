@@ -93,4 +93,16 @@ end
 puts "About to test tree..."
 testTree(t)
 puts "Done testing tree."
+
+#puts "Making SpringBallSystem"
+#m = SpringBallSystem.new(t)
+#puts "Done."
+#3.times {
+#  m.size.times { |i|
+#    puts "ball #{i}: #{m[i]}"
+#  }
+#  sleep(1)
+#  m.evolve
+#}
+
 exit 0

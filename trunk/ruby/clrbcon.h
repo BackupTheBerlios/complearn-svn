@@ -22,6 +22,7 @@ extern VALUE cTreeOrderObserver;
 extern VALUE cSpringBallSystem;
 
 extern VALUE cMatrix;
+extern VALUE cVector;
 extern VALUE cTime;
 
 #endif

@@ -14,6 +14,7 @@ VALUE cTreeOrderObserver;
 VALUE cSpringBallSystem;
 
 VALUE cMatrix;
+VALUE cVector;
 VALUE cTime;
 
 static dummySOAP(void)
@@ -31,6 +32,7 @@ void Init_complearn4r(void)
 
   rb_require("matrix");
   cMatrix = rb_const_get(rb_cObject, rb_intern("Matrix"));
+  cVector = rb_const_get(rb_cObject, rb_intern("Vector"));
 
   cTime = rb_const_get(rb_cObject, rb_intern("Time"));
 

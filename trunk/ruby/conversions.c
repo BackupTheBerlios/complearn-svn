@@ -10,6 +10,20 @@ VALUE convertCLDateTimeToTime(struct CLDateTime *cldt)
     return Qnil;
 }
 
+VALUE convertgslvectorToRubyVector(gsl_vector *v)
+{
+  VALUE result;
+  VALUE *coords;
+  int i, size;
+  size = v->size;
+  coords = gcalloc(size, sizeof(VALUE));
+  for (i = 0; i < v->size; i += 1)
+    coords[i] = rb_float_new(gsl_vector_get(v, i));
+  result = rb_funcall3(cVector, rb_intern("[]"), size, coords);
+  gfreeandclear(coords);
+  return result;
+}
+
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm)
 {
   int i, j;
