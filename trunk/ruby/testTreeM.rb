@@ -142,11 +142,11 @@ th = CompLearn::TreeHolder.new(m,t)
 # simple method calls to see if errors are generated
 th.scramble
 th.improve
-th.treecount
-th.failcount
+th.treeCount
+th.failCount
 tclone = th.clone
 
-unless m == tclone.distmatrix && th.treecount == tclone.treecount && th.failcount == tclone.failcount
+unless m == tclone.distMatrix && th.treeCount == tclone.treeCount && th.failCount == tclone.failCount
   puts "cloned treeholder and original do not match"
   exit(1)
 end
@@ -163,3 +163,4 @@ zthread = Thread.new {
 }
 
 sleep 2   # maximum time to wait for tree
+tm.abortTreeSearch

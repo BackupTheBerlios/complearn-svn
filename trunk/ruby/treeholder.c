@@ -108,9 +108,9 @@ void doInitTH(void) {
   rb_define_method(cTreeHolder, "tree", rbth_tree, 0);
   rb_define_method(cTreeHolder, "score", rbth_score, 0);
   rb_define_method(cTreeHolder, "scramble", rbth_scramble, 0);
-  rb_define_method(cTreeHolder, "distmatrix", rbth_distmatrix, 0);
+  rb_define_method(cTreeHolder, "distMatrix", rbth_distmatrix, 0);
   rb_define_method(cTreeHolder, "improve", rbth_improve, 0);
   rb_define_method(cTreeHolder, "clone", rbth_clone, 0);
-  rb_define_method(cTreeHolder, "treecount", rbth_treecount, 0);
-  rb_define_method(cTreeHolder, "failcount", rbth_failcount, 0);
+  rb_define_method(cTreeHolder, "treeCount", rbth_treecount, 0);
+  rb_define_method(cTreeHolder, "failCount", rbth_failcount, 0);
 }

@@ -114,11 +114,7 @@ static VALUE rbtra_isflippable(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  if (treeIsFlippable(ta, n))
-    return Qtrue;
-  else
-    return Qnil;
-
+  return treeIsFlippable(ta, n) ? Qtrue : Qfalse;
 }
 
 static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
@@ -127,10 +123,7 @@ static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  if (treeIsQuartettable(ta, n))
-    return Qtrue;
-  else
-    return Qnil;
+  return treeIsQuartettable(ta, n) ? Qtrue : Qfalse;
 }
 
 static VALUE rbtra_getnodes(VALUE self)
@@ -168,6 +161,22 @@ static VALUE rbtra_getadja(VALUE self)
   return rbadja_secretnew(cAdjA, adja->adjaclone(adja));
 }
 
+static VALUE rbtra_nodecount(VALUE self)
+{
+  struct TreeAdaptor *ta;
+  Data_Get_Struct(self, struct TreeAdaptor, ta);
+  return INT2FIX(treeGetNodeCountTRA(ta));
+}
+
+static VALUE rbtra_isroot(VALUE self, VALUE vn)
+{
+  struct TreeAdaptor *ta;
+  int n;
+  Data_Get_Struct(self, struct TreeAdaptor, ta);
+  n = NUM2INT(vn);
+  return treeIsRoot(ta, n) ? Qtrue : Qfalse;
+}
+
 void doInitTRA(void) {
   cTreeAdaptor = rb_define_class_under(mCompLearn,"TreeAdaptor", rb_cObject);
   rb_define_singleton_method(cTreeAdaptor, "new", rbtra_new, 1);
@@ -183,4 +192,6 @@ void doInitTRA(void) {
   rb_define_method(cTreeAdaptor, "mutationCount", rbtra_mutationcount, 0);
   rb_define_method(cTreeAdaptor, "perimeterPairs", rbtra_perimpairs, 1);
   rb_define_method(cTreeAdaptor, "treeDifferenceScore", rbtra_diffscore, 1);
+  rb_define_method(cTreeAdaptor, "nodeCount", rbtra_nodecount, 0);
+  rb_define_method(cTreeAdaptor, "isRoot", rbtra_isroot, 1);
 }
