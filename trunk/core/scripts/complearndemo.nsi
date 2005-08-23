@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CompLearnDemo"
-!define PRODUCT_VERSION "0.3.9"
+!define PRODUCT_VERSION "0.3.10"
 !define PRODUCT_PUBLISHER "rhouse"
 !define PRODUCT_WEB_SITE "http://www.complearn.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\sdlgl.exe"
@@ -10,7 +10,7 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "cldemo-0.3.9.exe"
+OutFile "cldemo-0.3.10.exe"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\Dutch.nlf"
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 InstallDir "$PROGRAMFILES\CompLearnDemo"
