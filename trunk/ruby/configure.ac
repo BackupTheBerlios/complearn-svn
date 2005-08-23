@@ -67,7 +67,7 @@ export CFLAGS
 export LDFLAGS
 
 #(cd src ; ruby extconf.rb --with-complearn-lib=/home/cilibrar/tmp/complearntest/lib --with-complearn-include=/home/cilibrar/tmp/complearntest/include/complearn-1.0 
-( cd src ; /home/webuser/bin/ruby extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
+( cd src ; ruby extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
 cat <<EOF >>Makefile
 
 distdir:
