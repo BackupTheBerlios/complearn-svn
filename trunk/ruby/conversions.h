@@ -8,5 +8,6 @@ VALUE secretrbth_new(struct TreeHolder *tomakeruby);
 VALUE convertStringStackToRubyArray(struct StringStack *ss);
 VALUE convertCLDateTimeToTime(struct CLDateTime *cldt);
 VALUE convertgslvectorToRubyVector(gsl_vector *v);
+struct DataBlock *convertRubyStringToDataBlock(VALUE rstr);
+VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
 #endif
-

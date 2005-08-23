@@ -1,0 +1,12 @@
+require 'complearn4r'
+require 'matrix'
+
+include CompLearn
+
+ca = CompAdaptor.new("blocksort")
+idm = IncrementalDistMatrix.new(ca)
+idm.addString("hello")
+idm.addString("world")
+puts idm.distmatrix
+idm.addString("alien")
+puts idm.distmatrix

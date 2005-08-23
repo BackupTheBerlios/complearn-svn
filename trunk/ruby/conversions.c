@@ -107,3 +107,14 @@ VALUE convertStringStackToRubyArray(struct StringStack *ss)
   return result;
 }
 
+struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
+{
+  long length;
+  struct DataBlock *db;
+  char *cstr = rb_str2cstr(rstr, &length);
+  db = gcalloc(sizeof(struct DataBlock), 1);
+  db->size = length;
+  db->ptr = gmalloc(db->size);
+  memcpy(db->ptr, cstr, db->size);
+  return db;
+}
