@@ -105,6 +105,7 @@ struct Quartet permuteLabels(qbase_t lab[4], int which)
       break;
     default:
       assert(0 && "quartet phase error");
+      q.q[0] = q.q[1] = q.q[2] = q.q[3] = 0;
       break;
   }
   return q;

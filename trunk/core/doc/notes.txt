@@ -1,4 +1,6 @@
 Using this building libraries doc:
+http://www.netfort.gr.jp/~dancer/column/libpkg-guide/libpkg-guide.html#naminglibpkg
+and
 http://www.openismus.com/documents/linux/building_libraries/building_libraries.shtml
 Using this for Ruby extension memory management:
 http://rubygarden.org/ruby/ruby?GCAndExtensions
