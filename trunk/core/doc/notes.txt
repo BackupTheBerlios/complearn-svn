@@ -47,3 +47,18 @@ Must figure out owner field. etc.
 TODO:
 add these packages to support drag and drop under debian
      sudo apt-get install libglib2.0-dev libglib2.0-doc  libglib2.0-data libgtk2.0-dev libgtk2.0-doc libatk1.0-doc libpango1.0-doc libglib2.0-0
+
+The debian package building command:
+
+(cat ci.txt ; cat) | sudo checkinstall --exclude=/usr/share/automake-1.9/INSTALL make install
+
+with ci.txt:
+
+0
+cilibrar@cilibrar.com
+2
+libcomplearn-1.0
+3
+0.8.18
+
+-- notice the extra newline at the end!
