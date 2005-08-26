@@ -24,11 +24,11 @@ void adjaSetConState(struct AdjAdaptor *aa, int i, int j, int which)
 {
   aa->adjasetconstate(aa, i, j, which);
 }
-int adjaGetNeighborCount(struct AdjAdaptor *aa, int i)
+int adjaNeighborCount(struct AdjAdaptor *aa, int i)
 {
   return aa->adjagetneighborcount(aa, i);
 }
-int adjaGetNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
+int adjaNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
 {
   return aa->adjagetneighbors(aa, i, nbuf, nsize);
 }

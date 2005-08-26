@@ -115,7 +115,7 @@ void adjaSetConState(struct AdjAdaptor *aa, int i, int j, int which);
  * \param from the integer label for the node to be investigated
  * \return an integer representing the total count of neighbors for node from
  */
-int adjaGetNeighborCount(struct AdjAdaptor *aa, int i);
+int adjaNeighborCount(struct AdjAdaptor *aa, int i);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
@@ -131,7 +131,7 @@ int adjaGetNeighborCount(struct AdjAdaptor *aa, int i);
  *              to by nsize will not be affected.
  * \return CL_OK if the buffer was big enough, or CL_ERRFULL if it wasn't.
  */
-int adjaGetNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
+int adjaNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
 
 /** \brief Returns the SPM Map for a given AdjAdaptor with a PathKeeper on top
  *  \param aa pointer to the AdjAdaptor

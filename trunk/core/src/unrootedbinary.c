@@ -31,7 +31,7 @@ static qbase_t randomKernelNode(struct UnrootedBinary *ub)
   int nsize;
   do {
     result = randomTreeNode(ub);
-    nsize = adjaGetNeighborCount(ub->aa, result);
+    nsize = adjaNeighborCount(ub->aa, result);
   } while (nsize != 3 );
   return result;
 }
@@ -74,12 +74,12 @@ static int verifyTree(struct UnrootedBinary *ub)
     return 0;
   }
   for (i = 0; i < ub->nodecount; ++i) {
-    nc = adjaGetNeighborCount(ub->aa, i);
+    nc = adjaNeighborCount(ub->aa, i);
     if (nc != 1 && nc != 3) {
       int nbp[20], retval;
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
-      retval = adjaGetNeighbors(ub->aa, i, nbp, &nlenhere);
+      retval = adjaNeighbors(ub->aa, i, nbp, &nlenhere);
       assert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
@@ -112,13 +112,13 @@ static void mutateSubtreeTransfer(struct UnrootedBinary *ub)
   assert(i1 < MAXPATHNODES);
   assert(adjaGetConState(ub->aa, k1, i1));
   nsizems = MAXNEIGHBORS;
-  retval = adjaGetNeighbors(ub->aa, i1, nbufms, &nsizems);
+  retval = adjaNeighbors(ub->aa, i1, nbufms, &nsizems);
   assert(nsizems == 3);
   adjaSetConState(ub->aa, k1, i1, 0);
   assert(!adjaGetConState(ub->aa, k1, i1));
 
   nsizems = MAXNEIGHBORS;
-  retval = adjaGetNeighbors(ub->aa, i1, nbufms, &nsizems);
+  retval = adjaNeighbors(ub->aa, i1, nbufms, &nsizems);
   assert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
@@ -154,8 +154,8 @@ static void mutateSubtreeInterchange(struct UnrootedBinary *ub)
     i1 = getValueAt(swappers, 0).i;
     i2 = getValueAt(swappers, 1).i;
     assert(i1 != i2);
-    assert(adjaGetNeighborCount(ub->aa, i1) == 3);
-    assert(adjaGetNeighborCount(ub->aa, i2) == 3);
+    assert(adjaNeighborCount(ub->aa, i1) == 3);
+    assert(adjaNeighborCount(ub->aa, i2) == 3);
     freeDoubleDoubler(swappers);
     pathlen = MAXPATHNODES;
     retval = pathFinder(ub->aa, i1, i2, pathbuf, &pathlen);
@@ -234,7 +234,7 @@ struct UnrootedBinary *newUnrootedBinary(int howManyLeaves)
   struct UnrootedBinary *ub = gcalloc(sizeof(struct UnrootedBinary), 1);
   assert(howManyLeaves > 3);
   ub->nodecount = 2*howManyLeaves-2;
-  ub->aa = newPathKeeper(loadAdaptorAL(ub->nodecount));
+  ub->aa = newPathKeeper(adjaLoadAdjList(ub->nodecount));
   for (i = 0; i < howManyLeaves-2; ++i) {
     adjaSetConState(ub->aa, i, i+howManyLeaves, 1);
     adjaSetConState(ub->aa, i, i+1, 1);
@@ -268,12 +268,12 @@ struct UnrootedBinary *cloneTree(const struct UnrootedBinary *ub)
 
 int isQuartetableNode(const struct UnrootedBinary *ub, qbase_t which)
 {
-  return adjaGetNeighborCount(ub->aa, which) < 3;
+  return adjaNeighborCount(ub->aa, which) < 3;
 }
 
 int isFlippableNode(struct UnrootedBinary *ub, qbase_t which)
 {
-  return adjaGetNeighborCount(ub->aa, which) == 3;
+  return adjaNeighborCount(ub->aa, which) == 3;
 }
 
 qbase_t getStartingNode(const struct UnrootedBinary *ub)

@@ -920,8 +920,8 @@ void testAdjAdaptor(void)
   int labelsize;
   int i, n1, n2;
   labelsize = rand() % 10 + 4;
-  a1 = loadAdaptorAM(labelsize);
-  a2 = newPathKeeper(loadAdaptorAL(labelsize));
+  a1 = adjaLoadAdjMatrix(labelsize);
+  a2 = newPathKeeper(adjaLoadAdjList(labelsize));
   for (i = 0; i < ADJATRIALS; i += 1) {
     n1 = rand() % labelsize;
     do {
@@ -946,43 +946,43 @@ void testAdjList(void)
 {
 #define ALSIZE 10
 #define ALTRIALS 1000
-  struct AdjList *al = newAdjList(ALSIZE);
+  struct AdjList *al = adjlistNew(ALSIZE);
   int c, m, i, j;
   for (i = 0; i < ALTRIALS; ++i) {
     m = rand() % ALSIZE;
     j = rand() % ALSIZE;
     if (rand() % 3 == 1) {
-      c = getALConState(al, m, j);
+      c = adjlistGetConState(al, m, j);
       c ^= 1;
-      setALConState(al, m, j, c);
+      adjlistSetConState(al, m, j, c);
     }
     else {
-      c = getALConState(al, m, j);
-      assert(c == getALConState(al, j, m));
+      c = adjlistGetConState(al, m, j);
+      assert(c == adjlistGetConState(al, j, m));
     }
   }
-  freeAdjList(al);
+  adjlistFree(al);
 }
 void testAdjMatrix(void)
 {
 #define AMSIZE 10
 #define AMTRIALS 1000
-  struct AdjMatrix *am = newAdjMatrix(AMSIZE);
+  struct AdjMatrix *am = adjmatrixNew(AMSIZE);
   int c, m, i, j;
   for (i = 0; i < AMTRIALS; ++i) {
     m = rand() % AMSIZE;
     j = rand() % AMSIZE;
     if (rand() % 3 == 1) {
-      c = getConState(am, m, j);
+      c = adjmatrixGetConState(am, m, j);
       c ^= 1;
-      setConState(am, m, j, c);
+      adjmatrixSetConState(am, m, j, c);
     }
     else {
-      c = getConState(am, m, j);
-      assert(c == getConState(am, j, m));
+      c = adjmatrixGetConState(am, m, j);
+      assert(c == adjmatrixGetConState(am, j, m));
     }
   }
-  freeAdjMatrix(am);
+  adjmatrixFree(am);
 }
 #if 0
   c = 0;

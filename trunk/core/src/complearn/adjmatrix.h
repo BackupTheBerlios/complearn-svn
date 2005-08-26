@@ -24,13 +24,13 @@ struct DoubleA;
 /** \brief Create a new AdjMatrix with a given size
  *
  * This function creates a new AdjMatrix with the given dimension on a side.
- * This memory should be freed using freeAdjMatrix when it is no longer needed.
+ * This memory should be freed using adjmatrixFree when it is no longer needed.
  * An AdjMatrix of size n supports node-labels in the range 0 to n-1, inclusive.
  *
  * \param howbig the size of one side of the square matrix
  * \return a pointer to a newly allocated AdjMatrix of the given size
  */
-struct AdjMatrix *newAdjMatrix(int howbig);
+struct AdjMatrix *adjmatrixNew(int howbig);
 
 /** \brief Clones an AdjMatrix to make an independent copy
  * This function simply clones an AdjMatrix and returns a new copy.
@@ -38,7 +38,7 @@ struct AdjMatrix *newAdjMatrix(int howbig);
  * \param inp a pointer to the AdjMatrix to be cloned
  * \return a pointer to a new copy of the input AdjMatrix
  */
-struct AdjMatrix *cloneAdjMatrix(const struct AdjMatrix *inp);
+struct AdjMatrix *adjmatrixClone(const struct AdjMatrix *inp);
 
 /** \brief Deallocates memory used for an AdjMatrix
  *
@@ -48,7 +48,7 @@ struct AdjMatrix *cloneAdjMatrix(const struct AdjMatrix *inp);
  * \param adj a pointer to the AdjMatrix that must be deallocated
  *
  */
-void freeAdjMatrix(struct AdjMatrix *adj);
+void adjmatrixFree(struct AdjMatrix *adj);
 
 /** \brief Queries the connected status between two numbered nodes
  *
@@ -63,7 +63,7 @@ void freeAdjMatrix(struct AdjMatrix *adj);
  * respectively
  *
  */
-int getConState(const struct AdjMatrix *adj, int i, int j);
+int adjmatrixGetConState(const struct AdjMatrix *adj, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
@@ -75,7 +75,7 @@ int getConState(const struct AdjMatrix *adj, int i, int j);
  * \param j the second node label
  * \param conStatus an integer indicating whether to 0=disconnect or 1=connect
  */
-void setConState(struct AdjMatrix *adj, int i, int j, int conState);
+void adjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
@@ -91,7 +91,7 @@ void setConState(struct AdjMatrix *adj, int i, int j, int conState);
  *              to by nsize will not be affected.
  * \return CL_OK if the buffer was big enough, or CL_ERRFULL if it wasn't.
  */
-int getNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
+int adjmatrixNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
 
 /** \brief Counts the number of neighbors a given node contains
  *
@@ -103,18 +103,18 @@ int getNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
  * \param from the integer label for the node to be investigated
  * \return an integer representing the total count of neighbors for node from
  */
-int getNeighborCount(const struct AdjMatrix *adj, int from);
+int adjmatrixNeighborCount(const struct AdjMatrix *adj, int from);
 
 /** \brief Returns the size of a given AdjMatrix
  *
  *  This function returns the size of a dimension of an AdjMatrix.  This
- *  number is the same value passed to newAdjMatrix() when a newly initialized
+ *  number is the same value passed to adjmatrixNew() when a newly initialized
  *  AdjMatrix object is created.
  *
  *  \param adj a pointer to the AdjMatrix to be investigated
  *  \return an integer representing the size of an AdjMatrix
  */
-int getAMSize(const struct AdjMatrix *adj);
+int adjmatrixSize(const struct AdjMatrix *adj);
 
 /** \brief Prints a visual representation of an AdjMatrix to stdout
  *
@@ -123,8 +123,8 @@ int getAMSize(const struct AdjMatrix *adj);
  *
  * \param adj a pointer to the AdjMatrix to be printed
  */
-void printAdjMatrix(const struct AdjMatrix *which);
+void adjmatrixPrint(const struct AdjMatrix *which);
 
-struct AdjAdaptor *loadAdaptorAM(int howBig);
+struct AdjAdaptor *adjaLoadAdjMatrix(int howBig);
 
 #endif

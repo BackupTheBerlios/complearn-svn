@@ -14,13 +14,13 @@ struct PathKeeper {
 int pk_getneighborcount(struct AdjAdaptor *ad, int i)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
-  return adjaGetNeighborCount(pk->basis, i);
+  return adjaNeighborCount(pk->basis, i);
 }
 
 int pk_getneighbors(struct AdjAdaptor *ad, int i, int *nbuf, int *nsize)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
-  return adjaGetNeighbors(pk->basis, i, nbuf, nsize);
+  return adjaNeighbors(pk->basis, i, nbuf, nsize);
 }
 
 void pk_print(struct AdjAdaptor *ad)
@@ -182,7 +182,7 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   }
   length[root] = 0;
   path[root] = root;
-  retval = adjaGetNeighbors(aa, root, nbuf, &nsize);
+  retval = adjaNeighbors(aa, root, nbuf, &nsize);
   assert(retval == CL_OK);
   for (i = 0; i < nsize; i += 1) {
     int neighbor = nbuf[i];
@@ -199,7 +199,7 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   while (getSize(todo)) {
     nsize = MAXNEIGHBORS;
     cur = shiftDoubleDoubler(todo).i;
-    retval = adjaGetNeighbors(aa, cur, nbuf, &nsize);
+    retval = adjaNeighbors(aa, cur, nbuf, &nsize);
     assert(retval == CL_OK);
     for (i = 0; i < nsize; i += 1) {
       int neighbor = nbuf[i];
@@ -275,7 +275,7 @@ void walkTree(struct AdjAdaptor *aa,
       addNodeToSet(done, cur);
       p.i = cur;
       pushValue(result, p);
-      retval = adjaGetNeighbors(aa, cur, nbuf, &nsize);
+      retval = adjaNeighbors(aa, cur, nbuf, &nsize);
       assert(retval == CL_OK);
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
       assert(nsize <= 1 || nbuf[0] < nbuf[1]);

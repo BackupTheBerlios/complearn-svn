@@ -24,13 +24,13 @@ struct DoubleA;
 /** \brief Create a new AdjList with a given size
  *
  * This function creates a new AdjList with the given dimension on a side.
- * This memory should be freed using freeAdjList when it is no longer needed.
+ * This memory should be freed using adjlistFree when it is no longer needed.
  * An AdjList of size n supports node-labels in the range 0 to n-1, inclusive.
  *
  * \param howbig the number of nodes to support
  * \return a pointer to a newly allocated AdjList of the given size
  */
-struct AdjList *newAdjList(int howbig);
+struct AdjList *adjlistNew(int howbig);
 
 /** \brief Clones an AdjList to make an independent copy
  * This function simply clones an AdjList and returns a new copy.
@@ -38,7 +38,7 @@ struct AdjList *newAdjList(int howbig);
  * \param inp a pointer to the AdjList to be cloned
  * \return a pointer to a new copy of the input AdjList
  */
-struct AdjList *cloneAdjList(const struct AdjList *inp);
+struct AdjList *adjlistClone(const struct AdjList *inp);
 
 /** \brief Deallocates memory used for an AdjList
  *
@@ -48,7 +48,7 @@ struct AdjList *cloneAdjList(const struct AdjList *inp);
  * \param adj a pointer to the AdjList that must be deallocated
  *
  */
-void freeAdjList(struct AdjList *adj);
+void adjlistFree(struct AdjList *adj);
 
 /** \brief Queries the connected status between two numbered nodes
  *
@@ -63,7 +63,7 @@ void freeAdjList(struct AdjList *adj);
  * respectively
  *
  */
-int getALConState(const struct AdjList *adj, int i, int j);
+int adjlistGetConState(const struct AdjList *adj, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
@@ -75,7 +75,7 @@ int getALConState(const struct AdjList *adj, int i, int j);
  * \param j the second node label
  * \param conStatus an integer indicating whether to 0=disconnect or 1=connect
  */
-void setALConState(struct AdjList *adj, int i, int j, int conState);
+void adjlistSetConState(struct AdjList *adj, int i, int j, int conState);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
@@ -91,7 +91,7 @@ void setALConState(struct AdjList *adj, int i, int j, int conState);
  *              to by nsize will not be affected.
  * \return CL_OK if the buffer was big enough, or CL_ERRFULL if it wasn't.
  */
-int getALNeighbors(const struct AdjList *adj, int from, int *nbuf, int *nsize);
+int adjlistNeighbors(const struct AdjList *adj, int from, int *nbuf, int *nsize);
 
 /** \brief Counts the number of neighbors a given node contains
  *
@@ -103,18 +103,18 @@ int getALNeighbors(const struct AdjList *adj, int from, int *nbuf, int *nsize);
  * \param from the integer label for the node to be investigated
  * \return an integer representing the total count of neighbors for node from
  */
-int getALNeighborCount(const struct AdjList *adj, int from);
+int adjlistNeighborCount(const struct AdjList *adj, int from);
 
 /** \brief Returns the size of a given AdjList)
  *
  *  This function returns the size of a dimension of an AdjList.  This
- *  number is the same value passed to newAdjList() when a newly initialized
+ *  number is the same value passed to adjlistNew() when a newly initialized
  *  AdjList object is created.
  *
  *  \param adj a pointer to the AdjList to be investigated
  *  \return an integer representing the size of an AdjList
  */
-int getALSize(const struct AdjList *adj);
+int adjlistSize(const struct AdjList *adj);
 
 /** \brief Prints a visual representation of an AdjList to stdout
  *
@@ -124,7 +124,7 @@ int getALSize(const struct AdjList *adj);
  *
  * \param adj a pointer to the AdjList to be printed
  */
-void printAdjList(const struct AdjList *which);
+void adjlistPrint(const struct AdjList *which);
 
 /** \brief Allocates a new AdjList and wraps it within an AdjAdaptor
  *
@@ -136,6 +136,6 @@ void printAdjList(const struct AdjList *which);
  * \param howBig maximum number of nodes that this AdjAdaptor can support
  * \returns pointer to the newly allocated AdjAdaptor struct
  */
-struct AdjAdaptor *loadAdaptorAL(int howBig);
+struct AdjAdaptor *adjaLoadAdjList(int howBig);
 
 #endif

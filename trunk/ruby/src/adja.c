@@ -88,13 +88,13 @@ static VALUE rbadja_getneighbors(VALUE self, VALUE vwhich)
   int nc, i;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   which = NUM2INT(vwhich);
-  nc = adjaGetNeighborCount(adja, which);
+  nc = adjaNeighborCount(adja, which);
 
   if (nc > 0) {
     int bufsize = sizeof(int) * nc;
     int *nbuf = malloc(bufsize);
     int retval;
-    retval = adjaGetNeighbors(adja,which,nbuf, &bufsize);
+    retval = adjaNeighbors(adja,which,nbuf, &bufsize);
     assert(retval == CL_OK);
     for (i = 0; i < nc; i += 1)
       rb_ary_push(result, INT2FIX(nbuf[i]));
@@ -109,7 +109,7 @@ static VALUE rbadja_init(VALUE self)
 
 VALUE rbadja_new(VALUE cl, VALUE sz)
 {
-  struct AdjAdaptor *adja = loadAdaptorAL(NUM2INT(sz));
+  struct AdjAdaptor *adja = adjaLoadAdjList(NUM2INT(sz));
   return rbadja_secretnew(cl, adja);
 }
 

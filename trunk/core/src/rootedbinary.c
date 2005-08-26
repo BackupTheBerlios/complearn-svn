@@ -34,7 +34,7 @@ static qbase_t randomKernelNode(struct RootedBinary *rb)
   int nsize;
   do {
     result = randomTreeNode(rb);
-    nsize = adjaGetNeighborCount(rb->aa, result);
+    nsize = adjaNeighborCount(rb->aa, result);
   } while (nsize == 1);
   return result;
 }
@@ -67,12 +67,12 @@ static int verifyTree(struct RootedBinary *rb)
     return 0;
   }
   for (i = 0; i < rb->nodecount; ++i) {
-    nc = adjaGetNeighborCount(rb->aa, i);
+    nc = adjaNeighborCount(rb->aa, i);
     if ((nc != 1 && nc != 3 && i != rb->root) || (nc != 2 && i == rb->root)) {
       int nbp[20], retval;
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
-      retval = adjaGetNeighbors(rb->aa, i, nbp, &nlenhere);
+      retval = adjaNeighbors(rb->aa, i, nbp, &nlenhere);
       assert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
@@ -107,12 +107,12 @@ tryagain:
   assert(adjaGetConState(rb->aa, k1, i1));
   nsizems = MAXNEIGHBORS;
 
-  retval = adjaGetNeighbors(rb->aa, i1, nbufms, &nsizems);
+  retval = adjaNeighbors(rb->aa, i1, nbufms, &nsizems);
   assert(retval == CL_OK);
   if (nsizems < 3)
     goto tryagain;
   adjaSetConState(rb->aa, k1, i1, 0);
-  retval = adjaGetNeighbors(rb->aa, i1, nbufms, &nsizems);
+  retval = adjaNeighbors(rb->aa, i1, nbufms, &nsizems);
   assert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
@@ -234,7 +234,7 @@ struct RootedBinary *newRootedBinary(int howManyLeaves)
   struct RootedBinary *rb = gcalloc(sizeof(struct RootedBinary), 1);
   assert(howManyLeaves > 3);
   rb->nodecount = 2*howManyLeaves-3;
-  rb->aa = newPathKeeper(loadAdaptorAL(rb->nodecount));
+  rb->aa = newPathKeeper(adjaLoadAdjList(rb->nodecount));
   for (i = 0; i < howManyLeaves-2; ++i) {
     adjaSetConState(rb->aa, i, i+howManyLeaves-1, 1);
     adjaSetConState(rb->aa, i, i+1, 1);
@@ -265,12 +265,12 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *rb)
 
 int isQuartetableNodeRB(const struct RootedBinary *rb, qbase_t which)
 {
-  return adjaGetNeighborCount(rb->aa, which) < 3;
+  return adjaNeighborCount(rb->aa, which) < 3;
 }
 
 int isFlippableNodeRB(struct RootedBinary *rb, qbase_t which)
 {
-  int nc = adjaGetNeighborCount(rb->aa, which);
+  int nc = adjaNeighborCount(rb->aa, which);
 // return nc != 1;
   return nc == 2 || nc == 3;
 }

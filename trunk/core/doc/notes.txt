@@ -65,3 +65,6 @@ libcomplearn-1.0
 To make new call tree graph first install calltree (~cilibrar/bin) then
 calltree -I. -Icomplearn -i=externals.txt *tree*.c -dot >callgraph.dot 2>o
 dot callgraph.dot -Tps -Gsize=7,7 >~/cja/public_html/tmp/cg.ps
+
+-- easy way to use search and replace script
+./core/scripts/searchreplace.zsh _TOREPLACE_ _REPLACEMENT_ (core|ruby)/**/*.(c|h|rb)A

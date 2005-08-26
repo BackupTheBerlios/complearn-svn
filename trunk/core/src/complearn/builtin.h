@@ -27,13 +27,53 @@ struct CompAdaptor *loadBuiltinCA(const char *name);
  */
 struct StringStack *listBuiltinCA(void);
 
+/** \brief Returns pointer to builtin bzip2 compressor interface.
+ *
+ *  Equivalent to calling load BuiltinCA("bzip").
+ * \returns pointer to CompAdaptor or NULL
+ */
+struct CompAdaptor *loadBZipAdaptor(void);
+
+/** \brief Returns pointer to builtin blocksort compressor interface.
+ *
+ *  Equivalent to calling load BuiltinCA("blocksort").
+ * \returns pointer to CompAdaptor
+ */
+struct CompAdaptor *loadBlocksortAdaptor(void);
+
+/** \brief Returns pointer to builtin google compressor interface.
+ *
+ *  Equivalent to calling load BuiltinCA("google").
+ * \returns pointer to CompAdaptor or NULL
+ */
+struct CompAdaptor *loadGoogleAdaptor(void);
+
+/** \brief Returns pointer to builtin zlib compressor interface.
+ *
+ *  Equivalent to calling load BuiltinCA("zlib").
+ * \returns pointer to CompAdaptor or NULL
+ */
+struct CompAdaptor *loadZlibAdaptor(void);
+
+/** \brief Prints a list of builtin compressors.
+ *
+ *  printBuiltinCompressors() prints to stdout a list of builtin compressors
+ *  supported by CompLearn.  This list is dependent on the compression
+ *  libraries detected during source compilcation.
+ */
+void printBuiltinCompressors(void);
+
+/* TODO:  Following functions belong somewhere else.  They are not true
+ * builtin compressors.  Must also rename the files builtinca-realcomp.c,
+ * builtinca-virtcomp.c, and builtinca-soap.c */
+
 /** \brief Returns pointer to a real compressor interface.
- * 
+ *
  *  The real compressor interface requires a parameter cmd in the EnvMap for
  *  newcompinst. cmd specifies the filename of a command to execute to compress
  *  data. This executable is expected to read the input data from STDIN and
  *  output compressed data to STDOUT. The compressed bytes will be counted and
- *  converted to bits. 
+ *  converted to bits.
  * \returns pointer to CompAdaptor
  */
 struct CompAdaptor *loadRealComp(const char *cmd);
@@ -45,7 +85,7 @@ struct CompAdaptor *loadRealComp(const char *cmd);
  * compress data. This executable is expected to read the input data from STDIN
  * and output the floating point number representing the compressed size, in
  * bits, to STDOUT. This number should be printed in standard ASCII-format as a
- * decimal. 
+ * decimal.
  * \returns pointer to CompAdaptor
  */
 struct CompAdaptor *loadVirtComp(const char *cmd);
@@ -57,19 +97,9 @@ struct CompAdaptor *loadVirtComp(const char *cmd);
  *  system will connect to the specified SOAP server and call a single function
  *  called compfunc and pass it one string. The compression server is expected
  *  to return a double precision floating-point value indicating the compressed
- *  size, in bits, of the string. 
+ *  size, in bits, of the string.
  * \returns pointer to CompAdaptor
  */
 struct CompAdaptor *loadSOAPAdaptor(const char *url, const char *urn);
-
-/** \brief Prints a list of builtin compressors.
- *
- *  printBuiltinCompressors() prints to stdout a list of builtin compressors
- *  supported by CompLearn.  This list is dependent on the compression
- *  libraries detected during source compilcation.
- */
-void printBuiltinCompressors(void);
-
-/* TODO: move this function to a more appropriate location */
 
 #endif
