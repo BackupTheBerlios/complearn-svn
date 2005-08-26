@@ -31,8 +31,8 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
     else
       return NULL;
   }
-  result->marked = newCLNodeSet(MAXINDECES);
-  result->private = newCLNodeSet(MAXINDECES);
+  result->marked = clnodesetNew(MAXINDECES);
+  result->private = clnodesetNew(MAXINDECES);
 
   tm = newTagManager(db);
 
@@ -47,7 +47,7 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
     setKeyValEM(result, readAtSS(keyparts,i), readAtSS(valparts,i));
 
   for (i = 0; i < getSize(result->d); i += 1)
-    addNodeToSet(result->marked, i);
+    clnodesetAddNode(result->marked, i);
 
   freeTagManager(tm);
   freeSS(keyparts); freeSS(valparts);
@@ -81,8 +81,8 @@ struct EnvMap *newEnvMap() {
   struct EnvMap *em;
   em = gcalloc(sizeof(struct EnvMap), 1);
   em->d = newDoubleDoubler();
-  em->marked = newCLNodeSet(MAXINDECES);
-  em->private = newCLNodeSet(MAXINDECES);
+  em->marked = clnodesetNew(MAXINDECES);
+  em->private = clnodesetNew(MAXINDECES);
   return em;
 }
 
@@ -94,9 +94,9 @@ void printEM(struct EnvMap *uem)
   for (i = 0; i < getSize(em->d); ++i)
     printf("%s->%s\n", getValueAt(em->d,i).sp.key, getValueAt(em->d,i).sp.val);
   printf("Marked: ");
-  printCLNodeSet(em->marked);
+  clnodesetPrint(em->marked);
   printf("Private: ");
-  printCLNodeSet(em->private);
+  clnodesetPrint(em->private);
   printf("ES END.\n");
   freeEM(em);
 }
@@ -118,8 +118,8 @@ struct EnvMap *cloneEM(struct EnvMap *em)
   nem->d = newDoubleDoubler();
   for (i = 0; i < sz; ++i)
     setValueAt(nem->d, i, cloneStringPair(getValueAt(em->d, i).sp));
-  nem->marked = cloneCLNodeSet(em->marked);
-  nem->private = cloneCLNodeSet(em->private);
+  nem->marked = clnodesetClone(em->marked);
+  nem->private = clnodesetClone(em->private);
   return nem;
 }
 
@@ -144,7 +144,7 @@ static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
 
 void setKeyMarkedEM(struct EnvMap *em, const char *key)
 {
-  addNodeToSet(em->marked, findIndexForKey(em, key));
+  clnodesetAddNode(em->marked, findIndexForKey(em, key));
 }
 
 int setKeyValEM(struct EnvMap *em, char *key, char *val)
@@ -159,8 +159,8 @@ int setKeyValEM(struct EnvMap *em, char *key, char *val)
     pushValue(em->d, p);
   }
   /* to ensure NodeSets are big enough */
-  removeNodeFromSet(em->marked, sizeEM(em)+1);
-  removeNodeFromSet(em->private, sizeEM(em)+1);
+  clnodesetRemoveNode(em->marked, sizeEM(em)+1);
+  clnodesetRemoveNode(em->private, sizeEM(em)+1);
   return CL_OK;
 }
 
@@ -178,9 +178,9 @@ int freeEM(struct EnvMap *em)
   }
   freeDoubleDoubler(em->d);
   em->d = NULL;
-  freeCLNodeSet(em->marked);
+  clnodesetFree(em->marked);
   em->marked = NULL;
-  freeCLNodeSet(em->private);
+  clnodesetFree(em->private);
   em->private = NULL;
   gfreeandclear(em);
   return CL_OK;
@@ -219,17 +219,17 @@ int findIndexForKey(struct EnvMap *em, const char *key)
 
 void setKeyPrivateEM(struct EnvMap *em, const char *key)
 {
-  addNodeToSet(em->private, findIndexForKey(em,key));
+  clnodesetAddNode(em->private, findIndexForKey(em,key));
 }
 
 int isMarkedAtEM(struct EnvMap *em, int where)
 {
-  return isNodeInSet(em->marked, where);
+  return clnodesetIsNodeInSet(em->marked, where);
 }
 
 int isPrivateAtEM(struct EnvMap *em, int where)
 {
-  return isNodeInSet(em->private, where);
+  return clnodesetIsNodeInSet(em->private, where);
 }
 
 struct EnvMap *get_clem_from_clb(char *fname)
@@ -256,7 +256,7 @@ int mergeEM(struct EnvMap *dest, struct EnvMap *src)
   for (i = 0; i < sizeEM(src); i += 1) {
     p = getKeyValAt(src,i);
     setKeyValEM(dest, p.sp.key, p.sp.val);
-    if (isNodeInSet(src->marked, i))
+    if (clnodesetIsNodeInSet(src->marked, i))
       setKeyMarkedEM(dest, p.sp.key);
   }
   return CL_OK;

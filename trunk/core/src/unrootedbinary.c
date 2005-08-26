@@ -286,11 +286,11 @@ struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *
   union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
-  struct CLNodeSet *done = newCLNodeSet(ub->nodecount);
+  struct CLNodeSet *done = clnodesetNew(ub->nodecount);
   pushValue(border, p);
   walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
   freeDoubleDoubler(border);
-  freeCLNodeSet(done);
+  clnodesetFree(done);
   return result;
 }
 

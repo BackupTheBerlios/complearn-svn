@@ -16,22 +16,22 @@ struct CLNodeSet;
  * \param howbig an optional value indicating how big this set should
  * initially be sized.  This value is not a limit.
  */
-struct CLNodeSet *newCLNodeSet(int howbig);
-struct CLNodeSet *cloneCLNodeSet(const struct CLNodeSet *cl);
-void freeCLNodeSet(struct CLNodeSet *cl);
+struct CLNodeSet *clnodesetNew(int howbig);
+struct CLNodeSet *clnodesetClone(const struct CLNodeSet *cl);
+void clnodesetFree(struct CLNodeSet *cl);
 
 /** \brief Adds a node label to a CLNodeSet
  *  \param cl CLNodeSet
  *  \param which node label to add
  */
-void addNodeToSet(struct CLNodeSet *cl, qbase_t which);
-void removeNodeFromSet(struct CLNodeSet *cl, qbase_t which);
-void setNodeStatusInSet(struct CLNodeSet *cl, qbase_t which, int status);
-int isNodeInSet(const struct CLNodeSet *cl, qbase_t which);
-void printCLNodeSet(struct CLNodeSet *cl);
-struct DoubleA *CLNodeSetToDoubleA(const struct CLNodeSet *cl);
-struct CLNodeSet *DoubleAToCLNodeSet(const struct DoubleA *da);
-int sizeCLNodeSet(const struct CLNodeSet *cl);
+void clnodesetAddNode(struct CLNodeSet *cl, qbase_t which);
+void clnodesetRemoveNode(struct CLNodeSet *cl, qbase_t which);
+void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
+int clnodesetIsNodeInSet(const struct CLNodeSet *cl, qbase_t which);
+void clnodesetPrint(struct CLNodeSet *cl);
+struct DoubleA *clnodesetToDoubleA(const struct CLNodeSet *cl);
+struct CLNodeSet *doubleaToCLNodeSet(const struct DoubleA *da);
+int clnodesetSize(const struct CLNodeSet *cl);
 
 #endif
 

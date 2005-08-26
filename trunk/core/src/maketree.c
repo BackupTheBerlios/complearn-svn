@@ -73,7 +73,7 @@ void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struc
 {
   printf("order improvement Or(T) = %f\n", getScoreScaledTM(th));
 //  printf("With flips set:\n");
-//  printCLNodeSet(flips);
+//  clnodesetPrint(flips);
   writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
 }
 
@@ -81,7 +81,7 @@ void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CL
 {
   printf("Score done to Or(T) = %f\n", getScoreScaledTM(tm));
 //  printf("With flips set:\n");
-//  printCLNodeSet(flips);
+//  clnodesetPrint(flips);
   assert(dotth);
   writeDotFile(getCurTreeTM(tm), getCurScore(dotth), flips);
   //writeDotFile(dotth, flips);
@@ -215,7 +215,7 @@ int main(int argc, char **argv)
     clns = findTreeOrder(tb, &score);
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
-    printCLNodeSet(clns);
+    clnodesetPrint(clns);
   }
   printf("\nNode ordering:\n");
   res = simpleWalkTree(ub, clns);

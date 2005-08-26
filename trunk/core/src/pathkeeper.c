@@ -253,11 +253,11 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
-  struct CLNodeSet *done = newCLNodeSet(treeGetNodeCountTRA(ta));
+  struct CLNodeSet *done = clnodesetNew(treeGetNodeCountTRA(ta));
   pushValue(border, p);
   walkTree(treegetadjaTRA(ta), result, border, done, 0, flips);
   freeDoubleDoubler(border);
-  freeCLNodeSet(done);
+  clnodesetFree(done);
   return result;
 
 }
@@ -275,14 +275,14 @@ void walkTree(struct AdjAdaptor *aa,
       cur = shiftDoubleDoubler(border).i;
 /*    assert(cur >= 0); */
     assert(cur < adjaSize(aa));
-    if (!isNodeInSet(done, cur)) {
+    if (!clnodesetIsNodeInSet(done, cur)) {
       union PCTypes p = zeropct;
       int i;
       int retval;
       struct DoubleA *nb = newDoubleDoubler();
       int nbuf[MAXNEIGHBORS];
       int nsize = MAXNEIGHBORS;
-      addNodeToSet(done, cur);
+      clnodesetAddNode(done, cur);
       p.i = cur;
       pushValue(result, p);
       retval = adjaNeighbors(aa, cur, nbuf, &nsize);
@@ -292,10 +292,10 @@ void walkTree(struct AdjAdaptor *aa,
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];
-        if (!isNodeInSet(done, p.i))
+        if (!clnodesetIsNodeInSet(done, p.i))
           pushValue(nb, p);
       }
-      if (flipped && isNodeInSet(flipped, cur)) {
+      if (flipped && clnodesetIsNodeInSet(flipped, cur)) {
         if (nsize < 2) {
           //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {

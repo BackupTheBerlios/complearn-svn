@@ -20,7 +20,7 @@ struct TreeMolder {
 
 void freeTreeMolder(struct TreeMolder *tm)
 {
-  freeCLNodeSet(tm->flips);
+  clnodesetFree(tm->flips);
   tm->flips = NULL;
   memset(tm, 0, sizeof(*tm));
   gfreeandclear(tm);
@@ -49,7 +49,7 @@ struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta)
   tm->nodecount = adjaSize(aa);
   tm->ta = ta;
   tm->dm = gm;
-  tm->flips = newCLNodeSet(tm->nodecount);
+  tm->flips = clnodesetNew(tm->nodecount);
   tm->score = -1;
   calcRangesTM(tm);
   return tm;
@@ -97,9 +97,9 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
     do {
       whichNode = rand() % tm->nodecount;
     } while (!treeIsFlippable(tm->ta, whichNode));
-    oldStatus = isNodeInSet(dst, whichNode);
+    oldStatus = clnodesetIsNodeInSet(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
-    setNodeStatusInSet(dst, whichNode, !oldStatus);
+    clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
   } while ((rand() % 2) == 0);
 }
 
@@ -113,19 +113,19 @@ void scrambleTreeMolder(struct TreeMolder *tm)
 
 int tryToImproveTM(struct TreeMolder *tm)
 {
-  struct CLNodeSet *cand = cloneCLNodeSet(tm->flips);
+  struct CLNodeSet *cand = clnodesetClone(tm->flips);
   double candscore;
   mutateFlipArray(tm, cand);
   candscore = scorePerimeter(tm->dm, tm->ta, cand);
   if (candscore < getScoreTM(tm)) {
 //    printf("In treemolder %p, raw score impr from %f to %f\n", tm, tm->score, candscore );
     tm->score = candscore;
-    freeCLNodeSet(tm->flips);
+    clnodesetFree(tm->flips);
     tm->flips = cand;
     return 1;
   }
   else {
-    freeCLNodeSet(cand);
+    clnodesetFree(cand);
     return 0;
   }
 }

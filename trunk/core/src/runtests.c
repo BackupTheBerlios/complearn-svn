@@ -830,7 +830,7 @@ void testQuartet(void)
     clns = findTreeOrder(tb, &score);
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
-    printCLNodeSet(clns);
+    clnodesetPrint(clns);
     printf("Done.\n");
 
 //    printf("score is %f\n", getScoreTB(tb));
@@ -1158,8 +1158,8 @@ void testPerimPairs()
 {
   struct TreeAdaptor *tra = loadNewRootedTRA(6);
   struct DoubleA *da;
-  struct CLNodeSet *clns = newCLNodeSet(9);
-  addNodeToSet(clns, 2);
+  struct CLNodeSet *clns = clnodesetNew(9);
+  clnodesetAddNode(clns, 2);
   da = treeperimpairsTRA(tra, NULL);
   freeDoubleDoubler(da);
   da = treeperimpairsTRA(tra, clns);

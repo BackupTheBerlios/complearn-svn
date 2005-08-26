@@ -285,11 +285,11 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
   union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
-  struct CLNodeSet *done = newCLNodeSet(rb->nodecount);
+  struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   pushValue(border, p);
   walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), result, border, done, 0, NULL);
   freeDoubleDoubler(border);
-  freeCLNodeSet(done);
+  clnodesetFree(done);
   return result;
 }
 
@@ -302,7 +302,7 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
   int firstnode = -1;
   struct DoubleA *traversalseq = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
-  struct CLNodeSet *done = newCLNodeSet(rb->nodecount);
+  struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   p.i = rb->root; /* start at root */
   pushValue(border, p);
   walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);

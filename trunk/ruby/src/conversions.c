@@ -82,7 +82,7 @@ VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev)
 
 struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
 {
-  struct CLNodeSet *clns = newCLNodeSet(maxsz);
+  struct CLNodeSet *clns = clnodesetNew(maxsz);
   int i;
   if (ar != Qnil) {
     int sz = RARRAY(ar)->len;
@@ -92,7 +92,7 @@ struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
       int ind;
       v = rb_ary_entry(ar, i);
       ind = NUM2INT(v);
-      addNodeToSet(clns, ind);
+      clnodesetAddNode(clns, ind);
     }
   }
   return clns;
