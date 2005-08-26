@@ -16,13 +16,13 @@ static int bz2a_apiver(void);
 /* bzip2 compression interface */
 
 /** \brief The BZIP2 compression adaptor instance
- *  \struct bz2aCompInstance
+ *  \struct BZ2CompInstance
  *
  *  This structure holds all the persistent configuration information
  *  governing how the block-sorting compressor behaves.  Several parameters
  *  that effect the behavior are listed as fields below.
  */
-struct bz2aCompInstance {
+struct BZ2CompInstance {
   int blocksize;  /*!< the size of each block, in multiples of 100K; this must
                        be between 1 and 9 inclusive.  The default, 9, is the
                        largest block, measuring just under one megabyte. */
@@ -64,11 +64,11 @@ struct CompAdaptor *builtin_BZIP(void)
     apiv: bz2a_apiver,
   };
   struct CompAdaptor *ca;
-  struct bz2aCompInstance *bzci;
+  struct BZ2CompInstance *bzci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct bz2aCompInstance), 1);
-  bzci = (struct bz2aCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct BZ2CompInstance), 1);
+  bzci = (struct BZ2CompInstance *) ca->cptr;
 
   /* default compressor options */
   bzci->blocksize = 9;
@@ -88,7 +88,7 @@ static void bz_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int 
 
 static void bz2a_clsetenv(struct CompAdaptor *ca)
 {
-  struct bz2aCompInstance *bzci = (struct bz2aCompInstance *) ca->cptr;
+  struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
   struct EnvMap *em = loadDefaultEnvironment()->em;
 
   bz_setIntValueMaybe(em, "blocksize", &bzci->blocksize);
@@ -99,7 +99,7 @@ static void bz2a_clsetenv(struct CompAdaptor *ca)
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
 #if BZIP2_RDY
-	struct bz2aCompInstance *bzci = (struct bz2aCompInstance *) ca->cptr;
+	struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
 	int s;
 
   unsigned char *dbuff;

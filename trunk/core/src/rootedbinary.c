@@ -15,10 +15,10 @@ struct RootedBinary {
   qbase_t root;
   int mc;
   struct LabelPerm *labelperm;
-  struct AdjA *aa;
+  struct AdjAdaptor *aa;
 };
 
-struct AdjA *getAdjAForRB(struct RootedBinary *rb)
+struct AdjAdaptor *getAdjAdaptorForRB(struct RootedBinary *rb)
 {
   return rb->aa;
 }
@@ -282,12 +282,12 @@ qbase_t getStartingNodeRB(const struct RootedBinary *rb)
 
 struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
 {
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
   struct CLNodeSet *done = newCLNodeSet(rb->nodecount);
   pushValue(border, p);
-  walkTree(getAdjAForRB((struct RootedBinary *) rb), result, border, done, 0, NULL);
+  walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), result, border, done, 0, NULL);
   freeDoubleDoubler(border);
   freeCLNodeSet(done);
   return result;
@@ -296,7 +296,7 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
 struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNodeSet *flips)
 {
   struct DoubleA *pairs = newDoubleDoubler();
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   int i;
   int lastval = -1;
   int firstnode = -1;
@@ -305,7 +305,7 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
   struct CLNodeSet *done = newCLNodeSet(rb->nodecount);
   p.i = rb->root; /* start at root */
   pushValue(border, p);
-  walkTree(getAdjAForRB((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
+  walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
 
   for (i = 0;i < getSize(traversalseq); i += 1) {
     int curnode = getValueAt(traversalseq, i).i;
@@ -341,7 +341,7 @@ static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb)
   struct DoubleA *result = newDoubleDoubler();
   for (i = 0; i < rb->nodecount; i += 1) {
     if (isQuartetableNodeRB(rb, i) == 1) {
-      union pctypes p = zeropct;
+      union PCTypes p = zeropct;
       p.i = i;
       pushValue(result, p);
     }
@@ -354,7 +354,7 @@ struct DoubleA *getLeafLabelsRB(const struct RootedBinary *rb)
   struct DoubleA *result = newDoubleDoubler();
   int i;
   for (i = 0; i < getSizeLP(rb->labelperm); i += 1) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.i = getNodeIDForColumnIndexLP(rb->labelperm, i);
     pushValue(result, p);
   }
@@ -396,10 +396,10 @@ static struct LabelPerm *rb_treegetlabelperm(struct TreeAdaptor *ta)
   return getLabelPermRB(rb);
 }
 
-static struct AdjA *rb_treegetadja(struct TreeAdaptor *ta)
+static struct AdjAdaptor *rb_treegetadja(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return getAdjAForRB(rb);
+  return getAdjAdaptorForRB(rb);
 }
 
 static int rb_treeisquartetable(struct TreeAdaptor *ta, int which)

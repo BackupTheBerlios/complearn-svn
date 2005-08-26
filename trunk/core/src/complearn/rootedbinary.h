@@ -17,7 +17,7 @@
  */
 struct RootedBinary;
 struct LabelPerm;
-struct AdjA;
+struct AdjAdaptor;
 
 struct StringStack;
 
@@ -110,7 +110,7 @@ qbase_t getStartingNodeRB(const struct RootedBinary *ub);
  * parameter; thus the order returned by getTreeNodes will be affected
  * by the node child order flip bits.
  *
- * The DoubleA returned by this function use the .i field of pctypes:
+ * The DoubleA returned by this function use the .i field of PCTypes:
  *
  * struct DoubleA *da = getTreeNodes(ub);
  * int i;
@@ -135,12 +135,12 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *ub);
  * of node identifier pairs along the entire tree perimeter.
  *
  * The node identifiers are accessed using the .ip.x and .ip.y members of
- * pctypes.  For example:
+ * PCTypes.  For example:
  *
  * struct DoubleA *da = getPerimeterPairs(ub);
  * int i;
  * for (i = 0; i < getSize(da); i += 1) {
- *   union pctypes pct = getValueAt(da, i);
+ *   union PCTypes pct = getValueAt(da, i);
  *   printf("perimeter pair: node %d and node %d\n", pct.ip.x, pct.ip.y);
  * }
  *
@@ -155,9 +155,9 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
  * 1 to indicate that they are identical.  This function is order insensitive.
  * It will only compare neighbor connectivity.
  *
- * \param ad1 pointer to one of the AdjA to compare
+ * \param ad1 pointer to one of the AdjAdaptor to compare
  * \param lab1 pointer to LabelPerm label assignments for ad1
- * \param ad2 pointer to another of the two AdjA to compare
+ * \param ad2 pointer to another of the two AdjAdaptor to compare
  * \param lab2 pointer to LabelPerm label assignments for ad2
  * \return integer to be interpretted as a boolean indicating the trees are
  * identical
@@ -213,7 +213,7 @@ int isConnectedRB(const struct RootedBinary *ub, qbase_t a, qbase_t b);
 struct LabelPerm *getLabelPermRB(struct RootedBinary *ub);
 
 
-struct AdjA *getAdjAForRB(struct RootedBinary *ub);
+struct AdjAdaptor *getAdjAdaptorForRB(struct RootedBinary *ub);
 
 struct TreeAdaptor *loadNewRootedTRA(int howBig);
 struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb);

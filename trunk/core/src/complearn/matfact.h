@@ -10,15 +10,15 @@
 
 
 /** \brief Tag added to a "dump" of a gsl_matrix.
- *  \struct ddHdr
+ *  \struct DAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
  *  function dumpDLDistMatrix(), which is used to serial a gsl_matrix so that
- *  it may be written to file, sent over a network, etc. gslmHdr contains
+ *  it may be written to file, sent over a network, etc. GSLMHdr contains
  *  information necessary for the conversion of a "dumped" DataBlock, using
  *  loadCLDistMatrix, back into a gsl_matrix.
  */
-struct gslmHdr;
+struct GSLMHdr;
 
 /** \brief Clones a given gsl_matrix to make an independent copy.
  *

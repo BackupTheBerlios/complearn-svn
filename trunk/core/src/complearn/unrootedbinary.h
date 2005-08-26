@@ -23,7 +23,7 @@
  */
 struct UnrootedBinary;
 struct LabelPerm;
-struct AdjA;
+struct AdjAdaptor;
 struct TreeAdaptor;
 
 struct StringStack;
@@ -139,7 +139,7 @@ qbase_t getStartingNode(const struct UnrootedBinary *ub);
  * parameter; thus the order returned by getTreeNodes will be affected
  * by the node child order flip bits.
  *
- * The DoubleA returned by this function use the .i field of pctypes:
+ * The DoubleA returned by this function use the .i field of PCTypes:
  *
  * struct DoubleA *da = getTreeNodes(ub, NULL);
  * int i;
@@ -164,12 +164,12 @@ struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *
  * of node identifier pairs along the entire tree perimeter.
  *
  * The node identifiers are accessed using the .ip.x and .ip.y members of
- * pctypes.  For example:
+ * PCTypes.  For example:
  *
  * struct DoubleA *da = getPerimeterPairs(ub, NULL);
  * int i;
  * for (i = 0; i < getSize(da); i += 1) {
- *   union pctypes pct = getValueAt(da, i);
+ *   union PCTypes pct = getValueAt(da, i);
  *   printf("perimeter pair: node %d and node %d\n", pct.ip.x, pct.ip.y);
  * }
  *
@@ -228,7 +228,7 @@ int isConnected(const struct UnrootedBinary *ub, qbase_t a, qbase_t b);
 struct LabelPerm *getLabelPerm(struct UnrootedBinary *ub);
 
 
-struct AdjA *getAdjAForUB(struct UnrootedBinary *ub);
+struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub);
 
 struct TreeAdaptor *loadNewUnrootedTRA(int howBig);
 struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub);

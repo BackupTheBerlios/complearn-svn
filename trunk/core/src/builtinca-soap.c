@@ -1,12 +1,12 @@
 #include <complearn/complearn.h>
 
 /** \brief SOAP-specific instancing information is kept in this structure.
- * \struct scaCompInstance
+ * \struct SOAPCompInstance
  *
  * In order to connect to a SOAP adaptor, a url and urn string must be
  * provided.  This information is stored here.
  */
-struct scaCompInstance;
+struct SOAPCompInstance;
 
 #if CSOAP_RDY
 #include <libcsoap/soap-client.h>
@@ -22,7 +22,7 @@ static char *sca_shortname(void);
 static char *sca_longname(void);
 static int sca_apiver(void);
 
-struct scaCompInstance {
+struct SOAPCompInstance {
   char *url;
   char *urn;
   char *method;
@@ -42,12 +42,12 @@ struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *met
     apiv: sca_apiver,
   };
   struct CompAdaptor *ca;
-  struct scaCompInstance *sci;
+  struct SOAPCompInstance *sci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct scaCompInstance), 1);
-  sci = (struct scaCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct SOAPCompInstance), 1);
+  sci = (struct SOAPCompInstance *) ca->cptr;
 
   sci->url = gstrdup(url);
   sci->urn = gstrdup(urn);
@@ -56,7 +56,7 @@ struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *met
   return ca;
 }
 
-static SoapCtx *invokeMethod(struct scaCompInstance *sci, SoapCtx *inp)
+static SoapCtx *invokeMethod(struct SOAPCompInstance *sci, SoapCtx *inp)
 {
   herror_t err;
   const char *url;
@@ -73,7 +73,7 @@ static SoapCtx *invokeMethod(struct scaCompInstance *sci, SoapCtx *inp)
   return sci->ctx2;
 }
 
-static double getValue(struct scaCompInstance *sci)
+static double getValue(struct SOAPCompInstance *sci)
 {
   double compsize = -2.0;
   xmlNodePtr function, node;
@@ -94,7 +94,7 @@ static double getValue(struct scaCompInstance *sci)
   return compsize;
 }
 
-static SoapCtx *prepareSOAPEnvForMethod(struct scaCompInstance *sci)
+static SoapCtx *prepareSOAPEnvForMethod(struct SOAPCompInstance *sci)
 {
   SoapCtx *ctx;
   const char *urn;
@@ -128,7 +128,7 @@ SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method)
 
 static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
-	struct scaCompInstance *sci = (struct scaCompInstance *) ca->cptr;
+	struct SOAPCompInstance *sci = (struct SOAPCompInstance *) ca->cptr;
 	//int s;
   double compsize;
   char *str = gcalloc(1,src.size+1);
@@ -147,7 +147,7 @@ static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void sca_freecompfunc(struct CompAdaptor *ca)
 {
-	struct scaCompInstance *ci = (struct scaCompInstance *) ca->cptr;
+	struct SOAPCompInstance *ci = (struct SOAPCompInstance *) ca->cptr;
   gfreeandclear(ci->urn);
   gfreeandclear(ci->url);
   gfreeandclear(ci->method);

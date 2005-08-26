@@ -18,7 +18,7 @@
  *  \sa adjmatrix.h
  */
 struct AdjMatrix;
-struct AdjA;
+struct AdjAdaptor;
 struct DoubleA;
 
 /** \brief Create a new AdjMatrix with a given size
@@ -125,6 +125,6 @@ int getAMSize(const struct AdjMatrix *adj);
  */
 void printAdjMatrix(const struct AdjMatrix *which);
 
-struct AdjA *loadAdaptorAM(int howBig);
+struct AdjAdaptor *loadAdaptorAM(int howBig);
 
 #endif

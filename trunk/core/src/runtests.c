@@ -24,9 +24,9 @@
 static char *testfile, *testbzfile, *testgzfile, *testzlibfile, *testpg4dir;
 struct GeneralConfig *gconf;
 
-struct TransAdaptor *builtin_UNBZIP(void);
-struct TransAdaptor *builtin_UNGZ(void);
-struct TransAdaptor *builtin_UNZLIB(void);
+struct TransformAdaptor *builtin_UNBZIP(void);
+struct TransformAdaptor *builtin_UNGZ(void);
+struct TransformAdaptor *builtin_UNZLIB(void);
 
 struct GeneralConfig *loadNCDEnvironment()
 {
@@ -135,7 +135,7 @@ void testDL()
 void testEM()
 {
   struct EnvMap *em;
-  union pctypes p;
+  union PCTypes p;
   em = newEnvMap();
   setKeyValEM(em,"key1","val1");
   setKeyValEM(em,"key2","val2");
@@ -377,7 +377,7 @@ void testSOAPComp()
 
 void testTransformBZ()
 {
-  struct TransAdaptor *t = (struct TransAdaptor*)builtin_UNBZIP();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNBZIP();
 	struct DataBlock db;
 	if (!fopen(testbzfile, "rb")) {
 		printf("Can't find test bz2 file. Skipping transformBZ test...\n");
@@ -423,7 +423,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 
 void testTransformGZ()
 {
-  struct TransAdaptor *t = (struct TransAdaptor*)builtin_UNGZ();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNGZ();
 	struct DataBlock db;
 	if (!fopen(testgzfile, "rb")) {
 		printf("Can't find test gz file. Skipping transformGZ test...\n");
@@ -445,7 +445,7 @@ void testTransformGZ()
 
 void testTransformZLIB()
 {
-  struct TransAdaptor *t = (struct TransAdaptor*)builtin_UNZLIB();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNZLIB();
 	struct DataBlock db;
 	if (!fopen(testzlibfile, "rb")) {
 		printf("Can't find test zlib file. Skipping transformZLIB test...\n");
@@ -612,47 +612,47 @@ void testFileListDBE(void)
 void testTAStack()
 {
 	int i;
-  struct TAstack *ts;
-	struct TransAdaptor *taa;
-	struct TransAdaptor *tab;
-	struct TransAdaptor *tac;
-	struct TransAdaptor *tmp = NULL;
-	struct TransAdaptor *cur = NULL;
-	struct TransAdaptor *taarray[TEST_TS_SIZE];
+  struct TransformAdaptorStack *ts;
+	struct TransformAdaptor *taa;
+	struct TransformAdaptor *tab;
+	struct TransformAdaptor *tac;
+	struct TransformAdaptor *tmp = NULL;
+	struct TransformAdaptor *cur = NULL;
+	struct TransformAdaptor *taarray[TEST_TS_SIZE];
   ts = newTAStack();
 	assert(ts != NULL);
 #ifdef BZIP2_RDY
-	taa = (struct TransAdaptor *)builtin_UNBZIP();
+	taa = (struct TransformAdaptor *)builtin_UNBZIP();
 	assert(strcmp(taa->sn(),"unbzip") == 0);
   pushTS(ts, taa);
 #endif
 #ifdef ZLIB_RDY
-	tab = (struct TransAdaptor *)builtin_UNGZ();
+	tab = (struct TransformAdaptor *)builtin_UNGZ();
 	assert(strcmp(tab->sn(),"ungz") == 0);
   pushTS(ts, tab);
-	tac = (struct TransAdaptor *)builtin_UNZLIB();
+	tac = (struct TransformAdaptor *)builtin_UNZLIB();
 	assert(strcmp(tac->sn(),"unzlib") == 0);
   pushTS(ts, tac);
 #endif
 
 #ifdef BZIP2_RDY
-	tmp = (struct TransAdaptor *)shiftTS(ts); 
+	tmp = (struct TransformAdaptor *)shiftTS(ts); 
 	assert(strcmp(tmp->sn(),"unbzip") == 0);
 #endif
 #ifdef ZLIB_RDY
-	cur = (struct TransAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
+	cur = (struct TransformAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
 	assert(cur);
 	assert(strcmp(cur->sn(),"unzlib") == 0);
-	tmp = (struct TransAdaptor *)popTS(ts); 
+	tmp = (struct TransformAdaptor *)popTS(ts); 
 	assert(strcmp(tmp->sn(),"unzlib") == 0);
-	tmp = (struct TransAdaptor *)shiftTS(ts); 
+	tmp = (struct TransformAdaptor *)shiftTS(ts); 
 	assert(strcmp(tmp->sn(),"ungz") == 0);
 #endif
 	freeTS(ts);
 
   ts = newTAStack();
 	for (i = 0; i < TEST_TS_SIZE ; i++) {
-		taarray[i] = (struct TransAdaptor *)builtin_UNBZIP();
+		taarray[i] = (struct TransformAdaptor *)builtin_UNBZIP();
 		assert(strcmp(taa->sn(),"unbzip") == 0);
 		pushTS(ts, taarray[i]);
 	}
@@ -730,7 +730,7 @@ void testDoubleDoubler(void)
 {
   struct DoubleA *dd, *ee, *sm;
   struct DataBlock dumptest;
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   dd = newDoubleDoubler();
   assert(dd);
   assert(getSize(dd) == 0);
@@ -863,7 +863,7 @@ void testCLTree(void)
   struct UnrootedBinary *ct = newUnrootedBinary(TREELEAFSIZE);
   struct DoubleA *n = getTreeNodes(ct, NULL);
   struct DoubleA *spm, *spmmap, *pp;
-  union pctypes a, b;
+  union PCTypes a, b;
   int retval;
   int psize;
   int cur;
@@ -875,13 +875,13 @@ void testCLTree(void)
   pp = getPerimeterPairs(ct, NULL);
   assert(getSize(pp) == TREELEAFSIZE);
   freeDoubleDoubler(pp);
-  spmmap = makeSPMMap(getAdjAForUB(ct));
+  spmmap = makeSPMMap(getAdjAdaptorForUB(ct));
   for (i = 0; i < RETRIES; ++i) {
     a = getRandomElement(n);
     assert(a.i >= 0 && a.i < 100);
     b = getRandomElement(n);
     assert(b.i >= 0 && b.i < 100);
-    spm = makeSPMFor(getAdjAForUB(ct), b.i);
+    spm = makeSPMFor(getAdjAdaptorForUB(ct), b.i);
     cur = a.i;
     psize = 1;
     do {
@@ -893,7 +893,7 @@ void testCLTree(void)
     }
     while (cur != b.i);
 //    printf("\n");
-    retval = pathFinder(getAdjAForUB(ct), a.i, b.i, pbuf, &plen);
+    retval = pathFinder(getAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
     assert(retval == CL_OK);
     assert(plen == psize);
     freeDoubleDoubler(spm);
@@ -913,9 +913,9 @@ void testCLTree(void)
 }
 
 #define ADJATRIALS 1000
-void testAdjA(void)
+void testAdjAdaptor(void)
 {
-  struct AdjA *a1, *a2;
+  struct AdjAdaptor *a1, *a2;
   gsl_matrix *m;
   int labelsize;
   int i, n1, n2;
@@ -936,7 +936,7 @@ void testAdjA(void)
       adjaSetConState(a2, n2, n1, newval);
     }
   }
-  m = convertAdjAToGSLMatrix(a1);
+  m = convertAdjAdaptorToGSLMatrix(a1);
   adjaFree(a1);
   adjaFree(a2);
   gsl_matrix_free(m);
@@ -1127,7 +1127,7 @@ void testLabelPerm(void)
   struct DoubleA *nodes = newDoubleDoubler();
   int i;
   for (i = 0; i < 10; i += 1) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.i = i + 23;
     setValueAt(nodes, i, p);
   }
@@ -1238,7 +1238,7 @@ void testSmoothing()
   struct TreeAdaptor *ta = newTreeTRA(0, 6);
   int i;
   gsl_matrix *m;
-  m = convertAdjAToGSLMatrix(treegetadjaTRA(ta));
+  m = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
 //  printGSLMatrix(m);
 
   for (i = 0; i < 15 ; i += 1) {
@@ -1330,7 +1330,7 @@ int main(int argc, char **argv)
   testDoubleDoubler();
   testAdjMatrix();
   testAdjList();
-  testAdjA();
+  testAdjAdaptor();
   assert(gconf);
   testLabelPerm();
   testPerimPairs();

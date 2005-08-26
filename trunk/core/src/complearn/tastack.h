@@ -3,93 +3,93 @@
 
 /*! \file tastack.h */
 
-/** \brief Container of TransAdaptors.
- *  \struct TAstack
+/** \brief Container of TransformAdaptors.
+ *  \struct TransformAdaptorStack
  *
- *  Elements are pushed onto top of a TAstack and either pulled
+ *  Elements are pushed onto top of a TransformAdaptorStack and either pulled
  *  from bottom (element 0 is removed and rest move down 1) or popped from top
  *  (element size-1 is removed).
  *
- *  TAstack is a dynamically resizing container.
+ *  TransformAdaptorStack is a dynamically resizing container.
  */
-struct TAstack;
+struct TransformAdaptorStack;
 
-/** \brief Returns pointer to a new TAstack.
+/** \brief Returns pointer to a new TransformAdaptorStack.
  *
- *  Allocates memory and returns pointer to new TAstack object, which contains
+ *  Allocates memory and returns pointer to new TransformAdaptorStack object, which contains
  *  0 elements.
  */
-struct TAstack *newTAStack(void);
+struct TransformAdaptorStack *newTAStack(void);
 
-/** \brief Frees TAstack object from memory.
- *  \param ts TAstack
+/** \brief Frees TransformAdaptorStack object from memory.
+ *  \param ts TransformAdaptorStack
  *  \return CL_OK on success
  */
-int freeTS(struct TAstack *ts);
+int freeTS(struct TransformAdaptorStack *ts);
 
-/** \brief TransAdaptor object to top of TAstack.
- *  \param ts TAstack
- *  \param ta TransAdaptor
+/** \brief TransformAdaptor object to top of TransformAdaptorStack.
+ *  \param ts TransformAdaptorStack
+ *  \param ta TransformAdaptor
  *  \return CL_OK on success
  */
-int pushTS(struct TAstack *ts, struct TransAdaptor *ta);
+int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta);
 
-/** \brief Removes and returns pointer to TransAdaptor from bottom of TAstack.
+/** \brief Removes and returns pointer to TransformAdaptor from bottom of TransformAdaptorStack.
  *
- *  A TransAdaptor object is removed from the bottom of the TAstack and the
+ *  A TransformAdaptor object is removed from the bottom of the TransformAdaptorStack and the
  *  rest of the elements move down by 1, e.g., element 1 becomes element 0,
  *  element 2 becomes element 1, and so forth. A pointer to the removed string
  *  is returned.
- *  \param ts TAstack
- *  \return pointer to TransAdaptor object
+ *  \param ts TransformAdaptorStack
+ *  \return pointer to TransformAdaptor object
  */
-struct TransAdaptor *shiftTS(struct TAstack *ts);
+struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts);
 
-/** \brief Removes and returns pointer to TransAdaptor object from top of
- *  TAstack.
+/** \brief Removes and returns pointer to TransformAdaptor object from top of
+ *  TransformAdaptorStack.
  *
- *  A TransAdaptor object is removed from the top of the TAstack, i.e., for a
- *  TAstack of size 10, element 9 is removed.
- *  \param ts TAstack
- *  \return pointer to TransAdaptor object
+ *  A TransformAdaptor object is removed from the top of the TransformAdaptorStack, i.e., for a
+ *  TransformAdaptorStack of size 10, element 9 is removed.
+ *  \param ts TransformAdaptorStack
+ *  \return pointer to TransformAdaptor object
  */
-struct TransAdaptor *popTS(struct TAstack *ts);
+struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts);
 
-/** \brief Returns true value if TAstack is empty.
- *  \param ts TAstack
- *  \return true if TAstack contains 0 elements
+/** \brief Returns true value if TransformAdaptorStack is empty.
+ *  \param ts TransformAdaptorStack
+ *  \return true if TransformAdaptorStack contains 0 elements
  */
-int isEmptyTS(struct TAstack *ts);
+int isEmptyTS(struct TransformAdaptorStack *ts);
 
-/** \brief Returns number of elements in TAstack.
- *  \param ts TAstack
+/** \brief Returns number of elements in TransformAdaptorStack.
+ *  \param ts TransformAdaptorStack
  *  \return size
  */
-int sizeTS(struct TAstack *ts);
+int sizeTS(struct TransformAdaptorStack *ts);
 
-/** \brief Searchs a TAstack and returns pointer to TransAdaptor object.
+/** \brief Searchs a TransformAdaptorStack and returns pointer to TransformAdaptor object.
  *
  *  s is the search term, and searchfunc is a pointer to a function which
- *  matches s against TAstack ts. A pointer to the matching TransAdaptor object
+ *  matches s against TransformAdaptorStack ts. A pointer to the matching TransformAdaptor object
  *  is returned.
- *  \param ts TAstack
+ *  \param ts TransformAdaptorStack
  *  \param s search term
  *  \param searchfunc search function
- *  \return pointer to TransAdaptor object
+ *  \return pointer to TransformAdaptor object
  */
-struct TransAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc);
+struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc);
 
-/** \brief Searches a TAstack using the return value of the shortname function
+/** \brief Searches a TransformAdaptorStack using the return value of the shortname function
  *  as a search term.
  *
  *  sequentialSearchTS() takes string s as a parameter and searches each
- *  element of the TAstack, starting at element 0, where s matches the
- *  return value of the TransAdaptor object's shortname function.  A pointer to
- *  the first matching TransAdaptor object is returned.
- *  \param ts TAstack
+ *  element of the TransformAdaptorStack, starting at element 0, where s matches the
+ *  return value of the TransformAdaptor object's shortname function.  A pointer to
+ *  the first matching TransformAdaptor object is returned.
+ *  \param ts TransformAdaptorStack
  *  \param s string
- *  \return pointer to TransAdaptor object
+ *  \return pointer to TransformAdaptor object
  */
-struct TransAdaptor *sequentialSearchTS(void *ts, void *s);
+struct TransformAdaptor *sequentialSearchTS(void *ts, void *s);
 
 #endif

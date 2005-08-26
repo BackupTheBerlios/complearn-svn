@@ -103,7 +103,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
   struct TreeAdaptor *tra;
   struct TreeMaster *tm = gcalloc(sizeof(struct TreeMaster), 1);
-  struct AdjA *aa;
+  struct AdjAdaptor *aa;
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
   assert(gsl->size1 > 3);

@@ -56,11 +56,11 @@
 #define RADMAX 1000.0
 #define RADSPEED 10.0
 
-struct TransAdaptor *builtin_UNBZIP(void);
-struct TransAdaptor *builtin_UNGZ(void);
-struct TransAdaptor *builtin_UNZLIB(void);
+struct TransformAdaptor *builtin_UNBZIP(void);
+struct TransformAdaptor *builtin_UNGZ(void);
+struct TransformAdaptor *builtin_UNZLIB(void);
 
-struct DataBlock *testCompression(struct DataBlock *db, struct TransAdaptor *t) {
+struct DataBlock *testCompression(struct DataBlock *db, struct TransformAdaptor *t) {
   struct DataBlock *result = db;
   if (!t) return result;
   if (t->pf(*db)) {
@@ -75,7 +75,7 @@ struct DataBlock *testCompression(struct DataBlock *db, struct TransAdaptor *t) 
 void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db) {
 
 #if 1
-  static struct TransAdaptor *buz, *bgz, *bbzip;
+  static struct TransformAdaptor *buz, *bgz, *bbzip;
   if (!buz) {
     buz = builtin_UNZLIB();
     bgz = builtin_UNGZ();

@@ -198,13 +198,13 @@ int getALNeighborCount(const struct AdjList *adj, int from)
   return acc;
 }
 
-static int ajal_size(struct AdjA *aa)
+static int ajal_size(struct AdjAdaptor *aa)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
   return al->size;
 }
 
-static void ajal_free(struct AdjA *aa)
+static void ajal_free(struct AdjAdaptor *aa)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
   freeAdjList(al);
@@ -212,21 +212,21 @@ static void ajal_free(struct AdjA *aa)
   free(aa);
 }
 
-static void ajal_print(struct AdjA *aa)
+static void ajal_print(struct AdjAdaptor *aa)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
   printAdjList(al);
 }
 
-static struct AdjA *ajal_clone(struct AdjA *aa)
+static struct AdjAdaptor *ajal_clone(struct AdjAdaptor *aa)
 {
-  struct AdjA *ab = (struct AdjA *) gmalloc(sizeof(*aa) * 1);
+  struct AdjAdaptor *ab = (struct AdjAdaptor *) gmalloc(sizeof(*aa) * 1);
   *ab = *aa;
   ab->ptr = cloneAdjList(aa->ptr);
   return ab;
 }
 
-static int ajal_getconstate(struct AdjA *aa, int i, int j)
+static int ajal_getconstate(struct AdjAdaptor *aa, int i, int j)
 {
   int retval;
   struct AdjList *al = (struct AdjList *) aa->ptr;
@@ -235,7 +235,7 @@ static int ajal_getconstate(struct AdjA *aa, int i, int j)
   return retval;
 }
 
-static void ajal_setconstate(struct AdjA *aa, int i, int j, int which)
+static void ajal_setconstate(struct AdjAdaptor *aa, int i, int j, int which)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
 //assert(i != j);
@@ -243,22 +243,22 @@ static void ajal_setconstate(struct AdjA *aa, int i, int j, int which)
   setALConState(al, i, j, which);
 }
 
-static int ajal_getneighborcount(struct AdjA *aa, int i)
+static int ajal_getneighborcount(struct AdjAdaptor *aa, int i)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
   return getALNeighborCount(al, i);
 }
 
-static int ajal_getneighbors(struct AdjA *aa, int i, int *nbuf, int *nsize)
+static int ajal_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
   return getALNeighbors(al, i, nbuf, nsize);
 }
 
-struct AdjA *loadAdaptorAL(int howBig)
+struct AdjAdaptor *loadAdaptorAL(int howBig)
 {
-  struct AdjA *aj;
-  aj = gcalloc(sizeof(struct AdjA), 1);
+  struct AdjAdaptor *aj;
+  aj = gcalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = newAdjList(howBig);
   aj->adjafree = ajal_free;
   aj->adjasize = ajal_size;

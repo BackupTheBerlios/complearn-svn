@@ -33,7 +33,7 @@ struct LabelPerm *treegetlabelpermTRA(struct TreeAdaptor *tra)
   return tra->treegetlabelperm(tra);
 }
 
-struct AdjA *treegetadjaTRA(struct TreeAdaptor *tra)
+struct AdjAdaptor *treegetadjaTRA(struct TreeAdaptor *tra)
 {
   assert(tra);
   return tra->treegetadja(tra);
@@ -71,7 +71,7 @@ struct DoubleA *treeperimpairsTRA(struct TreeAdaptor *tra, struct CLNodeSet *fli
 
 int treeGetNodeCountTRA(struct TreeAdaptor *tra)
 {
-  struct AdjA *ad = treegetadjaTRA(tra);
+  struct AdjAdaptor *ad = treegetadjaTRA(tra);
   return adjaSize(ad);
 }
 
@@ -84,7 +84,7 @@ static double nchoosefourScale(int n, int inp)
 
 double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
 {
-  struct AdjA *ad1, *ad2;
+  struct AdjAdaptor *ad1, *ad2;
   struct LabelPerm *lab1, *lab2;
   int diff;
   lab1 = treegetlabelpermTRA(tra1);

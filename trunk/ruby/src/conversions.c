@@ -69,7 +69,7 @@ VALUE DoubleAOfIntsToRubyArray(struct DoubleA *da, unsigned int lev)
   volatile VALUE result = rb_ary_new();
   for (i = 0; i < getSize(da); i += 1) {
     volatile VALUE cur;
-    union pctypes p = getValueAt(da, i);
+    union PCTypes p = getValueAt(da, i);
     if (lev > 0) {
       cur = DoubleAOfIntsToRubyArray(p.ar, lev-1);
     }

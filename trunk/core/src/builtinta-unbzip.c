@@ -8,14 +8,14 @@
 #include <bzlib.h>
 
 static char *unbz2a_shortname(void);
-static void unbz2a_transfree(struct TransAdaptor *ta);
+static void unbz2a_transfree(struct TransformAdaptor *ta);
 static int unbz2a_predicate(struct DataBlock db);
 static struct DataBlock unbz2a_transform(struct DataBlock src);
 
-struct TransAdaptor *builtin_UNBZIP(void)
+struct TransformAdaptor *builtin_UNBZIP(void)
 {
-  struct TransAdaptor *ptr;
-  struct TransAdaptor t =
+  struct TransformAdaptor *ptr;
+  struct TransformAdaptor t =
   {
     sn:    unbz2a_shortname,
     tfree: unbz2a_transfree,
@@ -23,7 +23,7 @@ struct TransAdaptor *builtin_UNBZIP(void)
     tf:    unbz2a_transform,
     tptr:  NULL,
   };
-  ptr = (struct TransAdaptor*)gcalloc(sizeof(*ptr), 1);
+  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
   *ptr = t;
   return ptr;
 }
@@ -33,7 +33,7 @@ static char *unbz2a_shortname(void)
 	return "unbzip";
 }
 
-static void unbz2a_transfree(struct TransAdaptor *ta)
+static void unbz2a_transfree(struct TransformAdaptor *ta)
 {
   gfreeandclear(ta);
 }
@@ -73,7 +73,7 @@ static struct DataBlock unbz2a_transform(struct DataBlock src)
 }
 #else
 
-struct TransAdaptor *builtin_UNBZIP(void)
+struct TransformAdaptor *builtin_UNBZIP(void)
 {
   return NULL;
 }

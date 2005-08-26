@@ -18,7 +18,7 @@
  *  \sa adjlist.h
  */
 struct AdjList;
-struct AdjA;
+struct AdjAdaptor;
 struct DoubleA;
 
 /** \brief Create a new AdjList with a given size
@@ -126,16 +126,16 @@ int getALSize(const struct AdjList *adj);
  */
 void printAdjList(const struct AdjList *which);
 
-/** \brief Allocates a new AdjList and wraps it within an AdjA
+/** \brief Allocates a new AdjList and wraps it within an AdjAdaptor
  *
  * This function allocates a new AdjList structure of the given size.  It
- * wraps this struct in an AdjA (adjacency adaptor) structure and returns
- * a pointer to this newly allocated AdjA.  The caller owns this AdjA and
+ * wraps this struct in an AdjAdaptor (adjacency adaptor) structure and returns
+ * a pointer to this newly allocated AdjAdaptor.  The caller owns this AdjAdaptor and
  * should free it using adjafree(aa).
  *
- * \param howBig maximum number of nodes that this AdjA can support
- * \returns pointer to the newly allocated AdjA struct
+ * \param howBig maximum number of nodes that this AdjAdaptor can support
+ * \returns pointer to the newly allocated AdjAdaptor struct
  */
-struct AdjA *loadAdaptorAL(int howBig);
+struct AdjAdaptor *loadAdaptorAL(int howBig);
 
 #endif

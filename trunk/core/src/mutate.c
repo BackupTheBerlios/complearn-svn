@@ -5,7 +5,7 @@
 #endif
 
 
-void flipCrosswise(struct AdjA *aa,
+void flipCrosswise(struct AdjAdaptor *aa,
     qbase_t i1, qbase_t n1, qbase_t i2, qbase_t n2)
 {
   adjaSetConState(aa, i1, n1, 0);
@@ -14,7 +14,7 @@ void flipCrosswise(struct AdjA *aa,
   adjaSetConState(aa, i2, n1, 1);
 }
 
-void mutateSpecies(struct AdjA *aa, struct LabelPerm *labelperm)
+void mutateSpecies(struct AdjAdaptor *aa, struct LabelPerm *labelperm)
 {
   mutateLabelPerm(labelperm);
 }

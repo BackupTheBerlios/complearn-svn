@@ -7,13 +7,13 @@
 #include <complearn/transadaptor.h>
 
 static char *unzlib_shortname(void);
-static void unzlib_transfree(struct TransAdaptor *ta);
+static void unzlib_transfree(struct TransformAdaptor *ta);
 static int unzlib_predicate(struct DataBlock db);
 static struct DataBlock unzlib_transform(struct DataBlock src);
 
-struct TransAdaptor *builtin_UNZLIB(void)
+struct TransformAdaptor *builtin_UNZLIB(void)
 {
-	struct TransAdaptor t =
+	struct TransformAdaptor t =
 	{
     sn:    unzlib_shortname,
     tfree: unzlib_transfree,
@@ -21,8 +21,8 @@ struct TransAdaptor *builtin_UNZLIB(void)
     tf:    unzlib_transform,
     tptr:  NULL,
   };
-  struct TransAdaptor *ptr;
-  ptr = (struct TransAdaptor*)gcalloc(sizeof(*ptr), 1);
+  struct TransformAdaptor *ptr;
+  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
   *ptr = t;
 	return ptr;
 }
@@ -32,7 +32,7 @@ static char *unzlib_shortname(void)
 	return "unzlib";
 }
 
-static void unzlib_transfree(struct TransAdaptor *ta)
+static void unzlib_transfree(struct TransformAdaptor *ta)
 {
   gfreeandclear(ta);
 }
@@ -66,7 +66,7 @@ static struct DataBlock unzlib_transform(struct DataBlock src)
 	return result;
 }
 #else
-struct TransAdaptor *builtin_UNZLIB(void)
+struct TransformAdaptor *builtin_UNZLIB(void)
 {
   return NULL;
 }

@@ -14,9 +14,9 @@ struct TagManager {
 struct TagManager *newTagManager(struct DataBlock db)
 {
   struct TagManager *tm = gcalloc(sizeof(*tm),1);
-  struct tagHdr *h = (struct tagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db.ptr;
   tm->db = db;
-  tm->cur = db.ptr + sizeof(struct tagHdr);
+  tm->cur = db.ptr + sizeof(struct TagHdr);
   tm->size = h->size;
   tm->read = 0;
   return tm;
@@ -24,20 +24,20 @@ struct TagManager *newTagManager(struct DataBlock db)
 
 t_tagtype getCurTagNum(const struct TagManager *tm)
 {
-  struct tagHdr *h = (struct tagHdr *) tm->cur;
+  struct TagHdr *h = (struct TagHdr *) tm->cur;
   return h->tagnum;
 }
 
 void stepNextDataBlock(struct TagManager *tm)
 {
-  struct tagHdr *h = (struct tagHdr *) tm->cur;
+  struct TagHdr *h = (struct TagHdr *) tm->cur;
   tm->cur += h->size + sizeof(*h);
   tm->read += h->size + sizeof(*h);
 }
 
 int getCurDataBlock(struct TagManager *tm, struct DataBlock *cur)
 {
-  struct tagHdr *h = (struct tagHdr *) tm->cur;
+  struct TagHdr *h = (struct TagHdr *) tm->cur;
   if (tm->read >= tm->size) return 0;
   cur->ptr = tm->cur;
   cur->size = h->size + sizeof(*h);
@@ -58,7 +58,7 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
   struct DoubleA *parts = newDoubleDoubler();
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.db = *db;
     pushValue(parts, p);
   }
@@ -73,7 +73,7 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
 struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
 {
   struct DataBlock result,cur;
-  struct tagHdr h;
+  struct TagHdr h;
   int i;
   unsigned char *ptr;
 
@@ -118,7 +118,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db)
   tm = newTagManager(db);
 
   while (getCurDataBlock(tm, &cur)) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
     p.idbp.db = cloneDataBlockPtr(&cur);
     pushValue(result, p);

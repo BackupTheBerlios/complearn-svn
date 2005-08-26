@@ -20,12 +20,12 @@ static int goog_apiver(void);
 
 /** \brief The Google compression adaptor instance
  *
- *  \struct googCompInstance
+ *  \struct GoogleCompInstance
  *
  *  This structure holds all the persistent configuration information
  *  necessary for the Google compressor to work.
  */
-struct googCompInstance {
+struct GoogleCompInstance {
   char *gkey;    /*!< GoogleKey which must be obtained by Google */
   char *daystr;
   double m;
@@ -58,11 +58,11 @@ struct CompAdaptor *builtin_GOOG(void)
     apiv: goog_apiver,
   };
   struct CompAdaptor *ca;
-  struct googCompInstance *gci;
+  struct GoogleCompInstance *gci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct googCompInstance), 1);
-  gci = (struct googCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct GoogleCompInstance), 1);
+  gci = (struct GoogleCompInstance *) ca->cptr;
 
   goog_clsetenv(ca);
 
@@ -102,7 +102,7 @@ double calculateMbase(const char *daystr, const char *gkey)
 
 static void goog_clsetenv(struct CompAdaptor *ca)
 {
-	struct googCompInstance *ci = (struct googCompInstance *) ca->cptr;
+	struct GoogleCompInstance *ci = (struct GoogleCompInstance *) ca->cptr;
   struct CLDateTime *dt;
   char *args[1] = { NULL };
   char *userKey;
@@ -124,7 +124,7 @@ static void goog_clsetenv(struct CompAdaptor *ca)
 
 static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
-	struct googCompInstance *sci = (struct googCompInstance *) ca->cptr;
+	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   double pagecount, compsize;
   char *cur;
   char *str = gcalloc(1,src.size+1);
@@ -152,7 +152,7 @@ static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void goog_freecompfunc(struct CompAdaptor *ca)
 {
-	struct googCompInstance *sci = (struct googCompInstance *) ca->cptr;
+	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   gfreeandclear(sci->gkey);
   gfreeandclear(sci->daystr);
   gfreeandclear(sci);

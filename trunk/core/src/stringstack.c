@@ -14,7 +14,7 @@ struct StringStack *loadStringStack(struct DataBlock db, int fmustbe)
   struct StringStack *result = newStringStack();
   struct DataBlock cur;
   struct TagManager *tm;
-  struct tagHdr *h = (struct tagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db.ptr;
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
@@ -47,7 +47,7 @@ struct DataBlock dumpStringStack(const struct StringStack *ss)
   int i;
 
   for ( i = 0; i < sizeSS(ss); i += 1) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     char *s = getValueAt(ss->da,i).str;
     p.db = dumpString(s);
     pushValue(parts,p);
@@ -82,7 +82,7 @@ struct StringStack *cloneSS(struct StringStack *ss)
   sz = sizeSS(ss);
   nss = newStringStack();
   for (i = 0; i < sz; ++i) {
-    union pctypes p;
+    union PCTypes p;
     p.str = gstrdup(getValueAt(ss->da, i).str);
     setValueAt(nss->da, i, p);
   }
@@ -103,7 +103,7 @@ int freeSS(struct StringStack *ss)
 
 int unshiftSS(struct StringStack *ss, const char *str)
 {
-  union pctypes p;
+  union PCTypes p;
   assert(ss);
   assert(str);
   p.str = gstrdup(str);
@@ -113,7 +113,7 @@ int unshiftSS(struct StringStack *ss, const char *str)
 
 int pushSS(struct StringStack *ss, const char *str)
 {
-  union pctypes p;
+  union PCTypes p;
   assert(ss);
   assert(str);
   p.str = gstrdup(str);
@@ -136,7 +136,7 @@ int sizeSS(const struct StringStack *ss)
  */
 char *shiftSS(struct StringStack *ss)
 {
-  union pctypes p;
+  union PCTypes p;
   assert(sizeSS(ss) > 0);
   memset(&p, 0, sizeof(p));
 	if (sizeSS(ss) == 0) return p.str;
@@ -149,7 +149,7 @@ char *shiftSS(struct StringStack *ss)
  */
 char *popSS(struct StringStack *ss)
 {
-  union pctypes p;
+  union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeSS(ss) == 0) return p.str;
 	p = popDoubleDoubler(ss->da);

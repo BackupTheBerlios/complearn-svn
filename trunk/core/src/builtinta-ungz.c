@@ -12,13 +12,13 @@
 #define MAX_BYTES_READ 1000
 
 static char *ungz_shortname(void);
-static void ungz_transfree(struct TransAdaptor *ta);
+static void ungz_transfree(struct TransformAdaptor *ta);
 static int ungz_predicate(struct DataBlock db);
 static struct DataBlock ungz_transform(struct DataBlock src);
 
-struct TransAdaptor *builtin_UNGZ(void)
+struct TransformAdaptor *builtin_UNGZ(void)
 {
-	struct TransAdaptor t =
+	struct TransformAdaptor t =
 	{
     sn:    ungz_shortname,
     tfree: ungz_transfree,
@@ -26,8 +26,8 @@ struct TransAdaptor *builtin_UNGZ(void)
     tf:    ungz_transform,
     tptr:  NULL,
   };
-  struct TransAdaptor *ptr;
-  ptr = (struct TransAdaptor*)gcalloc(sizeof(*ptr), 1);
+  struct TransformAdaptor *ptr;
+  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
   *ptr = t;
 	return ptr;
 }
@@ -37,7 +37,7 @@ static char *ungz_shortname(void)
 	return "ungz";
 }
 
-static void ungz_transfree(struct TransAdaptor *ta)
+static void ungz_transfree(struct TransformAdaptor *ta)
 {
   gfreeandclear(ta);
 }
@@ -106,7 +106,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	return result;
 }
 #else
-struct TransAdaptor *builtin_UNGZ(void)
+struct TransformAdaptor *builtin_UNGZ(void)
 {
   return NULL;
 }

@@ -2,7 +2,7 @@
 #define __PATHKEEPER_H
 
 #include <complearn/cltypes.h>
-struct AdjA;
+struct AdjAdaptor;
 struct CLNodeSet;
 /*! \file pathkeeper.h */
 
@@ -30,7 +30,7 @@ struct CLNodeSet;
  * \param bufsize pointer to IN/OUT buffer size / return path size
  * \return CL_OK or CL_ERRFULL
  */
-int pathFinder(struct AdjA *ad, qbase_t from, qbase_t to, int *pathbuf, int *bufsize);
+int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, int *bufsize);
 
 /** \brief tests to determine if two trees are identical
  *
@@ -38,16 +38,16 @@ int pathFinder(struct AdjA *ad, qbase_t from, qbase_t to, int *pathbuf, int *buf
  * 1 to indicate that they are identical.  This function is order insensitive.
  * It will only compare neighbor connectivity.
  *
- * \param ad1 pointer to one of the AdjA to compare
+ * \param ad1 pointer to one of the AdjAdaptor to compare
  * \param lab1 pointer to LabelPerm label assignments for ad1
- * \param ad2 pointer to another of the two AdjA to compare
+ * \param ad2 pointer to another of the two AdjAdaptor to compare
  * \param lab2 pointer to LabelPerm label assignments for ad2
  * \return integer to be interpretted as a boolean indicating the trees are
  * identical
  */
-int isIdenticalTree(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *adj2, struct LabelPerm *lab2);
+int isIdenticalTree(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *adj2, struct LabelPerm *lab2);
 
-/** \brief PathKeeper holds an SPM for an AdjA as a decorator
+/** \brief PathKeeper holds an SPM for an AdjAdaptor as a decorator
  *
  * \struct PathKeeper
  *
@@ -56,7 +56,7 @@ int isIdenticalTree(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *adj2,
  *
  * \sa pathkeeper.h
  */
-struct AdjA;
+struct AdjAdaptor;
 
 /** \brief Create a new PathKeeper with a given size
  *
@@ -65,9 +65,9 @@ struct AdjA;
  * An PathKeeper of size n supports node-labels in the range 0 to n-1, inclusive.
  *
  * \param basis the "real" underlying AdjAdaptor implementing the connections
- * \return a pointer to a newly allocated AdjA of the given size
+ * \return a pointer to a newly allocated AdjAdaptor of the given size
  */
-struct AdjA *newPathKeeper(struct AdjA *basis);
+struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis);
 
 /** \brief Calculates a Shortest Path Map for the given binary tree and
  * starting from the given node
@@ -76,7 +76,7 @@ struct AdjA *newPathKeeper(struct AdjA *basis);
  * node and on a given tree.  A Shortest Path Tree is a set of paths
  * going to the given node, termed "from".  These paths are calculated
  * using the Dijktra-Prim shortest path tree algorithm.  The results are
- * stored in a DoubleA using the .i field of pctypes.  In the result,
+ * stored in a DoubleA using the .i field of PCTypes.  In the result,
  * getValueAt(result, n).i
  * holds the node-identifier that one must move starting at node n in
  * order to get to the specified node "from".  For all node identifiers in
@@ -88,20 +88,20 @@ struct AdjA *newPathKeeper(struct AdjA *basis);
  * \param from qbase_t node identifier indicating the destination node
  * \return pointer to a DoubleA holding an SPM for the node "from"
  */
-struct DoubleA *makeSPMFor(struct AdjA *aa, qbase_t from);
+struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t from);
 
 /** \brief Calculates an All Points Shortest Path Map for the given binary tree
  * 
  * This function computes an SPM using makeSPMFor for each node in this
  * tree.  The SPM for node i is stored in getValueAt(result, i).ar
  *
- * This function uses the .ar field in the pctypes DoubleA to store a
+ * This function uses the .ar field in the PCTypes DoubleA to store a
  * nested set of SPM's, one for each node.  This is used in the pathFinder.
  *
  * \param ub pointer to the UnrootedBinary to be path mapped
  * \return pointer to a level-1 nested DoubleA containing SPM's
  */
-struct DoubleA *makeSPMMap(struct AdjA *aa);
+struct DoubleA *makeSPMMap(struct AdjAdaptor *aa);
 
 /** \brief Frees the memory associated with a full set of SPM Maps
  *
@@ -112,12 +112,12 @@ struct DoubleA *makeSPMMap(struct AdjA *aa);
  */
 void freeSPMMap(struct DoubleA *spmmap);
 
-void walkTree(struct AdjA *ad,
+void walkTree(struct AdjAdaptor *ad,
     struct DoubleA *result, struct DoubleA *border, struct CLNodeSet *done,
     int breadthFirst,
     struct CLNodeSet *flipped);
-int countTrinaryDifferences(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *ad2, struct LabelPerm *lab2);
-int findConsistentIndex(struct AdjA *ad, struct LabelPerm *lab, qbase_t labels[4]);
+int countTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *ad2, struct LabelPerm *lab2);
+int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4]);
 
 struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips);
 

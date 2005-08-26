@@ -41,7 +41,7 @@ struct DataBlock convertFileToDataBlockFP(FILE *fp)
 
   d.size = 0;
 	while ( (bytesread = fread(dbuf,1,toread,fp)) > 0) {
-    union pctypes p;
+    union PCTypes p;
     p.db.size = bytesread;
     d.size += bytesread;
     p.db.ptr = (unsigned char*)gmalloc(p.db.size);

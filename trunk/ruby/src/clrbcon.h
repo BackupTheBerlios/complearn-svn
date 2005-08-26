@@ -10,7 +10,7 @@
 
 extern VALUE mCompLearn;
 
-extern VALUE cAdjA;
+extern VALUE cAdjAdaptor;
 extern VALUE cCompAdaptor;
 extern VALUE cTreeAdaptor;
 extern VALUE cTreeHolder;

@@ -6,37 +6,37 @@
 #include <complearn/adjadaptor.h>
 
 struct PathKeeper {
-  struct AdjA outer;
-  struct AdjA *basis;
+  struct AdjAdaptor outer;
+  struct AdjAdaptor *basis;
   struct DoubleA *spmmap;
 };
 
-int pk_getneighborcount(struct AdjA *ad, int i)
+int pk_getneighborcount(struct AdjAdaptor *ad, int i)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   return adjaGetNeighborCount(pk->basis, i);
 }
 
-int pk_getneighbors(struct AdjA *ad, int i, int *nbuf, int *nsize)
+int pk_getneighbors(struct AdjAdaptor *ad, int i, int *nbuf, int *nsize)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   return adjaGetNeighbors(pk->basis, i, nbuf, nsize);
 }
 
-void pk_print(struct AdjA *ad)
+void pk_print(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   printf("PathKeeper around:\n");
   adjaPrint(pk->basis);
 }
 
-int pk_getconstate(struct AdjA *ad, int i, int j)
+int pk_getconstate(struct AdjAdaptor *ad, int i, int j)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   return adjaGetConState(pk->basis, i, j);
 }
 
-static void pk_freespmifpresent(struct AdjA *ad)
+static void pk_freespmifpresent(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap) {
@@ -45,14 +45,14 @@ static void pk_freespmifpresent(struct AdjA *ad)
   }
 }
 
-void pk_setconstate(struct AdjA *ad, int i, int j, int which)
+void pk_setconstate(struct AdjAdaptor *ad, int i, int j, int which)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   adjaSetConState(pk->basis, i, j, which);
   pk_freespmifpresent(ad);
 }
 
-struct AdjA *pk_clone(struct AdjA *ad)
+struct AdjAdaptor *pk_clone(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   struct PathKeeper *pkc = gcalloc(sizeof(*pkc), 1);
@@ -62,13 +62,13 @@ struct AdjA *pk_clone(struct AdjA *ad)
   return &pkc->outer;
 }
 
-int pk_size(struct AdjA *ad)
+int pk_size(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   return adjaSize(pk->basis);
 }
 
-struct DoubleA *pk_spmmap(struct AdjA *ad)
+struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap == NULL) {
@@ -77,7 +77,7 @@ struct DoubleA *pk_spmmap(struct AdjA *ad)
   return pk->spmmap;
 }
 
-void pk_free(struct AdjA *ad)
+void pk_free(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   pk_freespmifpresent(ad);
@@ -86,7 +86,7 @@ void pk_free(struct AdjA *ad)
   gfreeandclear(pk);
 }
 
-struct AdjA *newPathKeeper(struct AdjA *basis)
+struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis)
 {
   struct PathKeeper *pk = gcalloc(sizeof(*pk), 1);
   pk->basis = basis;
@@ -104,7 +104,7 @@ struct AdjA *newPathKeeper(struct AdjA *basis)
   return &pk->outer;
 }
 
-int pathFinder(struct AdjA *ad, qbase_t from, qbase_t to, int *pathbuf, int *bufsize)
+int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, int *bufsize)
 {
   int pathlen = 0;
   struct DoubleA *spmmap = adjaSPMMap(ad);
@@ -145,12 +145,12 @@ void freeSPMMap(struct DoubleA *ub)
   freeDeepDoubleDoubler(ub, 1);
 }
 
-struct DoubleA *makeSPMMap(struct AdjA *aa)
+struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
 {
   int i;
   struct DoubleA *result = newDoubleDoubler();
   for (i = 0; i < adjaSize(aa); ++i) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.ar = makeSPMFor(aa, i);
     pushValue(result, p);
   }
@@ -159,12 +159,12 @@ struct DoubleA *makeSPMMap(struct AdjA *aa)
 
 #define PATH_DASH (-1)
 #define LENGTH_INIT (9999999)
-struct DoubleA *makeSPMFor(struct AdjA *aa, qbase_t root)
+struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
 {
   int *path, *length;
   struct DoubleA *todo, *result;
   int i, cur;
-  union pctypes p;
+  union PCTypes p;
   int retval;
   int nbuf[MAXNEIGHBORS];
   int nsize = MAXNEIGHBORS;
@@ -240,7 +240,7 @@ static int intcomper(const void *ui1, const void *ui2)
 
 struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
   struct CLNodeSet *done = newCLNodeSet(treeGetNodeCountTRA(ta));
@@ -252,7 +252,7 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   
 }
 
-void walkTree(struct AdjA *aa,
+void walkTree(struct AdjAdaptor *aa,
     struct DoubleA *result, struct DoubleA *border, struct CLNodeSet *done,
     int breadthFirst,
     struct CLNodeSet *flipped)
@@ -266,7 +266,7 @@ void walkTree(struct AdjA *aa,
 /*    assert(cur >= 0); */
     assert(cur < adjaSize(aa));
     if (!isNodeInSet(done, cur)) {
-      union pctypes p = zeropct;
+      union PCTypes p = zeropct;
       int i;
       int retval;
       struct DoubleA *nb = newDoubleDoubler();
@@ -280,7 +280,7 @@ void walkTree(struct AdjA *aa,
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
       assert(nsize <= 1 || nbuf[0] < nbuf[1]);
       for (i = 0; i < nsize; ++i) {
-        union pctypes p = zeropct;
+        union PCTypes p = zeropct;
         p.i = nbuf[i];
         if (!isNodeInSet(done, p.i))
           pushValue(nb, p);
@@ -299,12 +299,12 @@ void walkTree(struct AdjA *aa,
   }
 }
 
-int isIdenticalTree(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *ad2, struct LabelPerm *lab2)
+int isIdenticalTree(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *ad2, struct LabelPerm *lab2)
 {
   return countTrinaryDifferences(ad1, lab1, ad2, lab2) == 0;
 }
 
-int countTrinaryDifferences(struct AdjA *ad1, struct LabelPerm *lab1, struct AdjA *ad2, struct LabelPerm *lab2)
+int countTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *ad2, struct LabelPerm *lab2)
 {
   int i, j, k, m;
   int spec;

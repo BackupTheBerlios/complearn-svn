@@ -20,8 +20,8 @@ struct LabelPerm *newLabelPerm(struct DoubleA *labelledNodes)
   assert(getSize(lp->coltonode) == getSize(labelledNodes));
   lp->nodetocol = newDoubleDoubler();
   for (i = 0; i < lp->size; i += 1) {
-    union pctypes p = getValueAt(labelledNodes, i);
-    union pctypes g = zeropct;
+    union PCTypes p = getValueAt(labelledNodes, i);
+    union PCTypes g = zeropct;
     g.i = i;
     setValueAt(lp->nodetocol, p.i, g);
   }
@@ -38,14 +38,14 @@ void freeLabelPerm(struct LabelPerm *lph)
   gfreeandclear(lph);
 }
 
-static void setColToNodeAndMore(struct LabelPerm *lph, int which, union pctypes where)
+static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes where)
 {
   /* TODO: fix this to do 1/2 as many writes and be better */
   assert(where.i >= 0);
   assert(where.i < getSize(lph->nodetocol));
   assert(which >= 0);
   assert(which < getSize(lph->nodetocol));
-  union pctypes okey = zeropct;
+  union PCTypes okey = zeropct;
   okey.i = which;
   setValueAt(lph->coltonode, which, where);
   setValueAt(lph->nodetocol, where.i, okey);
@@ -54,7 +54,7 @@ static void setColToNodeAndMore(struct LabelPerm *lph, int which, union pctypes 
 void mutateLabelPerm(struct LabelPerm *lph)
 {
   int i, j;
-  union pctypes pi, pj;
+  union PCTypes pi, pj;
 
   i = rand() % lph->size;
   do {

@@ -70,7 +70,7 @@ static void mustBeSorted(qbase_t labels[4])
   }
 }
 
-int findConsistentIndex(struct AdjA *ad, struct LabelPerm *lab, qbase_t labels[4])
+int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4])
 {
   int i, z;
   mustBeSorted(labels);

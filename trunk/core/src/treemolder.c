@@ -42,7 +42,7 @@ static void calcRangesTM(struct TreeMolder *tm)
 struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta)
 {
   struct TreeMolder *tm = gcalloc(sizeof(*tm), 1);
-  struct AdjA *aa;
+  struct AdjAdaptor *aa;
   assert(gm->size1 > 0 && gm->size1 == gm->size2);
   aa = treegetadjaTRA(ta);
   assert(aa);
@@ -62,7 +62,7 @@ static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struc
   int i;
   struct LabelPerm *lph = treegetlabelpermTRA(ts);
   for (i = 0; i < getSize(pairs); i += 1) {
-    union pctypes p = getValueAt(pairs, i);
+    union PCTypes p = getValueAt(pairs, i);
     double x, y;
     x = getColumnIndexForNodeIDLP(lph, p.ip.x);
     y = getColumnIndexForNodeIDLP(lph, p.ip.y);

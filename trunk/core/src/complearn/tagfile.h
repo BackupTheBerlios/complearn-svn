@@ -26,19 +26,19 @@ struct TagManager;
 
 /** \brief Header embedded within a dumped serialized DataBlock
  *
- * Within a dumped DataBlock there exists a tagHdr structure which holds two
+ * Within a dumped DataBlock there exists a TagHdr structure which holds two
  * pieces of information about the serialized object: the type of object
  * (in the form of a tagnum; see tagtypes.h for a complete list) and the size,
  * in bytes, of the object.  This \a size does not include the size of the
- * tagHdr.
+ * TagHdr.
  *
- * The \a tagnum in this embedded tagHdr can be used to trigger the correct
+ * The \a tagnum in this embedded TagHdr can be used to trigger the correct
  * deserialization operation on the given DataBlock, or confirm that the
  * correct deserialization operation is being performed.
  *
  * \sa tagtypes.h
  */
-struct tagHdr {
+struct TagHdr {
   t_tagtype tagnum;
   unsigned int size;
 };
@@ -107,24 +107,24 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts);
  *
  *  load_DataBlock_package() is a high level function which will take a
  *  DataBlock "package," sequentially retrieve each dumped DataBlock in the
- *  package, and return a DoubleA of intdbpair objects which hold the \a tagnum
+ *  package, and return a DoubleA of IntDBPair objects which hold the \a tagnum
  *  of each DataBlock and a pointer to the dumped DataBlock.
  *  \param db DataBlock "package" as created by package_DataBlocks()
- *  \return DoubleA of intdbpair objects
+ *  \return DoubleA of IntDBPair objects
  */
 struct DoubleA *load_DataBlock_package(struct DataBlock db);
 
-/** \brief Retrieves DataBlock from DoubleA of intdbpairs
+/** \brief Retrieves DataBlock from DoubleA of IntDBPairs
  *
  *  Another high level function, scanForTag() will, given a tagnum as defined
- *  in tagtypes.h, scan a DoubleA of intdbpairs as produced by
+ *  in tagtypes.h, scan a DoubleA of IntDBPairs as produced by
  *  load_DataBlock_package(). This retrieved DataBlock is an independent copy
  *  any must be freed using freeDataBlock().
  *
  *  TODO: when switching db to db pointer, NULL should be returned if tagnum in
  *  question is not found.  Currently, a DataBlock is returned regardless, only
  *  a DataBlock size of 0 signifying a failure in finding the tagnum.
- *  \param dd DoubleA of intdbpair objects
+ *  \param dd DoubleA of IntDBPair objects
  *  \param tnum tagnum of DataBlock in question
  *  \return DataBlock
  */

@@ -2,7 +2,7 @@
 
 VALUE mCompLearn;
 
-VALUE cAdjA;
+VALUE cAdjAdaptor;
 VALUE cCompAdaptor;
 VALUE cTreeAdaptor;
 VALUE cTreeHolder;

@@ -11,11 +11,11 @@ struct UnrootedBinary {
   qbase_t startNode;
   int mc;
   struct LabelPerm *labelperm;
-  struct AdjA *aa;
+  struct AdjAdaptor *aa;
   struct CLNodeSet *flips;
 };
 
-struct AdjA *getAdjAForUB(struct UnrootedBinary *ub)
+struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub)
 {
   return ub->aa;
 }
@@ -283,12 +283,12 @@ qbase_t getStartingNode(const struct UnrootedBinary *ub)
 
 struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   struct DoubleA *result = newDoubleDoubler();
   struct DoubleA *border = newDoubleDoubler();
   struct CLNodeSet *done = newCLNodeSet(ub->nodecount);
   pushValue(border, p);
-  walkTree(getAdjAForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
+  walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
   freeDoubleDoubler(border);
   freeCLNodeSet(done);
   return result;
@@ -298,7 +298,7 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
 {
   struct DoubleA *nodes = getTreeNodes(ub, flips);
   struct DoubleA *pairs = newDoubleDoubler();
-  union pctypes p;
+  union PCTypes p;
   int i;
   int lastval = -1;
   int firstnode = -1;
@@ -340,7 +340,7 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
   struct DoubleA *result = newDoubleDoubler();
   for (i = 0; i < ub->nodecount; i += 1) {
     if (isQuartetableNode(ub, i) == 1) {
-      union pctypes p = zeropct;
+      union PCTypes p = zeropct;
       p.i = i;
       pushValue(result, p);
     }
@@ -353,7 +353,7 @@ struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
   struct DoubleA *result = newDoubleDoubler();
   int i;
   for (i = 0; i < getSizeLP(ub->labelperm); i += 1) {
-    union pctypes p = zeropct;
+    union PCTypes p = zeropct;
     p.i = getNodeIDForColumnIndexLP(ub->labelperm, i);
     pushValue(result, p);
   }
@@ -395,10 +395,10 @@ struct LabelPerm *ub_treegetlabelperm(struct TreeAdaptor *ta)
   return getLabelPerm(ub);
 }
 
-struct AdjA *ub_treegetadja(struct TreeAdaptor *ta)
+struct AdjAdaptor *ub_treegetadja(struct TreeAdaptor *ta)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  return getAdjAForUB(ub);
+  return getAdjAdaptorForUB(ub);
 }
 
 int ub_treeisquartetable(struct TreeAdaptor *ta, int which)

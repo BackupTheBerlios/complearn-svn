@@ -6,9 +6,9 @@
 /*! \file transadaptor.h */
 
 /** \brief Transform interface.
- *  \struct TransAdaptor
+ *  \struct TransformAdaptor
  *
- *  TransAdaptor contains pointers to 3 functions which are defined in an
+ *  TransformAdaptor contains pointers to 3 functions which are defined in an
  *  external transform module.
  *
  *  CompLearn comes with 3 builtin tranform adaptors:
@@ -18,10 +18,10 @@
  *    ungz: uncompresses DataBlocks in the gzip file format
  *
  */
-struct TransAdaptor {
+struct TransformAdaptor {
   t_shortname sn;    /*!< Pointer to function which returns string shortname of
-                          TransAdaptor object */
-  t_transfree tfree; /*!  Pointer to function frees the TransAdaptor object
+                          TransformAdaptor object */
+  t_transfree tfree; /*!  Pointer to function frees the TransformAdaptor object
                           from memory */
   t_predicate pf;    /*!< Pointer to function which evaluates a DataBlock and
                           returns a true value if DataBlock needs to be
@@ -29,7 +29,7 @@ struct TransAdaptor {
   t_transform tf;    /*!< Pointer to function receives a DataBlock and returns
                           a transformed DataBlock */
   void *tptr;        /*!< Pointer which can be used to save the state of a
-                          TransAdaptor instance */
+                          TransformAdaptor instance */
 };
 
 #endif

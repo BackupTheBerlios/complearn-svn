@@ -19,7 +19,7 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
   struct TagManager *tm;
   struct StringStack *keyparts;
   struct StringStack *valparts;
-  struct tagHdr *h = (struct tagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db.ptr;
   int i;
 
   if (h->tagnum != TAGNUM_ENVMAP) {
@@ -101,9 +101,9 @@ void printEM(struct EnvMap *uem)
   freeEM(em);
 }
 
-static union pctypes clonestrpair(struct strpair sp)
+static union PCTypes cloneStringPair(struct StringPair sp)
 {
-  union pctypes p;
+  union PCTypes p;
   p.sp.key = gstrdup(sp.key);
   p.sp.val = gstrdup(sp.val);
   return p;
@@ -117,7 +117,7 @@ struct EnvMap *cloneEM(struct EnvMap *em)
   nem = gcalloc(sizeof(struct EnvMap), 1);
   nem->d = newDoubleDoubler();
   for (i = 0; i < sz; ++i)
-    setValueAt(nem->d, i, clonestrpair(getValueAt(em->d, i).sp));
+    setValueAt(nem->d, i, cloneStringPair(getValueAt(em->d, i).sp));
   nem->marked = cloneCLNodeSet(em->marked);
   nem->private = cloneCLNodeSet(em->private);
   return nem;
@@ -135,7 +135,7 @@ int sizeEM(struct EnvMap *em)
 
 static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
 {
-  union pctypes p;
+  union PCTypes p;
   p.sp.key = gstrdup(key);
   p.sp.val = gstrdup(val);
   setValueAt(em->d, where, p);
@@ -153,7 +153,7 @@ int setKeyValEM(struct EnvMap *em, char *key, char *val)
   if (i >= 0)
     setKeyValAt(em, i, key, val);
   else {
-    union pctypes p;
+    union PCTypes p;
     p.sp.key = gstrdup(key);
     p.sp.val = gstrdup(val);
     pushValue(em->d, p);
@@ -168,10 +168,10 @@ int freeEM(struct EnvMap *em)
 {
   int i;
   int sz = sizeEM(em);
-  static union pctypes zeroblock;
+  static union PCTypes zeroblock;
 
   for (i = 0; i < sz; ++i) {
-    union pctypes p = getValueAt(em->d, i);
+    union PCTypes p = getValueAt(em->d, i);
     gfreeandclear(p.sp.key);
     gfreeandclear(p.sp.val);
     setValueAt(em->d, i, zeroblock);
@@ -192,14 +192,14 @@ char *readValForEM(struct EnvMap *em, const char *key)
   char *val = NULL;
   i = findIndexForKey(em,key);
   if (i >= 0) {
-    union pctypes p = getKeyValAt(em,findIndexForKey(em,key));
+    union PCTypes p = getKeyValAt(em,findIndexForKey(em,key));
     val = p.sp.val;
     setKeyMarkedEM(em, key);
   }
   return val;
 }
 
-union pctypes getKeyValAt(struct EnvMap *em, int where)
+union PCTypes getKeyValAt(struct EnvMap *em, int where)
 {
   assert(where >= 0);
   return getValueAt(em->d, where);
@@ -209,7 +209,7 @@ int findIndexForKey(struct EnvMap *em, const char *key)
 {
   int i;
   for (i = 0; i < sizeEM(em); i += 1) {
-    union pctypes p = getKeyValAt(em,i);
+    union PCTypes p = getKeyValAt(em,i);
     if (strcmp(p.sp.key, key) == 0) {
       return i;
     }
@@ -251,7 +251,7 @@ struct EnvMap *get_clem_from_clb(char *fname)
 
 int mergeEM(struct EnvMap *dest, struct EnvMap *src)
 {
-  union pctypes p;
+  union PCTypes p;
   int i;
   for (i = 0; i < sizeEM(src); i += 1) {
     p = getKeyValAt(src,i);

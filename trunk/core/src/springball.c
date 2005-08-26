@@ -103,7 +103,7 @@ void changeTargetTreeSBS(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
 //    gsl_matrix_free(sbs->sbs4->targetk);
     sbs->sbs4->targetk = NULL;
   }
-  sbs->sbs4->targetk = convertAdjAToGSLMatrix(treegetadjaTRA(ta));
+  sbs->sbs4->targetk = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
 }
 
 struct SBS3 *newSBS3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
@@ -148,12 +148,12 @@ void stepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, double
 
 void stepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt) {
   const double springkspeed = 0.1; /* "newtons" per "meter-second" */
-  gsl_matrix *targetks = convertAdjAToGSLMatrix(treegetadjaTRA(ta));
+  gsl_matrix *targetks = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
   stepTowards(smooth, targetks, dt, springkspeed);
   gsl_matrix_free(targetks);
 }
 
-gsl_matrix *convertAdjAToGSLMatrix(struct AdjA *aa)
+gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa)
 {
   gsl_matrix *m;
   int size, i, j;
@@ -177,7 +177,7 @@ static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
   sbs4->d = 3;
   /* initially, there are no springs */
   sbs4->smoothk = gsl_matrix_calloc(howBig, howBig);
-  sbs4->targetk = convertAdjAToGSLMatrix(treegetadjaTRA(ta));
+  sbs4->targetk = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
 
   /* views for position and velocity by ball */
   sbs4->pos = gcalloc(sizeof(*sbs4->pos), howBig);
@@ -213,7 +213,7 @@ static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
 
     for (j = 0; j < howBig; j += 1) {
       struct SBS3 *sbs3;
-      union pctypes p = zeropct;
+      union PCTypes p = zeropct;
       if (i == j)
         continue;
       sbs3 = newSBS3(i, j, sbs4->pos[i], sbs4->pos[j], sbs4->vel[i]);

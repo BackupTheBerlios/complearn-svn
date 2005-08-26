@@ -53,7 +53,7 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
 
       volatile VALUE gi = rb_ary_new();
 
-      union pctypes p = getValueAt(pairs, i);
+      union PCTypes p = getValueAt(pairs, i);
 
       rb_ary_push(gi, INT2NUM(p.ip.x));
       rb_ary_push(gi, INT2NUM(p.ip.y));
@@ -129,7 +129,7 @@ static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
 static VALUE rbtra_getnodes(VALUE self)
 {
   struct TreeAdaptor *ta;
-  struct AdjA *adja;
+  struct AdjAdaptor *adja;
   volatile VALUE nodes = rb_ary_new();
   int i;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
@@ -154,11 +154,11 @@ static VALUE rbtra_to_dot(VALUE self)
 
 static VALUE rbtra_getadja(VALUE self)
 {
-  struct AdjA *adja;
+  struct AdjAdaptor *adja;
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   adja = treegetadjaTRA(ta);
-  return rbadja_secretnew(cAdjA, adja->adjaclone(adja));
+  return rbadja_secretnew(cAdjAdaptor, adja->adjaclone(adja));
 }
 
 static VALUE rbtra_nodecount(VALUE self)

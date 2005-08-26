@@ -88,14 +88,14 @@ struct LabelPerm *treegetlabelpermTRA(struct TreeAdaptor *tra);
 
 /** \brief retrieves the underlying adjacency adaptor for the TreeAdaptor
  *
- * This function allows the user to fetch the underlying AdjA (or adjacency
+ * This function allows the user to fetch the underlying AdjAdaptor (or adjacency
  * adaptor) for this TreeAdaptor.  This provides the ability to find out
  * whether any pair of nodes is connected or disconnected in the tree.
  *
  * \param tra pointer to a TreeAdaptor to be inspected
- * \return pointer to the AdjA showing connection information for this tree
+ * \return pointer to the AdjAdaptor showing connection information for this tree
  */
-struct AdjA *treegetadjaTRA(struct TreeAdaptor *tra);
+struct AdjAdaptor *treegetadjaTRA(struct TreeAdaptor *tra);
 
 /** \brief tests whether a given node is "quartettable", e.g. a labellable node
  *
@@ -189,12 +189,12 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
  * obtaining the set of tree perimeter pair nodes going all the way around.
  * It will not provide you with kernel nodes.
  *
- * The returned DoubleA will contain intpair entries where x and y
+ * The returned DoubleA will contain IntPair entries where x and y
  * are consecutive labelled node numbers in the ordered traversal of the tree.
  *
  * \param tra pointer to the TreeAdaptor to be traversed
  * \param flips pointer to CLNodeSet controlling traversal or NULL for default
- * \return DoubleA containing intpair with adjacent node numbers in order
+ * \return DoubleA containing IntPair with adjacent node numbers in order
  */
 struct DoubleA *treeperimpairsTRA(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 

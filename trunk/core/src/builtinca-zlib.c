@@ -14,13 +14,13 @@ static char *zlib_longname(void);
 static int zlib_apiver(void);
 
 /** \brief zlib compression state information
- * \struct zlibCompInstance
+ * \struct ZlibCompInstance
  *
  * This structure holds all zlib compression information.  At this time
  * it only allows for the adjustment of the compression level, which
  * is defaulted to the maximum level of 9.
  */
-struct zlibCompInstance {
+struct ZlibCompInstance {
 	int level; // 0 - 9
 };
 
@@ -52,11 +52,11 @@ struct CompAdaptor *builtin_ZLIB(void)
     apiv: zlib_apiver
   };
   struct CompAdaptor *ca;
-  struct zlibCompInstance *zci;
+  struct ZlibCompInstance *zci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct zlibCompInstance), 1);
-  zci = (struct zlibCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct ZlibCompInstance), 1);
+  zci = (struct ZlibCompInstance *) ca->cptr;
 
 
   /* default compressor options */
@@ -76,7 +76,7 @@ static void zlib_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, in
 
 static void zlib_clsetenv(struct CompAdaptor *ca)
 {
-	struct zlibCompInstance *ci = (struct zlibCompInstance *) ca->cptr;
+	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
   struct EnvMap *em = loadDefaultEnvironment()->em;
 
   zlib_setIntValueMaybe(em, "zliblevel", &ci->level);
@@ -84,7 +84,7 @@ static void zlib_clsetenv(struct CompAdaptor *ca)
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
-	struct zlibCompInstance *ci = (struct zlibCompInstance *) ca->cptr;
+	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
 	int s;
 
   unsigned char *dbuff;

@@ -144,7 +144,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     struct EnvMap *em = newEnvMap();
     int i;
     for (i = 0; i < sizeEM(cur->em); i += 1) {
-      union pctypes p;
+      union PCTypes p;
       p = getKeyValAt(cur->em, i);
       if (isMarkedAtEM(cur->em, i) && !isPrivateAtEM(cur->em, i) )
         setKeyValEM(em, p.sp.key, p.sp.val);
@@ -192,7 +192,7 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
   char param[PARAMLINESIZE];
 
   for (i = 0; i < sizeEM(em); i += 1) {
-    union pctypes p;
+    union PCTypes p;
     p = getKeyValAt(em, i);
     if (isMarkedAtEM(em, i) && !isPrivateAtEM(em, i) ) {
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
@@ -208,7 +208,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
 {
   int i, j;
   struct LabelPerm *labelperm = treegetlabelpermTRA(ta);
-  struct AdjA *ad = treegetadjaTRA(ta);
+  struct AdjAdaptor *ad = treegetadjaTRA(ta);
   struct DoubleA *nodes;
   static char labbuf[128];
   static char lab[1024];

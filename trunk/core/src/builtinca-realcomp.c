@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 /** \brief a structure containing instance information for a real compressor
- * \struct rcCompInstance
+ * \struct RealCompInstance
  *
  * This structure holds all information relevant for a real compressor.
  * A real compressor is invoked in a way similar to the virtual compressor.
@@ -21,7 +21,7 @@
  * sufficient to make a real compressor out of any functional compression
  * program.
  */
-struct rcCompInstance {
+struct RealCompInstance {
 	char *cmd;
   int bytecount;
 };
@@ -47,12 +47,12 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
     apiv: rc_apiver,
   };
   struct CompAdaptor *ca;
-	struct rcCompInstance *rci;
+	struct RealCompInstance *rci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct rcCompInstance), 1);
-  rci = (struct rcCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct RealCompInstance), 1);
+  rci = (struct RealCompInstance *) ca->cptr;
 
   if (cmd) {
     rci->cmd = gstrdup(cmd);
@@ -96,7 +96,7 @@ int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd)
 
 static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
-	struct rcCompInstance *ci = (struct rcCompInstance *) ca->cptr;
+	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
   char dummy;
   int readfd;
 
@@ -110,7 +110,7 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void rc_freecompfunc(struct CompAdaptor *ca)
 {
-	struct rcCompInstance *ci = (struct rcCompInstance *) ca->cptr;
+	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
   gfreeandclear(ci->cmd);
   gfreeandclear(ca->cptr);
 	gfreeandclear(ca);

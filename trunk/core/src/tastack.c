@@ -9,26 +9,26 @@
 #define INIT_TS_SIZE 11
 
 #if 0
-struct TAstack {
-	struct TransAdaptor **ta;
+struct TransformAdaptorStack {
+	struct TransformAdaptor **ta;
 	int size;
   int allocsize;
 };
 #endif
 
-struct TAstack {
+struct TransformAdaptorStack {
   struct DoubleA *da;
 };
 
-struct TAstack *newTAStack()
+struct TransformAdaptorStack *newTAStack()
 {
-	struct TAstack *ts;
-	ts = (struct TAstack*)gcalloc(sizeof(struct TAstack), 1);
+	struct TransformAdaptorStack *ts;
+	ts = (struct TransformAdaptorStack*)gcalloc(sizeof(struct TransformAdaptorStack), 1);
   ts->da = newDoubleDoubler();
 	return ts;
 }
 
-int freeTS(struct TAstack *ts)
+int freeTS(struct TransformAdaptorStack *ts)
 {
 	freeDoubleDoubler(ts->da);
 	ts->da = NULL;
@@ -36,58 +36,58 @@ int freeTS(struct TAstack *ts)
 	return CL_OK;
 }
 
-int pushTS(struct TAstack *ts, struct TransAdaptor *ta)
+int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta)
 {
-  union pctypes p;
+  union PCTypes p;
 
   p.ta = ta;
   pushValue(ts->da, p);
   return CL_OK;
 }
 
-struct TransAdaptor *shiftTS(struct TAstack *ts)
+struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts)
 {
-  union pctypes p;
+  union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
 	p = shiftDoubleDoubler(ts->da);
   return p.ta;
 }
 
-struct TransAdaptor *popTS(struct TAstack *ts)
+struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts)
 {
-  union pctypes p;
+  union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
 	p = popDoubleDoubler(ts->da);
   return p.ta;
 }
 
-int isEmptyTS(struct TAstack *ts)
+int isEmptyTS(struct TransformAdaptorStack *ts)
 {
 	return getSize(ts->da) == 0;
 }
 
-int sizeTS(struct TAstack *ts)
+int sizeTS(struct TransformAdaptorStack *ts)
 {
 	return getSize(ts->da);
 }
 
-struct TransAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc)
+struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc)
 {
-	struct TransAdaptor *curta = NULL;
+	struct TransformAdaptor *curta = NULL;
 	curta = searchfunc(ts,s);
 	return curta;
 }
 
 /*
-struct TransAdaptor *sequentialSearchTS(void *ts, void *s)
+struct TransformAdaptor *sequentialSearchTS(void *ts, void *s)
 {
-	struct TAstack *curts = (struct TAstack *)ts;
+	struct TransformAdaptorStack *curts = (struct TransformAdaptorStack *)ts;
 	const char *curstr = (const char *)s;
   int i;
-	struct TransAdaptor *curta = NULL;
-	struct TransAdaptor *found = NULL;
+	struct TransformAdaptor *curta = NULL;
+	struct TransformAdaptor *found = NULL;
   for (i = 0 ; i < curts->size ; i++) {
 	  curta = curts->ta[i];
 		if (curta && strcmp(curta->sn(),curstr) == 0) {

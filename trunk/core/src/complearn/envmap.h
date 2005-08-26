@@ -120,13 +120,13 @@ struct DataBlock dumpEnvMap(struct EnvMap *em);
 struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe);
 
 /** \brief Retrieves a key value pair at a given index of an EnvMap
- *  The key-value pair returned by getKeyValAt() is in the form of a pctypes
- *  strpair object.
+ *  The key-value pair returned by getKeyValAt() is in the form of a PCTypes
+ *  StringPair object.
  *  \param em pointer to EnvMap
  *  \param index
- *  \return pctypes key-value strpair
+ *  \return PCTypes key-value StringPair
  */
-union pctypes getKeyValAt(struct EnvMap *em, int where);
+union PCTypes getKeyValAt(struct EnvMap *em, int where);
 
 /** \brief Returns the index of an EnvMap given a character string key
  *  The index returned by findIndexForKey(), upon success, will be an integer

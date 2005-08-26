@@ -46,7 +46,7 @@ void removeNodeFromSet(struct CLNodeSet *cl, qbase_t which)
 
 void setNodeStatusInSet(struct CLNodeSet *cl, qbase_t which, int status)
 {
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
 
   assert(status == 0 || status == 1);
 

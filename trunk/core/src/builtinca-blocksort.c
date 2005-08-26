@@ -17,11 +17,11 @@
 
 /** \brief blocksort compressor instance
  *
- * \struct bs_compressor_instance
+ * \struct BlockSortCompInstance
  *
  * \sa builtinca-blocksort.c
  */
-struct bs_compressor_instance {
+struct BlockSortCompInstance {
   int code2state[256];
   int nstates;
   int *x, *p, allocated;
@@ -29,7 +29,7 @@ struct bs_compressor_instance {
 
 void suffixsort(int *x, int *p, int n, int k, int l);
 
-static double bs_compress(struct bs_compressor_instance *CI,
+static double bs_compress(struct BlockSortCompInstance *CI,
 			  unsigned char *data, int size) {
   int *x, *p;
   int i, j, mass, av;
@@ -176,8 +176,8 @@ static double bs_compress(struct bs_compressor_instance *CI,
 }
 
 void bs_freecompfunc(struct CompAdaptor *ca) {
-  struct bs_compressor_instance *bsci = 
-    (struct bs_compressor_instance *)ca->cptr;
+  struct BlockSortCompInstance *bsci = 
+    (struct BlockSortCompInstance *)ca->cptr;
   if (bsci->allocated > 0) {
     free(bsci->x);
     free(bsci->p);
@@ -187,8 +187,8 @@ void bs_freecompfunc(struct CompAdaptor *ca) {
 }
 
 static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock src) {
-  struct bs_compressor_instance *bsci = 
-    (struct bs_compressor_instance *)ca->cptr;
+  struct BlockSortCompInstance *bsci = 
+    (struct BlockSortCompInstance *)ca->cptr;
   return bs_compress(bsci, src.ptr, src.size);
 }
 
@@ -208,7 +208,7 @@ struct CompAdaptor *builtin_blocksort(void) {
     apiv: bs_apiver
   };
   struct CompAdaptor *ca;
-  struct bs_compressor_instance *bsci;
+  struct BlockSortCompInstance *bsci;
 
   ca   = calloc(sizeof(*ca), 1);
   bsci = calloc(sizeof(*bsci), 1);

@@ -8,7 +8,7 @@
 
 struct EnvMap;
 struct CompAdaptor;
-struct TransAdaptor;
+struct TransformAdaptor;
 struct TreeAdaptor;
 struct CLNodeSet;
 struct TreeObserver;
@@ -34,7 +34,7 @@ typedef int (*t_apiver)(void);
 typedef void (*t_doublefreefunc)(struct DoubleA *da, void *udata);
 
 typedef int (*t_predicate)(struct DataBlock db);
-typedef void (*t_transfree)(struct TransAdaptor *ta);
+typedef void (*t_transfree)(struct TransformAdaptor *ta);
 
 typedef struct DataBlock (*t_transform)(struct DataBlock db);
 typedef struct DataBlockEnumerationIterator *(*t_newenumiter)(struct DataBlockEnumeration *);
@@ -43,29 +43,29 @@ typedef void (*t_enumfree)(struct DataBlockEnumeration *);
 typedef struct DataBlock *(*t_istar)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
 typedef void (*t_istep)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
 typedef char * (*t_ilabel)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
-typedef struct TransAdaptor *(*t_searchfunc)(void *container, void *element);
+typedef struct TransformAdaptor *(*t_searchfunc)(void *container, void *element);
 
 struct QuartetObserver;
 struct Quartet;
 
 typedef int (*t_quartetvisitor)(struct QuartetObserver *qo, struct Quartet q, int qphase);
 
-struct AdjA;
-typedef void (*t_adjaprint)(struct AdjA *a);
-typedef int (*t_adjasize)(struct AdjA *a);
-typedef void (*t_adjafree)(struct AdjA *a);
-typedef struct AdjA *(*t_adjaclone)(struct AdjA *a);
-typedef int (*t_adjagetconstate)(struct AdjA *a, int i, int j);
-typedef void (*t_adjasetconstate)(struct AdjA *a, int i, int j, int which);
-typedef int (*t_adjagetneighborcount)(struct AdjA *a, int i);
-typedef int (*t_adjagetneighbors)(struct AdjA *a, int i, int *nbuf, int *nsize);
-typedef struct DoubleA *(*t_adjaspmmap)(struct AdjA *a);
+struct AdjAdaptor;
+typedef void (*t_adjaprint)(struct AdjAdaptor *a);
+typedef int (*t_adjasize)(struct AdjAdaptor *a);
+typedef void (*t_adjafree)(struct AdjAdaptor *a);
+typedef struct AdjAdaptor *(*t_adjaclone)(struct AdjAdaptor *a);
+typedef int (*t_adjagetconstate)(struct AdjAdaptor *a, int i, int j);
+typedef void (*t_adjasetconstate)(struct AdjAdaptor *a, int i, int j, int which);
+typedef int (*t_adjagetneighborcount)(struct AdjAdaptor *a, int i);
+typedef int (*t_adjagetneighbors)(struct AdjAdaptor *a, int i, int *nbuf, int *nsize);
+typedef struct DoubleA *(*t_adjaspmmap)(struct AdjAdaptor *a);
 
 typedef void (*t_treemutate)(struct TreeAdaptor *tra);
 typedef void (*t_treefree)(struct TreeAdaptor *tra);
 typedef struct TreeAdaptor *(*t_treeclone)(struct TreeAdaptor *tra);
 typedef struct LabelPerm *(*t_treegetlabelperm)(struct TreeAdaptor *tra);
-typedef struct AdjA *(*t_treegetadja)(struct TreeAdaptor *tra);
+typedef struct AdjAdaptor *(*t_treegetadja)(struct TreeAdaptor *tra);
 typedef int (*t_treenodepred)(struct TreeAdaptor *tra, int which);
 typedef int (*t_treemutecount)(struct TreeAdaptor *tra);
 typedef struct DoubleA *(*t_treeperimpairs)(struct TreeAdaptor *tra, struct CLNodeSet *flips);

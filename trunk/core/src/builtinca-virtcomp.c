@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 /** \brief A structure containing the instance state for a virtual compressor
- * \struct vcCompInstance
+ * \struct VirtualCompInstance
  *
  * This structure holds all status information necessary to perform the
  * virtual compression interface.  This includes forking a new process,
@@ -17,7 +17,7 @@
  * compressed size, in bits, of the imaginary compressed file.  Note that,
  * unlike the real compressor instance, no actual compression is necessary.
  */
-struct vcCompInstance {
+struct VirtualCompInstance {
 	char *cmd;
   char sbuf[1024];
   int curpt;
@@ -45,12 +45,12 @@ struct CompAdaptor *loadVirtComp(const char *cmd)
     apiv: vc_apiver,
   };
   struct CompAdaptor *ca;
-	struct vcCompInstance *vci;
+	struct VirtualCompInstance *vci;
   ca = gcalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct vcCompInstance), 1);
-  vci = (struct vcCompInstance *) ca->cptr;
+  ca->cptr = gcalloc(sizeof(struct VirtualCompInstance), 1);
+  vci = (struct VirtualCompInstance *) ca->cptr;
   if (cmd) {
     vci->cmd = gstrdup(cmd);
   }
@@ -64,7 +64,7 @@ struct CompAdaptor *loadVirtComp(const char *cmd)
 
 static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 {
-	struct vcCompInstance *ci = (struct vcCompInstance *) ca->cptr;
+	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
   int readfd;
   char ch;
   readfd = forkPipeExecAndFeed(&src, ci->cmd);
@@ -77,7 +77,7 @@ static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void vc_freecompfunc(struct CompAdaptor *ca)
 {
-	struct vcCompInstance *ci = (struct vcCompInstance *) ca->cptr;
+	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
   gfreeandclear(ci->cmd);
   gfreeandclear(ca->cptr);
 	gfreeandclear(ca);

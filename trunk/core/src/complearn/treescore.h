@@ -11,7 +11,7 @@
 
 struct TreeScore;
 struct TreeAdaptor;
-struct AdjA;
+struct AdjAdaptor;
 
 struct TreeScore *initTreeScore(struct TreeAdaptor *ta);
 
@@ -20,7 +20,7 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm);
 #else
 double scoreTreeDD(struct TreeScore *ts, struct DoubleA *dm);
 #endif
-int isConsistent(struct AdjA *ad, struct Quartet q);
+int isConsistent(struct AdjAdaptor *ad, struct Quartet q);
 void freeTreeScore(struct TreeScore *ts);
 
 #endif

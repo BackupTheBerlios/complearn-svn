@@ -7,7 +7,7 @@
 #include <gsl/gsl_linalg.h>
 #endif
 
-struct gslmHdr {
+struct GSLMHdr {
   int size1, size2;
 };
 
@@ -23,12 +23,12 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
 {
   struct DataBlock result, dubs;
   struct DoubleA *dac = newDoubleDoubler();
-  struct tagHdr h;
-  struct gslmHdr m;
+  struct TagHdr h;
+  struct GSLMHdr m;
   int x, y;
   for (x = 0; x < a->size1; ++x) {
     for (y = 0; y < a->size2; ++y) {
-      union pctypes p = zeropct;
+      union PCTypes p = zeropct;
       p.d = gsl_matrix_get(a, x, y);
       pushValue(dac, p);
     }
@@ -51,14 +51,14 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
 gsl_matrix *loadGSLMatrix(const struct DataBlock d, int fmustbe)
 {
   gsl_matrix *result;
-  struct tagHdr *h;
-  struct gslmHdr *m;
+  struct TagHdr *h;
+  struct GSLMHdr *m;
   struct DataBlock db;
   struct DoubleA *da;
   int x, y, i = 0;
   assert(sizeof(*m)+sizeof(*h) <= d.size);
-  h = (struct tagHdr *) d.ptr;
-  m = (struct gslmHdr *) (d.ptr + sizeof(*h));
+  h = (struct TagHdr *) d.ptr;
+  m = (struct GSLMHdr *) (d.ptr + sizeof(*h));
   if (h->tagnum != TAGNUM_GSLMATRIX) {
     if (fmustbe) {
     fprintf(stderr,"Error: expecting GSLMATRIX tagnum %x, got %x\n",
@@ -92,7 +92,7 @@ gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
 {
   gsl_matrix *m;
   struct DoubleA *dd;
-  struct tagHdr *h = (struct tagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db.ptr;
   struct DataBlock dbdm, dbda;
 
   if (h->tagnum != TAGNUM_CLDISTMATRIX) {
@@ -143,7 +143,7 @@ static struct DoubleA *get_dm_row_from_txt(char *linebuf, int isLabeled)
 {
   struct DoubleA *row = newDoubleDoubler();
   char *s;
-  union pctypes p = zeropct;
+  union PCTypes p = zeropct;
   s = strtok(linebuf, DELIMS);
   if (!isLabeled) {
     p.d = atof(s);

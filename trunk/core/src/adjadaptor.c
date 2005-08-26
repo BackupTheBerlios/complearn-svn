@@ -1,38 +1,38 @@
 #include <complearn.h>
 
-void adjaPrint(struct AdjA *aa)
+void adjaPrint(struct AdjAdaptor *aa)
 {
   aa->adjaprint(aa);
 }
-int adjaSize(struct AdjA *aa)
+int adjaSize(struct AdjAdaptor *aa)
 {
   return aa->adjasize(aa);
 }
-void adjaFree(struct AdjA *aa)
+void adjaFree(struct AdjAdaptor *aa)
 {
   aa->adjafree(aa);
 }
-struct AdjA *adjaClone(struct AdjA *aa)
+struct AdjAdaptor *adjaClone(struct AdjAdaptor *aa)
 {
   return aa->adjaclone(aa);
 }
-int adjaGetConState(struct AdjA *aa, int i, int j)
+int adjaGetConState(struct AdjAdaptor *aa, int i, int j)
 {
   return aa->adjagetconstate(aa, i, j);
 }
-void adjaSetConState(struct AdjA *aa, int i, int j, int which)
+void adjaSetConState(struct AdjAdaptor *aa, int i, int j, int which)
 {
   aa->adjasetconstate(aa, i, j, which);
 }
-int adjaGetNeighborCount(struct AdjA *aa, int i)
+int adjaGetNeighborCount(struct AdjAdaptor *aa, int i)
 {
   return aa->adjagetneighborcount(aa, i);
 }
-int adjaGetNeighbors(struct AdjA *aa, int i, int *nbuf, int *nsize)
+int adjaGetNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
 {
   return aa->adjagetneighbors(aa, i, nbuf, nsize);
 }
-struct DoubleA *adjaSPMMap(struct AdjA *aa)
+struct DoubleA *adjaSPMMap(struct AdjAdaptor *aa)
 {
   return aa->adjaspmmap(aa);
 }

@@ -3,9 +3,9 @@ require 'matrix'
 
 include CompLearn
 puts "it is #{CompLearn.to_s}"
-puts "and it is #{AdjA.inspect}"
+puts "and it is #{AdjAdaptor.inspect}"
 
-def printAdjA(ad)
+def printAdjAdaptor(ad)
   sz = ad.size
   sz.times  { |i|
     sz.times { |j|
@@ -15,15 +15,15 @@ def printAdjA(ad)
 }
 end
 
-ad = AdjA.new(11)
+ad = AdjAdaptor.new(11)
 ad = ad.clone  # quick test clone
 puts "First it is "
-printAdjA(ad)
+printAdjAdaptor(ad)
 ad.setconstate(2,3,1)
 ad.setconstate(1,3,1)
 
 puts "Now it is"
-printAdjA(ad)
+printAdjAdaptor(ad)
 
 
 input = "hello world\n"
@@ -51,10 +51,10 @@ puts "Version: #{gca.apiver}"
 
 puts "Making new tree."
 t = TreeAdaptor.new(6)
-puts "Made new AdjA"
+puts "Made new AdjAdaptor"
 tadja = t.adja
 puts "Tree Adja:"
-printAdjA(tadja)
+printAdjAdaptor(tadja)
 nodes = t.nodes
 descs = [ ]
 nodes.each { |i|
@@ -80,7 +80,7 @@ puts "About to call pp"
 clns = [ 2 ]
 pp = tr.perimeterPairs(clns)
 puts "Perim pairs: #{pp.inspect}"
-printAdjA(tr.adja)
+printAdjAdaptor(tr.adja)
 puts "About to mutate.."
 tr.mutate
 puts "Mutated.."

@@ -29,17 +29,17 @@
  */
 struct SpringBallSystem;
 
-/** \brief Converts an AdjA into a GSL-style matrix with 1's for connected nodes
+/** \brief Converts an AdjAdaptor into a GSL-style matrix with 1's for connected nodes
  *
- * convertAdjAToGSLMatrix() takes a pointer to an AdjA adjacency matrix
+ * convertAdjAdaptorToGSLMatrix() takes a pointer to an AdjAdaptor adjacency matrix
  * adaptor and converts it into a standard gsl_matrix.  This is the standard
  * adjacency-matrix representation where each entry at location i, j is
  * 1 if nodes i and j are connected, or 0 otherwise.
  *
- *  \param aa pointer to AdjA
+ *  \param aa pointer to AdjAdaptor
  *  \return pointer to new gsl_matrix
  */
-gsl_matrix *convertAdjAToGSLMatrix(struct AdjA *aa);
+gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa);
 
 /** \brief stepTowardsTree() allows for smooth time-splicing of dynamic springs
  *
@@ -50,7 +50,7 @@ gsl_matrix *convertAdjAToGSLMatrix(struct AdjA *aa);
  * into a new best one.  Doing this instantaneously would result in visually
  * uncomfortable jerkiness and is better handled using a smoothing matrix.
  * The smoothing matrix is the standard binary adjacency matrix (as returned
- * instantaneously from convertAdjAToGSLMatrix() at any point in time) put
+ * instantaneously from convertAdjAdaptorToGSLMatrix() at any point in time) put
  * through an exponential smoothing-filter so that when an adjacency changes
  * status it does so with a time-constant that is not instantaneous.  This
  * results in a matrix of smoothed adjacency values that are then directly

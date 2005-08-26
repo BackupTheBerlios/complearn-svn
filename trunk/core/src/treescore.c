@@ -37,7 +37,7 @@ static int pathsIntersect(int *path1, int len1, int *path2, int len2)
   return retval;
 }
 
-int isConsistent(struct AdjA *ad, struct Quartet q)
+int isConsistent(struct AdjAdaptor *ad, struct Quartet q)
 {
 #define MAXPATHTS 128
   static int nbuf1[MAXPATHTS], nbuf2[MAXPATHTS];

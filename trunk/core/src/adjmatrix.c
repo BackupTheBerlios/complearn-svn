@@ -105,13 +105,13 @@ int getNeighborCount(const struct AdjMatrix *adj, int from)
   return nc;
 }
 
-static int ajam_size(struct AdjA *a)
+static int ajam_size(struct AdjAdaptor *a)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) a->ptr;
   return am->size;
 }
 
-static void ajam_free(struct AdjA *aa)
+static void ajam_free(struct AdjAdaptor *aa)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
   free(am);
@@ -119,21 +119,21 @@ static void ajam_free(struct AdjA *aa)
   free(aa);
 }
 
-static void ajam_print(struct AdjA *aa)
+static void ajam_print(struct AdjAdaptor *aa)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
   printAdjMatrix(am);
 }
 
-static struct AdjA *ajam_clone(struct AdjA *aa)
+static struct AdjAdaptor *ajam_clone(struct AdjAdaptor *aa)
 {
-  struct AdjA *ab = (struct AdjA *) gcalloc(sizeof(*aa), 1);
+  struct AdjAdaptor *ab = (struct AdjAdaptor *) gcalloc(sizeof(*aa), 1);
   *ab = *aa;
   ab->ptr = cloneAdjMatrix(aa->ptr);
   return ab;
 }
 
-static int ajam_getconstate(struct AdjA *aa, int i, int j)
+static int ajam_getconstate(struct AdjAdaptor *aa, int i, int j)
 {
   int retval;
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
@@ -142,29 +142,29 @@ static int ajam_getconstate(struct AdjA *aa, int i, int j)
   return retval;
 }
 
-static void ajam_setconstate(struct AdjA *aa, int i, int j, int which)
+static void ajam_setconstate(struct AdjAdaptor *aa, int i, int j, int which)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
 //  printf("S=(%d,%d) => %d\n", i, j, which);
   setConState(am, i, j, which);
 }
 
-static int ajam_getneighborcount(struct AdjA *aa, int i)
+static int ajam_getneighborcount(struct AdjAdaptor *aa, int i)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
   return getNeighborCount(am, i);
 }
 
-static int ajam_getneighbors(struct AdjA *aa, int i, int *nbuf, int *nsize)
+static int ajam_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
 {
   struct AdjMatrix *am = (struct AdjMatrix *) aa->ptr;
   return getNeighbors(am, i, nbuf, nsize);
 }
 
-struct AdjA *loadAdaptorAM(int howBig)
+struct AdjAdaptor *loadAdaptorAM(int howBig)
 {
-  struct AdjA *aj;
-  aj = gcalloc(sizeof(struct AdjA), 1);
+  struct AdjAdaptor *aj;
+  aj = gcalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = newAdjMatrix(howBig);
   aj->adjafree = ajam_free;
   aj->adjasize = ajam_size;
