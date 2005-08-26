@@ -50,7 +50,7 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 static VALUE rbcompa_names(VALUE kl)
 {
   VALUE result;
-  struct StringStack *ss = listBuiltinCA();
+  struct StringStack *ss = compaListBuiltin();
   result = convertStringStackToRubyArray(ss);
   freeSS(ss);
   return result;
@@ -62,7 +62,7 @@ static VALUE rbcompa_init(VALUE self)
 
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
-  struct CompAdaptor *ca = loadBuiltinCA(STR2CSTR(comp));
+  struct CompAdaptor *ca = compaLoadBuiltin(STR2CSTR(comp));
   volatile VALUE tdata = Data_Wrap_Struct(cl, 0, freeCA, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);

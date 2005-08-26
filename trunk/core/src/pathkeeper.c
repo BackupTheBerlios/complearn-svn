@@ -26,7 +26,7 @@ int pk_getneighbors(struct AdjAdaptor *ad, int i, int *nbuf, int *nsize)
 void pk_print(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
-  printf("PathKeeper around:\n");
+ // printf("PathKeeper around:\n");
   adjaPrint(pk->basis);
 }
 
@@ -111,6 +111,18 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
   const struct DoubleA *spm = getValueAt(spmmap, to).ar;
   qbase_t cur;
   cur = from;
+  //printf("Got path request from %d to %d with bufsize %d:  ", from, to, *bufsize);
+  if (from == to) {
+    //printf("These nodes are equal.\n");
+    if (*bufsize < 1)
+      return CL_ERRFULL;
+    pathbuf[0] = from;
+    *bufsize = 1;
+    return CL_OK;
+  }
+  else {
+    //printf("These nodes are unequal.\n");
+  }
   assert(ad);
   do {
     if (pathlen == *bufsize)
@@ -125,12 +137,10 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
   }
   while (cur != to);
 //  p = zeropct; p.i = to;
-  if (from != to) {
-    if (pathlen == *bufsize)
-      return CL_ERRFULL;
-    pathbuf[pathlen] = to;
-    pathlen += 1;
-  }
+  if (pathlen == *bufsize)
+    return CL_ERRFULL;
+  pathbuf[pathlen] = to;
+  pathlen += 1;
 //    pushValue(result, p);
 #if LOGICWALL
 //  assert(getValueAt(result, 0).i == from);
@@ -287,7 +297,7 @@ void walkTree(struct AdjAdaptor *aa,
       }
       if (flipped && isNodeInSet(flipped, cur)) {
         if (nsize < 2) {
-          printf("Warning: bogus flip in flip set: %d\n", cur);
+          //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {
           swapValues(nb, 0, 1);
         }

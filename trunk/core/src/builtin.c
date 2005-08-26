@@ -27,7 +27,7 @@ struct CompAdaptor *builtin_RealComp(const char *cmd);
 struct CompAdaptor *builtin_VirtComp(const char *cmd);
 
 
-struct CompAdaptor *loadGoogleAdaptor(void)
+struct CompAdaptor *compaLoadGoogle(void)
 {
 #if CSOAP_RDY
   return builtin_GOOG();
@@ -36,7 +36,7 @@ struct CompAdaptor *loadGoogleAdaptor(void)
 #endif
 }
 
-struct CompAdaptor *loadSOAPAdaptor(const char *url, const char *urn)
+struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn)
 {
 #if CSOAP_RDY
   return builtin_SC(url, urn, "compfunc");
@@ -45,7 +45,7 @@ struct CompAdaptor *loadSOAPAdaptor(const char *url, const char *urn)
 #endif
 }
 
-struct CompAdaptor *loadBZipAdaptor(void)
+struct CompAdaptor *compaLoadBzip2(void)
 {
 #if BZIP2_RDY
   return builtin_BZIP();
@@ -54,7 +54,7 @@ struct CompAdaptor *loadBZipAdaptor(void)
 #endif
 }
 
-struct CompAdaptor *loadBlocksortAdaptor(void) 
+struct CompAdaptor *compaLoadBlockSort(void) 
 {
   return builtin_blocksort();
 }
@@ -66,7 +66,7 @@ struct CompAdaptor *loadBlocksortAdaptor(void)
 #include "builtinta-ungz.c"
 #endif
 
-struct CompAdaptor *loadZlibAdaptor(void)
+struct CompAdaptor *compaLoadZlib(void)
 {
 #if ZLIB_RDY
   return builtin_ZLIB();
@@ -75,43 +75,43 @@ struct CompAdaptor *loadZlibAdaptor(void)
 #endif
 }
 
-struct CompAdaptor *loadRealComp(const char *cmd)
+struct CompAdaptor *compaLoadReal(const char *cmd)
 {
   struct CompAdaptor *result = builtin_RealComp(cmd);
   return result;
 }
 
-struct CompAdaptor *loadBuiltinCA(const char *name)
+struct CompAdaptor *compaLoadBuiltin(const char *name)
 {
   struct CompAdaptor *result = NULL;
 #if ZLIB_RDY
   if (strcmp(name, "zlib") == 0)
-    result = loadZlibAdaptor();
+    result = compaLoadZlib();
 #endif
 #if BZIP2_RDY
   if (strcmp(name, "bzip") == 0)
-    result = loadBZipAdaptor();
+    result = compaLoadBzip2();
 #endif
 #if CSOAP_RDY
   if (strcmp(name, "google") == 0)
-    result = loadGoogleAdaptor();
+    result = compaLoadGoogle();
 #endif
   if (strcmp(name, "blocksort") == 0)
-    result = loadBlocksortAdaptor();
+    result = compaLoadBlockSort();
   return result;
 }
 
 static void addIfPresent(struct StringStack *ss, const char *name)
 {
   struct CompAdaptor *ca;
-  ca = loadBuiltinCA(name);
+  ca = compaLoadBuiltin(name);
   if (ca) {
     pushSS(ss,shortNameCA(ca));
     freeCA(ca);
   }
 }
 
-struct StringStack *listBuiltinCA(void)
+struct StringStack *compaListBuiltin(void)
 {
   struct StringStack *ss;
   ss = newStringStack();
@@ -122,11 +122,11 @@ struct StringStack *listBuiltinCA(void)
   return ss;
 }
 
-void printBuiltinCompressors(void)
+void compaPrintBuiltin(void)
 {
   struct StringStack *sup;
   printf("Your supported compressors are:\n\n");
-  sup = listBuiltinCA();
+  sup = compaListBuiltin();
   printSS(sup);
   freeSS(sup);
 }

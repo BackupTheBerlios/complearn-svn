@@ -32,7 +32,7 @@ static char *vc_shortname(void);
 static char *vc_longname(void);
 static int vc_apiver(void);
 
-struct CompAdaptor *loadVirtComp(const char *cmd)
+struct CompAdaptor *compaLoadVirtual(const char *cmd)
 {
 	struct CompAdaptor c =
   {

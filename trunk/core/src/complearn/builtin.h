@@ -8,7 +8,7 @@
 
 /** \brief Returns pointer to a builtin compressor interface.
  *
- * The loadBuiltinCA() function takes a char *name and matches it against a
+ * The compaLoadBuiltin() function takes a char *name and matches it against a
  * list of builtin compressor interfaces which are available.  Availability of
  * an interface is dependent on whether its corresponding compression library
  * is installed during compile time.  Currently, CompLearn has 2 builtin
@@ -20,48 +20,48 @@
  * \param name name of compressor interface
  * \returns pointer to CompAdaptor or NULL
  */
-struct CompAdaptor *loadBuiltinCA(const char *name);
+struct CompAdaptor *compaLoadBuiltin(const char *name);
 
 /** \brief Returns pointer to StringStack of available builtin compressors.
  *
  */
-struct StringStack *listBuiltinCA(void);
+struct StringStack *compaListBuiltin(void);
 
 /** \brief Returns pointer to builtin bzip2 compressor interface.
  *
  *  Equivalent to calling load BuiltinCA("bzip").
  * \returns pointer to CompAdaptor or NULL
  */
-struct CompAdaptor *loadBZipAdaptor(void);
+struct CompAdaptor *compaLoadBzip2(void);
 
 /** \brief Returns pointer to builtin blocksort compressor interface.
  *
  *  Equivalent to calling load BuiltinCA("blocksort").
  * \returns pointer to CompAdaptor
  */
-struct CompAdaptor *loadBlocksortAdaptor(void);
+struct CompAdaptor *compaLoadBlockSort(void);
 
 /** \brief Returns pointer to builtin google compressor interface.
  *
  *  Equivalent to calling load BuiltinCA("google").
  * \returns pointer to CompAdaptor or NULL
  */
-struct CompAdaptor *loadGoogleAdaptor(void);
+struct CompAdaptor *compaLoadGoogle(void);
 
 /** \brief Returns pointer to builtin zlib compressor interface.
  *
  *  Equivalent to calling load BuiltinCA("zlib").
  * \returns pointer to CompAdaptor or NULL
  */
-struct CompAdaptor *loadZlibAdaptor(void);
+struct CompAdaptor *compaLoadZlib(void);
 
 /** \brief Prints a list of builtin compressors.
  *
- *  printBuiltinCompressors() prints to stdout a list of builtin compressors
+ *  compaPrintBuiltin() prints to stdout a list of builtin compressors
  *  supported by CompLearn.  This list is dependent on the compression
  *  libraries detected during source compilcation.
  */
-void printBuiltinCompressors(void);
+void compaPrintBuiltin(void);
 
 /* TODO:  Following functions belong somewhere else.  They are not true
  * builtin compressors.  Must also rename the files builtinca-realcomp.c,
@@ -76,7 +76,7 @@ void printBuiltinCompressors(void);
  *  converted to bits.
  * \returns pointer to CompAdaptor
  */
-struct CompAdaptor *loadRealComp(const char *cmd);
+struct CompAdaptor *compaLoadReal(const char *cmd);
 
 /** \brief Returns pointer to a virtual compressor interface.
  *
@@ -88,7 +88,7 @@ struct CompAdaptor *loadRealComp(const char *cmd);
  * decimal.
  * \returns pointer to CompAdaptor
  */
-struct CompAdaptor *loadVirtComp(const char *cmd);
+struct CompAdaptor *compaLoadVirtual(const char *cmd);
 
 /** \brief Returns pointer to a SOAP compressor server interface.
  *
@@ -100,6 +100,6 @@ struct CompAdaptor *loadVirtComp(const char *cmd);
  *  size, in bits, of the string.
  * \returns pointer to CompAdaptor
  */
-struct CompAdaptor *loadSOAPAdaptor(const char *url, const char *urn);
+struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn);
 
 #endif

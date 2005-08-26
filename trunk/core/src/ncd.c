@@ -52,10 +52,10 @@ void loadCompressor(struct GeneralConfig *cur)
   if (cur->ca == NULL) {
     if (cur->fVerbose)
       printf("About to load %s..\n", cur->compressor_name);
-      cur->ca = loadBuiltinCA(cur->compressor_name);
+      cur->ca = compaLoadBuiltin(cur->compressor_name);
     if (cur->ca == NULL) {
       fprintf(stderr, "Error, cannot load builtin compressor %s\n", cur->compressor_name);
-      printBuiltinCompressors();
+      compaPrintBuiltin();
       exit(1);
     }
     if (cur->fVerbose)
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
         ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
-        printBuiltinCompressors();
+        compaPrintBuiltin();
 //        cleanupBeforeExit();
         exit(0);
         break;
