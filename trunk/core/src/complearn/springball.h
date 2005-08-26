@@ -125,7 +125,7 @@ gsl_vector *getBallPosition(struct SpringBallSystem *sbs, int whichBall);
  * modelSpeed is a multiplicative speed parameter; higher values make it go
  * faster, and the value 1 makes it go at "realtime" speed.  There is no
  * return value.
- * 
+ *
  * \param sbs pointer to a SpringBallSystem to adjust
  * \param modelSpeed speedup factor to switch to
  */

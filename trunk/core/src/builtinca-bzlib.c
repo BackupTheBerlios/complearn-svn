@@ -105,7 +105,7 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   unsigned char *dbuff;
 	int p;
 
-	p = src.size*1.02+600; 
+	p = src.size*1.02+600;
 	dbuff = (unsigned char*)gmalloc(p);
 	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) src.ptr,src.size,
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);

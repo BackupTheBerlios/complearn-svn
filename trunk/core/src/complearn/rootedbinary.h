@@ -25,7 +25,7 @@ struct StringStack;
  * room to hold the specified number of leaf-nodes.
  *
  * If an unrooted binary tree
- * is to support k leaves, then it must have k-2 kernel nodes, for a total 
+ * is to support k leaves, then it must have k-2 kernel nodes, for a total
  * of 2 * k - 2 nodes.  When a new tree is created, it is made by a simple
  * caterpillar-style pattern.  To get random variation, use the
  * doComplexMutation function with the cloneTree function.
@@ -67,7 +67,7 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *ub);
 
 /** \brief Indicates whether a given node identifier is a place for
  * a quartet-leaf object-label.
- * 
+ *
  * This function allows the user to determine if a given node identifier
  * needs to have a label attached or not.  It returns a true value != 0
  * if a label should be placed at this node.
@@ -79,7 +79,7 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *ub);
 int isQuartetableNodeRB(const struct RootedBinary *ub, qbase_t which);
 
 /** \brief Indicates whether a given node has orderable children.
- * 
+ *
  * This function allows the user to determine if a given node identifier
  * has at least 2 children that can be flipped in more than one order.
  * This bit may be adjusted using flipNodeLayout
@@ -92,7 +92,7 @@ int isQuartetableNodeRB(const struct RootedBinary *ub, qbase_t which);
 int isFlippableNodeRB(struct RootedBinary *ub, qbase_t which);
 
 /** \brief Returns the first node returned in tree traversals
- * 
+ *
  * This function allows the user to determine the starting node for
  * tree traversals on this tree.  This applies to the walkTree function.
  *
@@ -164,7 +164,7 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
  */
 
 /** \brief Frees the memory associated with an RootedBinary
- * 
+ *
  * This function frees the memory associated with an RootedBinary.
  * After calling this function it is safest to set the pointer to NULL,
  * as you shouldn't try to use it after deallocation.  This function must

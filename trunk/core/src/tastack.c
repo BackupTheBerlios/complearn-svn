@@ -91,7 +91,7 @@ struct TransformAdaptor *sequentialSearchTS(void *ts, void *s)
   for (i = 0 ; i < curts->size ; i++) {
 	  curta = curts->ta[i];
 		if (curta && strcmp(curta->sn(),curstr) == 0) {
-			found = curta; 
+			found = curta;
 		  break;
 		}
 	}

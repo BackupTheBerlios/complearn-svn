@@ -23,7 +23,7 @@ static void ncd_freeappconfig(struct GeneralConfig *cur) {
 }
 static void ncd_printapphelp(struct GeneralConfig *cur) {
   char *s;
-  s = 
+  s =
 "Usage: ncd [OPTION] ... [FILE | STRING | DIR ] [FILE | STRING | DIR] \n\n"
 
 "ENUMERATION MODES:\n"

@@ -79,7 +79,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
 #endif
 
 /** \brief loads a default configuration environment based on the standard files
- * 
+ *
  * This function is the normal interface to the configuration, parameter,
  * and environment settings.  It loads the systemwide and user-specific
  * settings in $HOME/.complearn/config.yml and sets the GeneralConfig

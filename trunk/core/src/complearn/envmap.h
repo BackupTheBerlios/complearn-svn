@@ -62,7 +62,7 @@ int sizeEM(struct EnvMap *em);
 
 /** \brief Returns true value if EnvMap is empty
  *  \param em EnvMap
- *  \return true if EnvMap contains 0 elements 
+ *  \return true if EnvMap contains 0 elements
  */
 int isEmptyEM(struct EnvMap *em);
 

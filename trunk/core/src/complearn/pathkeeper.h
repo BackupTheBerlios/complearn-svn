@@ -91,7 +91,7 @@ struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis);
 struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t from);
 
 /** \brief Calculates an All Points Shortest Path Map for the given binary tree
- * 
+ *
  * This function computes an SPM using makeSPMFor for each node in this
  * tree.  The SPM for node i is stored in getValueAt(result, i).ar
  *

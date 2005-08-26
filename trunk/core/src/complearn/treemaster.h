@@ -67,7 +67,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted);
 struct TreeMaster *newTreeMasterEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em);
 
 /** \brief simplest all-defaults way to search for an unrooted binary tree
- * 
+ *
  * newTreeMasterEz() offers the maximum convenience in constructing a TreeMaster
  * by way of its extensive use of defaults.  It takes only the distance matrix
  * and can search only for the most common unrooted binary trees with no
@@ -113,7 +113,7 @@ struct TreeHolder *findTree(struct TreeMaster *tm);
  * function.
  *
  * \sa getKTM()
- * 
+ *
  * \param tm pointer to the TreeMaster to inspect
  * \param i index of TreeHolder to retrieve between 0 and k-1 inclusive
  * \return pointer to a TreeHolder with the starting tree in the TreeAdaptor

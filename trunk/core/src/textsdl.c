@@ -94,26 +94,26 @@ void SDL_GL_RenderText(char *text,
   /* Use SDL_TTF to render our text */
   if (!clt->initial) {
     clt->initial = TTF_RenderText_Blended(font, text, color);
-  
+
     /* Convert the rendered text to a known format */
     clt->w = nextpoweroftwo(clt->initial->w);
     clt->h = nextpoweroftwo(clt->initial->h);
-  
-    clt->intermediary = SDL_CreateRGBSurface(0, clt->w, clt->h, 32, 
+
+    clt->intermediary = SDL_CreateRGBSurface(0, clt->w, clt->h, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 //    glTextEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     SDL_BlitSurface(clt->initial, 0, clt->intermediary, 0);
-  
+
     /* Tell GL about our new texture */
 //    glGenTextures(2, textures);
     glBindTexture(GL_TEXTURE_2D, clt->texName);
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, clt->w, clt->h, 0, GL_BGRA, 
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, clt->w, clt->h, 0, GL_BGRA,
       GL_UNSIGNED_BYTE, clt->intermediary->pixels );
-  
+
     /* GL_NEAREST looks horrible, if scaled... */
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   }
 
   /* prepare to render our texture */
@@ -125,24 +125,24 @@ void SDL_GL_RenderText(char *text,
     /* Recall that the origin is in the lower-left corner
        That is why the TexCoords specify different corners
        than the Vertex coors seem to. */
-    glTexCoord2f(0.0f, 1.0f); 
+    glTexCoord2f(0.0f, 1.0f);
       glVertex2f(location->x    , location->y);
-    glTexCoord2f(1.0f, 1.0f); 
+    glTexCoord2f(1.0f, 1.0f);
       glVertex2f(location->x + clt->w, location->y);
-    glTexCoord2f(1.0f, 0.0f); 
+    glTexCoord2f(1.0f, 0.0f);
       glVertex2f(location->x + clt->w, location->y + clt->h);
-    glTexCoord2f(0.0f, 0.0f); 
+    glTexCoord2f(0.0f, 0.0f);
       glVertex2f(location->x    , location->y + clt->h);
   glEnd();
   glEnable(GL_LIGHTING);
-  
+
   /* Bad things happen if we delete the texture before it finishes */
 //  glFinish();
-  
+
   /* return the deltas in the unused w,h part of the rect */
 //  location->w = initial->w;
 //  location->h = initial->h;
-  
+
   /* Clean up */
 //  SDL_FreeSurface(initial);
 //  SDL_FreeSurface(intermediary);
@@ -153,13 +153,13 @@ void SDL_GL_RenderText(char *text,
 void glEnable2D()
 {
   int vPort[4];
-  
+
   glGetIntegerv(GL_VIEWPORT, vPort);
-  
+
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
-  
+
   glOrtho(0, vPort[2], 0, vPort[3], -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
@@ -169,9 +169,9 @@ void glEnable2D()
 void glDisable2D()
 {
   glMatrixMode(GL_PROJECTION);
-  glPopMatrix();   
+  glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
-  glPopMatrix();  
+  glPopMatrix();
 }
 
 void draw_sdlpreparetodrawlabel(struct CLTexture *clt, gsl_vector *p, SDL_Rect *position)
@@ -223,7 +223,7 @@ void draw_sdltextteardown()
     glEnable(GL_DEPTH_TEST);
     glDisable2D();
     glDisable(GL_TEXTURE_2D);
-    
+
     /* Show the screen */
 //    SDL_GL_SwapBuffers( );
 }

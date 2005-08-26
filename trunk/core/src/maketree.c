@@ -26,7 +26,7 @@ static void maketree_freeappconfig(struct GeneralConfig *cur) {
 }
 static void maketree_printapphelp(struct GeneralConfig *cur) {
   char *s;
-  s = 
+  s =
 "Usage: maketree [OPTION] ... FILE \n\n"
 
 "MAKETREE OPTIONS:\n"

@@ -14,7 +14,7 @@
  * is installed during compile time.  Currently, CompLearn has 2 builtin
  * compressor adaptors: "bzip" and "zlib".
  *
- * If name matches an available compressor interface, a pointer to that 
+ * If name matches an available compressor interface, a pointer to that
  * CompAdaptor interface is returned. If name is not found in the list, NULL is
  * returned.
  * \param name name of compressor interface

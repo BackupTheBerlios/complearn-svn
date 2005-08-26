@@ -41,7 +41,7 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
   stepNextDataBlock(tm);
   getCurDataBlock(tm, &cur);
   valparts = loadStringStack(cur, 1);
-  
+
   assert (sizeSS(keyparts)== sizeSS(valparts));
   for (i = 0; i < sizeSS(keyparts) ; i += 1)
     setKeyValEM(result, readAtSS(keyparts,i), readAtSS(valparts,i));

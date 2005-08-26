@@ -403,7 +403,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
   unsigned char *dbuff;
 	int p, s;
 
-	p = src.size*1.001 + 12; 
+	p = src.size*1.001 + 12;
 	dbuff = (unsigned char*)gmalloc(p);
 	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,0);
 	if (s == Z_BUF_ERROR) {
@@ -636,16 +636,16 @@ void testTAStack()
 #endif
 
 #ifdef BZIP2_RDY
-	tmp = (struct TransformAdaptor *)shiftTS(ts); 
+	tmp = (struct TransformAdaptor *)shiftTS(ts);
 	assert(strcmp(tmp->sn(),"unbzip") == 0);
 #endif
 #ifdef ZLIB_RDY
 	cur = (struct TransformAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
 	assert(cur);
 	assert(strcmp(cur->sn(),"unzlib") == 0);
-	tmp = (struct TransformAdaptor *)popTS(ts); 
+	tmp = (struct TransformAdaptor *)popTS(ts);
 	assert(strcmp(tmp->sn(),"unzlib") == 0);
-	tmp = (struct TransformAdaptor *)shiftTS(ts); 
+	tmp = (struct TransformAdaptor *)shiftTS(ts);
 	assert(strcmp(tmp->sn(),"ungz") == 0);
 #endif
 	freeTS(ts);
@@ -832,7 +832,7 @@ void testQuartet(void)
     printf("And flipped node set:\n ");
     printCLNodeSet(clns);
     printf("Done.\n");
-    
+
 //    printf("score is %f\n", getScoreTB(tb));
     freeTreeHolder(th);
     freeTreeBlaster(tb);
@@ -857,7 +857,7 @@ void testQuartet(void)
 void testCLTree(void)
 {
 #define RETRIES 1
-#define TREELEAFSIZE 4 
+#define TREELEAFSIZE 4
 #define TREENODEWANTED (2*TREELEAFSIZE-2)
 #define MAXPATHTESTS 128
   struct UnrootedBinary *ct = newUnrootedBinary(TREELEAFSIZE);

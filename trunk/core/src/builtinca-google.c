@@ -144,7 +144,7 @@ static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   if (pagecount < 1) /* probably 0 */
     pagecount = NOTFOUNDWEIGHT;   /* a small amount given just for asking */
   compsize = -log(pagecount/sci->m)/log(2.0);
-  
+
   freeSS(terms);
   gfreeandclear(str);
 	return (double) compsize;

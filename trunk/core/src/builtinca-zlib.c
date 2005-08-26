@@ -90,7 +90,7 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   unsigned char *dbuff;
 	int p;
 
-	p = src.size*1.001 + 12; 
+	p = src.size*1.001 + 12;
 	dbuff = (unsigned char*)gmalloc(p);
 	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,ci->level);
 

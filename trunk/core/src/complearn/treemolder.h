@@ -89,7 +89,7 @@ struct CLNodeSet *getFlips(struct TreeMolder *tm);
  */
 void scrambleTreeMolder(struct TreeMolder *tm);
 
-/** \brief attempts to improve the current best ordering with a random mutation 
+/** \brief attempts to improve the current best ordering with a random mutation
  *
  * This routine tries a random mutation of the current best ordering for
  * the TreeMolder.  If it results in a better order-score then it keeps the

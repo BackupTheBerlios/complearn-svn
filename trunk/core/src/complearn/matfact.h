@@ -48,7 +48,7 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a);
  * using a dumpGSLMatrix() call earlier. The second parameter to
  * loadGSLMatrix() * indicates what the function will do in the case the
  * serialized format is not recognized.  0 indicates NULL should be returned.
- * 1 indicates the function will output an error message to stderr and 
+ * 1 indicates the function will output an error message to stderr and
  * terminate the program.
  *
  * \param d DataBlock

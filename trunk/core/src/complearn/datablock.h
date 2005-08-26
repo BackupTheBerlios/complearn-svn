@@ -11,7 +11,7 @@
  *  For each data object to be compressed or transformed in CompLearn,  there
  *  must exist a DataBlock. A DataBlock consists of two elements:
  *  a const char *ptr which points to a data buffer, and a int size to
- *  indicate length of the buffer in bytes. 
+ *  indicate length of the buffer in bytes.
  */
 struct DataBlock {
   unsigned char *ptr; /*!< Pointer to data buffer */
@@ -20,7 +20,7 @@ struct DataBlock {
 
 /** \brief Converts C string to CompLearn DataBlock.
  *
- *  The convertStringToDataBlock() function takes a char *s string and 
+ *  The convertStringToDataBlock() function takes a char *s string and
  *  copies it to a new memory area without the terminating nul ('\\0'). A new
  *  DataBlock is returned.  \param s character string
  *  \return new DataBlock
@@ -45,7 +45,7 @@ struct DataBlock cloneDataBlock(struct DataBlock db);
  */
 void freeDataBlock(struct DataBlock db);
 
-/** \brief Writes contents of DataBlock ptr to stdout. 
+/** \brief Writes contents of DataBlock ptr to stdout.
  *  \param db DataBlock
  */
 void printDataBlock(struct DataBlock db);

@@ -29,7 +29,7 @@ struct CompAdaptor {
 											     CompAdaptor object */
   t_apiver apiv;      /*!< Pointer to function which returns int api version
 												   of CompAdaptor interface */
-												  
+												
 };
 
 /** When using this interface, you must return APIVER_V1.  Future versions
@@ -53,7 +53,7 @@ int apiverCA(struct CompAdaptor *ca);
  *
  *  The ncd formula is as follows:
  *
- *    NCD(a,b) = (C(a,b) - min(C(a),C(b))) / max(C(a),C(b)) 
+ *    NCD(a,b) = (C(a,b) - min(C(a),C(b))) / max(C(a),C(b))
  *
  *    where
  *

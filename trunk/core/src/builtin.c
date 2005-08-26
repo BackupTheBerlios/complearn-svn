@@ -11,7 +11,7 @@
 #include "builtinca-google.c"
 #endif
 
-#if BZIP2_RDY 
+#if BZIP2_RDY
 #include "builtinca-bzlib.c"
 #include "builtinta-unbzip.c"
 #endif
@@ -54,7 +54,7 @@ struct CompAdaptor *compaLoadBzip2(void)
 #endif
 }
 
-struct CompAdaptor *compaLoadBlockSort(void) 
+struct CompAdaptor *compaLoadBlockSort(void)
 {
   return builtin_blocksort();
 }

@@ -1,7 +1,7 @@
 /*
  * Rudi Cilibrasi
  * sphere node tree GL demo springball sim for complearn
- * Distributed under terms of the LGPL. 
+ * Distributed under terms of the LGPL.
  */
 
 /*! \file sdlgl.c */
@@ -378,11 +378,11 @@ static GtkTargetEntry target_list[] = {
 static guint n_targets = G_N_ELEMENTS (target_list);
 
 static void
-drag_data_received_handl 
-(GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
-        GtkSelectionData *selection_data, guint target_type, guint time, 
+drag_data_received_handl
+(GtkWidget *widget, GdkDragContext *context, gint x, gint y,
+        GtkSelectionData *selection_data, guint target_type, guint time,
         gpointer data)
-{       
+{
         gboolean dnd_success = FALSE;
         gboolean delete_selection_data = FALSE;
         if((selection_data != NULL) && (selection_data-> length >= 0))
@@ -764,7 +764,7 @@ static void setupCameraAngle(void) {
     cam.lastTime = curtime;
     cam.curChanging[0] += cam.curDir * dt * angularSpeed;
     realAdjustRadius(dt);
-  } 
+  }
 }
 
 static void setup_shading1( void )
@@ -1038,7 +1038,7 @@ setRotParms(1, -1, -1, 1, 1);
   screen = SDL_SetVideoMode( width, height, bpp, flags );
 #if 0
   if( !screen ) {
-      /* 
+      /*
        * This could happen for a variety of reasons,
        * including DISPLAY not being set, the specified
        * resolution not being available, etc.

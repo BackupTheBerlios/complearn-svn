@@ -4,7 +4,7 @@
 #include <complearn/datablock.h>
 #include <complearn/quartet.h>
 
-/*! \file cltypes.h */ 
+/*! \file cltypes.h */
 
 struct EnvMap;
 struct CompAdaptor;

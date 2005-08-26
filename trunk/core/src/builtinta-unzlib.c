@@ -45,10 +45,10 @@ static int unzlib_predicate(struct DataBlock db)
 static struct DataBlock unzlib_transform(struct DataBlock src)
 {
 	struct DataBlock result;
-	int i; 
+	int i;
 	unsigned char *dbuff = NULL;
 	int triedp;
-	triedp = src.size * 3.0 + 1; 
+	triedp = src.size * 3.0 + 1;
 	do {
     int p;
 		if (dbuff != NULL)

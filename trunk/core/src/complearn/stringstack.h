@@ -74,7 +74,7 @@ int pushSS(struct StringStack *ss, const char *str);
 
 /** \brief Returns true value if StringStack is empty
  *  \param ss StringStack
- *  \return true if StringStack contains 0 elements 
+ *  \return true if StringStack contains 0 elements
  */
 int isEmptySS(struct StringStack *ss);
 

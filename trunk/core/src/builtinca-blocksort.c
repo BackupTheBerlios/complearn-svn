@@ -47,7 +47,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   }
   x = CI->x;
   p = CI->p;
-  
+
   /* Suffix sort the data (permutes x and p) */
   for (i=0; i<size; i++) x[i] = data[i];
   suffixsort(x, p, size, UCHAR_MAX+1, 0);
@@ -61,10 +61,10 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   statetrans[0][0]--; ntrans[0]--;
 
   /* Initialise the move to front codebook and the symbol frequencies */
-  for (i=0; i<256; i++) { 
-    code2byte[i] = i; 
-    num[i] = 1; 
-    total[CI->code2state[i]]++; 
+  for (i=0; i<256; i++) {
+    code2byte[i] = i;
+    num[i] = 1;
+    total[CI->code2state[i]]++;
   }
 
   state = CI->nstates-1;
@@ -77,15 +77,15 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 
     c = p[i] ? data[(p[i]+size)%(size+1)] : code2byte[0];
 
-    /* Move to front: 
-       - if the symbol is at position 1 of the code book, then move it 
+    /* Move to front:
+       - if the symbol is at position 1 of the code book, then move it
          to position 0
        - otherwise move it to position 1.
        (Why? Because it improves compression. Why? No-one knows.)
     */
     code = 0;
     carry2 = code2byte[0];
-    if (carry2!=c) { 
+    if (carry2!=c) {
       carry1 = code2byte[++code];
       if (carry1==c) {
 	code2byte[0] = (unsigned char)c;
@@ -115,7 +115,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
        2. Encode the symbol.
           Decoder already knows it must be one of the symbols that map
 	  to the current state. We keep statistics on those as well,
-	  this time through the arrays num[<symbol>] and total[<state>]. 
+	  this time through the arrays num[<symbol>] and total[<state>].
 	  Notice that some states only contain a single symbol; if we are
 	  in such a state then automatically zero bits are used in this
 	  stage.
@@ -127,7 +127,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 	  the probability that the next symbol is also a zero is often much
 	  higher if the previous TWO symbols are zero than if only the
 	  previous symbol is a zero, etc.
-  
+
     */
 
     /* Stage 1. Encode the state transition. */
@@ -144,7 +144,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
     mass = CREDULITY;
     for (j=code; j>=0 && num[j]*(code-j)<mass; j--)
       mass += num[j];
-    av = mass / (code-j); 
+    av = mass / (code-j);
     for (j++; j<=code; j++) {
       total[CI->code2state[j]] += av - num[j];
       num[j] = av;
@@ -176,7 +176,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 }
 
 void bs_freecompfunc(struct CompAdaptor *ca) {
-  struct BlockSortCompInstance *bsci = 
+  struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
   if (bsci->allocated > 0) {
     free(bsci->x);
@@ -187,7 +187,7 @@ void bs_freecompfunc(struct CompAdaptor *ca) {
 }
 
 static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock src) {
-  struct BlockSortCompInstance *bsci = 
+  struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
   return bs_compress(bsci, src.ptr, src.size);
 }

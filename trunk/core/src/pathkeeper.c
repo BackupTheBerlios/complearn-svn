@@ -259,7 +259,7 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   freeDoubleDoubler(border);
   freeCLNodeSet(done);
   return result;
-  
+
 }
 
 void walkTree(struct AdjAdaptor *aa,
