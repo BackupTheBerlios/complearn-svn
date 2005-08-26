@@ -860,6 +860,7 @@ void testCLTree(void)
 #define TREELEAFSIZE 4
 #define TREENODEWANTED (2*TREELEAFSIZE-2)
 #define MAXPATHTESTS 128
+#define MAXPATHLEN 16
   struct UnrootedBinary *ct = newUnrootedBinary(TREELEAFSIZE);
   struct DoubleA *n = getTreeNodes(ct, NULL);
   struct DoubleA *spm, *spmmap, *pp;
@@ -868,8 +869,8 @@ void testCLTree(void)
   int psize;
   int cur;
   int i;
-	int plen = MAXPATHTESTS;
-	int pbuf[MAXPATHTESTS];
+	int plen = MAXPATHLEN;
+	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
   assert(getSize(n) == TREENODEWANTED);
   pp = getPerimeterPairs(ct, NULL);
@@ -880,19 +881,20 @@ void testCLTree(void)
     a = getRandomElement(n);
     assert(a.i >= 0 && a.i < 100);
     b = getRandomElement(n);
+
     assert(b.i >= 0 && b.i < 100);
     spm = makeSPMFor(getAdjAdaptorForUB(ct), b.i);
     cur = a.i;
     psize = 1;
-    do {
+    while (cur != b.i) {
       assert(cur >= 0);
       assert(cur < TREENODEWANTED * 2 - 2);
       psize += 1;
 //      printf("%d ", cur);
       cur = getValueAt(spm, cur).i;
     }
-    while (cur != b.i);
 //    printf("\n");
+//
     retval = pathFinder(getAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
     assert(retval == CL_OK);
     if (plen != psize) {
@@ -1321,7 +1323,7 @@ int main(int argc, char **argv)
 #if GSL_RDY
   testMarshalling();
   testSpringBall();
-//  testCLTree();
+  testCLTree();
   testQuartet();
   testALTagFile();
   testSmoothing();
