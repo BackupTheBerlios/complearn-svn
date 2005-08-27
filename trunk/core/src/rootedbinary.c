@@ -283,8 +283,8 @@ qbase_t getStartingNodeRB(const struct RootedBinary *rb)
 struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
 {
   union PCTypes p = zeropct;
-  struct DoubleA *result = newDoubleDoubler();
-  struct DoubleA *border = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
+  struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   pushValue(border, p);
   walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), result, border, done, 0, NULL);
@@ -295,13 +295,13 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
 
 struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNodeSet *flips)
 {
-  struct DoubleA *pairs = newDoubleDoubler();
+  struct DoubleA *pairs = doubleaNew();
   union PCTypes p = zeropct;
   int i;
   int lastval = -1;
   int firstnode = -1;
-  struct DoubleA *traversalseq = newDoubleDoubler();
-  struct DoubleA *border = newDoubleDoubler();
+  struct DoubleA *traversalseq = doubleaNew();
+  struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   p.i = rb->root; /* start at root */
   pushValue(border, p);
@@ -338,7 +338,7 @@ void freeRootedBinaryRB(struct RootedBinary *rb)
 static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb)
 {
   int i;
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   for (i = 0; i < rb->nodecount; i += 1) {
     if (isQuartetableNodeRB(rb, i) == 1) {
       union PCTypes p = zeropct;
@@ -351,7 +351,7 @@ static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb)
 
 struct DoubleA *getLeafLabelsRB(const struct RootedBinary *rb)
 {
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   int i;
   for (i = 0; i < getSizeLP(rb->labelperm); i += 1) {
     union PCTypes p = zeropct;

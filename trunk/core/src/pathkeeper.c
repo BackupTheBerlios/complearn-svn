@@ -158,7 +158,7 @@ void freeSPMMap(struct DoubleA *ub)
 struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
 {
   int i;
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   for (i = 0; i < adjaSize(aa); ++i) {
     union PCTypes p = zeropct;
     p.ar = makeSPMFor(aa, i);
@@ -183,8 +183,8 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   assert(root < adjaSize(aa));
   path = gcalloc(adjaSize(aa), sizeof(*path));
   length = gcalloc(adjaSize(aa), sizeof(*length));
-  result = newDoubleDoubler();
-  todo = newDoubleDoubler();
+  result = doubleaNew();
+  todo = doubleaNew();
   assert(getSize(todo) < 100);
   for (i = 0; i < adjaSize(aa); i += 1) {
     path[i] = PATH_DASH;
@@ -251,8 +251,8 @@ static int intcomper(const void *ui1, const void *ui2)
 struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   union PCTypes p = zeropct;
-  struct DoubleA *result = newDoubleDoubler();
-  struct DoubleA *border = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
+  struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(treeGetNodeCountTRA(ta));
   pushValue(border, p);
   walkTree(treegetadjaTRA(ta), result, border, done, 0, flips);
@@ -279,7 +279,7 @@ void walkTree(struct AdjAdaptor *aa,
       union PCTypes p = zeropct;
       int i;
       int retval;
-      struct DoubleA *nb = newDoubleDoubler();
+      struct DoubleA *nb = doubleaNew();
       int nbuf[MAXNEIGHBORS];
       int nsize = MAXNEIGHBORS;
       clnodesetAddNode(done, cur);

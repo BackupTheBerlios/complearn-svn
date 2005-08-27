@@ -3,9 +3,6 @@
 
 /*! \file dbe-factory.h */
 
-struct DataBlockEnumeration *buildQuotedDBE(const char *str);
-struct DataBlockEnumeration *buildFileDBE(const char *str);
-
 /** \brief Determines the mode in which a new DataBlockEnumeration is created.
  *  \struct DBEFactory
  *
@@ -33,33 +30,33 @@ struct DBEFactory;
 /** \brief Returns a pointer to a new DBEFactory instance.
  *  \return pointer to a new DBEFactory instance
  */
-struct DBEFactory *newDBEFactory(void);
+struct DBEFactory *dbefactoryNew(void);
 
 /** \brief Frees DBEFactory instance from memory.
  *  \param dbf DBEFactory instance
  */
-void freeDBEFactory(struct DBEFactory *dbf);
+void dbefactoryFree(struct DBEFactory *dbf);
 
 /** \brief Sets a new mode for a DBEFactory.
  *  \param dbf pointer to a DBEFactory instance
  *  \param dbf newMode
  *  \return 0 on success
  */
-int dbef_setMode(struct DBEFactory *dbf, int newMode);
+int dbefactorySetMode(struct DBEFactory *dbf, int newMode);
 
 /** \brief Returns mode of DBEFactory instance.
  *  \param dbf pointer to a DBEFactory instance
  *  \return value between 1 and 5 inclusive. 1 = quoted, 2 = file, 3 =
  *   filelist, 4 = directory, 5 = windowed
  */
-int dbef_getMode(struct DBEFactory *dbf);
+int dbefactoryGetMode(struct DBEFactory *dbf);
 
 /** \brief Returns string which describes mode of DBEFactory instance.
  *  \param dbf pinter to a DBEFactory instance
  *  \return pointer to string of one of the following values: quoted, file,
  *   filelist, directory, windowed
  */
-const char *dbef_getModeStr(struct DBEFactory *dbf);
+const char *dbefactoryModeString(struct DBEFactory *dbf);
 
 /** \brief Given a DBEFactory instance and string argument, returns a pointer
  *  to a new DataBlockEnumeration.
@@ -72,5 +69,5 @@ const char *dbef_getModeStr(struct DBEFactory *dbf);
  *  \param str string
  *  \return pointer to newly created DataBlockEnumeration
  */
-struct DataBlockEnumeration *dbef_convertStr(struct DBEFactory *dbf, const char *str);
+struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char *str);
 #endif

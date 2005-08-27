@@ -125,7 +125,7 @@ static void dbe_sl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
   }
 }
 
-struct DataBlockEnumeration *loadStringListDBE(const char *filename)
+struct DataBlockEnumeration *dbeLoadStringList(const char *filename)
 {
   struct DataBlockEnumeration c = {
     NULL, /* eptr, private enumeration instance */

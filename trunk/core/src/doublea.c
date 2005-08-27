@@ -52,7 +52,7 @@ void freeDoubleDoubler(struct DoubleA *ptr)
   gfreeandclear(ptr);
 }
 
-struct DoubleA *newDoubleDoubler(void)
+struct DoubleA *doubleaNew(void)
 {
   struct DoubleA *da = gcalloc(sizeof(struct DoubleA), 1);
   da->alloc = 10;
@@ -226,7 +226,7 @@ void freeDeepDoubleDoubler(struct DoubleA *ptr, int lvl)
 
 struct DoubleA *deepCopyLvl(const struct DoubleA *ptr, int lvl)
 {
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   int sz = getSize(ptr);
   int i;
   for (i = 0; i < sz; ++i) {
@@ -272,7 +272,7 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe)
     exit(1);
   }
   if (ddh->level) {
-    result = newDoubleDoubler();
+    result = doubleaNew();
     for (i = 0; i < ddh->size; ++i) {
       union PCTypes p = zeropct;
       struct DataBlock dbcur;
@@ -302,7 +302,7 @@ struct DataBlock dumpDoubleDoubler(const struct DoubleA *d)
 
 struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
 {
-  struct DoubleA *bufs = newDoubleDoubler();
+  struct DoubleA *bufs = doubleaNew();
   struct DataBlock dbres;
 
   struct TagHdr h;

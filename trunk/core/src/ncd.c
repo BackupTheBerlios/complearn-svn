@@ -141,7 +141,7 @@ int main(int argc, char **argv)
   whichLongOpt = 1;
   if (ncdcfg->da.dbf == NULL) /* must init */ {
     ncdcfg->da.desize = 0;
-    ncdcfg->da.dbf = newDBEFactory();
+    ncdcfg->da.dbf = dbefactoryNew();
   }
   while (1) {
     next_option = complearn_getopt_long(argc, argv, ncd_short_options, ncd_long_options, &whichLongOpt, cur);
@@ -154,21 +154,21 @@ int main(int argc, char **argv)
         ncdcfg->output_distmat_fname = gstrdup(optarg);
         break;
       case 'f':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_FILE);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 't':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         cur->fUsingFilenames = 1;
         break;
       case 'p':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'l':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
         compaPrintBuiltin();
@@ -176,15 +176,15 @@ int main(int argc, char **argv)
         exit(0);
         break;
       case 'd':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'w':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, optarg);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'g':
-        dbef_setMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
         cur->compressor_name = gstrdup("google");
         break;
       case 'D':
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
       }
       else
         goodop = gstrdup(op);
-      ncdcfg->da.de[ncdcfg->da.desize++] =  dbef_convertStr(ncdcfg->da.dbf, goodop);
+      ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, goodop);
     }
   }
 #if 1

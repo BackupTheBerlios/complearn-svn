@@ -80,7 +80,7 @@ static void dbe_wi_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
     widbi->curpos += widbe->stepsize;
 }
 
-struct DataBlockEnumeration *loadWindowedDBE(struct DataBlock *db,
+struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
     int firstpos, int stepsize, int width, int lastpos)
 {
   struct DataBlockEnumeration c = {

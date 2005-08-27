@@ -8,7 +8,7 @@ struct DBEFactory {
   int mode;
 };
 
-struct DBEFactory *newDBEFactory(void)
+struct DBEFactory *dbefactoryNew(void)
 {
   struct DBEFactory *dbf;
   dbf = gcalloc(sizeof(struct DBEFactory), 1);
@@ -16,25 +16,25 @@ struct DBEFactory *newDBEFactory(void)
   return dbf;
 }
 
-void freeDBEFactory(struct DBEFactory *dbf)
+void dbefactoryFree(struct DBEFactory *dbf)
 {
   dbf->mode = 0;
   gfreeandclear(dbf);
 }
 
-int dbef_setMode(struct DBEFactory *dbf, int newMode)
+int dbefactorySetMode(struct DBEFactory *dbf, int newMode)
 {
   assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
 }
 
-int dbef_getMode(struct DBEFactory *dbf)
+int dbefactoryGetMode(struct DBEFactory *dbf)
 {
   return dbf->mode;
 }
 
-const char *dbef_getModeStr(struct DBEFactory *dbf)
+const char *dbefactoryModeString(struct DBEFactory *dbf)
 {
   switch (dbf->mode) {
     case DBF_MODE_QUOTED: return "quoted";
@@ -82,10 +82,10 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
       }
     }
   }
-  return loadWindowedDBE(db, startpos, stepsize, width, lastpos);
+  return dbeLoadWindowed(db, startpos, stepsize, width, lastpos);
 }
 
-struct DataBlockEnumeration *dbef_convertStr(struct DBEFactory *dbf, const char
+struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char
  *str)
 {
   struct DataBlock *db;
@@ -93,17 +93,17 @@ struct DataBlockEnumeration *dbef_convertStr(struct DBEFactory *dbf, const char
     case DBF_MODE_QUOTED:
       db = gcalloc(sizeof(struct DataBlock), 1);
       *db = stringToDataBlock(gstrdup(str));
-      return loadSingletonDBE(db);
+      return dbeLoadSingleton(db);
     case DBF_MODE_FILE:
       db = gcalloc(sizeof(struct DataBlock), 1);
       *db = fileToDataBlock(str);
-      return loadSingletonDBE(db);
+      return dbeLoadSingleton(db);
     case DBF_MODE_FILELIST:
-      return loadFileListDBE(str);
+      return dbeLoadFileList(str);
     case DBF_MODE_STRINGLIST:
-      return loadStringListDBE(str);
+      return dbeLoadStringList(str);
     case DBF_MODE_DIRECTORY:
-      return loadDirectoryDBE(str);
+      return dbeLoadDirectory(str);
     case DBF_MODE_WINDOWED:
       return dbef_handleWindowedDBE(dbf, str);
     default:

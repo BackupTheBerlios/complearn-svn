@@ -75,7 +75,7 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
 //  const char *fmtString = "%03.3f ";
   int n1Counter = 0, n1Set = 0;
   int n2Counter = 0, n2Set = 0;
-  struct DoubleA *da = newDoubleDoubler();
+  struct DoubleA *da = doubleaNew();
   struct DataBlockEnumerationIterator *ia, *ib;
   struct DataBlock *dba;
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
@@ -263,18 +263,18 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   if (tm) {
     int t0, tf, dt;
     if (getStartTimeTM(tm)) {
-      sprintf(con1, "/* start time %s */", cldt_to_humstr(getStartTimeTM(tm)));
+      sprintf(con1, "/* start time %s */", cldatetimeToHumString(getStartTimeTM(tm)));
       pushSS(dotacc, con1);
     }
     if (getEndTimeTM(tm)) {
-      sprintf(con1, "/* end   time %s */", cldt_to_humstr(getEndTimeTM(tm)));
+      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(getEndTimeTM(tm)));
       pushSS(dotacc, con1);
     }
     sprintf(con1, "/* total trees: %d */", totalTreesExamined(tm));
     pushSS(dotacc, con1);
     if (getEndTimeTM(tm) && getStartTimeTM(tm)) {
-      t0 = cldt_to_i(getStartTimeTM(tm));
-      tf = cldt_to_i(getEndTimeTM(tm));
+      t0 = cldatetimeToInt(getStartTimeTM(tm));
+      tf = cldatetimeToInt(getEndTimeTM(tm));
       dt = tf - t0;
       if (dt > 0) {
         sprintf(con1, "/* trees / sec : %f */", totalTreesExamined(tm) /

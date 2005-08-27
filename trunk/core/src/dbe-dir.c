@@ -115,7 +115,7 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
       freePath(dirdbi->curfilename);
     dirdbi->curfilename = gstrdup(drt->d_name);
     fname = dbe_get_pathname(dbe,dbi);
-    if (isDirectory(fname)) {
+    if (clIsDirectory(fname)) {
       dirdbi->curfilename = gstrdup(".notit");
       continue;
     }
@@ -127,7 +127,7 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
   } while (dirdbi->curfilename[0] == '.');
 }
 
-struct DataBlockEnumeration *loadDirectoryDBE(const char *dirname)
+struct DataBlockEnumeration *dbeLoadDirectory(const char *dirname)
 {
   struct DataBlockEnumeration c = {
     NULL, /* eptr, private enumeration instance */
@@ -149,7 +149,7 @@ struct DataBlockEnumeration *loadDirectoryDBE(const char *dirname)
   return dbe;
 }
 
-int isDirectory(const char *dirname)
+int clIsDirectory(const char *dirname)
 {
   int result = 0;
   DIR *cur;

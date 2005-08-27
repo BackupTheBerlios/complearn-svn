@@ -140,7 +140,7 @@ char *addNL(const char *inp)
 
 static void cleanupBeforeExit()
 {
-//  freeDBEFactory(curEnv->da.dbf);
+//  dbefactoryFree(curEnv->da.dbf);
   freeDefaultEnvironment(curEnv);
   curEnv = NULL;
 }
@@ -150,13 +150,13 @@ void saveCmd(struct GeneralConfig *ev, int argc, char **argv)
   static char sbuf[16384];
   struct CLDateTime *cdt;
   char *ptr = sbuf;
-  cdt = cldtNow();
+  cdt = cldatetimeNow();
   while (*argv) {
     ptr += sprintf(ptr, " %s", *argv);
     argv += 1;
   }
-  ptr += sprintf(ptr, " # at %s", cldt_to_humstr(cdt));
-  cldtfree(cdt);
+  ptr += sprintf(ptr, " # at %s", cldatetimeToHumString(cdt));
+  cldatetimeFree(cdt);
   *ptr = '\0';
   pushSS(ev->cmdKeeper, sbuf+1);
 }

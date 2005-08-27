@@ -118,10 +118,10 @@ double getPageCount(struct StringStack *terms, const char *gkey)
       const char *daystr;
       struct CLDateTime *cldt;
       double res;
-      cldt = cldtNow();
-      daystr = cldt_daystring(cldt);
+      cldt = cldatetimeNow();
+      daystr = cldatetimeToDayString(cldt);
       res = calculateMbase(daystr, gkey);
-      cldtfree(cldt);
+      cldatetimeFree(cldt);
       return 1.0/res;
     }
   }

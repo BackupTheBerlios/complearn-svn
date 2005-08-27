@@ -18,7 +18,7 @@ struct LabelPerm *newLabelPerm(struct DoubleA *labelledNodes)
   lp->coltonode = cloneDoubler(labelledNodes);
   assert(lp->coltonode);
   assert(getSize(lp->coltonode) == getSize(labelledNodes));
-  lp->nodetocol = newDoubleDoubler();
+  lp->nodetocol = doubleaNew();
   for (i = 0; i < lp->size; i += 1) {
     union PCTypes p = getValueAt(labelledNodes, i);
     union PCTypes g = zeropct;

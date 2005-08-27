@@ -55,7 +55,7 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
 {
   va_list ap;
   struct DataBlock *db, result;
-  struct DoubleA *parts = newDoubleDoubler();
+  struct DoubleA *parts = doubleaNew();
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
     union PCTypes p = zeropct;
@@ -111,7 +111,7 @@ void free_DataBlock_package ( struct DoubleA *da, void *udata)
 
 struct DoubleA *load_DataBlock_package(struct DataBlock db)
 {
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   struct TagManager *tm;
   struct DataBlock cur;
 

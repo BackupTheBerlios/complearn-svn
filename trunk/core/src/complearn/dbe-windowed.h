@@ -11,7 +11,7 @@
  *  \param db pointer to DataBlock
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *loadWindowedDBE(struct DataBlock *db,
+struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
     int firstpos, int stepsize, int width, int lastpos);
 
 #endif

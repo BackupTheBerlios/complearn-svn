@@ -22,6 +22,6 @@
  * \param libraryname name of dynamic library
  * \returns CompAdaptor new compressor interface
  */
-struct CompAdaptor *loadDLCompAdaptor(const char *libraryname);
+struct CompAdaptor *compaLoadDynamicLib(const char *libraryname);
 
 #endif

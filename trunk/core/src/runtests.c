@@ -93,7 +93,7 @@ void testDL2()
   em = getEnvMap(gconf);
   assert(em != NULL);
   setKeyValEM(em, "padding", "40");
-  comp = loadDLCompAdaptor(DLNAME);
+  comp = compaLoadDynamicLib(DLNAME);
   assert(comp->cf != NULL);
   //comp->se(comp,em);
   sn = compaShortName(comp);
@@ -472,7 +472,7 @@ void testSingletonDBE()
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   db = stringToDataBlock(teststr);
-  dbe = loadSingletonDBE(&db);
+  dbe = dbeLoadSingleton(&db);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -500,7 +500,7 @@ void testWindowedDBE()
   struct DataBlockEnumerationIterator *dbi;
   db = stringToDataBlock(teststr);
   lastpos = db.size - 1;
-  dbe = loadWindowedDBE(&db, firstpos, stepsize, width, lastpos);
+  dbe = dbeLoadWindowed(&db, firstpos, stepsize, width, lastpos);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -529,7 +529,7 @@ void testDirectoryDBE()
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int fcount = 0;
-  dbe = loadDirectoryDBE(testpg4dir);
+  dbe = dbeLoadDirectory(testpg4dir);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -557,7 +557,7 @@ void testArrayDBE()
   assert(db[0].size == 1);
   db[1] = stringToDataBlock("b");
   db[2] = stringToDataBlock("c");
-  dbe = loadArrayDBE(db, size);
+  dbe = dbeLoadArray(db, size);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -588,7 +588,7 @@ void testFileListDBE(void)
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
-  dbe = loadFileListDBE("/home/cilibrar/src/shared/complearn/src/lame.txt");
+  dbe = dbeLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -674,13 +674,13 @@ void testDateTime(void)
 {
   struct CLDateTime *td;
   char *daystr;
-  td = cldtNow();
+  td = cldatetimeNow();
   assert(td);
-  daystr = cldt_daystring(td);
+  daystr = cldatetimeToDayString(td);
 /*  assert(daystr);
   assert(strlen(daystr) > 2);
   */
-  cldtfree(td);
+  cldatetimeFree(td);
 }
 
 #if GSL_RDY
@@ -731,7 +731,7 @@ void testDoubleDoubler(void)
   struct DoubleA *dd, *ee, *sm;
   struct DataBlock dumptest;
   union PCTypes p = zeropct;
-  dd = newDoubleDoubler();
+  dd = doubleaNew();
   assert(dd);
   assert(getSize(dd) == 0);
   setDValueAt(dd, 0, 2.0);
@@ -749,11 +749,11 @@ void testDoubleDoubler(void)
   freeDoubleDoubler(dd);
   freeDoubleDoubler(ee);
   datablockFree(dumptest);
-  sm = newDoubleDoubler();
+  sm = doubleaNew();
   setDValueAt(sm, 0, 7.0);
   setDValueAt(sm, 1, 3.0);
   setDValueAt(sm, 2, 13.0);
-  dd = newDoubleDoubler();
+  dd = doubleaNew();
   p.ar = sm;
   pushValue(dd, p);
   dumptest = dumpDeepDoubleDoubler(dd, 1);
@@ -797,7 +797,7 @@ void testQuartet(void)
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
       db[i] = stringToDataBlock(buf2);
     }
-    dbe = loadArrayDBE(db, labelcount);
+    dbe = dbeLoadArray(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
 //    printf("Got NCD matrix... %dx%d\n", dm->size1, dm->size2);
     assert(n);
@@ -1132,7 +1132,7 @@ void testALTagFile(void)
 void testLabelPerm(void)
 {
   struct LabelPerm *lpa, *lpb, *lpc;
-  struct DoubleA *nodes = newDoubleDoubler();
+  struct DoubleA *nodes = doubleaNew();
   int i;
   for (i = 0; i < 10; i += 1) {
     union PCTypes p = zeropct;
@@ -1189,7 +1189,7 @@ void testTreeMolder()
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
       db[i] = stringToDataBlock(buf2);
     }
-    dbe = loadArrayDBE(db, labelcount);
+    dbe = dbeLoadArray(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
     ts = initTreeScore(ta);
     {

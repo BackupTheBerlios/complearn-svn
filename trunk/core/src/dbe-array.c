@@ -66,7 +66,7 @@ static void dbe_ar_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
     ardbi->cur += 1;
 }
 
-struct DataBlockEnumeration *loadArrayDBE(struct DataBlock *db, int size)
+struct DataBlockEnumeration *dbeLoadArray(struct DataBlock *db, int size)
 {
   struct DataBlockEnumeration e = {
     NULL, /* eptr, private enumeration instance */

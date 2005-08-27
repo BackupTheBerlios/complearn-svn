@@ -43,7 +43,7 @@ struct StringStack *loadStringStack(struct DataBlock db, int fmustbe)
 struct DataBlock dumpStringStack(const struct StringStack *ss)
 {
   struct DataBlock result;
-  struct DoubleA *parts = newDoubleDoubler();
+  struct DoubleA *parts = doubleaNew();
   int i;
 
   for ( i = 0; i < sizeSS(ss); i += 1) {
@@ -70,7 +70,7 @@ struct StringStack *newStringStack()
 {
 	struct StringStack *ss;
 	ss = (struct StringStack*)gcalloc(sizeof(struct StringStack), 1);
-  ss->da = newDoubleDoubler();
+  ss->da = doubleaNew();
 	// ss->size = 0;
 	return ss;
 }

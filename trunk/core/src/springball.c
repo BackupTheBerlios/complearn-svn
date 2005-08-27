@@ -189,7 +189,7 @@ static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
   sbs4->foball = gcalloc(sizeof(double), 2*sbs4->d*howBig);
   sbs4->foballbase = gcalloc(sizeof(double), 2*sbs4->d*howBig);
 
-  sbs4->subsys = newDoubleDoubler();
+  sbs4->subsys = doubleaNew();
 
   for (i = 0; i < howBig; i += 1) {
 
@@ -571,7 +571,7 @@ struct SpringBallSystem *newSBS(struct TreeAdaptor *ta) {
 
   sbs->modelSpeed = 1.0;
 
-  sbs->t = sbs->modelSpeed * cldtGetStaticTimer();
+  sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
 
   sbs->T = (gsl_odeiv_step_type *) gsl_odeiv_step_rk4;
   //sbs->T = (gsl_odeiv_step_type *) gsl_odeiv_step_bsimp;
@@ -587,7 +587,7 @@ struct SpringBallSystem *newSBS(struct TreeAdaptor *ta) {
 void setModelSpeedSBS(struct SpringBallSystem *sbs, double modelSpeed)
 {
   sbs->modelSpeed = modelSpeed;
-  sbs->t = sbs->modelSpeed * cldtGetStaticTimer();
+  sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
 }
 
 void printSBS(struct SpringBallSystem *sbs)
@@ -602,7 +602,7 @@ void printSBS(struct SpringBallSystem *sbs)
 
 void evolveForward(struct SpringBallSystem *sbs)
 {
-  double newt = sbs->modelSpeed * cldtGetStaticTimer();
+  double newt = sbs->modelSpeed * cldatetimeStaticTimer();
   if (newt <= sbs->t)
     return;
   stepTowards(sbs->sbs4->smoothk, sbs->sbs4->targetk, newt - sbs->t, 0.1);

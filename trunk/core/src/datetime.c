@@ -38,7 +38,7 @@ struct CLDateTime {
  *
  *  \return pointer to the new CLDateTime
  */
-struct CLDateTime *cldtNow(void)
+struct CLDateTime *cldatetimeNow(void)
 {
   struct CLDateTime *cldt = gcalloc(sizeof(struct CLDateTime), 1);
 #if HAVE_GETTIMEOFDAY
@@ -53,7 +53,7 @@ struct CLDateTime *cldtNow(void)
  *
  *  \param cldt pointer to the CLDateTime that must be freed
  */
-void cldtfree(struct CLDateTime *cldt)
+void cldatetimeFree(struct CLDateTime *cldt)
 {
   gfreeandclear(cldt);
 }
@@ -71,7 +71,7 @@ void cldtfree(struct CLDateTime *cldt)
  *  \return a pointer to the static buffer holding the resultant string
  *
  */
-const char *cldt_to_humstr(struct CLDateTime *c)
+const char *cldatetimeToHumString(struct CLDateTime *c)
 {
   static char sbuf[128];
   struct tm *timeinfo;
@@ -95,7 +95,7 @@ const char *cldt_to_humstr(struct CLDateTime *c)
  *  \param c pointer to the CLDateTime that must be converted to a string
  *  \return a pointer to the static buffer holding the resultant string
  */
-const char *cldt_to_s(struct CLDateTime *c)
+const char *cldatetimeToString(struct CLDateTime *c)
 {
   static char sbuf[128];
   sprintf(sbuf, "%u", (unsigned int) c->tv.tv_sec);
@@ -113,7 +113,7 @@ const char *cldt_to_s(struct CLDateTime *c)
  *  \param c pointer to the CLDateTime that must be converted to an integer
  *  \return an integer representing the number of seconds since Jan 1, 1970
  */
-unsigned long cldt_to_i(struct CLDateTime *c)
+unsigned long cldatetimeToInt(struct CLDateTime *c)
 {
   return c->tv.tv_sec;
 }
@@ -135,7 +135,7 @@ unsigned long cldt_to_i(struct CLDateTime *c)
  *  \param c pointer to the CLDateTime that must be converted to a daystring
  *  \return a string holding the daystring as an ASCII decimal string
  */
-char *cldt_daystring(struct CLDateTime *c)
+char *cldatetimeToDayString(struct CLDateTime *c)
 {
   struct tm gmt;
   static char res[128];
@@ -159,7 +159,7 @@ char *cldt_daystring(struct CLDateTime *c)
  * \return a pointer to the newly-allocated CLDateTime object holding the
  * results of the day-based arithmetic operation as defined before.
  */
-struct CLDateTime *cldtAddDays(const struct CLDateTime *basis, int offset)
+struct CLDateTime *cldatetimeAddDays(const struct CLDateTime *basis, int offset)
 {
   struct CLDateTime *newcldt = gcalloc(sizeof(struct CLDateTime), 1);
   *newcldt = *basis;
@@ -167,17 +167,17 @@ struct CLDateTime *cldtAddDays(const struct CLDateTime *basis, int offset)
   return newcldt;
 }
 
-double cldtGetStaticTimer(void)
+double cldatetimeStaticTimer(void)
 {
   double res;
-  struct CLDateTime *cldt = cldtNow();
+  struct CLDateTime *cldt = cldatetimeNow();
   assert(cldt);
   res = cldt->tv.tv_sec * 1.0 + 0.000001 * cldt->tv.tv_usec;
-  cldtfree(cldt);
+  cldatetimeFree(cldt);
   return res;
 }
 
-void sleepMillis(int howManyMillis)
+void clSleepMillis(int howManyMillis)
 {
 #if WINCHOICE
   Sleep(howManyMillis);

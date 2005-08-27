@@ -80,7 +80,7 @@ struct DataBlock dumpEnvMap(struct EnvMap *em)
 struct EnvMap *newEnvMap() {
   struct EnvMap *em;
   em = gcalloc(sizeof(struct EnvMap), 1);
-  em->d = newDoubleDoubler();
+  em->d = doubleaNew();
   em->marked = clnodesetNew(MAXINDECES);
   em->private = clnodesetNew(MAXINDECES);
   return em;
@@ -115,7 +115,7 @@ struct EnvMap *cloneEM(struct EnvMap *em)
   int i;
   int sz = sizeEM(em);
   nem = gcalloc(sizeof(struct EnvMap), 1);
-  nem->d = newDoubleDoubler();
+  nem->d = doubleaNew();
   for (i = 0; i < sz; ++i)
     setValueAt(nem->d, i, cloneStringPair(getValueAt(em->d, i).sp));
   nem->marked = clnodesetClone(em->marked);

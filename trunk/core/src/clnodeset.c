@@ -11,7 +11,7 @@ struct CLNodeSet *clnodesetNew(int howbig)
 {
   struct CLNodeSet *result = gcalloc(sizeof(struct CLNodeSet), 1);
   assert(howbig > 0);
-  result->da = newDoubleDoubler();
+  result->da = doubleaNew();
   setValueAt(result->da, howbig-1, zeropct);
   return result;
 }

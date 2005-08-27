@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   printf("doing %d trials\n", maxtrials);
   matched = 0;
 
-  start = cldtGetStaticTimer();
+  start = cldatetimeStaticTimer();
   for ( i = 0; i < maxtrials ; i += 1) {
     struct TreeMaster *tm1, *tm2;
     struct TreeHolder *th1, *th2;
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     freeTreeMaster(tm1);
     freeTreeMaster(tm2);
   }
-  finish = cldtGetStaticTimer();
+  finish = cldatetimeStaticTimer();
 
   fp = clfopen(outfile,"a+");
   fprintf(fp, "%d %d %f %f %f %f %f\n",

@@ -64,13 +64,13 @@ struct DataBlock makeCacheVal(double pg, struct DataBlock lastdbval, const char 
   static struct GCSample d, lastd;
   struct DataBlock dat;
   struct CLDateTime *dt;
-  dt = cldtNow();
+  dt = cldatetimeNow();
 
   memset(&d, 0, sizeof(d));
   memset(&lastd, 0, sizeof(lastd));
   d.pagecount = pg;
-  d.when = cldt_to_i(dt);
-  strcpy(d.daystring, cldt_daystring(dt));
+  d.when = cldatetimeToInt(dt);
+  strcpy(d.daystring, cldatetimeToDayString(dt));
   memcpy(d.cknext, lastdbval.ptr, lastdbval.size);
   strcpy(d.qorig, qorig);
 
@@ -91,9 +91,9 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
   char *daystr;
   struct CLDateTime *dt;
   if (udaystr == NULL) {
-    dt = cldtNow();
-    daystr = gstrdup(cldt_daystring(dt));
-    cldtfree(dt);
+    dt = cldatetimeNow();
+    daystr = gstrdup(cldatetimeToDayString(dt));
+    cldatetimeFree(dt);
   }
   else
     daystr = gstrdup(udaystr);
@@ -125,7 +125,7 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
  * the passed-in array.
  *
  * \param gc pointer to the GoogleCache object previously allocated
- * \param daystr string previously created with cldt_daystring
+ * \param daystr string previously created with cldatetimeToDayString
  * \param terms pointer to a StringStack of terms that will be
  * \return a value 0 indicating a cache-miss, or 1 indicating a cache-success
  */

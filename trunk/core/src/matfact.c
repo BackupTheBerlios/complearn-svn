@@ -22,7 +22,7 @@ gsl_matrix *cloneGSLMatrix(const gsl_matrix *a)
 struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
 {
   struct DataBlock result, dubs;
-  struct DoubleA *dac = newDoubleDoubler();
+  struct DoubleA *dac = doubleaNew();
   struct TagHdr h;
   struct GSLMHdr m;
   int x, y;
@@ -141,7 +141,7 @@ gsl_matrix *get_cldm_from_clb(char *fname)
 
 static struct DoubleA *get_dm_row_from_txt(char *linebuf, int isLabeled)
 {
-  struct DoubleA *row = newDoubleDoubler();
+  struct DoubleA *row = doubleaNew();
   char *s;
   union PCTypes p = zeropct;
   s = strtok(linebuf, DELIMS);

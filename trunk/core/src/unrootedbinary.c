@@ -38,7 +38,7 @@ static qbase_t randomKernelNode(struct UnrootedBinary *ub)
 
 static struct DoubleA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
 {
-  struct DoubleA *da = newDoubleDoubler();
+  struct DoubleA *da = doubleaNew();
   do {
     qbase_t cur = randomKernelNode(ub);
     addIfNewqb(da, cur);
@@ -284,8 +284,8 @@ qbase_t getStartingNode(const struct UnrootedBinary *ub)
 struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
   union PCTypes p = zeropct;
-  struct DoubleA *result = newDoubleDoubler();
-  struct DoubleA *border = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
+  struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(ub->nodecount);
   pushValue(border, p);
   walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
@@ -297,7 +297,7 @@ struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *
 struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
   struct DoubleA *nodes = getTreeNodes(ub, flips);
-  struct DoubleA *pairs = newDoubleDoubler();
+  struct DoubleA *pairs = doubleaNew();
   union PCTypes p;
   int i;
   int lastval = -1;
@@ -337,7 +337,7 @@ void freeUnrootedBinary(struct UnrootedBinary *ub)
 static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
 {
   int i;
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   for (i = 0; i < ub->nodecount; i += 1) {
     if (isQuartetableNode(ub, i) == 1) {
       union PCTypes p = zeropct;
@@ -350,7 +350,7 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
 
 struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
 {
-  struct DoubleA *result = newDoubleDoubler();
+  struct DoubleA *result = doubleaNew();
   int i;
   for (i = 0; i < getSizeLP(ub->labelperm); i += 1) {
     union PCTypes p = zeropct;

@@ -3,7 +3,7 @@
 VALUE convertCLDateTimeToTime(struct CLDateTime *cldt)
 {
   if (cldt) {
-    unsigned long i = cldt_to_i(cldt);
+    unsigned long i = cldatetimeToInt(cldt);
     return rb_funcall(cTime, rb_intern("at"), 1, UINT2NUM(i));
   }
   else

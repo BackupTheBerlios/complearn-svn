@@ -109,8 +109,8 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   struct EnvMap *em = loadDefaultEnvironment()->em;
   herror_t err;
   err = soap_client_init_args(0, args);
-  dt = cldtNow();
-  ci->daystr = gstrdup(cldt_daystring(dt));
+  dt = cldatetimeNow();
+  ci->daystr = gstrdup(cldatetimeToDayString(dt));
   userKey = readValForEM(em, "GoogleKey");
   setKeyPrivateEM(em, "GoogleKey");
   if (userKey == NULL) {
@@ -119,7 +119,7 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   }
   ci->gkey = gstrdup(userKey);
   ci->m = calculateM(ci->daystr, ci->gkey);
-  cldtfree(dt);
+  cldatetimeFree(dt);
 }
 
 static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)

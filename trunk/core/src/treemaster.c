@@ -210,7 +210,7 @@ struct CLDateTime *getStartTimeTM(struct TreeMaster *tm)
 struct TreeHolder *findTree(struct TreeMaster *tm)
 {
   int retval;
-  tm->startTime = cldtNow();
+  tm->startTime = cldatetimeNow();
   if (tm->tob && tm->tob->treesearchstarted)
     tm->tob->treesearchstarted(tm->tob);
   for (;;) {
@@ -222,7 +222,7 @@ struct TreeHolder *findTree(struct TreeMaster *tm)
         break;
     }
   }
-  tm->endTime = cldtNow();
+  tm->endTime = cldatetimeNow();
 #if 1
   if (!tm->fAbortNow && tm->tob && tm->tob->treedone) {
     struct TreeHolder *th = cloneTreeHolder(tm->th[0]);

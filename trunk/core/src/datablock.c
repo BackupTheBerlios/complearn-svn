@@ -36,7 +36,7 @@ struct DataBlock filePtrToDataBlock(FILE *fp)
   int toread = 812;
 	int bytesread, i;
   char *dbuf[toread];
-  struct DoubleA *parts = newDoubleDoubler();
+  struct DoubleA *parts = doubleaNew();
   unsigned char *ptr;
 
   d.size = 0;

@@ -98,7 +98,7 @@ const extern union PCTypes zeropct, onepcti;
  *  allocated by a DoubleA using freeDoubleDoubler().
  *  \return pointer to DoubleA
  */
-struct DoubleA *newDoubleDoubler(void);
+struct DoubleA *doubleaNew(void);
 
 /** \brief Frees a DoubleA from memory.
  *  \param ptr pointer to DoubleA

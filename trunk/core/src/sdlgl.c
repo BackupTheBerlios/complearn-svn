@@ -302,7 +302,7 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
     if (isDown) {
       cam.curChanging = choseAxis;
       cam.curDir = choseDir;
-      cam.lastTime = cldtGetStaticTimer();
+      cam.lastTime = cldatetimeStaticTimer();
     } else {
       cam.curChanging = NULL;
       cam.curDir = 0;
@@ -519,7 +519,7 @@ static void draw_screen(void)
 {
   int i, j, n;
   double x, y, z;
-  double curtime = cldtGetStaticTimer();
+  double curtime = cldatetimeStaticTimer();
   /* Clear the color and depth buffers. */
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -532,7 +532,7 @@ static void draw_screen(void)
 
 
 //  glEnable(GL_COLOR_MATERIAL);
-  double t = cldtGetStaticTimer();
+  double t = cldatetimeStaticTimer();
   matspring_diff[0] = 0.4 + 0.4 * cos(t * 7 * isCalculatingDM());
   matspring_diff[1] = 0.4 + 0.4 * cos(t * 4 * isCalculatingDM());
 //  glColor3fv(matspring_diff);
@@ -583,7 +583,7 @@ static void draw_screen(void)
       }
     }
   #endif
-  sleepMillis(30);
+  clSleepMillis(30);
   }
   if (fShowHelp || !ta )
     draw_sdlhelp();
@@ -635,7 +635,7 @@ int calcThreadFunc(void *unused)
 {
   for (;;) {
     if (distmatglob == NULL) {
-      sleepMillis(40);
+      clSleepMillis(40);
       continue;
     }
     if (tm == NULL && curFiles != NULL && curFiles->size >= 4) {
@@ -651,7 +651,7 @@ int calcThreadFunc(void *unused)
       fIsCalculatingDM = 0;
       assert(distmatglob);
       if (getSizeIDM(distmatglob) < 4) {
-        sleepMillis(40);
+        clSleepMillis(40);
         continue;
       }
       tm = newTreeMaster(getDistMatrixIDM(distmatglob), 0);
@@ -662,7 +662,7 @@ int calcThreadFunc(void *unused)
       findTree(tm);
     }
     else {
-      sleepMillis(40);  /* display help / status info here */
+      clSleepMillis(40);  /* display help / status info here */
     }
   }
   return 0;
@@ -758,7 +758,7 @@ static void setupCameraAngle(void) {
      */
     gluPerspective( 60.0, ratio, 1.0, 1024.0 );
     gluLookAt(cam.radius*sin(cam.angle1)*cos(cam.angle2),cam.radius*sin(cam.angle2), cam.radius*cos(cam.angle1), 0, 0, 0, 0, 1, 0);
-  double curtime = cldtGetStaticTimer();
+  double curtime = cldatetimeStaticTimer();
   if (cam.curChanging) {
     double dt = curtime - cam.lastTime;
     cam.lastTime = curtime;
@@ -902,8 +902,8 @@ static void realDoDroppedFile(char *buf)
   if (curFiles == NULL) {
     curFiles = gcalloc(sizeof(struct DataBlockKeeper), 1);
   }
-  if (isDirectory(buf)) {
-    struct DataBlockEnumeration *dbe = loadDirectoryDBE(buf);
+  if (clIsDirectory(buf)) {
+    struct DataBlockEnumeration *dbe = dbeLoadDirectory(buf);
     struct DataBlockEnumerationIterator *dbi;
     struct DataBlock *cur;
     dbi = dbe->newenumiter(dbe);
@@ -958,7 +958,7 @@ int main( int argc, char* argv[] )
   /* Dimensions of our window. */
   int width = 0;
   int height = 0;
-  cam.lastTime = cldtGetStaticTimer();
+  cam.lastTime = cldatetimeStaticTimer();
   /* Color depth in bits of our window. */
   int bpp = 0;
   /* Flags we will pass into SDL_SetVideoMode. */
