@@ -63,7 +63,7 @@ struct CompAdaptor *newCompAdaptor(void)
 
   aci->padding = 0;
 
-  val = readValForEM(em, "padding");
+  val = envmapValueForKey(em, "padding");
 
   if (val) {
     aci->padding = atoi(val);

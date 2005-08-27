@@ -90,7 +90,7 @@ gsl_matrix *loadCLDistMatrix(const struct DataBlock d, int fmustbe);
 
 /** \brief Dumps an gsl_matrix into a serialized format and returns a DataBlock
  *
- *  dumpEnvMap() a DataBlock which then can be written to a file using the
+ *  envmapDump() a DataBlock which then can be written to a file using the
  *  function datablockWriteToFile().  This resulting DataBlock is also
  *  appropriate when using the function package_DataBlocks().
  *

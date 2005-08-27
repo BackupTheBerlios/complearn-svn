@@ -141,16 +141,16 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   }
   if (cur->fBinary) {
     struct DataBlock dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, db;
-    struct EnvMap *em = newEnvMap();
+    struct EnvMap *em = envmapNew();
     int i;
-    for (i = 0; i < sizeEM(cur->em); i += 1) {
+    for (i = 0; i < envmapSize(cur->em); i += 1) {
       union PCTypes p;
-      p = getKeyValAt(cur->em, i);
-      if (isMarkedAtEM(cur->em, i) && !isPrivateAtEM(cur->em, i) )
-        setKeyValEM(em, p.sp.key, p.sp.val);
+      p = envmapKeyValAt(cur->em, i);
+      if (envmapIsMarkedAt(cur->em, i) && !envmapIsPrivateAt(cur->em, i) )
+        envmapSetKeyVal(em, p.sp.key, p.sp.val);
     }
-    if (sizeEM(em) > 0)
-      dbenvmap = dumpEnvMap(em);
+    if (envmapSize(em) > 0)
+      dbenvmap = envmapDump(em);
     dbdmtagged = dumpCLDistMatrix(gres);
     assert(labels);
     dblabelstagged = dumpDMLabels(labels);
@@ -191,10 +191,10 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
   struct StringStack *ss = newStringStack();
   char param[PARAMLINESIZE];
 
-  for (i = 0; i < sizeEM(em); i += 1) {
+  for (i = 0; i < envmapSize(em); i += 1) {
     union PCTypes p;
-    p = getKeyValAt(em, i);
-    if (isMarkedAtEM(em, i) && !isPrivateAtEM(em, i) ) {
+    p = envmapKeyValAt(em, i);
+    if (envmapIsMarkedAt(em, i) && !envmapIsPrivateAt(em, i) ) {
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
       pushSS(ss, param);
     }

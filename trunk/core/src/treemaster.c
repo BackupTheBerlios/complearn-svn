@@ -65,7 +65,7 @@ static struct TreeMasterConfig getTreeMasterDefaultConfig(void)
 
 static void tm_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int *placeToSet) {
   char *val;
-  val = readValForEM(srcenv,keyname);
+  val = envmapValueForKey(srcenv,keyname);
   if (val)
     *placeToSet = atoi(val);
 }

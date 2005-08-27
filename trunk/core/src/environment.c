@@ -16,7 +16,7 @@ void printActiveEnvironment(void)
 {
   struct EnvMap *em = loadDefaultEnvironment()->em;
   printf("The environment:\n");
-  printEM(em);
+  envmapPrint(em);
 }
 
 void freeDefaultEnvironment(struct GeneralConfig *g)
@@ -26,7 +26,7 @@ void freeDefaultEnvironment(struct GeneralConfig *g)
     curEnv->freeappcfg(curEnv);
   gfreeifpresent(curEnv->compressor_name);
   if (curEnv->em) {
-    freeEM(curEnv->em);
+    envmapFree(curEnv->em);
     curEnv->em = NULL;
   }
   if (curEnv->ca) {
@@ -40,8 +40,8 @@ void updateEMToConfig(struct GeneralConfig *env)
 {
   if (curEnv && curEnv->upappcfg)
     curEnv->upappcfg(curEnv);
-  if (readValForEM(env->em, "compressor"))
-      env->compressor_name = strdup(readValForEM(env->em, "compressor"));
+  if (envmapValueForKey(env->em, "compressor"))
+      env->compressor_name = strdup(envmapValueForKey(env->em, "compressor"));
 }
 
 void updateConfigToEM(struct GeneralConfig *env)
@@ -49,11 +49,11 @@ void updateConfigToEM(struct GeneralConfig *env)
   if (curEnv && curEnv->upappem)
     curEnv->upappem(curEnv);
   if (env->compressor_name) {
-    setKeyValEM(env->em, "compressor", env->compressor_name);
-    setKeyMarkedEM(env->em, "compressor");
+    envmapSetKeyVal(env->em, "compressor", env->compressor_name);
+    envmapSetKeyMarked(env->em, "compressor");
   }
   if (env->config_filename) {
-    setKeyValEM(env->em, "config-file", env->config_filename);
+    envmapSetKeyVal(env->em, "config-file", env->config_filename);
   }
 }
 
@@ -95,7 +95,7 @@ struct GeneralConfig *loadDefaultEnvironment()
   if (!curEnv) {
     curEnv = gmalloc(sizeof(*curEnv));
     *curEnv = defaultConfig;
-    curEnv->em = newEnvMap();
+    curEnv->em = envmapNew();
     curEnv->cmdKeeper = newStringStack();
     curEnv->compressor_name = gstrdup("blocksort");
     readDefaultConfig(curEnv->em);

@@ -92,7 +92,7 @@ void testDL2()
   dblargealpha = stringToDataBlock(strlargealpha);
   em = getEnvMap(gconf);
   assert(em != NULL);
-  setKeyValEM(em, "padding", "40");
+  envmapSetKeyVal(em, "padding", "40");
   comp = compaLoadDynamicLib(DLNAME);
   assert(comp->cf != NULL);
   //comp->se(comp,em);
@@ -116,10 +116,10 @@ void testDL()
   void *dlh;
   char *(*fn)(void);
   struct EnvMap *em;
-  em = newEnvMap();
-  setKeyValEM(em, "ignorethis", "noproblem");
-  setKeyValEM(em, "ignorethis2", "ok");
-  setKeyValEM(em, "padding", "20");
+  em = envmapNew();
+  envmapSetKeyVal(em, "ignorethis", "noproblem");
+  envmapSetKeyVal(em, "ignorethis2", "ok");
+  envmapSetKeyVal(em, "padding", "20");
   dlh = dlopen(DLNAME, RTLD_NOW | RTLD_GLOBAL);
   if (dlh == NULL) {
     fprintf(stderr, "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
@@ -129,29 +129,29 @@ void testDL()
   assert("Error: cannot open dynamic library, did you build it yet?" && dlh);
   fn = dlsym(dlh, "newCompAdaptor");
   assert(fn);
-  freeEM(em);
+  envmapFree(em);
 }
 
 void testEM()
 {
   struct EnvMap *em;
   union PCTypes p;
-  em = newEnvMap();
-  setKeyValEM(em,"key1","val1");
-  setKeyValEM(em,"key2","val2");
-  setKeyValEM(em,"key3","val3");
-  setKeyValEM(em,"key4","val4");
-  assert(strcmp("val1", readValForEM(em,"key1")) == 0);
-  assert(strcmp("val2", readValForEM(em,"key2")) == 0);
-  setKeyValEM(em,"key2","newval2");
-  setKeyValEM(em,"key3","newval3");
-  p = getKeyValAt(em,1);
+  em = envmapNew();
+  envmapSetKeyVal(em,"key1","val1");
+  envmapSetKeyVal(em,"key2","val2");
+  envmapSetKeyVal(em,"key3","val3");
+  envmapSetKeyVal(em,"key4","val4");
+  assert(strcmp("val1", envmapValueForKey(em,"key1")) == 0);
+  assert(strcmp("val2", envmapValueForKey(em,"key2")) == 0);
+  envmapSetKeyVal(em,"key2","newval2");
+  envmapSetKeyVal(em,"key3","newval3");
+  p = envmapKeyValAt(em,1);
   assert(strcmp(p.sp.key,"key2") == 0);
   assert(strcmp(p.sp.val,"newval2") == 0);
-  p = getKeyValAt(em,2);
+  p = envmapKeyValAt(em,2);
   assert(strcmp(p.sp.key,"key3") == 0);
   assert(strcmp(p.sp.val,"newval3") == 0);
-  freeEM(em);
+  envmapFree(em);
 }
 
 void testSS()
@@ -290,12 +290,12 @@ void testYamlParser()
 //  "zliblevel: 5\n"
 	;
 //  struct StringStack *getDefaultFileList(void);
-  em = newEnvMap();
+  em = envmapNew();
   readDefaultConfig(em);
 
-	assert(strcmp(readValForEM(em,"compressor"),"zlib") == 0);
-	assert(strcmp(readValForEM(em,"zliblevel"),"5") == 0);
-  freeEM(em);
+	assert(strcmp(envmapValueForKey(em,"compressor"),"zlib") == 0);
+	assert(strcmp(envmapValueForKey(em,"zliblevel"),"5") == 0);
+  envmapFree(em);
 }
 
 void testVirtComp()
@@ -323,7 +323,7 @@ void testGoogle()
   const char *gotQStr;
   double pg;
   wantedQStr = wantedQStr; /* warning stopper */
-  em = newEnvMap();
+  em = envmapNew();
   terms = newStringStack();
   pushSS(terms, "ball");
   pushSS(terms, "apple");
@@ -338,7 +338,7 @@ void testGoogle()
 
   readDefaultConfig(em);
 
-  gkey = readValForEM(em, "GoogleKey");
+  gkey = envmapValueForKey(em, "GoogleKey");
 
   if (gkey) {
 //    pg = fetchSampleSimple(terms, gkey, NULL);
@@ -363,7 +363,7 @@ void testGoogle()
     }
   }
   freeSS(terms);
-  freeEM(em);
+  envmapFree(em);
 }
 
 void testSOAPComp()
@@ -690,7 +690,7 @@ void testMarshalling(void)
   char *strtest = "the test string";
   struct DataBlock m;
   char *res = NULL;
-  struct EnvMap *em = newEnvMap();
+  struct EnvMap *em = envmapNew();
   struct EnvMap *resem;
   m = stringDump(strtest);
   res = stringLoad(m, 1);
@@ -711,18 +711,18 @@ void testMarshalling(void)
   gsl_matrix_free(gm);
   gsl_matrix_free(ngm);
   datablockFree(m);
-  setKeyValEM(em, "key1", "val1");
-  setKeyValEM(em, "key2", "val2");
-  setKeyValEM(em, "key3", "val3");
-  setKeyValEM(em, "key4", "val4");
-  m = dumpEnvMap(em);
-  resem = loadEnvMap(m,1);
+  envmapSetKeyVal(em, "key1", "val1");
+  envmapSetKeyVal(em, "key2", "val2");
+  envmapSetKeyVal(em, "key3", "val3");
+  envmapSetKeyVal(em, "key4", "val4");
+  m = envmapDump(em);
+  resem = envmapLoad(m,1);
   assert( em != resem);
-  assert(strcmp(readValForEM(em,"key1"), readValForEM(resem,"key1")) == 0);
-  assert(strcmp(readValForEM(em,"key2"), readValForEM(resem,"key2")) == 0);
-  assert(strcmp(readValForEM(em,"key3"), readValForEM(resem,"key3")) == 0);
-  assert(strcmp(readValForEM(em,"key4"), readValForEM(resem,"key4")) == 0);
-  freeEM(em); freeEM(resem);
+  assert(strcmp(envmapValueForKey(em,"key1"), envmapValueForKey(resem,"key1")) == 0);
+  assert(strcmp(envmapValueForKey(em,"key2"), envmapValueForKey(resem,"key2")) == 0);
+  assert(strcmp(envmapValueForKey(em,"key3"), envmapValueForKey(resem,"key3")) == 0);
+  assert(strcmp(envmapValueForKey(em,"key4"), envmapValueForKey(resem,"key4")) == 0);
+  envmapFree(em); envmapFree(resem);
 }
 #endif
 

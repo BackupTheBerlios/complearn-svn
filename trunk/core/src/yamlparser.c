@@ -98,7 +98,7 @@ void handleLine(struct EnvMap *dest, const char *uline)
   vbuf = val;
   if (filterVal(key, kbuf)) {
     if (filterVal(val, vbuf)) {
-      setKeyValEM(dest, kbuf, vbuf);
+      envmapSetKeyVal(dest, kbuf, vbuf);
     }
   }
   gfreeandclear(line);

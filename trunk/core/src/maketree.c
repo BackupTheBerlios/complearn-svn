@@ -145,15 +145,15 @@ int main(int argc, char **argv)
     switch (next_option) {
       case 'R':
         isRooted = 1;
-        setKeyValEM(cur->em, "isRooted", "1");
+        envmapSetKeyVal(cur->em, "isRooted", "1");
         break;
       case 'F':
         isEnablingMaxFailCount = 1;
-        setKeyValEM(cur->em, "selfAgreementTermination", "0");
+        envmapSetKeyVal(cur->em, "selfAgreementTermination", "0");
         break;
       case 'u':
         isOrdered = 0;
-        setKeyValEM(cur->em, "isOrdered", "0");
+        envmapSetKeyVal(cur->em, "isOrdered", "0");
         break;
       case 'T':
         isText = 1;
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
     dm = get_dm_from_txt(fname);
     labels = get_labels_from_txt(fname);
   } else {
-    struct EnvMap *em = get_clem_from_clb(fname);
+    struct EnvMap *em = clbEnvMap(fname);
     struct StringStack *ss = get_clcmds_from_clb(fname);
     char *cmd = NULL;
     assert(ss);
@@ -190,10 +190,10 @@ int main(int argc, char **argv)
     cur->cmdKeeper = ss;
     if (cmd)
       pushSS(cur->cmdKeeper, cmd);
-    mergeEM(cur->em, em);
+    envmapMerge(cur->em, em);
     dm = get_cldm_from_clb(fname);
     labels = get_labels_from_clb(fname);
-    freeEM(em);
+    envmapFree(em);
     gfreeandclear(cmd);
   }
 

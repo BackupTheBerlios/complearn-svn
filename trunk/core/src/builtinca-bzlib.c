@@ -81,7 +81,7 @@ struct CompAdaptor *builtin_BZIP(void)
 
 static void bz_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int *placeToSet) {
   char *val;
-  val = readValForEM(srcenv,keyname);
+  val = envmapValueForKey(srcenv,keyname);
   if (val)
     *placeToSet = atoi(val);
 }

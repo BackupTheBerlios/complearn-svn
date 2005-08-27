@@ -12,9 +12,9 @@ struct EnvMap {
   struct CLNodeSet *private;
 };
 
-struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
+struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe)
 {
-  struct EnvMap *result = newEnvMap();
+  struct EnvMap *result = envmapNew();
   struct DataBlock cur;
   struct TagManager *tm;
   struct StringStack *keyparts;
@@ -44,7 +44,7 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
 
   assert (sizeSS(keyparts)== sizeSS(valparts));
   for (i = 0; i < sizeSS(keyparts) ; i += 1)
-    setKeyValEM(result, readAtSS(keyparts,i), readAtSS(valparts,i));
+    envmapSetKeyVal(result, readAtSS(keyparts,i), readAtSS(valparts,i));
 
   for (i = 0; i < doubleaSize(result->d); i += 1)
     clnodesetAddNode(result->marked, i);
@@ -54,7 +54,7 @@ struct EnvMap *loadEnvMap(struct DataBlock db, int fmustbe)
   return result;
 }
 
-struct DataBlock dumpEnvMap(struct EnvMap *em)
+struct DataBlock envmapDump(struct EnvMap *em)
 {
   struct DataBlock result;
   struct DataBlock keys, vals;
@@ -62,7 +62,7 @@ struct DataBlock dumpEnvMap(struct EnvMap *em)
   struct StringStack *valparts = newStringStack();
   int i;
 
-  for (i = 0; i < sizeEM(em) ; i += 1) {
+  for (i = 0; i < envmapSize(em) ; i += 1) {
     pushSS(keyparts, doubleaGetValueAt(em->d,i).sp.key);
     pushSS(valparts, doubleaGetValueAt(em->d,i).sp.val);
   }
@@ -77,7 +77,7 @@ struct DataBlock dumpEnvMap(struct EnvMap *em)
   return result;
 }
 #define MAXINDECES 10
-struct EnvMap *newEnvMap() {
+struct EnvMap *envmapNew() {
   struct EnvMap *em;
   em = gcalloc(sizeof(struct EnvMap), 1);
   em->d = doubleaNew();
@@ -86,9 +86,9 @@ struct EnvMap *newEnvMap() {
   return em;
 }
 
-void printEM(struct EnvMap *uem)
+void envmapPrint(struct EnvMap *uem)
 {
-  struct EnvMap *em = cloneEM(uem);
+  struct EnvMap *em = envmapClone(uem);
   int i;
   printf("ES:\n");
   for (i = 0; i < doubleaSize(em->d); ++i)
@@ -98,7 +98,7 @@ void printEM(struct EnvMap *uem)
   printf("Private: ");
   clnodesetPrint(em->private);
   printf("ES END.\n");
-  freeEM(em);
+  envmapFree(em);
 }
 
 static union PCTypes cloneStringPair(struct StringPair sp)
@@ -109,11 +109,11 @@ static union PCTypes cloneStringPair(struct StringPair sp)
   return p;
 }
 
-struct EnvMap *cloneEM(struct EnvMap *em)
+struct EnvMap *envmapClone(struct EnvMap *em)
 {
   struct EnvMap *nem;
   int i;
-  int sz = sizeEM(em);
+  int sz = envmapSize(em);
   nem = gcalloc(sizeof(struct EnvMap), 1);
   nem->d = doubleaNew();
   for (i = 0; i < sz; ++i)
@@ -128,7 +128,7 @@ int isEmptyEM(struct EnvMap *em)
   return doubleaSize(em->d) == 0;
 }
 
-int sizeEM(struct EnvMap *em)
+int envmapSize(struct EnvMap *em)
 {
   return doubleaSize(em->d);
 }
@@ -142,14 +142,14 @@ static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
   return CL_OK;
 }
 
-void setKeyMarkedEM(struct EnvMap *em, const char *key)
+void envmapSetKeyMarked(struct EnvMap *em, const char *key)
 {
-  clnodesetAddNode(em->marked, findIndexForKey(em, key));
+  clnodesetAddNode(em->marked, envmapIndexForKey(em, key));
 }
 
-int setKeyValEM(struct EnvMap *em, char *key, char *val)
+int envmapSetKeyVal(struct EnvMap *em, char *key, char *val)
 {
-  int i = findIndexForKey(em,key);
+  int i = envmapIndexForKey(em,key);
   if (i >= 0)
     setKeyValAt(em, i, key, val);
   else {
@@ -159,15 +159,15 @@ int setKeyValEM(struct EnvMap *em, char *key, char *val)
     doubleaPush(em->d, p);
   }
   /* to ensure NodeSets are big enough */
-  clnodesetRemoveNode(em->marked, sizeEM(em)+1);
-  clnodesetRemoveNode(em->private, sizeEM(em)+1);
+  clnodesetRemoveNode(em->marked, envmapSize(em)+1);
+  clnodesetRemoveNode(em->private, envmapSize(em)+1);
   return CL_OK;
 }
 
-int freeEM(struct EnvMap *em)
+int envmapFree(struct EnvMap *em)
 {
   int i;
-  int sz = sizeEM(em);
+  int sz = envmapSize(em);
   static union PCTypes zeroblock;
 
   for (i = 0; i < sz; ++i) {
@@ -186,30 +186,30 @@ int freeEM(struct EnvMap *em)
   return CL_OK;
 }
 
-char *readValForEM(struct EnvMap *em, const char *key)
+char *envmapValueForKey(struct EnvMap *em, const char *key)
 {
   int i;
   char *val = NULL;
-  i = findIndexForKey(em,key);
+  i = envmapIndexForKey(em,key);
   if (i >= 0) {
-    union PCTypes p = getKeyValAt(em,findIndexForKey(em,key));
+    union PCTypes p = envmapKeyValAt(em,envmapIndexForKey(em,key));
     val = p.sp.val;
-    setKeyMarkedEM(em, key);
+    envmapSetKeyMarked(em, key);
   }
   return val;
 }
 
-union PCTypes getKeyValAt(struct EnvMap *em, int where)
+union PCTypes envmapKeyValAt(struct EnvMap *em, int where)
 {
   assert(where >= 0);
   return doubleaGetValueAt(em->d, where);
 }
 
-int findIndexForKey(struct EnvMap *em, const char *key)
+int envmapIndexForKey(struct EnvMap *em, const char *key)
 {
   int i;
-  for (i = 0; i < sizeEM(em); i += 1) {
-    union PCTypes p = getKeyValAt(em,i);
+  for (i = 0; i < envmapSize(em); i += 1) {
+    union PCTypes p = envmapKeyValAt(em,i);
     if (strcmp(p.sp.key, key) == 0) {
       return i;
     }
@@ -217,22 +217,22 @@ int findIndexForKey(struct EnvMap *em, const char *key)
   return -1;
 }
 
-void setKeyPrivateEM(struct EnvMap *em, const char *key)
+void envmapSetKeyPrivate(struct EnvMap *em, const char *key)
 {
-  clnodesetAddNode(em->private, findIndexForKey(em,key));
+  clnodesetAddNode(em->private, envmapIndexForKey(em,key));
 }
 
-int isMarkedAtEM(struct EnvMap *em, int where)
+int envmapIsMarkedAt(struct EnvMap *em, int where)
 {
   return clnodesetNodeIncluded(em->marked, where);
 }
 
-int isPrivateAtEM(struct EnvMap *em, int where)
+int envmapIsPrivateAt(struct EnvMap *em, int where)
 {
   return clnodesetNodeIncluded(em->private, where);
 }
 
-struct EnvMap *get_clem_from_clb(char *fname)
+struct EnvMap *clbEnvMap(char *fname)
 {
   struct DataBlock db, dbem;
   struct DoubleA *dd;
@@ -241,7 +241,7 @@ struct EnvMap *get_clem_from_clb(char *fname)
   db = fileToDataBlock(fname);
   dd = load_DataBlock_package(db);
   dbem = scanForTag(dd, TAGNUM_ENVMAP);
-  result = loadEnvMap(dbem, 1);
+  result = envmapLoad(dbem, 1);
   datablockFree(dbem);
 
   datablockFree(db);
@@ -249,15 +249,15 @@ struct EnvMap *get_clem_from_clb(char *fname)
   return result;
 }
 
-int mergeEM(struct EnvMap *dest, struct EnvMap *src)
+int envmapMerge(struct EnvMap *dest, struct EnvMap *src)
 {
   union PCTypes p;
   int i;
-  for (i = 0; i < sizeEM(src); i += 1) {
-    p = getKeyValAt(src,i);
-    setKeyValEM(dest, p.sp.key, p.sp.val);
+  for (i = 0; i < envmapSize(src); i += 1) {
+    p = envmapKeyValAt(src,i);
+    envmapSetKeyVal(dest, p.sp.key, p.sp.val);
     if (clnodesetNodeIncluded(src->marked, i))
-      setKeyMarkedEM(dest, p.sp.key);
+      envmapSetKeyMarked(dest, p.sp.key);
   }
   return CL_OK;
 }

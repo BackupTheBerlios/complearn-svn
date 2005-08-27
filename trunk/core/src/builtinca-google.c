@@ -111,8 +111,8 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   err = soap_client_init_args(0, args);
   dt = cldatetimeNow();
   ci->daystr = gstrdup(cldatetimeToDayString(dt));
-  userKey = readValForEM(em, "GoogleKey");
-  setKeyPrivateEM(em, "GoogleKey");
+  userKey = envmapValueForKey(em, "GoogleKey");
+  envmapSetKeyPrivate(em, "GoogleKey");
   if (userKey == NULL) {
     fprintf(stderr, "Error, cannot use google adaptor without GoogleKey property set\n");
     exit(1);
