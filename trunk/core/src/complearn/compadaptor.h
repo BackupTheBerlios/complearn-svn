@@ -37,17 +37,17 @@ struct CompAdaptor {
  */
 #define APIVER_V1 1
 
-double compfuncCA(struct CompAdaptor *ca, struct DataBlock src);
-void freeCA(struct CompAdaptor *ca);
-char *shortNameCA(struct CompAdaptor *ca);
-char *longNameCA(struct CompAdaptor *ca);
+double compaCompress(struct CompAdaptor *ca, struct DataBlock src);
+void compaFree(struct CompAdaptor *ca);
+char *compaShortName(struct CompAdaptor *ca);
+char *compaLongName(struct CompAdaptor *ca);
 
 /** \brief Returns API version of CompAdaptor interface
  *
  *  \param ca pointer to CompAdaptor
  *  \return int API version number
  */
-int apiverCA(struct CompAdaptor *ca);
+int compaAPIVer(struct CompAdaptor *ca);
 
 /** \brief Returns the NCD of a pair of DataBlocks.
  *
@@ -61,7 +61,7 @@ int apiverCA(struct CompAdaptor *ca);
  *    C(a)   is the compressed size of a in bits
  *    C(b)   is the compressed size of b in bits
  *
- *  ncdCA() will return a double precision floating-point value 0 <= x < 1.1
+ *  compaNCD() will return a double precision floating-point value 0 <= x < 1.1
  *  representing  how different the two files are.  Smaller numbers represent
  *  more similar files.  The largest number is somewhere near 1.  It is not
  *  exactly 1 due to imperfections in compression techniques, but for most
@@ -72,7 +72,7 @@ int apiverCA(struct CompAdaptor *ca);
  *  \param b DataBlock
  *  \returns ncd a double precision floating-point value
  */
-double ncdCA(struct CompAdaptor *comp, struct DataBlock a, struct DataBlock b );
+double compaNCD(struct CompAdaptor *comp, struct DataBlock a, struct DataBlock b );
 
 #endif
 

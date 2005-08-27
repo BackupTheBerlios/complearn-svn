@@ -146,9 +146,9 @@ static VALUE rbtra_to_dot(VALUE self)
   volatile VALUE result;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   dotdb = convertTreeToDot(ta, 0.0, NULL, NULL, NULL, NULL, NULL);
-//  writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
+//  datablockWriteToFile(dotdb, maketreecfg->output_tree_fname);
   result = rb_str_new((char *) dotdb->ptr, dotdb->size);
-  freeDataBlockPtr(dotdb);
+  datablockFreePtr(dotdb);
   return result;
 }
 

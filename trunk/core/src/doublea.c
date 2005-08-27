@@ -330,7 +330,7 @@ struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
       struct DataBlock cur = getValueAt(bufs, i).db;
       memcpy(dbres.ptr + dbres.size, cur.ptr, cur.size);
       dbres.size += cur.size;
-      freeDataBlock(cur);
+      datablockFree(cur);
     }
   }
   else {

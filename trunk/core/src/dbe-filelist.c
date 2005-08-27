@@ -63,7 +63,7 @@ static struct DataBlock *dbe_fl_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEFileListEnumerationIterator *fldbi = (struct DBEFileListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
     struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
-    *db = convertFileToDataBlock(fldbi->linebuf);
+    *db = fileToDataBlock(fldbi->linebuf);
     return db;
   } else
     return NULL;

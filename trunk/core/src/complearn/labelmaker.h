@@ -6,7 +6,7 @@
 /** \brief Serializes a StringStack of distance matrix labels into a DataBlock
  *
  *  dumpDMLabels() returns to DataBlock which then can be written to
- *  a file using the function writeDataBlockToFile().  This resulting DataBlock
+ *  a file using the function datablockWriteToFile().  This resulting DataBlock
  *  is also appropriate when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into an StringStack, use the

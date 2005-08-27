@@ -913,10 +913,10 @@ static void realDoDroppedFile(char *buf)
       addAndProcessDataBlock(distmatglob, cur);
       pushSS(labels, dbe->ilabel(dbe, dbi));
       dbe->istep(dbe, dbi);
-      freeDataBlockPtr(cur);
+      datablockFreePtr(cur);
     }
   } else {
-    curFiles->db[curFiles->size++] =  convertFileToDataBlock(buf);
+    curFiles->db[curFiles->size++] =  fileToDataBlock(buf);
     lastpart = findLastPart(buf);
     pushSS(labels, lastpart);
   }

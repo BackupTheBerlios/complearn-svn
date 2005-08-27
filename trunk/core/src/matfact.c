@@ -43,7 +43,7 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), &m, sizeof(m));
   memcpy(result.ptr + sizeof(h) + sizeof(m), dubs.ptr, dubs.size);
-  freeDataBlock(dubs);
+  datablockFree(dubs);
   freeDoubleDoubler(dac);
   return result;
 }
@@ -110,7 +110,7 @@ gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
   dbda = *getValueAt(dd,0).idbp.db;
   m = loadGSLMatrix(dbdm, 1);
   freeDoubleDoubler(dd);
-  freeDataBlock(dbdm);
+  datablockFree(dbdm);
 
   return m;
 }
@@ -125,13 +125,13 @@ gsl_matrix *get_cldm_from_clb(char *fname)
   struct DoubleA *dd;
   gsl_matrix *result;
 
-  db = convertFileToDataBlock(fname);
+  db = fileToDataBlock(fname);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   result = loadCLDistMatrix(dbdm, 1);
 
-  freeDataBlock(db);
-  freeDataBlock(dbdm);
+  datablockFree(db);
+  datablockFree(dbdm);
   freeDoubleDoubler(dd);
   return result;
 }

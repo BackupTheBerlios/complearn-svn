@@ -97,7 +97,7 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   result.ptr = gcalloc(result.size,1);
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), cur.ptr, h.size);
-  freeDataBlock(cur);
+  datablockFree(cur);
   return result;
 }
 
@@ -105,7 +105,7 @@ void free_DataBlock_package ( struct DoubleA *da, void *udata)
 {
   int i;
   for ( i = 0; i < getSize(da) ; i += 1) {
-    freeDataBlockPtr(getValueAt(da,i).idbp.db);
+    datablockFreePtr(getValueAt(da,i).idbp.db);
   }
 }
 
@@ -120,7 +120,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db)
   while (getCurDataBlock(tm, &cur)) {
     union PCTypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
-    p.idbp.db = cloneDataBlockPtr(&cur);
+    p.idbp.db = datablockClonePtr(&cur);
     pushValue(result, p);
     stepNextDataBlock(tm);
   }
@@ -138,7 +138,7 @@ struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
     curtnum = getValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
       db = *getValueAt(dd,i).idbp.db;
-      dbclone =  cloneDataBlock(db);
+      dbclone =  datablockClone(db);
       return dbclone;
     }
   }

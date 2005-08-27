@@ -30,7 +30,7 @@ void freeDefaultEnvironment(struct GeneralConfig *g)
     curEnv->em = NULL;
   }
   if (curEnv->ca) {
-    freeCA(curEnv->ca);
+    compaFree(curEnv->ca);
     curEnv->ca = NULL;
   }
   gfreeandclear(curEnv);

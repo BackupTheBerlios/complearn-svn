@@ -128,7 +128,7 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe);
 /** \brief Serializes a single-level DoubleA into a DataBlock
  *
  *  dumpDoubleDoubler() returns a DataBlock which then can be
- *  written to a file using the function writeDataBlockToFile().  This
+ *  written to a file using the function datablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
@@ -144,7 +144,7 @@ struct DataBlock dumpDoubleDoubler(const struct DoubleA *d);
 /** \brief Serializes a multi-level DoubleA into a DataBlock
  *
  *  dumpDeepDoubleDoubler() returns a DataBlock which then can be
- *  written to a file using the function writeDataBlockToFile().  This
+ *  written to a file using the function datablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
@@ -266,7 +266,7 @@ void printNodeList(const struct DoubleA *da);
 /** \brief Converts a character string to a file-writable DataBlock
  *
  *  dumpString() returns a DataBlock which then can be written to a file using
- *  the function writeDataBlockToFile().  This resulting DataBlock is also
+ *  the function datablockWriteToFile().  This resulting DataBlock is also
  *  appropriate when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use

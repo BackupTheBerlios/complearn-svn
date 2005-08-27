@@ -52,26 +52,26 @@ void testDataBlock()
   char *str = "hello, world\n";
 	char *str2 = "welcome to the jungle\n";
 	char *result;
-  dbstr = convertStringToDataBlock(str);
+  dbstr = stringToDataBlock(str);
   assert(strlen(str) == dbstr.size);
   assert(dbstr.ptr != NULL);
   assert(dbstr.ptr != (unsigned char *) str);
-	result = convertDataBlockToString(dbstr);
+	result = datablockToString(dbstr);
 	assert(strcmp(result,str) == 0);
-  dbstr2 = convertStringToDataBlock(str2);
+  dbstr2 = stringToDataBlock(str2);
   assert(dbstr2.ptr != NULL);
   assert(dbstr2.ptr != (unsigned char *) str2);
-  dbcat = catDataBlock(dbstr,dbstr2);
+  dbcat = datablockCat(dbstr,dbstr2);
   assert(dbcat.ptr != NULL);
   assert(dbcat.ptr != dbstr.ptr);
   assert(dbcat.ptr != dbstr2.ptr);
-  freeDataBlock(dbcat);
-  freeDataBlock(dbstr);
-  freeDataBlock(dbstr2);
-  dbfile = convertFileToDataBlock(testfile);
+  datablockFree(dbcat);
+  datablockFree(dbstr);
+  datablockFree(dbstr2);
+  dbfile = fileToDataBlock(testfile);
   assert(dbfile.ptr != NULL);
   assert(dbfile.ptr != (unsigned char *) str);
-  freeDataBlock(dbfile);
+  datablockFree(dbfile);
   gfreeandclear(result);
 }
 
@@ -86,29 +86,29 @@ void testDL2()
   char *strlargealpha = "kdjbabenzo";
   struct DataBlock dbab, dbaa, dbsmallalpha, dblargealpha;
   double cdbab, cdbaa, cdbsa, cdbla;
-  dbab = convertStringToDataBlock(strab);
-  dbaa = convertStringToDataBlock(straa);
-  dbsmallalpha = convertStringToDataBlock(strsmallalpha);
-  dblargealpha = convertStringToDataBlock(strlargealpha);
+  dbab = stringToDataBlock(strab);
+  dbaa = stringToDataBlock(straa);
+  dbsmallalpha = stringToDataBlock(strsmallalpha);
+  dblargealpha = stringToDataBlock(strlargealpha);
   em = getEnvMap(gconf);
   assert(em != NULL);
   setKeyValEM(em, "padding", "40");
   comp = loadDLCompAdaptor(DLNAME);
   assert(comp->cf != NULL);
   //comp->se(comp,em);
-  sn = shortNameCA(comp);
+  sn = compaShortName(comp);
   assert(strcmp(sn, "art") == 0);
-  cdbab = compfuncCA(comp, dbab);
+  cdbab = compaCompress(comp, dbab);
   assert(cdbab >= dbab.size*8);
-  cdbaa = compfuncCA(comp, dbaa);
+  cdbaa = compaCompress(comp, dbaa);
   assert(cdbaa <= dbaa.size*8);
-  cdbsa = compfuncCA(comp, dbsmallalpha);
-  cdbla = compfuncCA(comp, dblargealpha);
+  cdbsa = compaCompress(comp, dbsmallalpha);
+  cdbla = compaCompress(comp, dblargealpha);
   assert(cdbsa < cdbla);
-  freeDataBlock(dbab);
-  freeDataBlock(dbaa);
-  freeDataBlock(dbsmallalpha);
-  freeDataBlock(dblargealpha);
+  datablockFree(dbab);
+  datablockFree(dbaa);
+  datablockFree(dbsmallalpha);
+  datablockFree(dblargealpha);
 }
 
 void testDL()
@@ -164,7 +164,7 @@ void testSS()
   pushSS(ss, "cat");
   pushSS(ss, "dog");
   db = dumpStringStack(ss);
-  writeDataBlockToFile(&db, "baddb.dat");
+  datablockWriteToFile(&db, "baddb.dat");
   s = shiftSS(ss);
   assert(strcmp(s,"ape") == 0);
   gfreeandclear(s);
@@ -188,7 +188,7 @@ void testSS()
   assert(strcmp(s, "dog") == 0);
   gfreeandclear(s);
   freeSS(nss);
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 void testCAPtr(struct CompAdaptor *ca)
@@ -202,18 +202,18 @@ void testCAPtr(struct CompAdaptor *ca)
                   /* */
                     ;
 
-  struct DataBlock db = convertStringToDataBlock(str);
+  struct DataBlock db = stringToDataBlock(str);
   double c;
   assert(ca != NULL);
   //ca->se(ca,em);
 //  assert(ci != NULL);
   assert(ca->cf != NULL);
-  c = compfuncCA(ca,db);
+  c = compaCompress(ca,db);
   assert(c < strlen(str)*8);
   if (gconf->fVerbose)
-    printf("Testing %s to get compressed size %f\n", shortNameCA(ca), c);
-  freeDataBlock(db);
-  freeCA(ca);
+    printf("Testing %s to get compressed size %f\n", compaShortName(ca), c);
+  datablockFree(db);
+  compaFree(ca);
 }
 
 void testCANamed(const char *name)
@@ -250,10 +250,10 @@ void testBlockSortCA()
     db.ptr = (unsigned char*)gmalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
-    v = compfuncCA(ca,db);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
-    freeDataBlock(db);
+      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+    datablockFree(db);
   }
 
   /* Blocks with the same character repeated */
@@ -262,10 +262,10 @@ void testBlockSortCA()
     db.ptr = (unsigned char*)gmalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
-    v = compfuncCA(ca,db);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
-    freeDataBlock(db);
+      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+    datablockFree(db);
   }
 
   /* Blocks with randomly generated characters */
@@ -274,12 +274,12 @@ void testBlockSortCA()
     for (j = 0; j < db.size ; j +=1 ) {
       db.ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
-    v = compfuncCA(ca,db);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", shortNameCA(ca), v);
-    freeDataBlock(db);
+      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+    datablockFree(db);
   }
-  freeCA(ca);
+  compaFree(ca);
 }
 
 void testYamlParser()
@@ -383,18 +383,18 @@ void testTransformBZ()
 		printf("Can't find test bz2 file. Skipping transformBZ test...\n");
 		return;
 	}
- 	db = convertFileToDataBlock(testbzfile);
+ 	db = fileToDataBlock(testbzfile);
 	assert(strcmp(t->sn(),"unbzip") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock result;
     result = t->tf(db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    freeDataBlock(result);
+    datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 struct DataBlock zlibCompressDataBlock(struct DataBlock src)
@@ -429,18 +429,18 @@ void testTransformGZ()
 		printf("Can't find test gz file. Skipping transformGZ test...\n");
 		return;
 	}
-	db = convertFileToDataBlock(testgzfile);
+	db = fileToDataBlock(testgzfile);
 	assert(strcmp(t->sn(),"ungz") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock result;
     result = t->tf(db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    freeDataBlock(result);
+    datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 void testTransformZLIB()
@@ -451,18 +451,18 @@ void testTransformZLIB()
 		printf("Can't find test zlib file. Skipping transformZLIB test...\n");
 		return;
 	}
- 	db = convertFileToDataBlock(testzlibfile);
+ 	db = fileToDataBlock(testzlibfile);
 	assert(strcmp(t->sn(),"unzlib") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock result;
     result = t->tf(db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    freeDataBlock(result);
+    datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 void testSingletonDBE()
@@ -471,20 +471,20 @@ void testSingletonDBE()
   struct DataBlock db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = convertStringToDataBlock(teststr);
+  db = stringToDataBlock(teststr);
   dbe = loadSingletonDBE(&db);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == 3 && cur->ptr[0] == 'f' && cur->ptr[2] == 'o');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 void testWindowedDBE()
@@ -498,7 +498,7 @@ void testWindowedDBE()
   struct DataBlock db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = convertStringToDataBlock(teststr);
+  db = stringToDataBlock(teststr);
   lastpos = db.size - 1;
   dbe = loadWindowedDBE(&db, firstpos, stepsize, width, lastpos);
   assert(dbe);
@@ -506,21 +506,21 @@ void testWindowedDBE()
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == width && cur->ptr[0] == 'b');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == width && cur->ptr[0] == 'c');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == width && cur->ptr[0] == 'd');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  freeDataBlock(db);
+  datablockFree(db);
 }
 
 void testDirectoryDBE()
@@ -535,10 +535,10 @@ void testDirectoryDBE()
   assert(dbi);
   while ( ( cur = dbe->istar(dbe, dbi) ) ) {
     fcount += 1;
-//   printDataBlock(*cur);
+//   datablockPrint(*cur);
 //    printf("\n");
     dbe->istep(dbe, dbi);
-    freeDataBlockPtr(cur);
+    datablockFreePtr(cur);
   }
   assert(fcount >= 2); /* Should have at least two files in pg4 */
   dbe->ifree(dbi);
@@ -553,32 +553,32 @@ void testArrayDBE()
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int i;
-  db[0] = convertStringToDataBlock("a");
+  db[0] = stringToDataBlock("a");
   assert(db[0].size == 1);
-  db[1] = convertStringToDataBlock("b");
-  db[2] = convertStringToDataBlock("c");
+  db[1] = stringToDataBlock("b");
+  db[2] = stringToDataBlock("c");
   dbe = loadArrayDBE(db, size);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == 1 && cur->ptr[0] == 'a');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == 1 && cur->ptr[0] == 'b');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur && cur->size == 1 && cur->ptr[0] == 'c');
-  freeDataBlockPtr(cur);
+  datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   for (i = 0; i < 3; i += 1)
-    freeDataBlock(db[i]);
+    datablockFree(db[i]);
 }
 /*
 void testFileListDBE(void)
@@ -664,10 +664,10 @@ void testNCDPair()
 	char *stra = "aaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaa";
 	char *strb = "bbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaa";
 	struct DataBlock dba, dbb;
-	dba = convertStringToDataBlock(stra);
-	dbb = convertStringToDataBlock(strb);
-  freeDataBlock(dba);
-  freeDataBlock(dbb);
+	dba = stringToDataBlock(stra);
+	dbb = stringToDataBlock(strb);
+  datablockFree(dba);
+  datablockFree(dbb);
 }
 
 void testDateTime(void)
@@ -696,7 +696,7 @@ void testMarshalling(void)
   res = loadString(m, 1);
   assert(strcmp(res, strtest) == 0);
   assert(res != strtest);
-  freeDataBlock(m);
+  datablockFree(m);
   gfreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
@@ -710,7 +710,7 @@ void testMarshalling(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(gm);
   gsl_matrix_free(ngm);
-  freeDataBlock(m);
+  datablockFree(m);
   setKeyValEM(em, "key1", "val1");
   setKeyValEM(em, "key2", "val2");
   setKeyValEM(em, "key3", "val3");
@@ -748,7 +748,7 @@ void testDoubleDoubler(void)
   assert(getDValueAt(dd, 999) == getDValueAt(ee, 999));
   freeDoubleDoubler(dd);
   freeDoubleDoubler(ee);
-  freeDataBlock(dumptest);
+  datablockFree(dumptest);
   sm = newDoubleDoubler();
   setDValueAt(sm, 0, 7.0);
   setDValueAt(sm, 1, 3.0);
@@ -768,7 +768,7 @@ void testDoubleDoubler(void)
   assert(getValueAt(getValueAt(ee, 0).ar, 2).d == getValueAt(sm, 2).d);
   freeDeepDoubleDoubler(ee, 1);
   freeDeepDoubleDoubler(dd, 1);
-  freeDataBlock(dumptest);
+  datablockFree(dumptest);
 }
 
 #if GSL_RDY
@@ -795,7 +795,7 @@ void testQuartet(void)
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = convertStringToDataBlock(buf2);
+      db[i] = stringToDataBlock(buf2);
     }
     dbe = loadArrayDBE(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
@@ -846,9 +846,9 @@ void testQuartet(void)
     treefreeTRA(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      freeDataBlock(db[i]);
+      datablockFree(db[i]);
   }
-  freeCA(bz);
+  compaFree(bz);
   gconf->ca = NULL;
   bz = NULL;
 }
@@ -912,7 +912,7 @@ void testCLTree(void)
   freeDoubleDoubler(n);
   n = NULL;
 //  dotdb = convertTreeToDot(ct, NULL, getLabelPerm(ct));
-//  writeDataBlockToFile(dotdb, "treefile.dot");
+//  datablockWriteToFile(dotdb, "treefile.dot");
 //  assert(dotdb);
 //  assert(dotdb->ptr);
 //  assert(dotdb->size > TREENODEWANTED * 2);
@@ -1083,13 +1083,13 @@ void testALTagFile(void)
   gsl_matrix_free(ngm);
 
   dbpkg = package_DataBlocks(TAGNUM_TAGMASTER, &dbstr, &dbgslm, &dbss, NULL);
-  freeDataBlock(dbss);
-  freeDataBlock(dbstr);
-  freeDataBlock(dbgslm);
+  datablockFree(dbss);
+  datablockFree(dbstr);
+  datablockFree(dbgslm);
 
-  writeDataBlockToFile(&dbpkg,TAGFILENAME);
-  freeDataBlock(dbpkg);
-  dbpkg_read = convertFileToDataBlock(TAGFILENAME);
+  datablockWriteToFile(&dbpkg,TAGFILENAME);
+  datablockFree(dbpkg);
+  dbpkg_read = fileToDataBlock(TAGFILENAME);
   unlink(TAGFILENAME);
   dd = load_DataBlock_package(dbpkg_read);
   for (i = 0; i < getSize(dd); i += 1) {
@@ -1123,7 +1123,7 @@ void testALTagFile(void)
   freeDoubleDoubler(dd);
   freeSS(ss);
   gsl_matrix_free(gm);
-  freeDataBlock(dbpkg_read);
+  datablockFree(dbpkg_read);
 }
 #endif
 
@@ -1187,7 +1187,7 @@ void testTreeMolder()
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = convertStringToDataBlock(buf2);
+      db[i] = stringToDataBlock(buf2);
     }
     dbe = loadArrayDBE(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
@@ -1213,9 +1213,9 @@ void testTreeMolder()
     treefreeTRA(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      freeDataBlock(db[i]);
+      datablockFree(db[i]);
   }
-  freeCA(bz);
+  compaFree(bz);
   gconf->ca = NULL;
   bz = NULL;
 }

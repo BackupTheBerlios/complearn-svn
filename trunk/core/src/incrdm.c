@@ -29,15 +29,15 @@ void addDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db)
   int i;
   int curguy = idm->dbcount;
   idm->dbcount += 1;
-  idm->db[curguy] = cloneDataBlockPtr(db);
-  idm->singlesize[curguy] = compfuncCA(idm->ca, *idm->db[curguy]);
+  idm->db[curguy] = datablockClonePtr(db);
+  idm->singlesize[curguy] = compaCompress(idm->ca, *idm->db[curguy]);
   for (i = 0; i <= curguy; i += 1) {
     double bothsize, curcell;
     struct DataBlock combinedDataBlock;
-    combinedDataBlock = catDataBlock(*idm->db[curguy], *idm->db[i]);
-    bothsize = compfuncCA(idm->ca, combinedDataBlock);
+    combinedDataBlock = datablockCat(*idm->db[curguy], *idm->db[i]);
+    bothsize = compaCompress(idm->ca, combinedDataBlock);
     curcell = mndf(idm->singlesize[i], idm->singlesize[curguy], bothsize, bothsize);
-    freeDataBlock(combinedDataBlock);
+    datablockFree(combinedDataBlock);
     gsl_matrix_set(idm->curmat, i, curguy, curcell);
     gsl_matrix_set(idm->curmat, curguy, i, curcell);
   }
@@ -48,7 +48,7 @@ void freeIncrementalDistMatrix(struct IncrementalDistMatrix *idm)
   int i;
   gsl_matrix_free(idm->curmat);
   for (i = 0; i < idm->dbcount; i += 1) {
-    freeDataBlockPtr(idm->db[i]);
+    datablockFreePtr(idm->db[i]);
     idm->db[i] = NULL;
   }
 }

@@ -4,32 +4,32 @@ static VALUE rbcompa_shortname(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(shortNameCA(ca));
+  return rb_str_new2(compaShortName(ca));
 }
 
 static VALUE rbcompa_longname(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(longNameCA(ca));
+  return rb_str_new2(compaLongName(ca));
 }
 
 static VALUE rbcompa_apiver(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return INT2NUM(apiverCA(ca));
+  return INT2NUM(compaAPIVer(ca));
 }
 
 static VALUE rbcompa_compfunc(VALUE self, VALUE str)
 {
   struct CompAdaptor *ca;
-  struct DataBlock db = convertStringToDataBlock(STR2CSTR(str));
+  struct DataBlock db = stringToDataBlock(STR2CSTR(str));
   double result;
   Data_Get_Struct(self, struct CompAdaptor, ca);
 
-  result = compfuncCA(ca, db);
-  freeDataBlock(db);
+  result = compaCompress(ca, db);
+  datablockFree(db);
   return rb_float_new(result);
 }
 
@@ -37,13 +37,13 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
   struct CompAdaptor *ca;
   double result;
-  struct DataBlock dba = convertStringToDataBlock(STR2CSTR(stra));
-  struct DataBlock dbb = convertStringToDataBlock(STR2CSTR(strb));
+  struct DataBlock dba = stringToDataBlock(STR2CSTR(stra));
+  struct DataBlock dbb = stringToDataBlock(STR2CSTR(strb));
 
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  result = ncdCA(ca, dba, dbb);
-  freeDataBlock(dba);
-  freeDataBlock(dbb);
+  result = compaNCD(ca, dba, dbb);
+  datablockFree(dba);
+  datablockFree(dbb);
   return rb_float_new(result);
 }
 
@@ -63,7 +63,7 @@ static VALUE rbcompa_init(VALUE self)
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
   struct CompAdaptor *ca = compaLoadBuiltin(STR2CSTR(comp));
-  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, freeCA, ca);
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, compaFree, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;

@@ -10,12 +10,12 @@ int main(int argc, char **argv)
     printf("Usage: %s <distmatrix.cld>\n", argv[0]);
     exit(1);
   }
-  db = convertFileToDataBlock(argv[1]);
+  db = fileToDataBlock(argv[1]);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = loadCLDistMatrix(dbdm, 1);
-  freeDataBlock(db);
-  freeDataBlock(dbdm);
+  datablockFree(db);
+  datablockFree(dbdm);
   //printf("The matrix is %d by %d\n", dm->size1, dm->size2);
   sdm = svdProject(dm);
   freeGSLMatrix(dm);

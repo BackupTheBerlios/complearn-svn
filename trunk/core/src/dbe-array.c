@@ -47,7 +47,7 @@ static struct DataBlock *dbe_ar_istar(struct DataBlockEnumeration *dbe, struct D
   old = (ardbi->cur >= 0 && ardbi->cur < ardbe->size) ? ardbe->db + ardbi->cur : NULL;
   if (old) {
     cur = gcalloc(sizeof(struct DataBlock), 1);
-    *cur = cloneDataBlock(*old);
+    *cur = datablockClone(*old);
   }
   return cur;
 }

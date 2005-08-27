@@ -13,14 +13,8 @@
 
 /*! \file cloutput.h */
 
-#if GSL_RDY
 gsl_matrix *svdProject(gsl_matrix *a);
 gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
-
-#else
-struct DoubleA *svdProjectDD(struct DoubleA *a);
-struct DoubleA *getNCDMatrixDD(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
-#endif
 
 struct TreeMaster;
 
@@ -48,7 +42,7 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
  * themselves.
  *
  * In order to export a file to another program you must call
- * writeDataBlockToFile
+ * datablockWriteToFile
  *
  * \param ub pointer to the UnrootedBinary to be path queried
  * \param labels pointer to a StringStack holding labels for each

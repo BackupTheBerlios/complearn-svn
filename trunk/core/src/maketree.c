@@ -45,8 +45,8 @@ static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet 
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   struct DataBlock *dotdb;
   dotdb = convertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
-  writeDataBlockToFile(dotdb, maketreecfg->output_tree_fname);
-  freeDataBlockPtr(dotdb);
+  datablockWriteToFile(dotdb, maketreecfg->output_tree_fname);
+  datablockFreePtr(dotdb);
 }
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)

@@ -72,7 +72,7 @@ struct DataBlock dumpEnvMap(struct EnvMap *em)
   result = package_DataBlocks(TAGNUM_ENVMAP, &keys,&vals, NULL);
 
   freeSS(keyparts); freeSS(valparts);
-  freeDataBlock(keys); freeDataBlock(vals);
+  datablockFree(keys); datablockFree(vals);
 
   return result;
 }
@@ -238,13 +238,13 @@ struct EnvMap *get_clem_from_clb(char *fname)
   struct DoubleA *dd;
   struct EnvMap *result = NULL;
 
-  db = convertFileToDataBlock(fname);
+  db = fileToDataBlock(fname);
   dd = load_DataBlock_package(db);
   dbem = scanForTag(dd, TAGNUM_ENVMAP);
   result = loadEnvMap(dbem, 1);
-  freeDataBlock(dbem);
+  datablockFree(dbem);
 
-  freeDataBlock(db);
+  datablockFree(db);
   freeDoubleDoubler(dd);
   return result;
 }

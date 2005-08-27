@@ -80,7 +80,7 @@ static struct DataBlock *dbe_dir_istar(struct DataBlockEnumeration *dbe, struct 
   struct DBEDirEnumerationIterator *dirdbi = (struct DBEDirEnumerationIterator *) dbi;
   if (dirdbi->curfilename) {
     struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
-    *db = convertFileToDataBlock(dbe_get_pathname(dbe,dbi));
+    *db = fileToDataBlock(dbe_get_pathname(dbe,dbi));
     return db;
   } else
     return NULL;

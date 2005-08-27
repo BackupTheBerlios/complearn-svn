@@ -62,7 +62,7 @@ void stepNextDataBlock(struct TagManager *tm);
 /** \brief Retrieves current DataBlock of a DataBlock "package"
  *
  *  The DataBlock returned by getCurDataBlock() is an independent copy and must
- *  be freed using freeDataBlockPtr().
+ *  be freed using datablockFreePtr().
  *
  *  \param tm pointer to TagManager
  *  \param cur pointer used for retrieved DataBlock
@@ -119,7 +119,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db);
  *  Another high level function, scanForTag() will, given a tagnum as defined
  *  in tagtypes.h, scan a DoubleA of IntDBPairs as produced by
  *  load_DataBlock_package(). This retrieved DataBlock is an independent copy
- *  any must be freed using freeDataBlock().
+ *  any must be freed using datablockFree().
  *
  *  TODO: when switching db to db pointer, NULL should be returned if tagnum in
  *  question is not found.  Currently, a DataBlock is returned regardless, only

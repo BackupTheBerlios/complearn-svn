@@ -106,8 +106,8 @@ static void addIfPresent(struct StringStack *ss, const char *name)
   struct CompAdaptor *ca;
   ca = compaLoadBuiltin(name);
   if (ca) {
-    pushSS(ss,shortNameCA(ca));
-    freeCA(ca);
+    pushSS(ss,compaShortName(ca));
+    compaFree(ca);
   }
 }
 

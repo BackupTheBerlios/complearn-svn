@@ -91,7 +91,7 @@ char *readValForEM(struct EnvMap *em, const char *key);
 /** \brief Dumps an EnvMap into a serialized format and returns a DataBlock
  *
  *  dumpEnvMap() a DataBlock which then can be written to a file using the
- *  function writeDataBlockToFile().  This resulting DataBlock is also
+ *  function datablockWriteToFile().  This resulting DataBlock is also
  *  appropriate when using the function package_DataBlocks().
  *
  *  To convert the resulting DataBlock back into an EnvMap, use loadEnvMap()

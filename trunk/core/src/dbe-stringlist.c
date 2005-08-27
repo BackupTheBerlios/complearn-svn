@@ -61,7 +61,7 @@ static struct DataBlock *dbe_sl_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEStringListEnumerationIterator *fldbi = (struct DBEStringListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
     struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
-    *db = convertStringToDataBlock(fldbi->linebuf);
+    *db = stringToDataBlock(fldbi->linebuf);
     return db;
   } else
     return NULL;

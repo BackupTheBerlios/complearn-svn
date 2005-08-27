@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  db = convertFileToDataBlock(argv[1]);
+  db = fileToDataBlock(argv[1]);
   printf("opening %s\n", argv[1]);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
@@ -104,8 +104,8 @@ int main(int argc, char *argv[])
 
   clfclose(fp);
   gsl_matrix_free(dm);
-  freeDataBlock(db);
-  freeDataBlock(dbdm);
+  datablockFree(db);
+  datablockFree(dbdm);
   freeDoubleDoubler(dd);
   exit(0);
 }

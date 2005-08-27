@@ -62,7 +62,7 @@ static struct DataBlock unbz2a_transform(struct DataBlock src)
   result.ptr = (unsigned char*)gmalloc(result.size);
   memcpy(result.ptr,dbuff,result.size);
   gfreeandclear(dbuff);
-  // freeDataBlock(src); /* TODO: document this */
+  // datablockFree(src); /* TODO: document this */
 # else
 	assert ( 0 && "bzip not supported");
 	exit(1);

@@ -65,10 +65,10 @@ void loadCompressor(struct GeneralConfig *cur)
       printf("Now have instance %p\n", cur->ca->cptr);
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock db;
-    db = convertStringToDataBlock("m\n");
-    cur->M = pow(2.0, compfuncCA(cur->ca, db));
+    db = stringToDataBlock("m\n");
+    cur->M = pow(2.0, compaCompress(cur->ca, db));
     cur->multiplier = cur->M;
-    freeDataBlock(db);
+    datablockFree(db);
   }
   updateConfigToEM(cur);
 }
@@ -85,11 +85,11 @@ void printCounts(struct DataBlockEnumeration *a)
     }
     else {
 //      ncdcfg->M = 1.0;
-      pg = compfuncCA(cur->ca, *dba);
+      pg = compaCompress(cur->ca, *dba);
     }
     printf(fmtString, xpremap(pg, cur));
     //double m = calculateM();
-    freeDataBlockPtr(dba);
+    datablockFreePtr(dba);
   }
   printf("\n");
 }
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
     }
   }
   if (strcmp(cur->compressor_name, "google") == 0 ||
-      (cur->ca != NULL && strcmp(shortNameCA(cur->ca),"google") == 0)) {
+      (cur->ca != NULL && strcmp(compaShortName(cur->ca),"google") == 0)) {
     ncdcfg->fUsingGoogle = 1;
   }
 

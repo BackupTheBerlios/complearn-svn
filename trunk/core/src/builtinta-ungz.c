@@ -102,7 +102,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	result.ptr = gmalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
-	// freeDataBlock(src); /* TODO: document me */
+	// datablockFree(src); /* TODO: document me */
 	return result;
 }
 #else

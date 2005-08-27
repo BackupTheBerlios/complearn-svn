@@ -64,7 +64,7 @@ struct DataBlock *createCloneWithNLFree(struct DataBlock *db)
   result->ptr = gmalloc(result->size);
   memcpy(result->ptr, db->ptr, db->size);
   result->ptr[db->size] = '\n';
-  freeDataBlockPtr(db);
+  datablockFreePtr(db);
   return result;
 }
 
@@ -96,12 +96,12 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
       outnum = xpremap(ncd, cur);
 //      printf(fmtString, outnum);
       setDValueAt(da, getSize(da), outnum);
-      freeDataBlockPtr(dbb);
+      datablockFreePtr(dbb);
     }
     n2Set = 1;
     b->ifree(ib);
 //    printf("\n");
-    freeDataBlockPtr(dba);
+    datablockFreePtr(dba);
   }
   n1Set = 1;
   a->ifree(ia);
@@ -131,7 +131,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   while ( ( curdb = a->istar(a, dei) ) ) {
     pushSS(labels, a->ilabel(a, dei));
     a->istep(a, dei);
-    freeDataBlockPtr(curdb);
+    datablockFreePtr(curdb);
   }
   a->ifree(dei);
   gres = getNCDMatrix(a, b, cur);
@@ -156,10 +156,10 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     dblabelstagged = dumpDMLabels(labels);
     dbcommandstagged = dumpCommands(cur->cmdKeeper);
     db = package_DataBlocks(TAGNUM_TAGMASTER, &dbdmtagged, &dblabelstagged, &dbcommandstagged, &dbenvmap, NULL);
-    writeDataBlockToFile(&db, ncdcfg->output_distmat_fname);
-    freeDataBlock(db);
-    freeDataBlock(dblabelstagged);
-    freeDataBlock(dbdmtagged);
+    datablockWriteToFile(&db, ncdcfg->output_distmat_fname);
+    datablockFree(db);
+    datablockFree(dblabelstagged);
+    datablockFree(dbdmtagged);
   }
   for (n1c = 0; n1c < gres->size1; n1c++) {
     printf(rowBegin);
@@ -373,12 +373,12 @@ FILE *makeTmpCopyStdin(void)
   int fd;
   FILE *fp;
   if (tmpfile[0] == 0) {
-    struct DataBlock db = convertFileToDataBlockFP(stdin);
+    struct DataBlock db = filePtrToDataBlock(stdin);
     strcpy(tmpfile, "/tmp/clstdintmp-XXXXXX");
     fd = mkstemp(tmpfile);
     close(fd);
-    writeDataBlockToFile(&db, tmpfile);
-    freeDataBlock(db);
+    datablockWriteToFile(&db, tmpfile);
+    datablockFree(db);
   }
   fp = fopen(tmpfile,"r");
   return fp;

@@ -16,11 +16,11 @@ Java_CompLearnJ_ncd(JNIEnv *env, jobject obj, jstring a, jstring b)
     loadCompressor(gc);
     assert(gc->ca);
   }
-  dba = convertStringToDataBlock(stra);
-  dbb = convertStringToDataBlock(strb);
+  dba = stringToDataBlock(stra);
+  dbb = stringToDataBlock(strb);
   result = ncdPair(gc->ca, dba, dbb);
-  freeDataBlock(dba);
-  freeDataBlock(dbb);
+  datablockFree(dba);
+  datablockFree(dbb);
   (*env)->ReleaseStringUTFChars(env, a, stra);
   (*env)->ReleaseStringUTFChars(env, b, strb);
   return result;

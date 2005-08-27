@@ -7,7 +7,7 @@
 /* Allocates memory for a new DataBlock and copies string into new
  * DataBlock without a terminal nul
  */
-struct DataBlock convertStringToDataBlock(const char *s) {
+struct DataBlock stringToDataBlock(const char *s) {
   struct DataBlock d;
   d.size = strlen(s);
   d.ptr = gmalloc(d.size);
@@ -15,7 +15,7 @@ struct DataBlock convertStringToDataBlock(const char *s) {
 	return d;
 }
 
-struct DataBlock convertFileToDataBlock(const char *path)
+struct DataBlock fileToDataBlock(const char *path)
 {
   struct DataBlock result;
   FILE *fp = fopen(path, "rb");
@@ -25,12 +25,12 @@ struct DataBlock convertFileToDataBlock(const char *path)
     exit(1);
   }
   assert(fp);
-  result = convertFileToDataBlockFP(fp);
+  result = filePtrToDataBlock(fp);
   fclose(fp);
   return result;
 }
 
-struct DataBlock convertFileToDataBlockFP(FILE *fp)
+struct DataBlock filePtrToDataBlock(FILE *fp)
 {
   struct DataBlock d;
   int toread = 812;
@@ -62,31 +62,31 @@ struct DataBlock convertFileToDataBlockFP(FILE *fp)
   return d;
 }
 
-void freeDataBlock(struct DataBlock db)
+void datablockFree(struct DataBlock db)
 {
   gfreeandclear(db.ptr);
 }
 
-void freeDataBlockPtr(struct DataBlock *db)
+void datablockFreePtr(struct DataBlock *db)
 {
   gfreeandclear(db->ptr);
   gfreeandclear(db);
 }
 
-void printDataBlockPtr(struct DataBlock *db)
+void datablockPrintPtr(struct DataBlock *db)
 {
   if (db)
-    printDataBlock(*db);
+    datablockPrint(*db);
   else
     fwrite("(null)", 1, 6, stdout);
 }
 
-void printDataBlock(struct DataBlock db)
+void datablockPrint(struct DataBlock db)
 {
   fwrite(db.ptr, 1, db.size, stdout);
 }
 
-char *convertDataBlockToString(struct DataBlock db)
+char *datablockToString(struct DataBlock db)
 {
   char *s;
   s = gmalloc(db.size+1);
@@ -95,7 +95,7 @@ char *convertDataBlockToString(struct DataBlock db)
 	return s;
 }
 
-void writeDataBlockToFile(struct DataBlock *db, const char *path)
+void datablockWriteToFile(struct DataBlock *db, const char *path)
 {
 	FILE *fp;
 	int err;
@@ -108,7 +108,7 @@ void writeDataBlockToFile(struct DataBlock *db, const char *path)
   clfclose(fp);
 }
 
-struct DataBlock catDataBlock (struct DataBlock a, struct DataBlock b)
+struct DataBlock datablockCat (struct DataBlock a, struct DataBlock b)
 {
 	struct DataBlock d;
 	d.size = a.size + b.size;
@@ -118,7 +118,7 @@ struct DataBlock catDataBlock (struct DataBlock a, struct DataBlock b)
 	return d;
 }
 
-struct DataBlock cloneDataBlock(struct DataBlock db)
+struct DataBlock datablockClone(struct DataBlock db)
 {
   struct DataBlock result;
   result.size = db.size;
@@ -127,10 +127,10 @@ struct DataBlock cloneDataBlock(struct DataBlock db)
   return result;
 }
 
-struct DataBlock *cloneDataBlockPtr(struct DataBlock *ptr)
+struct DataBlock *datablockClonePtr(struct DataBlock *ptr)
 {
   struct DataBlock *result;
   result = gcalloc(sizeof(*result), 1);
-  *result = cloneDataBlock(*ptr);
+  *result = datablockClone(*ptr);
   return result;
 }

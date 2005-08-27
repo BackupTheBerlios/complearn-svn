@@ -3,7 +3,7 @@
 static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
 {
   char *fname = STR2CSTR(rfname);
-  struct DataBlock db = convertFileToDataBlock(fname);
+  struct DataBlock db = fileToDataBlock(fname);
   struct DataBlock dbdm;
   struct DoubleA *dd;
   volatile VALUE result;

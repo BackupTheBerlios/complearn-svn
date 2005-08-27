@@ -76,7 +76,7 @@ struct DataBlock makeCacheVal(double pg, struct DataBlock lastdbval, const char 
 
   dat.ptr = (unsigned char *) &d;
   dat.size = sizeof(d);
-  return cloneDataBlock(dat);
+  return datablockClone(dat);
 }
 
 double convertCacheVal(struct DataBlock d)
@@ -138,21 +138,21 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   struct DataBlock *db;
   struct DataBlock dbckey;
 
-  dbroot = convertStringToDataBlock(ROOTSYM); /* FSA01 */
+  dbroot = stringToDataBlock(ROOTSYM); /* FSA01 */
   normed = cloneSS(terms);                    /* FSA02 */
   normalizeSearchTerms(normed);
 
   ckey = makeCacheKey(daystr, normed);
 
-  dbckey = convertStringToDataBlock(ckey);      /* FSA03 */
+  dbckey = stringToDataBlock(ckey);      /* FSA03 */
   db = cldbfetch(gc->samp, dbckey);
   if (db) {
     assert(db->size == sizeof(struct GCSample));
     *val = convertCacheVal(*db);
     freeSS(normed);                       /* FSF02:1/2 */
-    freeDataBlockPtr(db);
-    freeDataBlock(dbroot);                /* FSF01:1/2 */
-    freeDataBlock(dbckey);                /* FSF03:1/2 */
+    datablockFreePtr(db);
+    datablockFree(dbroot);                /* FSF01:1/2 */
+    datablockFree(dbckey);                /* FSF03:1/2 */
     return 1;
   } else {
     double pgc;
@@ -163,7 +163,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
       exit(1);
     }
     *val = pgc;
-    dblastkey = convertStringToDataBlock(makeCacheKey(ROOTSYM, normed));
+    dblastkey = stringToDataBlock(makeCacheKey(ROOTSYM, normed));
     lastdbval = cldbfetch(gc->samp, dblastkey);
     if (lastdbval == NULL)
       lastdbval = &dbroot;
@@ -171,12 +171,12 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
     cldbstore(gc->samp, dbckey, newentry);
     cldbstore(gc->samp, dblastkey, dbckey);
     freeSS(normed);                          /* FSF02:2/2 */
-    freeDataBlock(dblastkey);
-    freeDataBlock(newentry);
-    freeDataBlock(dbroot);                /* FSF01:2/2 */
-    freeDataBlock(dbckey);                /* FSF03:2/2 */
+    datablockFree(dblastkey);
+    datablockFree(newentry);
+    datablockFree(dbroot);                /* FSF01:2/2 */
+    datablockFree(dbckey);                /* FSF03:2/2 */
     if (lastdbval != &dbroot) {
-      freeDataBlockPtr(lastdbval);
+      datablockFreePtr(lastdbval);
       lastdbval = NULL;
     }
     return 0;

@@ -62,7 +62,7 @@ static struct DataBlock unzlib_transform(struct DataBlock src)
 	result.ptr = (unsigned char*)gmalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
-//	freeDataBlock(src); /* TODO: document this new non-free behavior */
+//	datablockFree(src); /* TODO: document this new non-free behavior */
 	return result;
 }
 #else
