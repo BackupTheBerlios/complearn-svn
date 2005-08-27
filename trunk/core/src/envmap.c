@@ -123,7 +123,7 @@ struct EnvMap *envmapClone(struct EnvMap *em)
   return nem;
 }
 
-int isEmptyEM(struct EnvMap *em)
+int envmapIsEmpty(struct EnvMap *em)
 {
   return doubleaSize(em->d) == 0;
 }

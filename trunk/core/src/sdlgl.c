@@ -89,7 +89,7 @@ void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock 
     result = testCompression(result, bgz);
   } while (result != oldresult);
 #endif
-  addDataBlock(idm, result);
+  incrdmAddDataBlock(idm, result);
 }
 
 static double myPI;
@@ -642,7 +642,7 @@ int calcThreadFunc(void *unused)
       int dmsize;
       fIsCalculatingDM = 1;
       for (;;) {
-        dmsize = doubleaSizeIDM(distmatglob);
+        dmsize = incrdmSize(distmatglob);
         if (dmsize < sizeSS(labels))
           addAndProcessDataBlock(distmatglob, &curFiles->db[dmsize]);
         else
@@ -650,11 +650,11 @@ int calcThreadFunc(void *unused)
       }
       fIsCalculatingDM = 0;
       assert(distmatglob);
-      if (doubleaSizeIDM(distmatglob) < 4) {
+      if (incrdmSize(distmatglob) < 4) {
         clSleepMillis(40);
         continue;
       }
-      tm = newTreeMaster(getDistMatrixIDM(distmatglob), 0);
+      tm = newTreeMaster(incrdmDistMatrix(distmatglob), 0);
       nextbest = getCurTree(getStarterTree(tm));
       setTreeObserverTM(tm, &tob);
     }
@@ -951,7 +951,7 @@ int main( int argc, char* argv[] )
 
   initDragDropSubsystem(window);
 #endif
-  distmatglob = newIDM(NULL);
+  distmatglob = incrdmNew(NULL);
   myPI = atan(1.0)*4;
   /* Information about the current video settings. */
   const SDL_VideoInfo* info = NULL;

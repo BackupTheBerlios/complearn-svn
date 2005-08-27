@@ -13,7 +13,7 @@ struct IncrementalDistMatrix {
   struct CompAdaptor *ca;
 };
 
-struct IncrementalDistMatrix *newIDM(struct CompAdaptor *ca)
+struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca)
 {
   struct IncrementalDistMatrix *idm;
   idm = gcalloc(sizeof(*idm), 1);
@@ -24,7 +24,7 @@ struct IncrementalDistMatrix *newIDM(struct CompAdaptor *ca)
   return idm;
 }
 
-void addDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db)
+void incrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db)
 {
   int i;
   int curguy = idm->dbcount;
@@ -43,7 +43,7 @@ void addDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db)
   }
 }
 
-void freeIncrementalDistMatrix(struct IncrementalDistMatrix *idm)
+void incrdmFree(struct IncrementalDistMatrix *idm)
 {
   int i;
   gsl_matrix_free(idm->curmat);
@@ -53,13 +53,13 @@ void freeIncrementalDistMatrix(struct IncrementalDistMatrix *idm)
   }
 }
 
-gsl_matrix *getDistMatrixIDM(struct IncrementalDistMatrix *idm)
+gsl_matrix *incrdmDistMatrix(struct IncrementalDistMatrix *idm)
 {
   idm->result = gsl_matrix_submatrix(idm->curmat, 0, 0, idm->dbcount, idm->dbcount);
   return (gsl_matrix *) &idm->result;
 }
 
-int doubleaSizeIDM(struct IncrementalDistMatrix *idm)
+int incrdmSize(struct IncrementalDistMatrix *idm)
 {
   return idm->dbcount;
 }

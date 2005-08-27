@@ -28,33 +28,33 @@ struct IncrementalDistMatrix;
  * \param ca pointer to the CompAdaptor to be used in this distance matrix
  * \return pointer to an IncrementalDistMatrix with no objects yet added
  */
-struct IncrementalDistMatrix *newIDM(struct CompAdaptor *ca);
+struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca);
 
 /** \brief Adds a DataBlock to an IncrementalDistMatrix
  *
  *  Takes a DataBlock and calculates the NCDs between it and the DataBlocks
  *  previously added to the IncrementalDistMatrix.  An updated distance matrix
- *  can then be retrieved by calling getDistMatrixIDM().
+ *  can then be retrieved by calling incrdmDistMatrix().
  *  \param idm pointer to IncrementalDistMatrix
  *  \param db pointer to DataBlock to be added
  */
-void addDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db);
+void incrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db);
 
 /** \brief Frees IncrementDistMatrix from memory
  *  \param idm pointer to IncrementalDistMatrix
  */
-void freeIncrementalDistMatrix(struct IncrementalDistMatrix *idm);
+void incrdmFree(struct IncrementalDistMatrix *idm);
 
 /** \brief Retrieves current snapshop the IncrementalDistMatrix is holding
  *  \param idm pointer to IncrementalDistMatrix to inspect
  *  \return pointer to gsl_matrix
  */
-gsl_matrix *getDistMatrixIDM(struct IncrementalDistMatrix *idm);
+gsl_matrix *incrdmDistMatrix(struct IncrementalDistMatrix *idm);
 
 /** \brief Retrieve size of IncrementalDistMatrix
  *  \param idm pointer to IncrementalDistMatrix
  *  \return int size of IncrementalDistMatrix
  */
-int doubleaSizeIDM(struct IncrementalDistMatrix *idm);
+int incrdmSize(struct IncrementalDistMatrix *idm);
 
 #endif

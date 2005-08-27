@@ -64,7 +64,7 @@ int envmapSize(struct EnvMap *em);
  *  \param em EnvMap
  *  \return true if EnvMap contains 0 elements
  */
-int isEmptyEM(struct EnvMap *em);
+int envmapIsEmpty(struct EnvMap *em);
 
 /** \brief Duplicates EnvMap and returns a pointer to a new EnvMap.
  *  \param em EnvMap to be duplicated

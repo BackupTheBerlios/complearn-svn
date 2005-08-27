@@ -12,8 +12,8 @@ VALUE rbincrdm_new(int argc, VALUE *argv, VALUE cl)
   if (argc > 0) {
     Data_Get_Struct(argv[0], struct CompAdaptor, incrdmca);
   }
-  idm = newIDM(incrdmca);
-  tdata = Data_Wrap_Struct(cl, 0, freeIncrementalDistMatrix, idm);
+  idm = incrdmNew(incrdmca);
+  tdata = Data_Wrap_Struct(cl, 0, incrdmFree, idm);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -23,7 +23,7 @@ static VALUE rbincrdm_addstring(VALUE self, VALUE rstr)
   struct IncrementalDistMatrix *idm;
   struct DataBlock *db = convertRubyStringToDataBlock(rstr);
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  addDataBlock(idm,db);
+  incrdmAddDataBlock(idm,db);
   return Qnil;
 }
 
@@ -31,14 +31,14 @@ static VALUE rbincrdm_distmatrix(VALUE self)
 {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  return convertgslmatrixToRubyMatrix(getDistMatrixIDM(idm));
+  return convertgslmatrixToRubyMatrix(incrdmDistMatrix(idm));
 }
 
 static VALUE rbincrdm_size(VALUE self)
 {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  return INT2FIX(doubleaSizeIDM(idm));
+  return INT2FIX(incrdmSize(idm));
 }
 
 void doInitIncrDistMatrix(void) {
