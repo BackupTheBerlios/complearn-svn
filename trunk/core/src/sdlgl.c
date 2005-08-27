@@ -642,7 +642,7 @@ int calcThreadFunc(void *unused)
       int dmsize;
       fIsCalculatingDM = 1;
       for (;;) {
-        dmsize = getSizeIDM(distmatglob);
+        dmsize = doubleaSizeIDM(distmatglob);
         if (dmsize < sizeSS(labels))
           addAndProcessDataBlock(distmatglob, &curFiles->db[dmsize]);
         else
@@ -650,7 +650,7 @@ int calcThreadFunc(void *unused)
       }
       fIsCalculatingDM = 0;
       assert(distmatglob);
-      if (getSizeIDM(distmatglob) < 4) {
+      if (doubleaSizeIDM(distmatglob) < 4) {
         clSleepMillis(40);
         continue;
       }

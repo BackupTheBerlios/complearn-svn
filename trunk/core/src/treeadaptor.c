@@ -92,6 +92,6 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
   ad1 = treegetadjaTRA(tra1);
   ad2 = treegetadjaTRA(tra2);
   diff = countTrinaryDifferences(ad1, lab1, ad2, lab2);
-  return nchoosefourScale(getSizeLP(lab1), diff);
+  return nchoosefourScale(doubleaSizeLP(lab1), diff);
 }
 

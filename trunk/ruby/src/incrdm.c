@@ -38,7 +38,7 @@ static VALUE rbincrdm_size(VALUE self)
 {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  return INT2FIX(getSizeIDM(idm));
+  return INT2FIX(doubleaSizeIDM(idm));
 }
 
 void doInitIncrDistMatrix(void) {

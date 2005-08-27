@@ -108,7 +108,7 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
 {
   int pathlen = 0;
   struct DoubleA *spmmap = adjaSPMMap(ad);
-  const struct DoubleA *spm = getValueAt(spmmap, to).ar;
+  const struct DoubleA *spm = doubleaGetValueAt(spmmap, to).ar;
   qbase_t cur;
   cur = from;
   //printf("Got path request from %d to %d with bufsize %d:  ", from, to, *bufsize);
@@ -129,7 +129,7 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
       return CL_ERRFULL;
     pathbuf[pathlen] = cur;
     pathlen += 1;
-    cur = getValueAt(spm, cur).i;
+    cur = doubleaGetValueAt(spm, cur).i;
     if (cur >= adjaSize(ad)) {
       printf("Problem with cur for %d\n", pathbuf[pathlen-1]);
     }
@@ -141,10 +141,10 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
     return CL_ERRFULL;
   pathbuf[pathlen] = to;
   pathlen += 1;
-//    pushValue(result, p);
+//    doubleaPush(result, p);
 #if LOGICWALL
-//  assert(getValueAt(result, 0).i == from);
-//  assert(getValueAt(result, getSize(result)-1).i == to);
+//  assert(doubleaGetValueAt(result, 0).i == from);
+//  assert(doubleaGetValueAt(result, doubleaSize(result)-1).i == to);
 #endif
   *bufsize = pathlen;
   return CL_OK;
@@ -152,7 +152,7 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
 
 void freeSPMMap(struct DoubleA *ub)
 {
-  freeDeepDoubleDoubler(ub, 1);
+  doubleaDeepFree(ub, 1);
 }
 
 struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
@@ -162,7 +162,7 @@ struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
   for (i = 0; i < adjaSize(aa); ++i) {
     union PCTypes p = zeropct;
     p.ar = makeSPMFor(aa, i);
-    pushValue(result, p);
+    doubleaPush(result, p);
   }
   return result;
 }
@@ -185,7 +185,7 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   length = gcalloc(adjaSize(aa), sizeof(*length));
   result = doubleaNew();
   todo = doubleaNew();
-  assert(getSize(todo) < 100);
+  assert(doubleaSize(todo) < 100);
   for (i = 0; i < adjaSize(aa); i += 1) {
     path[i] = PATH_DASH;
     length[i] = LENGTH_INIT;
@@ -202,13 +202,13 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
     p = zeropct;
     p.i = neighbor;
 //    printf("Pushing value %d on todo at %p\n", p.i, todo);
-    pushValue(todo, p);
+    doubleaPush(todo, p);
     path[neighbor] = root;
     length[neighbor] = 1;
   }
-  while (getSize(todo)) {
+  while (doubleaSize(todo)) {
     nsize = MAXNEIGHBORS;
-    cur = shiftDoubleDoubler(todo).i;
+    cur = doubleaShift(todo).i;
     retval = adjaNeighbors(aa, cur, nbuf, &nsize);
     assert(retval == CL_OK);
     for (i = 0; i < nsize; i += 1) {
@@ -218,22 +218,22 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
         length[neighbor] = length[cur] + 1;
         p = zeropct;
         p.i = neighbor;
-        pushValue(todo, p);
+        doubleaPush(todo, p);
       }
     }
   }
   for (i = 0; i < adjaSize(aa); i += 1) {
     p = zeropct;
     p.i = path[i];
-    pushValue(result, p);
+    doubleaPush(result, p);
   }
   free(path);
   free(length);
-  freeDoubleDoubler(todo);
+  doubleaFree(todo);
 
-  assert(getSize(result) == adjaSize(aa));
+  assert(doubleaSize(result) == adjaSize(aa));
   for (i = 0; i < adjaSize(aa); i += 1) {
-    cur = getValueAt(result, i).i;
+    cur = doubleaGetValueAt(result, i).i;
 //    printf("Got value %d at position %d\n", cur, i);
     assert(cur >= 0 && cur < adjaSize(aa));
   }
@@ -254,9 +254,9 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(treeGetNodeCountTRA(ta));
-  pushValue(border, p);
+  doubleaPush(border, p);
   walkTree(treegetadjaTRA(ta), result, border, done, 0, flips);
-  freeDoubleDoubler(border);
+  doubleaFree(border);
   clnodesetFree(done);
   return result;
 
@@ -268,14 +268,14 @@ void walkTree(struct AdjAdaptor *aa,
     struct CLNodeSet *flipped)
 {
   qbase_t cur;
-  while (getSize(border) > 0) {
+  while (doubleaSize(border) > 0) {
     if (breadthFirst)
-      cur = popDoubleDoubler(border).i;
+      cur = doubleaPop(border).i;
     else
-      cur = shiftDoubleDoubler(border).i;
+      cur = doubleaShift(border).i;
 /*    assert(cur >= 0); */
     assert(cur < adjaSize(aa));
-    if (!clnodesetIsNodeInSet(done, cur)) {
+    if (!clnodesetNodeIncluded(done, cur)) {
       union PCTypes p = zeropct;
       int i;
       int retval;
@@ -284,7 +284,7 @@ void walkTree(struct AdjAdaptor *aa,
       int nsize = MAXNEIGHBORS;
       clnodesetAddNode(done, cur);
       p.i = cur;
-      pushValue(result, p);
+      doubleaPush(result, p);
       retval = adjaNeighbors(aa, cur, nbuf, &nsize);
       assert(retval == CL_OK);
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
@@ -292,19 +292,19 @@ void walkTree(struct AdjAdaptor *aa,
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];
-        if (!clnodesetIsNodeInSet(done, p.i))
-          pushValue(nb, p);
+        if (!clnodesetNodeIncluded(done, p.i))
+          doubleaPush(nb, p);
       }
-      if (flipped && clnodesetIsNodeInSet(flipped, cur)) {
+      if (flipped && clnodesetNodeIncluded(flipped, cur)) {
         if (nsize < 2) {
           //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {
-          swapValues(nb, 0, 1);
+          doubleaSwapAt(nb, 0, 1);
         }
       }
-      for (i = 0; i < getSize(nb); ++i)
-        unshiftValue(border, getValueAt(nb, i));
-      freeDoubleDoubler(nb);
+      for (i = 0; i < doubleaSize(nb); ++i)
+        doubleaUnshift(border, doubleaGetValueAt(nb, i));
+      doubleaFree(nb);
     }
   }
 }
@@ -319,8 +319,8 @@ int countTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, stru
   int i, j, k, m;
   int spec;
   int acc = 0;
-  assert(getSizeLP(lab1) == getSizeLP(lab2));
-  spec = getSizeLP(lab1);
+  assert(doubleaSizeLP(lab1) == doubleaSizeLP(lab2));
+  spec = doubleaSizeLP(lab1);
   ALLQUARTETS(spec, i, j, k, m) {
     qbase_t lab[4];
     int qi1, qi2;

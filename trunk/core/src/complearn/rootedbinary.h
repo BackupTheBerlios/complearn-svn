@@ -114,8 +114,8 @@ qbase_t getStartingNodeRB(const struct RootedBinary *ub);
  *
  * struct DoubleA *da = getTreeNodes(ub);
  * int i;
- * for (i = 0; i < getSize(da); i += 1)
- *   printf("Got node %d\n", getValueAt(da, i).i);
+ * for (i = 0; i < doubleaSize(da); i += 1)
+ *   printf("Got node %d\n", doubleaGetValueAt(da, i).i);
  *
  * \param ub pointer to the RootedBinary that must be reordered
  * \return pointer to a DoubleA holding the list of all tree nodes
@@ -139,8 +139,8 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *ub);
  *
  * struct DoubleA *da = getPerimeterPairs(ub);
  * int i;
- * for (i = 0; i < getSize(da); i += 1) {
- *   union PCTypes pct = getValueAt(da, i);
+ * for (i = 0; i < doubleaSize(da); i += 1) {
+ *   union PCTypes pct = doubleaGetValueAt(da, i);
  *   printf("perimeter pair: node %d and node %d\n", pct.ip.x, pct.ip.y);
  * }
  *
@@ -181,7 +181,7 @@ void freeRootedBinary(struct RootedBinary *ub);
  * When mapping a set of leaf-labels to a graph or tree, there is always
  * the possibility to permute the leaf labels.  This is handled with a
  * permutation array.  The entry at
- * getValueAt(leaflabels, r).i
+ * doubleaGetValueAt(leaflabels, r).i
  * indicates the node-identifier of the leaf where datamatrix column index
  * indicator r should be placed.
  *

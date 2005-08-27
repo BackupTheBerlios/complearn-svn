@@ -43,23 +43,23 @@ struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, i
 void freeSPMSingle(struct DoubleA *d)
 {
   int i;
-  int n = getSize(d);
+  int n = doubleaSize(d);
   for (i = 0; i < n; ++i)
-    freeDoubleDoubler(getValueAt(d, i).ar);
-  freeDoubleDoubler(d);
+    doubleaFree(doubleaGetValueAt(d, i).ar);
+  doubleaFree(d);
 }
 
 void freeSPMSet(struct DoubleA *d)
 {
   int i;
-  int n = getSize(d);
+  int n = doubleaSize(d);
   for (i = 0; i < n; ++i)
-    freeSPMSingle(getValueAt(d, i).ar);
+    freeSPMSingle(doubleaGetValueAt(d, i).ar);
 }
 
 struct DoubleA *findPath(const struct CLTree *clt, struct DoubleA *spmset, qbase_t qfrom, qbase_t qto)
 {
-  return getValueAt(getValueAt(spmset, qfrom).ar, qto).ar;
+  return doubleaGetValueAt(doubleaGetValueAt(spmset, qfrom).ar, qto).ar;
 }
 
 static void mustBeSorted(qbase_t labels[4])

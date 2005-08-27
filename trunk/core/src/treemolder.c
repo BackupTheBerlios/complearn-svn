@@ -61,14 +61,14 @@ static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struc
   struct DoubleA *pairs = treeperimpairsTRA(ts, flips);
   int i;
   struct LabelPerm *lph = treegetlabelpermTRA(ts);
-  for (i = 0; i < getSize(pairs); i += 1) {
-    union PCTypes p = getValueAt(pairs, i);
+  for (i = 0; i < doubleaSize(pairs); i += 1) {
+    union PCTypes p = doubleaGetValueAt(pairs, i);
     double x, y;
     x = getColumnIndexForNodeIDLP(lph, p.ip.x);
     y = getColumnIndexForNodeIDLP(lph, p.ip.y);
     acc += gsl_matrix_get(dm, x, y);
   }
-  freeDoubleDoubler(pairs);
+  doubleaFree(pairs);
   return acc;
 }
 
@@ -97,7 +97,7 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
     do {
       whichNode = rand() % tm->nodecount;
     } while (!treeIsFlippable(tm->ta, whichNode));
-    oldStatus = clnodesetIsNodeInSet(dst, whichNode);
+    oldStatus = clnodesetNodeIncluded(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
     clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
   } while ((rand() % 2) == 0);

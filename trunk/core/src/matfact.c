@@ -30,13 +30,13 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
     for (y = 0; y < a->size2; ++y) {
       union PCTypes p = zeropct;
       p.d = gsl_matrix_get(a, x, y);
-      pushValue(dac, p);
+      doubleaPush(dac, p);
     }
   }
   h.tagnum = TAGNUM_GSLMATRIX;
   m.size1 = a->size1;
   m.size2 = a->size2;
-  dubs = dumpDoubleDoubler(dac);
+  dubs = doubleaDump(dac);
   h.size = dubs.size + sizeof(m);
   result.size = dubs.size + sizeof(h) + sizeof(m);
   result.ptr = gcalloc(result.size, 1);
@@ -44,7 +44,7 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
   memcpy(result.ptr + sizeof(h), &m, sizeof(m));
   memcpy(result.ptr + sizeof(h) + sizeof(m), dubs.ptr, dubs.size);
   datablockFree(dubs);
-  freeDoubleDoubler(dac);
+  doubleaFree(dac);
   return result;
 }
 
@@ -71,12 +71,12 @@ gsl_matrix *loadGSLMatrix(const struct DataBlock d, int fmustbe)
   assert(m->size1 > 0 && m->size2 > 0);
   db.ptr = d.ptr + sizeof(*h) + sizeof(*m);
   db.size = d.size - (sizeof(*h) + sizeof(*m));
-  da = loadDoubleDoubler(db, 1);
+  da = doubleaLoad(db, 1);
   result = gsl_matrix_alloc(m->size1, m->size2);
   for (x = 0; x < m->size1; x += 1)
     for (y = 0; y < m->size2; y += 1)
-      gsl_matrix_set(result, x, y, getDValueAt(da, i++));
-  freeDoubleDoubler(da);
+      gsl_matrix_set(result, x, y, doubleaGetDValueAt(da, i++));
+  doubleaFree(da);
   return result;
 }
 
@@ -107,9 +107,9 @@ gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
 
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
-  dbda = *getValueAt(dd,0).idbp.db;
+  dbda = *doubleaGetValueAt(dd,0).idbp.db;
   m = loadGSLMatrix(dbdm, 1);
-  freeDoubleDoubler(dd);
+  doubleaFree(dd);
   datablockFree(dbdm);
 
   return m;
@@ -132,7 +132,7 @@ gsl_matrix *get_cldm_from_clb(char *fname)
 
   datablockFree(db);
   datablockFree(dbdm);
-  freeDoubleDoubler(dd);
+  doubleaFree(dd);
   return result;
 }
 
@@ -147,11 +147,11 @@ static struct DoubleA *get_dm_row_from_txt(char *linebuf, int isLabeled)
   s = strtok(linebuf, DELIMS);
   if (!isLabeled) {
     p.d = atof(s);
-    pushValue(row,p);
+    doubleaPush(row,p);
   }
   while((s = strtok(NULL, DELIMS))) {
     p.d = atof(s);
-    pushValue(row,p);
+    doubleaPush(row,p);
   }
   return row;
 }
@@ -208,8 +208,8 @@ gsl_matrix *get_dm_from_txt(char *fname)
     struct DoubleA *rowvals;
     fgets(linebuf, MAXLINESIZE, fp);
     rowvals = get_dm_row_from_txt(linebuf, isLabeled);
-    for (j = 0; j < getSize(rowvals); j +=1) {
-      gsl_matrix_set(result, i, j, getValueAt(rowvals, j).d);
+    for (j = 0; j < doubleaSize(rowvals); j +=1) {
+      gsl_matrix_set(result, i, j, doubleaGetValueAt(rowvals, j).d);
     }
   }
 

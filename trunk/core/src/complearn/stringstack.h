@@ -36,12 +36,12 @@ struct StringStack *newSingleSS(const char *str);
  *
  * Allocates memory and returns a pointer to a deserialized StringStack
  * instance.  The DataBlock passed in to this function should have been made
- * using a dumpStringStack call earlier.
+ * using a stringDumpStack call earlier.
  *
  * \param db a DataBlock containing the serialized format StringStack
  * \return pointer to the newly allocated deserialized StringStack
  */
-struct StringStack *loadStringStack(struct DataBlock db, int fmustbe);
+struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe);
 
 /** \brief Dumps a StringStack into a serialized format and returns a DataBlock
  *
@@ -51,7 +51,7 @@ struct StringStack *loadStringStack(struct DataBlock db, int fmustbe);
  * \param ss pointer to the StringStack instance to be saved / serialized
  * \return DataBlock containing the serialized information
  */
-struct DataBlock dumpStringStack(const struct StringStack *ss);
+struct DataBlock stringDumpStack(const struct StringStack *ss);
 
 /** \brief Duplicates StringStack and returns a pointer to a new StringStack.
  *  \param ss StringStack to be duplicated

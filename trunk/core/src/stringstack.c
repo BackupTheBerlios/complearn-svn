@@ -9,7 +9,7 @@ struct StringStack {
   struct DoubleA *da;
 };
 
-struct StringStack *loadStringStack(struct DataBlock db, int fmustbe)
+struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe)
 {
   struct StringStack *result = newStringStack();
   struct DataBlock cur;
@@ -30,7 +30,7 @@ struct StringStack *loadStringStack(struct DataBlock db, int fmustbe)
 
   while (getCurDataBlock(tm, &cur)) {
     char *str;
-    str = loadString(cur, 1);
+    str = stringLoad(cur, 1);
     pushSS(result, str);
     gfreeandclear(str);
     stepNextDataBlock(tm);
@@ -40,7 +40,7 @@ struct StringStack *loadStringStack(struct DataBlock db, int fmustbe)
   return result;
 }
 
-struct DataBlock dumpStringStack(const struct StringStack *ss)
+struct DataBlock stringDumpStack(const struct StringStack *ss)
 {
   struct DataBlock result;
   struct DoubleA *parts = doubleaNew();
@@ -48,13 +48,13 @@ struct DataBlock dumpStringStack(const struct StringStack *ss)
 
   for ( i = 0; i < sizeSS(ss); i += 1) {
     union PCTypes p = zeropct;
-    char *s = getValueAt(ss->da,i).str;
-    p.db = dumpString(s);
-    pushValue(parts,p);
+    char *s = doubleaGetValueAt(ss->da,i).str;
+    p.db = stringDump(s);
+    doubleaPush(parts,p);
   }
 
   result = package_dd_DataBlocks(TAGNUM_STRINGSTACK, parts);
-  freeDoubleDoubler(parts);
+  doubleaFree(parts);
   return result;
 }
 
@@ -83,8 +83,8 @@ struct StringStack *cloneSS(struct StringStack *ss)
   nss = newStringStack();
   for (i = 0; i < sz; ++i) {
     union PCTypes p;
-    p.str = gstrdup(getValueAt(ss->da, i).str);
-    setValueAt(nss->da, i, p);
+    p.str = gstrdup(doubleaGetValueAt(ss->da, i).str);
+    doubleaSetValueAt(nss->da, i, p);
   }
   return nss;
 }
@@ -92,10 +92,10 @@ struct StringStack *cloneSS(struct StringStack *ss)
 int freeSS(struct StringStack *ss)
 {
   int i;
-  for (i = 0; i < getSize(ss->da); i += 1) {
-    gfree(getValueAt(ss->da, i).str);
+  for (i = 0; i < doubleaSize(ss->da); i += 1) {
+    gfree(doubleaGetValueAt(ss->da, i).str);
   }
-  freeDoubleDoubler(ss->da);
+  doubleaFree(ss->da);
   ss->da = NULL;
 	gfreeandclear(ss);
 	return CL_OK;
@@ -107,7 +107,7 @@ int unshiftSS(struct StringStack *ss, const char *str)
   assert(ss);
   assert(str);
   p.str = gstrdup(str);
-  unshiftValue(ss->da, p);
+  doubleaUnshift(ss->da, p);
   return CL_OK;
 }
 
@@ -117,18 +117,18 @@ int pushSS(struct StringStack *ss, const char *str)
   assert(ss);
   assert(str);
   p.str = gstrdup(str);
-  pushValue(ss->da, p);
+  doubleaPush(ss->da, p);
   return CL_OK;
 }
 
 int isEmptySS(struct StringStack *ss)
 {
-	return getSize(ss->da) == 0;
+	return doubleaSize(ss->da) == 0;
 }
 
 int sizeSS(const struct StringStack *ss)
 {
-	return getSize(ss->da);
+	return doubleaSize(ss->da);
 }
 
 /* After calling shiftSS, it is the responsibility of the programmer to free
@@ -140,7 +140,7 @@ char *shiftSS(struct StringStack *ss)
   assert(sizeSS(ss) > 0);
   memset(&p, 0, sizeof(p));
 	if (sizeSS(ss) == 0) return p.str;
-	p = shiftDoubleDoubler(ss->da);
+	p = doubleaShift(ss->da);
   return p.str;
 }
 
@@ -152,13 +152,13 @@ char *popSS(struct StringStack *ss)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeSS(ss) == 0) return p.str;
-	p = popDoubleDoubler(ss->da);
+	p = doubleaPop(ss->da);
   return p.str;
 }
 
 char *readAtSS(struct StringStack *ss, int i)
 {
-	return getValueAt(ss->da, i).str;
+	return doubleaGetValueAt(ss->da, i).str;
 }
 
 int sortSS(struct StringStack *ss)
@@ -168,8 +168,8 @@ int sortSS(struct StringStack *ss)
   do {
     flipped = 0;
     for (i = 1; i < sz; ++i) {
-      if (strcmp(getValueAt(ss->da, i-1).str, getValueAt(ss->da, i).str) > 0) {
-        swapValues(ss->da, i-1, i);
+      if (strcmp(doubleaGetValueAt(ss->da, i-1).str, doubleaGetValueAt(ss->da, i).str) > 0) {
+        doubleaSwapAt(ss->da, i-1, i);
         flipped = 1;
       }
     }

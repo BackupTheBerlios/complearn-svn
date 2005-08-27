@@ -24,7 +24,7 @@ struct DAHdr {
   int size;
 };
 
-union PCTypes getRandomElement(const struct DoubleA *da)
+union PCTypes doubleaRandom(const struct DoubleA *da)
 {
   int i;
   assert(da->size > 0);
@@ -41,7 +41,7 @@ static void callUserFunc(struct DoubleA *ptr)
   ptr->udata = NULL;
 }
 
-void freeDoubleDoubler(struct DoubleA *ptr)
+void doubleaFree(struct DoubleA *ptr)
 {
   assert(ptr);
   callUserFunc(ptr);
@@ -62,17 +62,17 @@ struct DoubleA *doubleaNew(void)
   return da;
 }
 
-int getSize(const struct DoubleA *a)
+int doubleaSize(const struct DoubleA *a)
 {
   return a->size;
 }
 
-double getDValueAt(struct DoubleA *da, int where)
+double doubleaGetDValueAt(struct DoubleA *da, int where)
 {
-  return getValueAt(da, where).d;
+  return doubleaGetValueAt(da, where).d;
 }
 
-void verifyDoubleDoubler(const struct DoubleA *da)
+void doubleaVerify(const struct DoubleA *da)
 {
   if (!(da) )
     goto isBad;
@@ -88,12 +88,12 @@ isBad:
   exit(1);
 }
 
-union PCTypes getValueAt(const struct DoubleA *da, int where)
+union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
 {
 #if LOGICWALL
   assert(da);
   assert(da->pc && "tried to access freed DoubleA");
-  verifyDoubleDoubler(da);
+  doubleaVerify(da);
   assert(where >= 0);
   assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
@@ -105,7 +105,7 @@ union PCTypes getValueAt(const struct DoubleA *da, int where)
   return da->pc[where];
 }
 
-void setValueAt(struct DoubleA *da, int where, union PCTypes p)
+void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p)
 {
   assert(da);
   assert(where >= 0);
@@ -115,11 +115,11 @@ void setValueAt(struct DoubleA *da, int where, union PCTypes p)
     da->size = where + 1;
 }
 
-void setDValueAt(struct DoubleA *da, int where, double val)
+void doubleaSetDValueAt(struct DoubleA *da, int where, double val)
 {
   union PCTypes pc;
   pc.d = val;
-  setValueAt(da, where, pc);
+  doubleaSetValueAt(da, where, pc);
 }
 
 void makeSizeFor(struct DoubleA *da, int where)
@@ -136,7 +136,7 @@ void makeSizeFor(struct DoubleA *da, int where)
   }
 }
 
-union PCTypes shiftDoubleDoubler(struct DoubleA *da)
+union PCTypes doubleaShift(struct DoubleA *da)
 {
   union PCTypes result = da->pc[0];
   assert(da->size > 0);
@@ -145,7 +145,7 @@ union PCTypes shiftDoubleDoubler(struct DoubleA *da)
   return result;
 }
 
-union PCTypes popDoubleDoubler(struct DoubleA *da)
+union PCTypes doubleaPop(struct DoubleA *da)
 {
   union PCTypes result = da->pc[da->size-1];
   assert(da->size > 0);
@@ -154,20 +154,20 @@ union PCTypes popDoubleDoubler(struct DoubleA *da)
   return result;
 }
 
-void unshiftValue(struct DoubleA *da, union PCTypes p)
+void doubleaUnshift(struct DoubleA *da, union PCTypes p)
 {
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  makeSizeFor(da, getSize(da));
+  makeSizeFor(da, doubleaSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * getSize(da));
+  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * doubleaSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
@@ -182,17 +182,17 @@ void unshiftValue(struct DoubleA *da, union PCTypes p)
   da->size += 1;
 }
 
-void pushValue(struct DoubleA *da, union PCTypes p)
+void doubleaPush(struct DoubleA *da, union PCTypes p)
 {
 #if LOGICWALL
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->size < 10000);
 #endif
-  setValueAt(da, da->size, p);
+  doubleaSetValueAt(da, da->size, p);
 }
 
-int swapValues(struct DoubleA *da, int inda, int indb)
+int doubleaSwapAt(struct DoubleA *da, int inda, int indb)
 {
   union PCTypes tmp;
   assert(da);
@@ -206,41 +206,41 @@ int swapValues(struct DoubleA *da, int inda, int indb)
   return CL_OK;
 }
 
-struct DoubleA *cloneDoubler(const struct DoubleA *ptr)
+struct DoubleA *doubleaClone(const struct DoubleA *ptr)
 {
   assert(ptr);
-  return deepCopyLvl(ptr, 0);
+  return doubleaDeepClone(ptr, 0);
 }
 
-void freeDeepDoubleDoubler(struct DoubleA *ptr, int lvl)
+void doubleaDeepFree(struct DoubleA *ptr, int lvl)
 {
   assert(ptr);
   if (lvl) {
     int i;
-    int sz = getSize(ptr);
+    int sz = doubleaSize(ptr);
     for (i = 0; i < sz; ++i)
-      freeDeepDoubleDoubler(getValueAt(ptr, i).ar, lvl-1);
+      doubleaDeepFree(doubleaGetValueAt(ptr, i).ar, lvl-1);
   }
-  freeDoubleDoubler(ptr);
+  doubleaFree(ptr);
 }
 
-struct DoubleA *deepCopyLvl(const struct DoubleA *ptr, int lvl)
+struct DoubleA *doubleaDeepClone(const struct DoubleA *ptr, int lvl)
 {
   struct DoubleA *result = doubleaNew();
-  int sz = getSize(ptr);
+  int sz = doubleaSize(ptr);
   int i;
   for (i = 0; i < sz; ++i) {
     union PCTypes p = zeropct;
     if (lvl)
-      p.ar = deepCopyLvl(getValueAt(ptr, i).ar, lvl-1);
+      p.ar = doubleaDeepClone(doubleaGetValueAt(ptr, i).ar, lvl-1);
     else
-      p = getValueAt(ptr, i);
-    setValueAt(result, i, p);
+      p = doubleaGetValueAt(ptr, i);
+    doubleaSetValueAt(result, i, p);
   }
   return result;
 }
 
-void printNodeList(const struct DoubleA *da)
+void doubleaPrintIntList(const struct DoubleA *da)
 {
   int i;
   for (i = 0; i < da->size; ++i)
@@ -248,7 +248,7 @@ void printNodeList(const struct DoubleA *da)
   printf("\n");
 }
 
-void printIntPairList(const struct DoubleA *da)
+void doubleaPrintIntPairList(const struct DoubleA *da)
 {
   int i;
   for (i = 0; i < da->size; i += 1)
@@ -256,7 +256,7 @@ void printIntPairList(const struct DoubleA *da)
   printf("\n");
 }
 
-struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe)
+struct DoubleA *doubleaLoad(struct DataBlock d, int fmustbe)
 {
   int i;
   struct TagHdr *h;
@@ -278,8 +278,8 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe)
       struct DataBlock dbcur;
       dbcur.ptr = cur;
       dbcur.size = cur + d.size - d.ptr;
-      p.ar = loadDoubleDoubler(dbcur, 1);
-      pushValue(result, p);
+      p.ar = doubleaLoad(dbcur, 1);
+      doubleaPush(result, p);
     }
   }
   else {
@@ -290,17 +290,17 @@ struct DoubleA *loadDoubleDoubler(struct DataBlock d, int fmustbe)
     result->pc = gcalloc(sizeof(result->pc[0]), result->alloc);
     result->size = ddh->size;
     memcpy(result->pc, cur, sizeof(result->pc[0]) * result->size);
-    verifyDoubleDoubler(result);
+    doubleaVerify(result);
   }
   return result;
 }
 
-struct DataBlock dumpDoubleDoubler(const struct DoubleA *d)
+struct DataBlock doubleaDump(const struct DoubleA *d)
 {
-  return dumpDeepDoubleDoubler(d, 0);
+  return doubleaDeepDump(d, 0);
 }
 
-struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
+struct DataBlock doubleaDeepDump(const struct DoubleA *d, int level)
 {
   struct DoubleA *bufs = doubleaNew();
   struct DataBlock dbres;
@@ -317,8 +317,8 @@ struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
     int i;
     for (i = 0; i < d->size; i += 1) {
       union PCTypes p;
-      p.db = dumpDeepDoubleDoubler(getValueAt(d, i).ar, level-1);
-      pushValue(bufs, p);
+      p.db = doubleaDeepDump(doubleaGetValueAt(d, i).ar, level-1);
+      doubleaPush(bufs, p);
       dbres.size += p.db.size;
     }
     dbres.ptr = gcalloc(dbres.size + sizeof(h) + sizeof(ddh), 1);
@@ -327,7 +327,7 @@ struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
     memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
     dbres.size = sizeof(h) + sizeof(ddh);
     for (i = 0; i < bufs->size; i += 1) {
-      struct DataBlock cur = getValueAt(bufs, i).db;
+      struct DataBlock cur = doubleaGetValueAt(bufs, i).db;
       memcpy(dbres.ptr + dbres.size, cur.ptr, cur.size);
       dbres.size += cur.size;
       datablockFree(cur);
@@ -341,11 +341,11 @@ struct DataBlock dumpDeepDoubleDoubler(const struct DoubleA *d, int level)
     memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
     memcpy(dbres.ptr + sizeof(h) + sizeof(ddh), d->pc, d->size * sizeof(d->pc[0]));
   }
-  freeDoubleDoubler(bufs);
+  doubleaFree(bufs);
   return dbres;
 }
 
-struct DataBlock dumpString(const char *s)
+struct DataBlock stringDump(const char *s)
 {
   struct DataBlock result;
   struct TagHdr h;
@@ -359,7 +359,7 @@ struct DataBlock dumpString(const char *s)
   return result;
 }
 
-char *loadString(struct DataBlock db, int fmustbe)
+char *stringLoad(struct DataBlock db, int fmustbe)
 {
   char *result;
   struct TagHdr *h = (struct TagHdr *) db.ptr;
@@ -379,21 +379,21 @@ char *loadString(struct DataBlock db, int fmustbe)
   return result;
 }
 
-int isInDAqb(const struct DoubleA *da, qbase_t which)
+int doubleaQBIncluded(const struct DoubleA *da, qbase_t which)
 {
   int i;
-  for (i = 0; i < getSize(da); i += 1)
-    if (which == getValueAt(da, i).i)
+  for (i = 0; i < doubleaSize(da); i += 1)
+    if (which == doubleaGetValueAt(da, i).i)
       return 1;
   return 0;
 }
 
-void addIfNewqb(struct DoubleA *da, qbase_t which)
+void doubleaAddQBIfNew(struct DoubleA *da, qbase_t which)
 {
-  if (!isInDAqb(da, which)) {
+  if (!doubleaQBIncluded(da, which)) {
     union PCTypes p = zeropct;
     p.i = which;
-    pushValue(da, p);
+    doubleaPush(da, p);
   }
 }
 

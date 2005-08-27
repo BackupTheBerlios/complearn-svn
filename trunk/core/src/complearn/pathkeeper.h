@@ -77,10 +77,10 @@ struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis);
  * going to the given node, termed "from".  These paths are calculated
  * using the Dijktra-Prim shortest path tree algorithm.  The results are
  * stored in a DoubleA using the .i field of PCTypes.  In the result,
- * getValueAt(result, n).i
+ * doubleaGetValueAt(result, n).i
  * holds the node-identifier that one must move starting at node n in
  * order to get to the specified node "from".  For all node identifiers in
- * the tree i, getValueAt(result, i) will be defined.  Thus, this allows for
+ * the tree i, doubleaGetValueAt(result, i) will be defined.  Thus, this allows for
  * rapid path calculations during quartet scoring later.  This function is
  * used by pathFinder.
  *
@@ -93,7 +93,7 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t from);
 /** \brief Calculates an All Points Shortest Path Map for the given binary tree
  *
  * This function computes an SPM using makeSPMFor for each node in this
- * tree.  The SPM for node i is stored in getValueAt(result, i).ar
+ * tree.  The SPM for node i is stored in doubleaGetValueAt(result, i).ar
  *
  * This function uses the .ar field in the PCTypes DoubleA to store a
  * nested set of SPM's, one for each node.  This is used in the pathFinder.

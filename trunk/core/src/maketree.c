@@ -219,16 +219,16 @@ int main(int argc, char **argv)
   }
   printf("\nNode ordering:\n");
   res = simpleWalkTree(ub, clns);
-  printNodeList(res);
+  doubleaPrintIntList(res);
   printf("\nLeaf ordering:\n");
-  for (j = 0; j < getSize(res); j += 1) {
-    int nodenum = getValueAt(res, j).i;
+  for (j = 0; j < doubleaSize(res); j += 1) {
+    int nodenum = doubleaGetValueAt(res, j).i;
     if (treeIsQuartettable(ub, nodenum))
       printf("%d ", nodenum);
   }
   printf("\nLeaf labels, in %s order:\n", isOrdered ? "best" : "arbitrary");
-  for (j = 0; j < getSize(res); j += 1) {
-    int nodenum = getValueAt(res, j).i;
+  for (j = 0; j < doubleaSize(res); j += 1) {
+    int nodenum = doubleaGetValueAt(res, j).i;
     struct LabelPerm *lph = treegetlabelpermTRA(ub);
     if (!treeIsQuartettable(ub, nodenum))
       continue;
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
     printf("%s\n", readAtSS(labels, indnum));
   }
   printf("Done.\n");
-  freeDoubleDoubler(res);
+  doubleaFree(res);
   freedotth(dotth);
   freeTreeMaster(tm);
   freeGSLMatrix(dm);

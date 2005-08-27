@@ -106,6 +106,6 @@ int main(int argc, char *argv[])
   gsl_matrix_free(dm);
   datablockFree(db);
   datablockFree(dbdm);
-  freeDoubleDoubler(dd);
+  doubleaFree(dd);
   exit(0);
 }

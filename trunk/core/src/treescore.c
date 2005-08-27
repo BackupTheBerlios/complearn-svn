@@ -58,7 +58,7 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
   double maxtot = 0, mintot = 0;
   struct LabelPerm *lp = treegetlabelpermTRA(ts->ta);
   assert(dm->size1 == dm->size2);
-  assert(dm->size1 == getSizeLP(lp));
+  assert(dm->size1 == doubleaSizeLP(lp));
   ALLQUARTETS(dm->size1, i, j, k, m) {
     double mincur=0, maxcur=0;
     for (p = 0; p < 3; p += 1) {

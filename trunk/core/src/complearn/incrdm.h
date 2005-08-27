@@ -55,6 +55,6 @@ gsl_matrix *getDistMatrixIDM(struct IncrementalDistMatrix *idm);
  *  \param idm pointer to IncrementalDistMatrix
  *  \return int size of IncrementalDistMatrix
  */
-int getSizeIDM(struct IncrementalDistMatrix *idm);
+int doubleaSizeIDM(struct IncrementalDistMatrix *idm);
 
 #endif

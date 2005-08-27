@@ -41,8 +41,8 @@ static struct DoubleA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
   struct DoubleA *da = doubleaNew();
   do {
     qbase_t cur = randomKernelNode(ub);
-    addIfNewqb(da, cur);
-  } while (getSize(da) < howMany);
+    doubleaAddQBIfNew(da, cur);
+  } while (doubleaSize(da) < howMany);
   return da;
 }
 
@@ -60,9 +60,9 @@ static int verifyTree(struct UnrootedBinary *ub)
   int i, j;
   int nc;
   struct DoubleA *result = getTreeNodes(ub, NULL);
-  if (getSize(result) != ub->nodecount) {
+  if (doubleaSize(result) != ub->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
-      getSize(result), ub->nodecount);
+      doubleaSize(result), ub->nodecount);
     adjaPrint(ub->aa);
     for (i = 0; i < ub->nodecount; ++i) {
       for (j = 0; j < i; ++j)
@@ -86,7 +86,7 @@ static int verifyTree(struct UnrootedBinary *ub)
       return 0;
     }
   }
-  freeDoubleDoubler(result);
+  doubleaFree(result);
   return 1;
 }
 
@@ -151,12 +151,12 @@ static void mutateSubtreeInterchange(struct UnrootedBinary *ub)
   int retval;
   do {
     struct DoubleA *swappers = randomKernelNodes(ub, 2);
-    i1 = getValueAt(swappers, 0).i;
-    i2 = getValueAt(swappers, 1).i;
+    i1 = doubleaGetValueAt(swappers, 0).i;
+    i2 = doubleaGetValueAt(swappers, 1).i;
     assert(i1 != i2);
     assert(adjaNeighborCount(ub->aa, i1) == 3);
     assert(adjaNeighborCount(ub->aa, i2) == 3);
-    freeDoubleDoubler(swappers);
+    doubleaFree(swappers);
     pathlen = MAXPATHNODES;
     retval = pathFinder(ub->aa, i1, i2, pathbuf, &pathlen);
     assert(retval == CL_OK);
@@ -243,11 +243,11 @@ struct UnrootedBinary *newUnrootedBinary(int howManyLeaves)
 
   leaves = getLabellableNodes(ub);
   assert(leaves);
-  assert(getSize(leaves) == howManyLeaves);
+  assert(doubleaSize(leaves) == howManyLeaves);
   ub->labelperm = newLabelPerm(leaves);
   assert(ub->labelperm);
 
-  freeDoubleDoubler(leaves);
+  doubleaFree(leaves);
 
   verifyTree(ub);
   return ub;
@@ -287,9 +287,9 @@ struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(ub->nodecount);
-  pushValue(border, p);
+  doubleaPush(border, p);
   walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
-  freeDoubleDoubler(border);
+  doubleaFree(border);
   clnodesetFree(done);
   return result;
 }
@@ -302,8 +302,8 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
   int i;
   int lastval = -1;
   int firstnode = -1;
-  for (i = 0;i < getSize(nodes); i += 1) {
-    int curnode = getValueAt(nodes, i).i;
+  for (i = 0;i < doubleaSize(nodes); i += 1) {
+    int curnode = doubleaGetValueAt(nodes, i).i;
     if (isQuartetableNode(ub, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
@@ -311,15 +311,15 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
         p = zeropct;
         p.ip.x = lastval;
         p.ip.y = curnode;
-        pushValue(pairs, p);
+        doubleaPush(pairs, p);
       }
       lastval = curnode;
     }
   }
   p.ip.x = lastval;
   p.ip.y = firstnode;
-  pushValue(pairs, p);
-  freeDoubleDoubler(nodes);
+  doubleaPush(pairs, p);
+  doubleaFree(nodes);
   return pairs;
 }
 
@@ -342,7 +342,7 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
     if (isQuartetableNode(ub, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
-      pushValue(result, p);
+      doubleaPush(result, p);
     }
   }
   return result;
@@ -352,10 +352,10 @@ struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
 {
   struct DoubleA *result = doubleaNew();
   int i;
-  for (i = 0; i < getSizeLP(ub->labelperm); i += 1) {
+  for (i = 0; i < doubleaSizeLP(ub->labelperm); i += 1) {
     union PCTypes p = zeropct;
     p.i = getNodeIDForColumnIndexLP(ub->labelperm, i);
-    pushValue(result, p);
+    doubleaPush(result, p);
   }
   return result;
 }

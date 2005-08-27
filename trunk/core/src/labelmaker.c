@@ -5,7 +5,7 @@
 struct DataBlock dumpTaggedStringStack(struct StringStack *ss, int tagnum)
 {
   struct DataBlock db, dblabels;
-  db = dumpStringStack(ss);
+  db = stringDumpStack(ss);
   dblabels = package_DataBlocks(tagnum,&db,NULL);
   datablockFree(db);
   return dblabels;
@@ -41,9 +41,9 @@ struct StringStack *loadTaggedStringStack(struct DataBlock db, int fmustbe, cons
   }
   results = load_DataBlock_package(db);
   dbss = scanForTag(results, TAGNUM_STRINGSTACK);
-  ss = loadStringStack(dbss, 1);
+  ss = stringLoadStack(dbss, 1);
   datablockFree(dbss);
-  freeDoubleDoubler(results);
+  doubleaFree(results);
   return ss;
 }
 
@@ -65,7 +65,7 @@ struct StringStack *get_labels_from_clb(char *fname)
 
   datablockFree(db);
   datablockFree(dblabels);
-  freeDoubleDoubler(dd);
+  doubleaFree(dd);
 
   return result;
 }
@@ -104,6 +104,6 @@ struct StringStack *get_clcmds_from_clb(char *fname)
 
   datablockFree(db);
   datablockFree(dbem);
-  freeDoubleDoubler(dd);
+  doubleaFree(dd);
   return result;
 }

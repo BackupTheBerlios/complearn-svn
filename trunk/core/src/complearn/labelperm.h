@@ -51,7 +51,7 @@ void mutateLabelPerm(struct LabelPerm *lph);
  * \param lph pointer to the LabelPerm to mutate
  * \return integer number of places in this LabelPerm
  */
-int getSizeLP(struct LabelPerm *lph);
+int doubleaSizeLP(struct LabelPerm *lph);
 
 /** \brief creates a new LabelPerm as a copy of a pre-existing one
  *

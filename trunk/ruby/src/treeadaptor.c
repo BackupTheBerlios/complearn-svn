@@ -49,18 +49,18 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
 
   if (pairs) {
     result = rb_ary_new();
-    for (i = 0; i < getSize(pairs); i += 1) {
+    for (i = 0; i < doubleaSize(pairs); i += 1) {
 
       volatile VALUE gi = rb_ary_new();
 
-      union PCTypes p = getValueAt(pairs, i);
+      union PCTypes p = doubleaGetValueAt(pairs, i);
 
       rb_ary_push(gi, INT2NUM(p.ip.x));
       rb_ary_push(gi, INT2NUM(p.ip.y));
 
       rb_ary_push(result, gi);
     }
-  freeDoubleDoubler(pairs);
+  doubleaFree(pairs);
   pairs = NULL;
   }
   clnodesetFree(clns);

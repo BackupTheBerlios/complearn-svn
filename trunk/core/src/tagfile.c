@@ -60,13 +60,13 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
     union PCTypes p = zeropct;
     p.db = *db;
-    pushValue(parts, p);
+    doubleaPush(parts, p);
   }
   va_end(ap);
 
   result = package_dd_DataBlocks(overalltag,parts);
 
-  freeDoubleDoubler(parts);
+  doubleaFree(parts);
   return result;
 }
 
@@ -79,15 +79,15 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
 
   cur.size = 0;
 
-  for ( i = 0; i < getSize(parts); i += 1) {
-    cur.size += getValueAt(parts,i).db.size;
+  for ( i = 0; i < doubleaSize(parts); i += 1) {
+    cur.size += doubleaGetValueAt(parts,i).db.size;
   }
   cur.ptr = gcalloc(cur.size,1);
   ptr = cur.ptr;
 
-  for ( i = 0; i < getSize(parts); i += 1) {
-    memcpy(ptr, getValueAt(parts,i).db.ptr, getValueAt(parts,i).db.size);
-    ptr += getValueAt(parts,i).db.size;
+  for ( i = 0; i < doubleaSize(parts); i += 1) {
+    memcpy(ptr, doubleaGetValueAt(parts,i).db.ptr, doubleaGetValueAt(parts,i).db.size);
+    ptr += doubleaGetValueAt(parts,i).db.size;
   }
 
   h.tagnum = tnum;
@@ -104,8 +104,8 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
 void free_DataBlock_package ( struct DoubleA *da, void *udata)
 {
   int i;
-  for ( i = 0; i < getSize(da) ; i += 1) {
-    datablockFreePtr(getValueAt(da,i).idbp.db);
+  for ( i = 0; i < doubleaSize(da) ; i += 1) {
+    datablockFreePtr(doubleaGetValueAt(da,i).idbp.db);
   }
 }
 
@@ -121,7 +121,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db)
     union PCTypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
     p.idbp.db = datablockClonePtr(&cur);
-    pushValue(result, p);
+    doubleaPush(result, p);
     stepNextDataBlock(tm);
   }
   freeTagManager(tm);
@@ -134,10 +134,10 @@ struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
   int i;
   struct DataBlock db, dbclone;
   t_tagtype curtnum;
-  for (i = 0; i < getSize(dd); i += 1) {
-    curtnum = getValueAt(dd,i).idbp.tnum;
+  for (i = 0; i < doubleaSize(dd); i += 1) {
+    curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
-      db = *getValueAt(dd,i).idbp.db;
+      db = *doubleaGetValueAt(dd,i).idbp.db;
       dbclone =  datablockClone(db);
       return dbclone;
     }

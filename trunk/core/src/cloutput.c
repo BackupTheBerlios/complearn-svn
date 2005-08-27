@@ -95,7 +95,7 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
       ncd = ncdfunc(dba, dbb, cur);
       outnum = xpremap(ncd, cur);
 //      printf(fmtString, outnum);
-      setDValueAt(da, getSize(da), outnum);
+      doubleaSetDValueAt(da, doubleaSize(da), outnum);
       datablockFreePtr(dbb);
     }
     n2Set = 1;
@@ -110,10 +110,10 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
     int x1, x2, i = 0;
     for (x1 = 0; x1 < n1Counter; x1++)
       for (x2 = 0; x2 < n2Counter; x2++) {
-        gsl_matrix_set(gres, x1, x2, getDValueAt(da, i++)); /**  ^-^ **/
+        gsl_matrix_set(gres, x1, x2, doubleaGetDValueAt(da, i++)); /**  ^-^ **/
       }
   }
-  freeDoubleDoubler(da);
+  doubleaFree(da);
   return gres;
 }
 #endif
@@ -223,7 +223,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   nodes = simpleWalkTree(ta, flips);
   dasize = adjaSize(ad);
   assert(dasize > 0);
-  assert(getSize(nodes) == dasize);
+  assert(doubleaSize(nodes) == dasize);
   dotacc = newStringStack();
   assert(dotacc);
   assert(labelperm);
@@ -292,7 +292,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
 
   int rootnode = -1;
   for (i = 0; i < dasize; i += 1) {
-    int nodenum = getValueAt(nodes, i).i;
+    int nodenum = doubleaGetValueAt(nodes, i).i;
     assert(nodenum >= 0 && nodenum <= 3 * dasize);
     char *str;
     char *extrastr = "";
@@ -310,11 +310,11 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     pushSS(dotacc, lab);
   }
   for (i = 0; i < dasize; i += 1) {
-    int n1 = getValueAt(nodes, i).i;
+    int n1 = doubleaGetValueAt(nodes, i).i;
     assert(n1 >= 0 && n1 <= 3 * dasize);
     sprintf(con1, "%d", n1);
     for (j = 0; j < dasize; j += 1) {
-      int n2 = getValueAt(nodes, j).i;
+      int n2 = doubleaGetValueAt(nodes, j).i;
 //      printf("For %d, got %d on labelperm %p\n", j, n2, labelperm);
       assert(n2 >= 0 && n2 <= 3 * dasize);
       char con2[1024];
@@ -338,18 +338,18 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     int i;
     struct DoubleA *dapairs;
     dapairs = treeperimpairsTRA(ta, flips);
-    for (i = 0; i < getSize(dapairs); i += 1) {
-      int dmx = getColumnIndexForNodeIDLP(labelperm,getValueAt(dapairs,i).ip.x);
-      int dmy = getColumnIndexForNodeIDLP(labelperm,getValueAt(dapairs,i).ip.y);
+    for (i = 0; i < doubleaSize(dapairs); i += 1) {
+      int dmx = getColumnIndexForNodeIDLP(labelperm,doubleaGetValueAt(dapairs,i).ip.x);
+      int dmy = getColumnIndexForNodeIDLP(labelperm,doubleaGetValueAt(dapairs,i).ip.y);
       double disthere = gsl_matrix_get(dm, dmx, dmy);
       sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
       pushSS(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, getValueAt(dapairs, i).ip.x);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.x);
       pushSS(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, getValueAt(dapairs, i).ip.y);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.y);
       pushSS(dotacc, lab);
     }
-    freeDoubleDoubler(dapairs);
+    doubleaFree(dapairs);
   }
   pushSS(dotacc, "}");
   result = gcalloc(sizeof(struct DataBlock), 1);
@@ -363,7 +363,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   freeSS(dotacc);
   if (cur && params)
     freeSS(params);
-  freeDoubleDoubler(nodes);
+  doubleaFree(nodes);
   return result;
 }
 

@@ -46,18 +46,18 @@ struct DataBlock filePtrToDataBlock(FILE *fp)
     d.size += bytesread;
     p.db.ptr = (unsigned char*)gmalloc(p.db.size);
     memcpy(p.db.ptr, dbuf, p.db.size);
-    pushValue(parts,p);
+    doubleaPush(parts,p);
   }
 
   d.ptr = gcalloc(d.size,1);
   ptr = d.ptr;
 
-  for ( i = 0; i < getSize(parts); i += 1) {
-    memcpy(ptr, getValueAt(parts,i).db.ptr, getValueAt(parts,i).db.size);
-    ptr += getValueAt(parts,i).db.size;
+  for ( i = 0; i < doubleaSize(parts); i += 1) {
+    memcpy(ptr, doubleaGetValueAt(parts,i).db.ptr, doubleaGetValueAt(parts,i).db.size);
+    ptr += doubleaGetValueAt(parts,i).db.size;
   }
 
-  freeDoubleDoubler(parts);
+  doubleaFree(parts);
 
   return d;
 }

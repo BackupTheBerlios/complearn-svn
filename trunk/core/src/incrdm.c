@@ -59,7 +59,7 @@ gsl_matrix *getDistMatrixIDM(struct IncrementalDistMatrix *idm)
   return (gsl_matrix *) &idm->result;
 }
 
-int getSizeIDM(struct IncrementalDistMatrix *idm)
+int doubleaSizeIDM(struct IncrementalDistMatrix *idm)
 {
   return idm->dbcount;
 }

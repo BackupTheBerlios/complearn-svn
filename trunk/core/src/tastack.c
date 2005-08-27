@@ -30,7 +30,7 @@ struct TransformAdaptorStack *newTAStack()
 
 int freeTS(struct TransformAdaptorStack *ts)
 {
-	freeDoubleDoubler(ts->da);
+	doubleaFree(ts->da);
 	ts->da = NULL;
 	free(ts);
 	return CL_OK;
@@ -41,7 +41,7 @@ int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta)
   union PCTypes p;
 
   p.ta = ta;
-  pushValue(ts->da, p);
+  doubleaPush(ts->da, p);
   return CL_OK;
 }
 
@@ -50,7 +50,7 @@ struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
-	p = shiftDoubleDoubler(ts->da);
+	p = doubleaShift(ts->da);
   return p.ta;
 }
 
@@ -59,18 +59,18 @@ struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
-	p = popDoubleDoubler(ts->da);
+	p = doubleaPop(ts->da);
   return p.ta;
 }
 
 int isEmptyTS(struct TransformAdaptorStack *ts)
 {
-	return getSize(ts->da) == 0;
+	return doubleaSize(ts->da) == 0;
 }
 
 int sizeTS(struct TransformAdaptorStack *ts)
 {
-	return getSize(ts->da);
+	return doubleaSize(ts->da);
 }
 
 struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc)
