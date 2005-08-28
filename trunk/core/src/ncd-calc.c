@@ -16,10 +16,10 @@ double ncdfunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *c
 {
   double result;
   if (cur->fJustSize) {
-    struct DataBlock c;
-    c = datablockCat(*a, *b);
+    struct DataBlock *c;
+    c = datablockCatPtr(a, b);
     result = compaCompress(cur->ca, c);
-    datablockFree(c);
+    datablockFreePtr(c);
   }
   else {
     result = compaNCD(cur->ca, *a,*b);

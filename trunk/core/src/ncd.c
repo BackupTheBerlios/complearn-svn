@@ -66,7 +66,7 @@ void loadCompressor(struct GeneralConfig *cur)
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock db;
     db = stringToDataBlock("m\n");
-    cur->M = pow(2.0, compaCompress(cur->ca, db));
+    cur->M = pow(2.0, compaCompress(cur->ca, &db));
     cur->multiplier = cur->M;
     datablockFree(db);
   }
@@ -85,7 +85,7 @@ void printCounts(struct DataBlockEnumeration *a)
     }
     else {
 //      ncdcfg->M = 1.0;
-      pg = compaCompress(cur->ca, *dba);
+      pg = compaCompress(cur->ca, dba);
     }
     printf(fmtString, xpremap(pg, cur));
     //double m = calculateM();

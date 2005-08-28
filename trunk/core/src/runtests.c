@@ -48,7 +48,7 @@ struct GeneralConfig *loadNCDEnvironment()
 
 void testDataBlock()
 {
-  struct DataBlock dbstr, dbstr2, dbfile, dbcat;
+  struct DataBlock dbstr, dbstr2, dbfile, *dbcat;
   char *str = "hello, world\n";
 	char *str2 = "welcome to the jungle\n";
 	char *result;
@@ -61,11 +61,11 @@ void testDataBlock()
   dbstr2 = stringToDataBlock(str2);
   assert(dbstr2.ptr != NULL);
   assert(dbstr2.ptr != (unsigned char *) str2);
-  dbcat = datablockCat(dbstr,dbstr2);
-  assert(dbcat.ptr != NULL);
-  assert(dbcat.ptr != dbstr.ptr);
-  assert(dbcat.ptr != dbstr2.ptr);
-  datablockFree(dbcat);
+  dbcat = datablockCatPtr(&dbstr,&dbstr2);
+  assert(dbcat->ptr != NULL);
+  assert(dbcat->ptr != dbstr.ptr);
+  assert(dbcat->ptr != dbstr2.ptr);
+  datablockFreePtr(dbcat);
   datablockFree(dbstr);
   datablockFree(dbstr2);
   dbfile = fileToDataBlock(testfile);
@@ -98,12 +98,12 @@ void testDL2()
   //comp->se(comp,em);
   sn = compaShortName(comp);
   assert(strcmp(sn, "art") == 0);
-  cdbab = compaCompress(comp, dbab);
+  cdbab = compaCompress(comp, &dbab);
   assert(cdbab >= dbab.size*8);
-  cdbaa = compaCompress(comp, dbaa);
+  cdbaa = compaCompress(comp, &dbaa);
   assert(cdbaa <= dbaa.size*8);
-  cdbsa = compaCompress(comp, dbsmallalpha);
-  cdbla = compaCompress(comp, dblargealpha);
+  cdbsa = compaCompress(comp, &dbsmallalpha);
+  cdbla = compaCompress(comp, &dblargealpha);
   assert(cdbsa < cdbla);
   datablockFree(dbab);
   datablockFree(dbaa);
@@ -208,7 +208,7 @@ void testCAPtr(struct CompAdaptor *ca)
   //ca->se(ca,em);
 //  assert(ci != NULL);
   assert(ca->cf != NULL);
-  c = compaCompress(ca,db);
+  c = compaCompress(ca,&db);
   assert(c < strlen(str)*8);
   if (gconf->fVerbose)
     printf("Testing %s to get compressed size %f\n", compaShortName(ca), c);
@@ -250,7 +250,7 @@ void testBlockSortCA()
     db.ptr = (unsigned char*)clMalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
-    v = compaCompress(ca,db);
+    v = compaCompress(ca,&db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
     datablockFree(db);
@@ -262,7 +262,7 @@ void testBlockSortCA()
     db.ptr = (unsigned char*)clMalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
-    v = compaCompress(ca,db);
+    v = compaCompress(ca,&db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
     datablockFree(db);
@@ -274,7 +274,7 @@ void testBlockSortCA()
     for (j = 0; j < db.size ; j +=1 ) {
       db.ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
-    v = compaCompress(ca,db);
+    v = compaCompress(ca,&db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
     datablockFree(db);

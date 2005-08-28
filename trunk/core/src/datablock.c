@@ -108,13 +108,15 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
   clfclose(fp);
 }
 
-struct DataBlock datablockCat (struct DataBlock a, struct DataBlock b)
+struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 {
-	struct DataBlock d;
-	d.size = a.size + b.size;
-	d.ptr = (unsigned char*)clMalloc(d.size);
-  memcpy(d.ptr, a.ptr, a.size);
-  memcpy(d.ptr+a.size, b.ptr, b.size);
+	struct DataBlock *d;
+  int sz = a->size + b->size;
+  d = clCalloc(sz, 1);
+	d->size = sz;
+	d->ptr = (unsigned char*)clMalloc(d->size);
+  memcpy(d->ptr, a->ptr, a->size);
+  memcpy(d->ptr+a->size, b->ptr, b->size);
 	return d;
 }
 

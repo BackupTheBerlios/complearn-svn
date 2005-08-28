@@ -1,8 +1,8 @@
 #include <complearn.h>
 
-double compaCompress(struct CompAdaptor *ca, struct DataBlock src)
+double compaCompress(struct CompAdaptor *ca, struct DataBlock *src)
 {
-  return ca->cf(ca, src);
+  return ca->cf(ca, *src);
 }
 
 void compaFree(struct CompAdaptor *ca)
@@ -26,19 +26,19 @@ int compaAPIVer(struct CompAdaptor *ca)
 double compaNCD(struct CompAdaptor *comp, struct DataBlock a, struct DataBlock b )
 {
 /* temporary hard-coded compressor: bzip */
-	struct DataBlock ab, ba;
+	struct DataBlock *ab, *ba;
 	double ca, cb, cab, cba;
 
-	ab = datablockCat(a,b);
-	ba = datablockCat(b,a);
+	ab = datablockCatPtr(&a,&b);
+	ba = datablockCatPtr(&b,&a);
 
-	ca = compaCompress(comp, a);
-	cb = compaCompress(comp, b);
+	ca = compaCompress(comp, &a);
+	cb = compaCompress(comp, &b);
 	cab = compaCompress(comp, ab);
 	cba = compaCompress(comp, ba);
 
-  datablockFree(ab);
-  datablockFree(ba);
+  datablockFreePtr(ab);
+  datablockFreePtr(ba);
 
 /* temporary hard-coded ncd variation */
 	return mndf(ca,cb,cab,cba);

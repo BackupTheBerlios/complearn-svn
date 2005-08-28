@@ -76,7 +76,7 @@ void datablockWriteToFile(struct DataBlock *db, const char *path);
  * \param b DataBlock to be concatenated
  * \returns new DataBlock
  */
-struct DataBlock datablockCat(struct DataBlock a, struct DataBlock b);
+struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b);
 
 struct DataBlock *datablockClonePtr(struct DataBlock *ptr);
 

@@ -28,7 +28,7 @@ static VALUE rbcompa_compfunc(VALUE self, VALUE str)
   double result;
   Data_Get_Struct(self, struct CompAdaptor, ca);
 
-  result = compaCompress(ca, db);
+  result = compaCompress(ca, &db);
   datablockFree(db);
   return rb_float_new(result);
 }

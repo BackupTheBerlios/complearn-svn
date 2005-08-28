@@ -37,7 +37,7 @@ struct CompAdaptor {
  */
 #define APIVER_V1 1
 
-double compaCompress(struct CompAdaptor *ca, struct DataBlock src);
+double compaCompress(struct CompAdaptor *ca, struct DataBlock *src);
 void compaFree(struct CompAdaptor *ca);
 char *compaShortName(struct CompAdaptor *ca);
 char *compaLongName(struct CompAdaptor *ca);
