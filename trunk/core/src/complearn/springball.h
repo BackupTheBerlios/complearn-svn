@@ -31,7 +31,7 @@ struct SpringBallSystem;
 
 /** \brief Converts an AdjAdaptor into a GSL-style matrix with 1's for connected nodes
  *
- * convertAdjAdaptorToGSLMatrix() takes a pointer to an AdjAdaptor adjacency matrix
+ * adjaToGSLMatrix() takes a pointer to an AdjAdaptor adjacency matrix
  * adaptor and converts it into a standard gsl_matrix.  This is the standard
  * adjacency-matrix representation where each entry at location i, j is
  * 1 if nodes i and j are connected, or 0 otherwise.
@@ -39,9 +39,9 @@ struct SpringBallSystem;
  *  \param aa pointer to AdjAdaptor
  *  \return pointer to new gsl_matrix
  */
-gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa);
+gsl_matrix *adjaToGSLMatrix(struct AdjAdaptor *aa);
 
-/** \brief stepTowardsTree() allows for smooth time-splicing of dynamic springs
+/** \brief clStepTowardsTree() allows for smooth time-splicing of dynamic springs
  *
  * When displaying a 3D version of a tree as a springball diagram, it may
  * happen that a new tree is discovered that is better than the currently
@@ -50,7 +50,7 @@ gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa);
  * into a new best one.  Doing this instantaneously would result in visually
  * uncomfortable jerkiness and is better handled using a smoothing matrix.
  * The smoothing matrix is the standard binary adjacency matrix (as returned
- * instantaneously from convertAdjAdaptorToGSLMatrix() at any point in time) put
+ * instantaneously from adjaToGSLMatrix() at any point in time) put
  * through an exponential smoothing-filter so that when an adjacency changes
  * status it does so with a time-constant that is not instantaneous.  This
  * results in a matrix of smoothed adjacency values that are then directly
@@ -63,12 +63,12 @@ gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa);
  *
  * \param smooth the old "smoothed" k gsl_matrix from which to adjust
  * \param ta a new TreeAdaptor to tend towards
- * \param dt the amount of time since the last stepTowardsTree() call
+ * \param dt the amount of time since the last clStepTowardsTree() call
  *
  * This function does not return any values.  It simply modifies the smooth
  * matrix in place.
  */
-void stepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt);
+void clStepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt);
 
 /** \brief Allocates a new SpringBallSystem big enough for the given tree
  *
@@ -79,7 +79,7 @@ void stepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt);
  * \param ta pointer to a TreeAdaptor to be modelled in the SpringBallSystem
  * \return point to the newly allocated SpringBallSystem
  */
-struct SpringBallSystem *newSBS(struct TreeAdaptor *ta);
+struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta);
 
 /** \brief frees a SpringBallSystem
  *
@@ -87,7 +87,7 @@ struct SpringBallSystem *newSBS(struct TreeAdaptor *ta);
  *
  * \param sbs pointer to the SpringBallSystem to be freed
  */
-void freeSBS(struct SpringBallSystem *sbs);
+void sbsFree(struct SpringBallSystem *sbs);
 
 /** \brief sets or clears the 2 dimensional flattening force
  *
@@ -102,7 +102,7 @@ void freeSBS(struct SpringBallSystem *sbs);
  *
  * There is no return value.
  */
-void set2DForce(struct SpringBallSystem *sbs, int newval);
+void sbsSet2DForce(struct SpringBallSystem *sbs, int newval);
 
 /** \brief returns the 3 dimensional position of a given ball
  *
@@ -115,7 +115,7 @@ void set2DForce(struct SpringBallSystem *sbs, int newval);
  * \param whichBall integer index for which ball is under consideration
  * \return pointer to a gsl_vector of 3 dimensions indicating the ball position
  */
-gsl_vector *getBallPosition(struct SpringBallSystem *sbs, int whichBall);
+gsl_vector *sbsBallPosition(struct SpringBallSystem *sbs, int whichBall);
 
 /** \brief adjusts the speed of the simulation relative to realtime
  *
@@ -129,7 +129,7 @@ gsl_vector *getBallPosition(struct SpringBallSystem *sbs, int whichBall);
  * \param sbs pointer to a SpringBallSystem to adjust
  * \param modelSpeed speedup factor to switch to
  */
-void setModelSpeedSBS(struct SpringBallSystem *sbs, double modelSpeed);
+void sbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed);
 
 /** \brief Adjusts the current "target" tree for this SpringBallSystem
  *
@@ -142,7 +142,7 @@ void setModelSpeedSBS(struct SpringBallSystem *sbs, double modelSpeed);
  * \param sbs pointer to a SpringBallSystem to retarget
  * \param ta new tree to be set as a target to strive towards
  */
-void changeTargetTreeSBS(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
+void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
 
 /** \brief Inspects the smoothed-k matrix for instantaneously smoothed values
  *
@@ -158,7 +158,7 @@ void changeTargetTreeSBS(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
  * \param j second node index to consider
  * \return value between 0 and 1 indicating how connected node i and node j is
  */
-double getSpringSmoothSBS(struct SpringBallSystem *sbs, int i, int j);
+double sbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
 
 /** \brief Steps the system forward some small amount of time
  *
@@ -174,7 +174,7 @@ double getSpringSmoothSBS(struct SpringBallSystem *sbs, int i, int j);
  *
  * \param sbs pointer to a SpringBallSystem to evolve
  */
-void evolveForward(struct SpringBallSystem *sbs);
+void sbsEvolveForward(struct SpringBallSystem *sbs);
 
 /** \brief returns a count of the number of balls in this SpringBallSystem
  *
@@ -184,6 +184,6 @@ void evolveForward(struct SpringBallSystem *sbs);
  * \param sbs pointer to a SpringBallSystem to evolve
  * \return number of balls in this SpringBallSystem
  */
-int getNodeCountSBS(struct SpringBallSystem *sbs);
+int sbsNodeCount(struct SpringBallSystem *sbs);
 
 #endif

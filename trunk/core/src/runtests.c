@@ -943,7 +943,7 @@ void testAdjAdaptor(void)
       adjaSetConState(a2, n2, n1, newval);
     }
   }
-  m = convertAdjAdaptorToGSLMatrix(a1);
+  m = adjaToGSLMatrix(a1);
   adjaFree(a1);
   adjaFree(a2);
   gsl_matrix_free(m);
@@ -1244,12 +1244,12 @@ void testSmoothing()
   struct TreeAdaptor *ta = newTreeTRA(0, 6);
   int i;
   gsl_matrix *m;
-  m = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
+  m = adjaToGSLMatrix(treegetadjaTRA(ta));
 //  printGSLMatrix(m);
 
   for (i = 0; i < 15 ; i += 1) {
     treemutateTRA(ta);
-    stepTowardsTree(m, ta, 1.0);
+    clStepTowardsTree(m, ta, 1.0);
 //    printGSLMatrix(m);
   }
 }

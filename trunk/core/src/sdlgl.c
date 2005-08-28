@@ -240,7 +240,7 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
         if (isDown) {
           fTwoDForce = !fTwoDForce;
           if (sbs)
-            set2DForce(sbs, fTwoDForce);
+            sbsSet2DForce(sbs, fTwoDForce);
         }
         break;
     case SDLK_m:
@@ -539,11 +539,11 @@ static void draw_screen(void)
 
   if (ta && sbs) {
     for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
-      gsl_vector *p = getBallPosition(sbs, i);
+      gsl_vector *p = sbsBallPosition(sbs, i);
       for (j = i+1; j < treeGetNodeCountTRA(ta); j += 1) {
-        if (getSpringSmoothSBS(sbs, i, j) < 0.7)
+        if (sbsGetSpringSmooth(sbs, i, j) < 0.7)
           continue;
-        gsl_vector *p2 = getBallPosition(sbs, j);
+        gsl_vector *p2 = sbsBallPosition(sbs, j);
       draw_spring(gsl_vector_get(p, 0), gsl_vector_get(p, 1), gsl_vector_get(p, 2) , gsl_vector_get(p2, 0), gsl_vector_get(p2, 1), gsl_vector_get(p2, 2) );
       }
     }
@@ -552,7 +552,7 @@ static void draw_screen(void)
 //  glColor3f(1.0,1.0,1.0);
 
     for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
-      gsl_vector *p = getBallPosition(sbs, i);
+      gsl_vector *p = sbsBallPosition(sbs, i);
       if (treeIsQuartettable(ta, i)) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, matball_diff);
         glMaterialfv(GL_FRONT, GL_SPECULAR, matball_spec);
@@ -574,7 +574,7 @@ static void draw_screen(void)
   #if SDL_TTF
     if (fShowLabels) {
       for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
-        gsl_vector *p = getBallPosition(sbs, i);
+        gsl_vector *p = sbsBallPosition(sbs, i);
         if (treeIsQuartettable(ta, i)) {
           int colind = labelpermColIndexForNodeID(treegetlabelpermTRA(ta), i);
           static struct CLTexture texLabels[MAXTEX];
@@ -603,14 +603,14 @@ static void draw_screen(void)
   SDL_GL_SwapBuffers( );
   setupCameraAngle();
   if (sbs)
-    evolveForward(sbs);
+    sbsEvolveForward(sbs);
   if (nextbest) {
-    if (sbs == NULL || treeGetNodeCountTRA(nextbest) != getNodeCountSBS(sbs)) {
-      sbs = newSBS(nextbest);
-      setModelSpeedSBS(sbs, 4.0);
+    if (sbs == NULL || treeGetNodeCountTRA(nextbest) != sbsNodeCount(sbs)) {
+      sbs = sbsNew(nextbest);
+      sbsSetModelSpeed(sbs, 4.0);
     }
     else
-      changeTargetTreeSBS(sbs, nextbest);
+      sbsChangeTargetTree(sbs, nextbest);
     ta = nextbest;
     nextbest = NULL;
   }

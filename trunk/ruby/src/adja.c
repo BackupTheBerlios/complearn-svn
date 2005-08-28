@@ -127,7 +127,7 @@ static VALUE rbadja_tomatrix(VALUE self)
   gsl_matrix *mat;
   VALUE result;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  mat = convertAdjAdaptorToGSLMatrix(adja);
+  mat = adjaToGSLMatrix(adja);
   result = convertgslmatrixToRubyMatrix(mat);
   gsl_matrix_free(mat);
   return result;

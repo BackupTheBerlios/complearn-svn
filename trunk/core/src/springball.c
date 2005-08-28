@@ -90,23 +90,23 @@ struct SBS4 {
   double *statear, *stateback, *statebackj, *foball, *foballbase;
 };
 
-gsl_vector *getBallPosition(struct SpringBallSystem *sbs, int whichBall)
+gsl_vector *sbsBallPosition(struct SpringBallSystem *sbs, int whichBall)
 {
   return (gsl_vector *) &sbs->sbs4->pos[whichBall];
 }
 
 int func(double t, const double uy[], double f[], void *params);
 
-void changeTargetTreeSBS(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
+void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
 {
   if (sbs->sbs4->targetk) {
 //    gsl_matrix_free(sbs->sbs4->targetk);
     sbs->sbs4->targetk = NULL;
   }
-  sbs->sbs4->targetk = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
+  sbs->sbs4->targetk = adjaToGSLMatrix(treegetadjaTRA(ta));
 }
 
-struct SBS3 *newSBS3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
+struct SBS3 *sbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
 {
   struct SBS3 *ts;
   ts = gcalloc(sizeof(*ts), 1);
@@ -146,14 +146,14 @@ void stepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, double
   }
 }
 
-void stepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt) {
+void clStepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt) {
   const double springkspeed = 0.1; /* "newtons" per "meter-second" */
-  gsl_matrix *targetks = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
+  gsl_matrix *targetks = adjaToGSLMatrix(treegetadjaTRA(ta));
   stepTowards(smooth, targetks, dt, springkspeed);
   gsl_matrix_free(targetks);
 }
 
-gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa)
+gsl_matrix *adjaToGSLMatrix(struct AdjAdaptor *aa)
 {
   gsl_matrix *m;
   int size, i, j;
@@ -167,7 +167,7 @@ gsl_matrix *convertAdjAdaptorToGSLMatrix(struct AdjAdaptor *aa)
   return m;
 }
 
-static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
+static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
 {
   int i, j;
   int howBig = treeGetNodeCountTRA(ta);
@@ -177,7 +177,7 @@ static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
   sbs4->d = 3;
   /* initially, there are no springs */
   sbs4->smoothk = gsl_matrix_calloc(howBig, howBig);
-  sbs4->targetk = convertAdjAdaptorToGSLMatrix(treegetadjaTRA(ta));
+  sbs4->targetk = adjaToGSLMatrix(treegetadjaTRA(ta));
 
   /* views for position and velocity by ball */
   sbs4->pos = gcalloc(sizeof(*sbs4->pos), howBig);
@@ -216,7 +216,7 @@ static struct SBS4 *newSBS4(struct TreeAdaptor *ta)
       union PCTypes p = zeropct;
       if (i == j)
         continue;
-      sbs3 = newSBS3(i, j, sbs4->pos[i], sbs4->pos[j], sbs4->vel[i]);
+      sbs3 = sbsNew3(i, j, sbs4->pos[i], sbs4->pos[j], sbs4->vel[i]);
       p.ptr = sbs3;
 
       sbs3->kmat = gsl_matrix_submatrix(sbs4->smoothk, i, j, 1, 1);
@@ -422,7 +422,7 @@ static void calculateForceOnBall1(struct SBS4 *sbs4, struct SBS3 *model, gsl_vec
       gsl_vector_set(result, i, answer[i]);
 }
 
-void freeSBS(struct SpringBallSystem *sbs)
+void sbsFree(struct SpringBallSystem *sbs)
 {
 }
 
@@ -557,12 +557,12 @@ int func(double t, const double uy[], double f[], void *params)
   return GSL_SUCCESS;
 }
 
-struct SpringBallSystem *newSBS(struct TreeAdaptor *ta) {
+struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta) {
   struct SpringBallSystem *sbs;
   int howManyNodes = treeGetNodeCountTRA(ta);
   sbs = gcalloc(sizeof(*sbs), 1);
 
-  sbs->sbs4 = newSBS4(ta);
+  sbs->sbs4 = sbsNew4(ta);
 
   sbs->sys.function = func;
   sbs->sys.jacobian = NULL;
@@ -584,7 +584,7 @@ struct SpringBallSystem *newSBS(struct TreeAdaptor *ta) {
   return sbs;
 }
 
-void setModelSpeedSBS(struct SpringBallSystem *sbs, double modelSpeed)
+void sbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed)
 {
   sbs->modelSpeed = modelSpeed;
   sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
@@ -600,7 +600,7 @@ void printSBS(struct SpringBallSystem *sbs)
 }
 
 
-void evolveForward(struct SpringBallSystem *sbs)
+void sbsEvolveForward(struct SpringBallSystem *sbs)
 {
   double newt = sbs->modelSpeed * cldatetimeStaticTimer();
   if (newt <= sbs->t)
@@ -623,25 +623,25 @@ void doSBS3Test(void)
   struct TreeAdaptor *ta = loadNewUnrootedTRA(4);
   struct SpringBallSystem *sbs;
   int i;
-  sbs = newSBS(ta);
+  sbs = sbsNew(ta);
 //  printf("Got sbs %p\n", sbs);
   for (i = 0; i < 4; i += 1) {
-    evolveForward(sbs);
+    sbsEvolveForward(sbs);
     sleep(1);
   }
 }
 
-double getSpringSmoothSBS(struct SpringBallSystem *sbs, int i, int j)
+double sbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j)
 {
   return gsl_matrix_get(sbs->sbs4->smoothk, i, j);
 }
 
-int getNodeCountSBS(struct SpringBallSystem *sbs)
+int sbsNodeCount(struct SpringBallSystem *sbs)
 {
   return sbs->sbs4->smoothk->size1;
 }
 
-void set2DForce(struct SpringBallSystem *sbs, int newval)
+void sbsSet2DForce(struct SpringBallSystem *sbs, int newval)
 {
   sbs->sbs4->twodforce = newval;
 }
