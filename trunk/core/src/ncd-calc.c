@@ -22,7 +22,7 @@ double ncdfunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *c
     datablockFreePtr(c);
   }
   else {
-    result = compaNCD(cur->ca, *a,*b);
+    result = compaNCD(cur->ca, a, b);
   }
   return result;
 }

@@ -63,7 +63,7 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
   cstr = clStrdup(str);
   fname = strtok(cstr, WINDELIMS);
   assert(fname && "Must specify filename for window");
-  *db = fileToDataBlock(fname);
+  db = fileToDataBlockPtr(fname);
   lastpos = db->size - 1;
   cur = strtok(NULL, WINDELIMS);
   if (cur) {
@@ -91,12 +91,10 @@ struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char
   struct DataBlock *db;
   switch (dbf->mode) {
     case DBF_MODE_QUOTED:
-      db = clCalloc(sizeof(struct DataBlock), 1);
-      *db = stringToDataBlock(clStrdup(str));
+      db = stringToDataBlockPtr(str);
       return dbeLoadSingleton(db);
     case DBF_MODE_FILE:
-      db = clCalloc(sizeof(struct DataBlock), 1);
-      *db = fileToDataBlock(str);
+      db = fileToDataBlockPtr(str);
       return dbeLoadSingleton(db);
     case DBF_MODE_FILELIST:
       return dbeLoadFileList(str);

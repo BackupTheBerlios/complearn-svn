@@ -48,30 +48,30 @@ struct GeneralConfig *loadNCDEnvironment()
 
 void testDataBlock()
 {
-  struct DataBlock dbstr, dbstr2, dbfile, *dbcat;
+  struct DataBlock *dbstr, *dbstr2, *dbfile, *dbcat;
   char *str = "hello, world\n";
 	char *str2 = "welcome to the jungle\n";
 	char *result;
-  dbstr = stringToDataBlock(str);
-  assert(strlen(str) == dbstr.size);
-  assert(dbstr.ptr != NULL);
-  assert(dbstr.ptr != (unsigned char *) str);
+  dbstr = stringToDataBlockPtr(str);
+  assert(strlen(str) == dbstr->size);
+  assert(dbstr->ptr != NULL);
+  assert(dbstr->ptr != (unsigned char *) str);
 	result = datablockToString(dbstr);
 	assert(strcmp(result,str) == 0);
-  dbstr2 = stringToDataBlock(str2);
-  assert(dbstr2.ptr != NULL);
-  assert(dbstr2.ptr != (unsigned char *) str2);
-  dbcat = datablockCatPtr(&dbstr,&dbstr2);
+  dbstr2 = stringToDataBlockPtr(str2);
+  assert(dbstr2->ptr != NULL);
+  assert(dbstr2->ptr != (unsigned char *) str2);
+  dbcat = datablockCatPtr(dbstr,dbstr2);
   assert(dbcat->ptr != NULL);
-  assert(dbcat->ptr != dbstr.ptr);
-  assert(dbcat->ptr != dbstr2.ptr);
+  assert(dbcat->ptr != dbstr->ptr);
+  assert(dbcat->ptr != dbstr2->ptr);
   datablockFreePtr(dbcat);
-  datablockFree(dbstr);
-  datablockFree(dbstr2);
-  dbfile = fileToDataBlock(testfile);
-  assert(dbfile.ptr != NULL);
-  assert(dbfile.ptr != (unsigned char *) str);
-  datablockFree(dbfile);
+  datablockFreePtr(dbstr);
+  datablockFreePtr(dbstr2);
+  dbfile = fileToDataBlockPtr(testfile);
+  assert(dbfile->ptr != NULL);
+  assert(dbfile->ptr != (unsigned char *) str);
+  datablockFreePtr(dbfile);
   clFreeandclear(result);
 }
 
@@ -84,12 +84,12 @@ void testDL2()
   char *straa = "aa";
   char *strsmallalpha = "baaaababba";
   char *strlargealpha = "kdjbabenzo";
-  struct DataBlock dbab, dbaa, dbsmallalpha, dblargealpha;
+  struct DataBlock *dbab, *dbaa, *dbsmallalpha, *dblargealpha;
   double cdbab, cdbaa, cdbsa, cdbla;
-  dbab = stringToDataBlock(strab);
-  dbaa = stringToDataBlock(straa);
-  dbsmallalpha = stringToDataBlock(strsmallalpha);
-  dblargealpha = stringToDataBlock(strlargealpha);
+  dbab = stringToDataBlockPtr(strab);
+  dbaa = stringToDataBlockPtr(straa);
+  dbsmallalpha = stringToDataBlockPtr(strsmallalpha);
+  dblargealpha = stringToDataBlockPtr(strlargealpha);
   em = getEnvMap(gconf);
   assert(em != NULL);
   envmapSetKeyVal(em, "padding", "40");
@@ -98,17 +98,17 @@ void testDL2()
   //comp->se(comp,em);
   sn = compaShortName(comp);
   assert(strcmp(sn, "art") == 0);
-  cdbab = compaCompress(comp, &dbab);
-  assert(cdbab >= dbab.size*8);
-  cdbaa = compaCompress(comp, &dbaa);
-  assert(cdbaa <= dbaa.size*8);
-  cdbsa = compaCompress(comp, &dbsmallalpha);
-  cdbla = compaCompress(comp, &dblargealpha);
+  cdbab = compaCompress(comp, dbab);
+  assert(cdbab >= dbab->size*8);
+  cdbaa = compaCompress(comp, dbaa);
+  assert(cdbaa <= dbaa->size*8);
+  cdbsa = compaCompress(comp, dbsmallalpha);
+  cdbla = compaCompress(comp, dblargealpha);
   assert(cdbsa < cdbla);
-  datablockFree(dbab);
-  datablockFree(dbaa);
-  datablockFree(dbsmallalpha);
-  datablockFree(dblargealpha);
+  datablockFreePtr(dbab);
+  datablockFreePtr(dbaa);
+  datablockFreePtr(dbsmallalpha);
+  datablockFreePtr(dblargealpha);
 }
 
 void testDL()
@@ -202,17 +202,17 @@ void testCAPtr(struct CompAdaptor *ca)
                   /* */
                     ;
 
-  struct DataBlock db = stringToDataBlock(str);
+  struct DataBlock *db = stringToDataBlockPtr(str);
   double c;
   assert(ca != NULL);
   //ca->se(ca,em);
 //  assert(ci != NULL);
   assert(ca->cf != NULL);
-  c = compaCompress(ca,&db);
+  c = compaCompress(ca,db);
   assert(c < strlen(str)*8);
   if (gconf->fVerbose)
     printf("Testing %s to get compressed size %f\n", compaShortName(ca), c);
-  datablockFree(db);
+  datablockFreePtr(db);
   compaFree(ca);
 }
 
@@ -378,23 +378,23 @@ void testSOAPComp()
 void testTransformBZ()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNBZIP();
-	struct DataBlock db;
+	struct DataBlock *db;
 	if (!fopen(testbzfile, "rb")) {
 		printf("Can't find test bz2 file. Skipping transformBZ test...\n");
 		return;
 	}
- 	db = fileToDataBlock(testbzfile);
+ 	db = fileToDataBlockPtr(testbzfile);
 	assert(strcmp(t->sn(),"unbzip") == 0);
-	if (t->pf(db)) {
+	if (t->pf(*db)) {
 	  struct DataBlock result;
-    result = t->tf(db);
+    result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
     datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 struct DataBlock zlibCompressDataBlock(struct DataBlock src)
@@ -424,55 +424,55 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 void testTransformGZ()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNGZ();
-	struct DataBlock db;
+	struct DataBlock *db;
 	if (!fopen(testgzfile, "rb")) {
 		printf("Can't find test gz file. Skipping transformGZ test...\n");
 		return;
 	}
-	db = fileToDataBlock(testgzfile);
+	db = fileToDataBlockPtr(testgzfile);
 	assert(strcmp(t->sn(),"ungz") == 0);
-	if (t->pf(db)) {
+	if (t->pf(*db)) {
 	  struct DataBlock result;
-    result = t->tf(db);
+    result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
     datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 void testTransformZLIB()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNZLIB();
-	struct DataBlock db;
+	struct DataBlock *db;
 	if (!fopen(testzlibfile, "rb")) {
 		printf("Can't find test zlib file. Skipping transformZLIB test...\n");
 		return;
 	}
- 	db = fileToDataBlock(testzlibfile);
+ 	db = fileToDataBlockPtr(testzlibfile);
 	assert(strcmp(t->sn(),"unzlib") == 0);
-	if (t->pf(db)) {
+	if (t->pf(*db)) {
 	  struct DataBlock result;
-    result = t->tf(db);
+    result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
     datablockFree(result);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 void testSingletonDBE()
 {
   char *teststr = "foo";
-  struct DataBlock db, *cur;
+  struct DataBlock *db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = stringToDataBlock(teststr);
-  dbe = dbeLoadSingleton(&db);
+  db = stringToDataBlockPtr(teststr);
+  dbe = dbeLoadSingleton(db);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -484,7 +484,7 @@ void testSingletonDBE()
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 void testWindowedDBE()
@@ -495,12 +495,12 @@ void testWindowedDBE()
   int stepsize = 1;
   int width = 12;
   int lastpos;
-  struct DataBlock db, *cur;
+  struct DataBlock *db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = stringToDataBlock(teststr);
-  lastpos = db.size - 1;
-  dbe = dbeLoadWindowed(&db, firstpos, stepsize, width, lastpos);
+  db = stringToDataBlockPtr(teststr);
+  lastpos = db->size - 1;
+  dbe = dbeLoadWindowed(db, firstpos, stepsize, width, lastpos);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -520,7 +520,7 @@ void testWindowedDBE()
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 void testDirectoryDBE()
@@ -547,16 +547,16 @@ void testDirectoryDBE()
 
 void testArrayDBE()
 {
-  struct DataBlock db[3];
+  struct DataBlock *db[3];
   int size = sizeof(db) / sizeof(db[0]);
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int i;
-  db[0] = stringToDataBlock("a");
-  assert(db[0].size == 1);
-  db[1] = stringToDataBlock("b");
-  db[2] = stringToDataBlock("c");
+  db[0] = stringToDataBlockPtr("a");
+  assert(db[0]->size == 1);
+  db[1] = stringToDataBlockPtr("b");
+  db[2] = stringToDataBlockPtr("c");
   dbe = dbeLoadArray(db, size);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
@@ -578,7 +578,7 @@ void testArrayDBE()
   dbe->ifree(dbi);
   dbe->efree(dbe);
   for (i = 0; i < 3; i += 1)
-    datablockFree(db[i]);
+    datablockFreePtr(db[i]);
 }
 /*
 void testFileListDBE(void)
@@ -663,11 +663,11 @@ void testNCDPair()
 {
 	char *stra = "aaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaa";
 	char *strb = "bbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaa";
-	struct DataBlock dba, dbb;
-	dba = stringToDataBlock(stra);
-	dbb = stringToDataBlock(strb);
-  datablockFree(dba);
-  datablockFree(dbb);
+	struct DataBlock *dba, *dbb;
+	dba = stringToDataBlockPtr(stra);
+	dbb = stringToDataBlockPtr(strb);
+  datablockFreePtr(dba);
+  datablockFreePtr(dbb);
 }
 
 void testDateTime(void)
@@ -776,7 +776,7 @@ void testQuartet(void)
 {
 #define LABELCOUNT 15
 #define TREETRIALCOUNT 5
-  struct DataBlock db[LABELCOUNT];
+  struct DataBlock *db[LABELCOUNT];
   int i, j;
   struct CompAdaptor *bz = compaLoadBuiltin("bzip");
   double score;
@@ -794,7 +794,7 @@ void testQuartet(void)
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = stringToDataBlock(buf2);
+      db[i] = stringToDataBlockPtr(buf2);
     }
     dbe = dbeLoadArray(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
@@ -845,7 +845,7 @@ void testQuartet(void)
     treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      datablockFree(db[i]);
+      datablockFreePtr(db[i]);
   }
   compaFree(bz);
   gconf->ca = NULL;
@@ -1031,7 +1031,7 @@ void testALTagFile(void)
   gsl_matrix *gm, *ngm;
   char *result;
   struct StringStack *ss, *nes, *nlabels;
-  struct DataBlock dbstr, dbss, dbgslm, dbdm, dblabels, dbpkg, dbpkg_read;
+  struct DataBlock dbstr, dbss, dbgslm, dbdm, dblabels, dbpkg, *dbpkg_read;
   struct DoubleA *dd;
   int i;
   t_tagtype curtnum;
@@ -1088,9 +1088,9 @@ void testALTagFile(void)
 
   datablockWriteToFile(&dbpkg,TAGFILENAME);
   datablockFree(dbpkg);
-  dbpkg_read = fileToDataBlock(TAGFILENAME);
+  dbpkg_read = fileToDataBlockPtr(TAGFILENAME);
   unlink(TAGFILENAME);
-  dd = load_DataBlock_package(dbpkg_read);
+  dd = load_DataBlock_package(*dbpkg_read);
   for (i = 0; i < doubleaSize(dd); i += 1) {
     curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
     switch (curtnum) {
@@ -1122,7 +1122,7 @@ void testALTagFile(void)
   doubleaFree(dd);
   stringstackFree(ss);
   gsl_matrix_free(gm);
-  datablockFree(dbpkg_read);
+  datablockFreePtr(dbpkg_read);
 }
 #endif
 
@@ -1167,7 +1167,7 @@ void testPerimPairs()
 
 void testTreeMolder()
 {
-  struct DataBlock db[LABELCOUNT];
+  struct DataBlock *db[LABELCOUNT];
   int i, j;
   struct CompAdaptor *bz = compaLoadBuiltin("bzip");
   double score;
@@ -1185,7 +1185,7 @@ void testTreeMolder()
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = stringToDataBlock(buf2);
+      db[i] = stringToDataBlockPtr(buf2);
     }
     dbe = dbeLoadArray(db, labelcount);
     dm = getNCDMatrix(dbe, dbe, gconf);
@@ -1211,7 +1211,7 @@ void testTreeMolder()
     treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      datablockFree(db[i]);
+      datablockFreePtr(db[i]);
   }
   compaFree(bz);
   gconf->ca = NULL;

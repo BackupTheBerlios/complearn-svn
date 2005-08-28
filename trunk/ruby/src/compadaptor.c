@@ -24,12 +24,12 @@ static VALUE rbcompa_apiver(VALUE self)
 static VALUE rbcompa_compfunc(VALUE self, VALUE str)
 {
   struct CompAdaptor *ca;
-  struct DataBlock db = stringToDataBlock(STR2CSTR(str));
+  struct DataBlock *db = stringToDataBlockPtr(STR2CSTR(str));
   double result;
   Data_Get_Struct(self, struct CompAdaptor, ca);
 
-  result = compaCompress(ca, &db);
-  datablockFree(db);
+  result = compaCompress(ca, db);
+  datablockFreePtr(db);
   return rb_float_new(result);
 }
 
@@ -37,13 +37,13 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
   struct CompAdaptor *ca;
   double result;
-  struct DataBlock dba = stringToDataBlock(STR2CSTR(stra));
-  struct DataBlock dbb = stringToDataBlock(STR2CSTR(strb));
+  struct DataBlock *dba = stringToDataBlockPtr(STR2CSTR(stra));
+  struct DataBlock *dbb = stringToDataBlockPtr(STR2CSTR(strb));
 
   Data_Get_Struct(self, struct CompAdaptor, ca);
   result = compaNCD(ca, dba, dbb);
-  datablockFree(dba);
-  datablockFree(dbb);
+  datablockFreePtr(dba);
+  datablockFreePtr(dbb);
   return rb_float_new(result);
 }
 

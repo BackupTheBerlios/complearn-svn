@@ -60,8 +60,8 @@ static struct DataBlock *dbe_sl_istar(struct DataBlockEnumeration *dbe, struct D
 {
   struct DBEStringListEnumerationIterator *fldbi = (struct DBEStringListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
-    struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
-    *db = stringToDataBlock(fldbi->linebuf);
+    struct DataBlock *db;
+    db = stringToDataBlockPtr(fldbi->linebuf);
     return db;
   } else
     return NULL;

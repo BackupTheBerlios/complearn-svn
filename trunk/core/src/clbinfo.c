@@ -49,7 +49,7 @@ int isRooted = 0;
 int main(int argc, char *argv[])
 {
   int i, matched, maxtrials;
-  struct DataBlock db, dbdm;
+  struct DataBlock *db, dbdm;
   struct DoubleA *dd;
   FILE *fp;
   char *outfile = "treestats.txt";
@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  db = fileToDataBlock(argv[1]);
+  db = fileToDataBlockPtr(argv[1]);
   printf("opening %s\n", argv[1]);
-  dd = load_DataBlock_package(db);
+  dd = load_DataBlock_package(*db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = distmatrixLoad(dbdm, 1);
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
   clfclose(fp);
   gsl_matrix_free(dm);
-  datablockFree(db);
+  datablockFreePtr(db);
   datablockFree(dbdm);
   doubleaFree(dd);
   exit(0);

@@ -234,17 +234,17 @@ int envmapIsPrivateAt(struct EnvMap *em, int where)
 
 struct EnvMap *clbEnvMap(char *fname)
 {
-  struct DataBlock db, dbem;
+  struct DataBlock *db, dbem;
   struct DoubleA *dd;
   struct EnvMap *result = NULL;
 
-  db = fileToDataBlock(fname);
-  dd = load_DataBlock_package(db);
+  db = fileToDataBlockPtr(fname);
+  dd = load_DataBlock_package(*db);
   dbem = scanForTag(dd, TAGNUM_ENVMAP);
   result = envmapLoad(dbem, 1);
   datablockFree(dbem);
 
-  datablockFree(db);
+  datablockFreePtr(db);
   doubleaFree(dd);
   return result;
 }

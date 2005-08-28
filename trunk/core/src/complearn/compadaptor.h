@@ -68,11 +68,11 @@ int compaAPIVer(struct CompAdaptor *ca);
  *  standard compression algorithms you are unlikely to see a number above 1.1
  *  in any case.
  *
- *  \param a DataBlock
- *  \param b DataBlock
+ *  \param a pointer to DataBlock
+ *  \param b pointer to another DataBlock
  *  \returns ncd a double precision floating-point value
  */
-double compaNCD(struct CompAdaptor *comp, struct DataBlock a, struct DataBlock b );
+double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock *b);
 
 #endif
 

@@ -373,12 +373,12 @@ FILE *makeTmpCopyStdin(void)
   int fd;
   FILE *fp;
   if (tmpfile[0] == 0) {
-    struct DataBlock db = filePtrToDataBlock(stdin);
+    struct DataBlock *db = filePtrToDataBlockPtr(stdin);
     strcpy(tmpfile, "/tmp/clstdintmp-XXXXXX");
     fd = mkstemp(tmpfile);
     close(fd);
-    datablockWriteToFile(&db, tmpfile);
-    datablockFree(db);
+    datablockWriteToFile(db, tmpfile);
+    datablockFreePtr(db);
   }
   fp = fopen(tmpfile,"r");
   return fp;

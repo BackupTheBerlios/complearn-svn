@@ -64,11 +64,11 @@ void loadCompressor(struct GeneralConfig *cur)
     if (cur->fVerbose)
       printf("Now have instance %p\n", cur->ca->cptr);
   if (ncdcfg->fUsingGoogle) {
-    struct DataBlock db;
-    db = stringToDataBlock("m\n");
-    cur->M = pow(2.0, compaCompress(cur->ca, &db));
+    struct DataBlock *db;
+    db = stringToDataBlockPtr("m\n");
+    cur->M = pow(2.0, compaCompress(cur->ca, db));
     cur->multiplier = cur->M;
-    datablockFree(db);
+    datablockFreePtr(db);
   }
   updateConfigToEM(cur);
 }

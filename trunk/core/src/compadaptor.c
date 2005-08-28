@@ -23,17 +23,17 @@ int compaAPIVer(struct CompAdaptor *ca)
   return ca->apiv();
 }
 
-double compaNCD(struct CompAdaptor *comp, struct DataBlock a, struct DataBlock b )
+double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock *b )
 {
 /* temporary hard-coded compressor: bzip */
 	struct DataBlock *ab, *ba;
 	double ca, cb, cab, cba;
 
-	ab = datablockCatPtr(&a,&b);
-	ba = datablockCatPtr(&b,&a);
+	ab = datablockCatPtr(a,b);
+	ba = datablockCatPtr(b,a);
 
-	ca = compaCompress(comp, &a);
-	cb = compaCompress(comp, &b);
+	ca = compaCompress(comp, a);
+	cb = compaCompress(comp, b);
 	cab = compaCompress(comp, ab);
 	cba = compaCompress(comp, ba);
 

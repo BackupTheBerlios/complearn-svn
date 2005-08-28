@@ -20,23 +20,23 @@ struct DataBlock {
 
 /** \brief Converts C string to CompLearn DataBlock.
  *
- *  The stringToDataBlock() function takes a char *s string and
+ *  The stringToDataBlockPtr() function takes a char *s string and
  *  copies it to a new memory area without the terminating nul ('\\0'). A new
  *  DataBlock is returned.  \param s character string
- *  \return new DataBlock
+ *  \return pointer to a new DataBlock
  */
-struct DataBlock stringToDataBlock(const char *s);
+struct DataBlock *stringToDataBlockPtr(const char *s);
 
 /** \brief Converts file to a CompLearn DataBlock.
  *
- *  The fileToDataBlock() function reads a file at the specified
+ *  The fileToDataBlockPtr() function reads a file at the specified
  *  path and returns a new DataBlock.
  *  \param path path to a file
- *  \return new DataBlock
+ *  \return pointer to a new DataBlock
  */
-struct DataBlock fileToDataBlock(const char *path);
+struct DataBlock *fileToDataBlockPtr(const char *path);
 
-struct DataBlock filePtrToDataBlock(FILE *fp);
+struct DataBlock *filePtrToDataBlockPtr(FILE *fp);
 
 struct DataBlock datablockClone(struct DataBlock db);
 
@@ -56,9 +56,9 @@ void datablockPrint(struct DataBlock db);
 void datablockPrintPtr(struct DataBlock *db);
 
 /** \brief Takes DataBlock db and returns string, including '\\0'.
- *  \param db DataBlock
+ *  \param db pointer to DataBlock
  */
-char *datablockToString(struct DataBlock db);
+char *datablockToString(struct DataBlock *db);
 
 /** \brief Writes contents of DataBlock ptr to file path.
  *  \param db DataBlock

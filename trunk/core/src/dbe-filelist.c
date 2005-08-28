@@ -62,8 +62,8 @@ static struct DataBlock *dbe_fl_istar(struct DataBlockEnumeration *dbe, struct D
 {
   struct DBEFileListEnumerationIterator *fldbi = (struct DBEFileListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
-    struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
-    *db = fileToDataBlock(fldbi->linebuf);
+    struct DataBlock *db;
+    db = fileToDataBlockPtr(fldbi->linebuf);
     return db;
   } else
     return NULL;

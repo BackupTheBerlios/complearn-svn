@@ -121,16 +121,16 @@ void gslmatrixFree(gsl_matrix *m)
 
 gsl_matrix *clbDistMatrix(char *fname)
 {
-  struct DataBlock db, dbdm;
+  struct DataBlock *db, dbdm;
   struct DoubleA *dd;
   gsl_matrix *result;
 
-  db = fileToDataBlock(fname);
-  dd = load_DataBlock_package(db);
+  db = fileToDataBlockPtr(fname);
+  dd = load_DataBlock_package(*db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   result = distmatrixLoad(dbdm, 1);
 
-  datablockFree(db);
+  datablockFreePtr(db);
   datablockFree(dbdm);
   doubleaFree(dd);
   return result;

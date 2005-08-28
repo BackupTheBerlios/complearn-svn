@@ -54,16 +54,16 @@ struct StringStack *labelsLoad(struct DataBlock db, int fmustbe)
 
 struct StringStack *clbLabels(char *fname)
 {
-  struct DataBlock db, dblabels;
+  struct DataBlock *db, dblabels;
   struct DoubleA *dd;
   struct StringStack *result;
 
-  db = fileToDataBlock(fname);
-  dd = load_DataBlock_package(db);
+  db = fileToDataBlockPtr(fname);
+  dd = load_DataBlock_package(*db);
   dblabels = scanForTag(dd, TAGNUM_DMLABELS);
   result = labelsLoad(dblabels, 1);
 
-  datablockFree(db);
+  datablockFreePtr(db);
   datablockFree(dblabels);
   doubleaFree(dd);
 
@@ -93,16 +93,16 @@ struct StringStack *cltxtLabels(char *fname)
 /* TODO: needs new home; does not belong here */
 struct StringStack *clbCommands(char *fname)
 {
-  struct DataBlock db, dbem;
+  struct DataBlock *db, dbem;
   struct DoubleA *dd;
   struct StringStack *result;
 
-  db = fileToDataBlock(fname);
-  dd = load_DataBlock_package(db);
+  db = fileToDataBlockPtr(fname);
+  dd = load_DataBlock_package(*db);
   dbem = scanForTag(dd, TAGNUM_COMMANDS);
   result = loadTaggedStringStack(dbem, 1, "COMMANDS", TAGNUM_COMMANDS);
 
-  datablockFree(db);
+  datablockFreePtr(db);
   datablockFree(dbem);
   doubleaFree(dd);
   return result;

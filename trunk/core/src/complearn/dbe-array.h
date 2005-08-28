@@ -12,6 +12,6 @@
  *  \param size number of elements in DataBlock array
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *dbeLoadArray(struct DataBlock *db, int size);
+struct DataBlockEnumeration *dbeLoadArray(struct DataBlock **db, int size);
 
 #endif
