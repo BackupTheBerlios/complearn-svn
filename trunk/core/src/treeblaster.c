@@ -29,7 +29,7 @@ static void setBestPtr(struct TreeBlaster *tm)
   }
 }
 
-struct TreeBlaster *newTreeBlaster(gsl_matrix *gsl, struct TreeAdaptor *ta)
+struct TreeBlaster *treebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
 {
   int i, howbig;
   struct TreeBlaster *tm = gcalloc(sizeof(struct TreeBlaster), 1);
@@ -86,7 +86,7 @@ static int checkDone(struct TreeBlaster *tm)
   return 1;
 }
 
-struct CLNodeSet *findTreeOrder(struct TreeBlaster *tm, double *s)
+struct CLNodeSet *treebFindTreeOrder(struct TreeBlaster *tm, double *s)
 {
   int retval;
   if (tm->tob && tm->tob->treeordersearchstarted)
@@ -101,7 +101,7 @@ struct CLNodeSet *findTreeOrder(struct TreeBlaster *tm, double *s)
   return getFlips(tm->best); /* TODO: does this need clone? */
 }
 
-void freeTreeBlaster(struct TreeBlaster *tm)
+void treebFree(struct TreeBlaster *tm)
 {
   int i;
   gsl_matrix_free(tm->dm);
@@ -112,12 +112,12 @@ void freeTreeBlaster(struct TreeBlaster *tm)
   gfreeandclear(tm);
 }
 
-void setTreeOrderObserver(struct TreeBlaster *tm, struct TreeOrderObserver *tob)
+void treebSetTreeOrderObserver(struct TreeBlaster *tm, struct TreeOrderObserver *tob)
 {
   tm->tob = tob;
 }
 
-int getKTB(struct TreeBlaster *tbl)
+int treebK(struct TreeBlaster *tbl)
 {
   assert(tbl);
   return tbl->k;
@@ -130,7 +130,7 @@ int getNodeCountTB(struct TreeBlaster *tbl)
   return getNodeCountTMO(tmo);
 }
 
-int getLabelCountTB(struct TreeBlaster *tbl)
+int treebLabelCount(struct TreeBlaster *tbl)
 {
   assert(tbl);
   return tbl->dm->size1;

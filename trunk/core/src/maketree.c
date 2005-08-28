@@ -209,10 +209,10 @@ int main(int argc, char **argv)
   printf("Examined %d trees total\n", j);
   if (isOrdered) {
     printf("Proceeding with ordering phase...\n");
-    tb = newTreeBlaster(dm, ub);
+    tb = treebNew(dm, ub);
     printf("tb is %p\n", tb);
-    setTreeOrderObserver(tb, &too);
-    clns = findTreeOrder(tb, &score);
+    treebSetTreeOrderObserver(tb, &too);
+    clns = treebFindTreeOrder(tb, &score);
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
     clnodesetPrint(clns);

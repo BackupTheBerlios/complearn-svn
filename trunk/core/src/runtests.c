@@ -822,11 +822,11 @@ void testQuartet(void)
       tryToImprove(th);
     }
 #if 0
-    tb = newTreeBlaster(dm, getCurTree(th));
+    tb = treebNew(dm, getCurTree(th));
     printf("tb is %p\n", tb);
     struct CLNodeSet *clns;
-    setTreeOrderObserver(tb, &too);
-    clns = findTreeOrder(tb, &score);
+    treebSetTreeOrderObserver(tb, &too);
+    clns = treebFindTreeOrder(tb, &score);
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
     clnodesetPrint(clns);
@@ -834,7 +834,7 @@ void testQuartet(void)
 
 //    printf("score is %f\n", getScoreTB(tb));
     freeTreeHolder(th);
-    freeTreeBlaster(tb);
+    treebFree(tb);
 #endif
     th = NULL;
   }

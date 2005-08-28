@@ -45,7 +45,7 @@ struct TreeBlaster;
  * \param ta pointer to a TreeAdaptor
  * \return pointer to a newly allocated TreeBlaster
  */
-struct TreeBlaster *newTreeBlaster(gsl_matrix *gsl, struct TreeAdaptor *ta);
+struct TreeBlaster *treebNew(gsl_matrix *gsl, struct TreeAdaptor *ta);
 
 /** \brief finds a best traversal ordering for the given tree
  *
@@ -62,7 +62,7 @@ struct TreeBlaster *newTreeBlaster(gsl_matrix *gsl, struct TreeAdaptor *ta);
  *
  * \sa treePerimPairsTRA()
  */
-struct CLNodeSet *findTreeOrder(struct TreeBlaster *tbl, double *s);
+struct CLNodeSet *treebFindTreeOrder(struct TreeBlaster *tbl, double *s);
 
 /** \brief deallocates a TreeBlaster
  *
@@ -71,11 +71,11 @@ struct CLNodeSet *findTreeOrder(struct TreeBlaster *tbl, double *s);
  *
  * \param tbl pointer to the TreeBlaster to be freed
  */
-void freeTreeBlaster(struct TreeBlaster *tbl);
+void treebFree(struct TreeBlaster *tbl);
 
 /** \brief provides realtime feedback callbacks for tree order search
  *
- * This structure supports the setTreeOrderObserver() function of TreeBlaster.
+ * This structure supports the treebSetTreeOrderObserver() function of TreeBlaster.
  * There are analogous functions in the TreeObserver for TreeMaster.
  *
  * \sa TreeObserver
@@ -97,7 +97,7 @@ struct TreeOrderObserver {
  * \param tbl pointer to the TreeBlaster to observe
  * \param tob pointer to the TreeOrderObserver to connect to tbl
  */
-void setTreeOrderObserver(struct TreeBlaster *tbl, struct TreeOrderObserver *tob);
+void treebSetTreeOrderObserver(struct TreeBlaster *tbl, struct TreeOrderObserver *tob);
 
 /** \brief returns the number of trees used in orderwise agreement testing
  *
@@ -107,7 +107,7 @@ void setTreeOrderObserver(struct TreeBlaster *tbl, struct TreeOrderObserver *tob
  * \param tbl pointer to the TreeBlaster to inspect
  * \return number of trees that must agree before termination
  */
-int getKTB(struct TreeBlaster *tbl);
+int treebK(struct TreeBlaster *tbl);
 
 /** \brief returns the number of labelled nodes in this TreeBlaster
  *
@@ -117,7 +117,7 @@ int getKTB(struct TreeBlaster *tbl);
  * \param tbl pointer to the TreeBlaster to inspect
  * \return number of labelled nodes in this TreeBlaster
  */
-int getLabelCountTB(struct TreeBlaster *tbl);
+int treebLabelCount(struct TreeBlaster *tbl);
 
 #endif
 
