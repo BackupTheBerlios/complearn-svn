@@ -21,7 +21,7 @@ struct TreeHolder *treehClone(const struct TreeHolder *th)
   assert(th);
   assert(th->best && "th->best is NULL");
   struct TreeHolder *result;
-  result =  gcalloc(sizeof(*th), 1);
+  result =  clCalloc(sizeof(*th), 1);
   result->best = treeaClone(th->best);
   result->dm = gslmatrixClone(th->dm);
   result->bestscore = th->bestscore;
@@ -44,7 +44,7 @@ static double calculateScore(struct TreeHolder *th, struct TreeAdaptor *ta)
 
 struct TreeHolder *treehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra)
 {
-  struct TreeHolder *th = gcalloc(sizeof(*th), 1);
+  struct TreeHolder *th = clCalloc(sizeof(*th), 1);
   struct LabelPerm *lp;
   assert(tra);
   assert(distmat->size1 >= 4);
@@ -136,7 +136,7 @@ void treehFree(struct TreeHolder *th)
   }
   gsl_matrix_free(th->dm);
   th->dm = NULL;
-  gfreeandclear(th);
+  clFreeandclear(th);
 }
 
 

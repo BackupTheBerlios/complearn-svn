@@ -59,9 +59,9 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
 
 struct DataBlock *createCloneWithNLFree(struct DataBlock *db)
 {
-  struct DataBlock *result = gcalloc(sizeof(*result),1);
+  struct DataBlock *result = clCalloc(sizeof(*result),1);
   result->size = db->size + 1;
-  result->ptr = gmalloc(result->size);
+  result->ptr = clMalloc(result->size);
   memcpy(result->ptr, db->ptr, db->size);
   result->ptr[db->size] = '\n';
   datablockFreePtr(db);
@@ -352,11 +352,11 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     doubleaFree(dapairs);
   }
   stringstackPush(dotacc, "}");
-  result = gcalloc(sizeof(struct DataBlock), 1);
+  result = clCalloc(sizeof(struct DataBlock), 1);
   result->size = 0;
   for (i = 0; i < stringstackSize(dotacc); i += 1)
     result->size += strlen(stringstackReadAt(dotacc, i)) + 1; /* for the \n */
-  result->ptr = gcalloc(result->size+1, 1); /* extra byte for temporary \0 */
+  result->ptr = clCalloc(result->size+1, 1); /* extra byte for temporary \0 */
   j = 0;
   for (i = 0; i < stringstackSize(dotacc); i += 1)
     j += sprintf((char *) (result->ptr + j), "%s\n", stringstackReadAt(dotacc, i));

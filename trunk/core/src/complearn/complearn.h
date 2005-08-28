@@ -31,7 +31,7 @@
 #include <complearn/dlextcomp.h>
 #include <complearn/doublea.h>
 #include <complearn/environment.h>
-#include <complearn/galloc.h>
+#include <complearn/clalloc.h>
 #include <complearn/gdbmhelper.h>
 #include <complearn/google.h>
 #include <complearn/googlecache.h>

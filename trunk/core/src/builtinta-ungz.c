@@ -27,7 +27,7 @@ struct TransformAdaptor *builtin_UNGZ(void)
     tptr:  NULL,
   };
   struct TransformAdaptor *ptr;
-  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
+  ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
 	return ptr;
 }
@@ -39,7 +39,7 @@ static char *ungz_shortname(void)
 
 static void ungz_transfree(struct TransformAdaptor *ta)
 {
-  gfreeandclear(ta);
+  clFreeandclear(ta);
 }
 
 static int ungz_predicate(struct DataBlock db)
@@ -66,7 +66,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
        break;
   }
 
-//	tmpfile = (char*)gstrdup("/tmp/clgztmp-XXXXXX");
+//	tmpfile = (char*)clStrdup("/tmp/clgztmp-XXXXXX");
   sprintf(tmpfile, "%s/clgztmp-XXXXXX", pbuf);
   fd = mkstemp(tmpfile);
   close(fd);
@@ -78,7 +78,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	}
 	fclose(fp);
 	gzfp = gzopen(tmpfile,"rb");
-	dbuff = (unsigned char*)gmalloc(MAX_BYTES_READ);
+	dbuff = (unsigned char*)clMalloc(MAX_BYTES_READ);
 	do {
 		err = gzread(gzfp,dbuff,MAX_BYTES_READ);
 		if (err == Z_ERRNO) {
@@ -90,7 +90,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	
 	gzrewind(gzfp);
   free(dbuff);
-  dbuff = gmalloc(p);
+  dbuff = clMalloc(p);
 	err = gzread(gzfp,dbuff,p);
 	if (err == Z_ERRNO) {
 		printf("Error reading gz file\n");
@@ -99,7 +99,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	gzclose(gzfp);
 	unlink(tmpfile);
 	result.size = p;
-	result.ptr = gmalloc(result.size);
+	result.ptr = clMalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
 	// datablockFree(src); /* TODO: document me */

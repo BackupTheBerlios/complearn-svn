@@ -10,7 +10,7 @@
 struct DataBlock stringToDataBlock(const char *s) {
   struct DataBlock d;
   d.size = strlen(s);
-  d.ptr = gmalloc(d.size);
+  d.ptr = clMalloc(d.size);
   memcpy(d.ptr, s, d.size);
 	return d;
 }
@@ -44,12 +44,12 @@ struct DataBlock filePtrToDataBlock(FILE *fp)
     union PCTypes p;
     p.db.size = bytesread;
     d.size += bytesread;
-    p.db.ptr = (unsigned char*)gmalloc(p.db.size);
+    p.db.ptr = (unsigned char*)clMalloc(p.db.size);
     memcpy(p.db.ptr, dbuf, p.db.size);
     doubleaPush(parts,p);
   }
 
-  d.ptr = gcalloc(d.size,1);
+  d.ptr = clCalloc(d.size,1);
   ptr = d.ptr;
 
   for ( i = 0; i < doubleaSize(parts); i += 1) {
@@ -64,13 +64,13 @@ struct DataBlock filePtrToDataBlock(FILE *fp)
 
 void datablockFree(struct DataBlock db)
 {
-  gfreeandclear(db.ptr);
+  clFreeandclear(db.ptr);
 }
 
 void datablockFreePtr(struct DataBlock *db)
 {
-  gfreeandclear(db->ptr);
-  gfreeandclear(db);
+  clFreeandclear(db->ptr);
+  clFreeandclear(db);
 }
 
 void datablockPrintPtr(struct DataBlock *db)
@@ -89,7 +89,7 @@ void datablockPrint(struct DataBlock db)
 char *datablockToString(struct DataBlock db)
 {
   char *s;
-  s = gmalloc(db.size+1);
+  s = clMalloc(db.size+1);
   memcpy(s, db.ptr, db.size);
 	s[db.size] = '\0';
 	return s;
@@ -112,7 +112,7 @@ struct DataBlock datablockCat (struct DataBlock a, struct DataBlock b)
 {
 	struct DataBlock d;
 	d.size = a.size + b.size;
-	d.ptr = (unsigned char*)gmalloc(d.size);
+	d.ptr = (unsigned char*)clMalloc(d.size);
   memcpy(d.ptr, a.ptr, a.size);
   memcpy(d.ptr+a.size, b.ptr, b.size);
 	return d;
@@ -122,7 +122,7 @@ struct DataBlock datablockClone(struct DataBlock db)
 {
   struct DataBlock result;
   result.size = db.size;
-  result.ptr = gmalloc(db.size);
+  result.ptr = clMalloc(db.size);
   memcpy(result.ptr, db.ptr, db.size);
   return result;
 }
@@ -130,7 +130,7 @@ struct DataBlock datablockClone(struct DataBlock db)
 struct DataBlock *datablockClonePtr(struct DataBlock *ptr)
 {
   struct DataBlock *result;
-  result = gcalloc(sizeof(*result), 1);
+  result = clCalloc(sizeof(*result), 1);
   *result = datablockClone(*ptr);
   return result;
 }

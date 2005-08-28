@@ -32,7 +32,7 @@ struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe)
     char *str;
     str = stringLoad(cur, 1);
     stringstackPush(result, str);
-    gfreeandclear(str);
+    clFreeandclear(str);
     stepNextDataBlock(tm);
   }
 
@@ -69,7 +69,7 @@ struct StringStack *stringstackNewSingle(const char *str)
 struct StringStack *stringstackNew()
 {
 	struct StringStack *ss;
-	ss = (struct StringStack*)gcalloc(sizeof(struct StringStack), 1);
+	ss = (struct StringStack*)clCalloc(sizeof(struct StringStack), 1);
   ss->da = doubleaNew();
 	// ss->size = 0;
 	return ss;
@@ -83,7 +83,7 @@ struct StringStack *stringstackClone(struct StringStack *ss)
   nss = stringstackNew();
   for (i = 0; i < sz; ++i) {
     union PCTypes p;
-    p.str = gstrdup(doubleaGetValueAt(ss->da, i).str);
+    p.str = clStrdup(doubleaGetValueAt(ss->da, i).str);
     doubleaSetValueAt(nss->da, i, p);
   }
   return nss;
@@ -93,11 +93,11 @@ int stringstackFree(struct StringStack *ss)
 {
   int i;
   for (i = 0; i < doubleaSize(ss->da); i += 1) {
-    gfree(doubleaGetValueAt(ss->da, i).str);
+    clFree(doubleaGetValueAt(ss->da, i).str);
   }
   doubleaFree(ss->da);
   ss->da = NULL;
-	gfreeandclear(ss);
+	clFreeandclear(ss);
 	return CL_OK;
 }
 
@@ -106,7 +106,7 @@ int stringstackUnshift(struct StringStack *ss, const char *str)
   union PCTypes p;
   assert(ss);
   assert(str);
-  p.str = gstrdup(str);
+  p.str = clStrdup(str);
   doubleaUnshift(ss->da, p);
   return CL_OK;
 }
@@ -116,7 +116,7 @@ int stringstackPush(struct StringStack *ss, const char *str)
   union PCTypes p;
   assert(ss);
   assert(str);
-  p.str = gstrdup(str);
+  p.str = clStrdup(str);
   doubleaPush(ss->da, p);
   return CL_OK;
 }

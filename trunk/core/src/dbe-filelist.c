@@ -32,7 +32,7 @@ static void dbe_fl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
 static struct DataBlockEnumerationIterator *dbe_fl_newenumiter(struct DataBlockEnumeration *ptr)
 {
   struct DBEFileListEnumeration *dbe = (struct DBEFileListEnumeration *) (ptr->eptr);
-  struct DBEFileListEnumerationIterator *dbi = gcalloc(sizeof(*dbi), 1);
+  struct DBEFileListEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
   assert(dbi);
   dbi->fp = clfopen(dbe->filename, "rb");
   dbe_fl_istep(ptr, (struct DataBlockEnumerationIterator *) dbi);
@@ -42,14 +42,14 @@ static struct DataBlockEnumerationIterator *dbe_fl_newenumiter(struct DataBlockE
 static void dbe_fl_iterfree(struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEFileListEnumerationIterator *fldbi = (struct DBEFileListEnumerationIterator *) dbi;
-  gfreeifpresent(fldbi->linebuf);
-  gfreeandclear(dbi);
+  clFreeifpresent(fldbi->linebuf);
+  clFreeandclear(dbi);
 }
 
 static void dbe_fl_enumfree(struct DataBlockEnumeration *dbe)
 {
-  gfreeandclear(dbe->eptr);
-  gfreeandclear(dbe);
+  clFreeandclear(dbe->eptr);
+  clFreeandclear(dbe);
 }
 
 static char *dbe_fl_ilabel(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
@@ -62,7 +62,7 @@ static struct DataBlock *dbe_fl_istar(struct DataBlockEnumeration *dbe, struct D
 {
   struct DBEFileListEnumerationIterator *fldbi = (struct DBEFileListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
-    struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
+    struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
     *db = fileToDataBlock(fldbi->linebuf);
     return db;
   } else
@@ -106,8 +106,8 @@ static void dbe_fl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
       goodstr = convertLinebuf(linebuf);
       if (!goodstr)
         continue;
-      goodstr = gstrdup(goodstr);
-      gfreeifpresent(fldbi->linebuf);
+      goodstr = clStrdup(goodstr);
+      clFreeifpresent(fldbi->linebuf);
       fldbi->linebuf = goodstr;
     } else {
       fldbi->linebuf = NULL;
@@ -130,11 +130,11 @@ struct DataBlockEnumeration *dbeLoadFileList(const char *filename)
   struct DataBlockEnumeration *dbe;
   struct DBEFileListEnumeration *fldbe;
   assert(filename);
-  dbe = gcalloc(sizeof(struct DataBlockEnumeration),1);
+  dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
-  dbe->eptr = gcalloc(sizeof(struct DBEFileListEnumeration), 1);
+  dbe->eptr = clCalloc(sizeof(struct DBEFileListEnumeration), 1);
   fldbe = (struct DBEFileListEnumeration *) dbe->eptr;
-  fldbe->filename = gstrdup(filename);
+  fldbe->filename = clStrdup(filename);
   assert(fldbe->filename);
   return dbe;
 }

@@ -79,7 +79,7 @@ struct DataBlock envmapDump(struct EnvMap *em)
 #define MAXINDECES 10
 struct EnvMap *envmapNew() {
   struct EnvMap *em;
-  em = gcalloc(sizeof(struct EnvMap), 1);
+  em = clCalloc(sizeof(struct EnvMap), 1);
   em->d = doubleaNew();
   em->marked = clnodesetNew(MAXINDECES);
   em->private = clnodesetNew(MAXINDECES);
@@ -104,8 +104,8 @@ void envmapPrint(struct EnvMap *uem)
 static union PCTypes cloneStringPair(struct StringPair sp)
 {
   union PCTypes p;
-  p.sp.key = gstrdup(sp.key);
-  p.sp.val = gstrdup(sp.val);
+  p.sp.key = clStrdup(sp.key);
+  p.sp.val = clStrdup(sp.val);
   return p;
 }
 
@@ -114,7 +114,7 @@ struct EnvMap *envmapClone(struct EnvMap *em)
   struct EnvMap *nem;
   int i;
   int sz = envmapSize(em);
-  nem = gcalloc(sizeof(struct EnvMap), 1);
+  nem = clCalloc(sizeof(struct EnvMap), 1);
   nem->d = doubleaNew();
   for (i = 0; i < sz; ++i)
     doubleaSetValueAt(nem->d, i, cloneStringPair(doubleaGetValueAt(em->d, i).sp));
@@ -136,8 +136,8 @@ int envmapSize(struct EnvMap *em)
 static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
 {
   union PCTypes p;
-  p.sp.key = gstrdup(key);
-  p.sp.val = gstrdup(val);
+  p.sp.key = clStrdup(key);
+  p.sp.val = clStrdup(val);
   doubleaSetValueAt(em->d, where, p);
   return CL_OK;
 }
@@ -154,8 +154,8 @@ int envmapSetKeyVal(struct EnvMap *em, char *key, char *val)
     setKeyValAt(em, i, key, val);
   else {
     union PCTypes p;
-    p.sp.key = gstrdup(key);
-    p.sp.val = gstrdup(val);
+    p.sp.key = clStrdup(key);
+    p.sp.val = clStrdup(val);
     doubleaPush(em->d, p);
   }
   /* to ensure NodeSets are big enough */
@@ -172,8 +172,8 @@ int envmapFree(struct EnvMap *em)
 
   for (i = 0; i < sz; ++i) {
     union PCTypes p = doubleaGetValueAt(em->d, i);
-    gfreeandclear(p.sp.key);
-    gfreeandclear(p.sp.val);
+    clFreeandclear(p.sp.key);
+    clFreeandclear(p.sp.val);
     doubleaSetValueAt(em->d, i, zeroblock);
   }
   doubleaFree(em->d);
@@ -182,7 +182,7 @@ int envmapFree(struct EnvMap *em)
   em->marked = NULL;
   clnodesetFree(em->private);
   em->private = NULL;
-  gfreeandclear(em);
+  clFreeandclear(em);
   return CL_OK;
 }
 

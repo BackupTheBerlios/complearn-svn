@@ -35,7 +35,7 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
 static struct DataBlockEnumerationIterator *dbe_dir_newenumiter(struct DataBlockEnumeration *ptr)
 {
   struct DBEDirEnumeration *dbe = (struct DBEDirEnumeration *) (ptr->eptr);
-  struct DBEDirEnumerationIterator *dbi = gcalloc(sizeof(*dbi), 1);
+  struct DBEDirEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
   assert(dbi);
   dbi->cur = opendir(dbe->name);
   assert(dbi->cur);
@@ -48,38 +48,38 @@ static void dbe_dir_iterfree(struct DataBlockEnumerationIterator *dbi)
   struct DBEDirEnumerationIterator *dirdbi = (struct DBEDirEnumerationIterator *) dbi;
   closedir(dirdbi->cur);
   dirdbi->cur = NULL;
-  gfreeandclear(dbi);
+  clFreeandclear(dbi);
 }
 
 static void dbe_dir_enumfree(struct DataBlockEnumeration *dbe)
 {
   struct DBEDirEnumeration *dirdbe = (struct DBEDirEnumeration *) dbe->eptr;
-  gfreeandclear(dirdbe->name);
-  gfreeandclear(dbe->eptr);
-  gfreeandclear(dbe);
+  clFreeandclear(dirdbe->name);
+  clFreeandclear(dbe->eptr);
+  clFreeandclear(dbe);
 }
 static char *dbe_get_pathname(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEDirEnumeration *dirdbe = (struct DBEDirEnumeration *) dbe->eptr;
   struct DBEDirEnumerationIterator *dirdbi = (struct DBEDirEnumerationIterator *) dbi;
 	if (fname) {
-		gfreeandclear(fname);
+		clFreeandclear(fname);
   }
-	fname = gmalloc(strlen(dirdbe->name)+strlen(dirdbi->curfilename)+2);
+	fname = clMalloc(strlen(dirdbe->name)+strlen(dirdbi->curfilename)+2);
   sprintf(fname, "%s/%s", dirdbe->name, dirdbi->curfilename);
   return fname;
 }
 
 static void freePath(char *fname)
 {
-  gfree(fname);
+  clFree(fname);
 }
 
 static struct DataBlock *dbe_dir_istar(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEDirEnumerationIterator *dirdbi = (struct DBEDirEnumerationIterator *) dbi;
   if (dirdbi->curfilename) {
-    struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
+    struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
     *db = fileToDataBlock(dbe_get_pathname(dbe,dbi));
     return db;
   } else
@@ -113,10 +113,10 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
     }
     if (dirdbi->curfilename)
       freePath(dirdbi->curfilename);
-    dirdbi->curfilename = gstrdup(drt->d_name);
+    dirdbi->curfilename = clStrdup(drt->d_name);
     fname = dbe_get_pathname(dbe,dbi);
     if (clIsDirectory(fname)) {
-      dirdbi->curfilename = gstrdup(".notit");
+      dirdbi->curfilename = clStrdup(".notit");
       continue;
     }
     retval = stat(fname, &st);
@@ -141,11 +141,11 @@ struct DataBlockEnumeration *dbeLoadDirectory(const char *dirname)
   struct DataBlockEnumeration *dbe;
   struct DBEDirEnumeration *dirdbe;
   assert(dirname);
-  dbe = gcalloc(sizeof(struct DataBlockEnumeration),1);
+  dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
-  dbe->eptr = gcalloc(sizeof(struct DBEDirEnumeration), 1);
+  dbe->eptr = clCalloc(sizeof(struct DBEDirEnumeration), 1);
   dirdbe = (struct DBEDirEnumeration *) dbe->eptr;
-  dirdbe->name = gstrdup(dirname);
+  dirdbe->name = clStrdup(dirname);
   return dbe;
 }
 

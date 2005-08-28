@@ -77,8 +77,8 @@ src/environment.c \
 src/complearn/environment.h \
 src/envmap.c \
 src/complearn/envmap.h \
-src/galloc.c \
-src/complearn/galloc.h \
+src/clalloc.c \
+src/complearn/clalloc.h \
 src/gdbmhelper.c \
 src/complearn/gdbmhelper.h \
 src/google.c \

@@ -18,8 +18,8 @@ static struct GeneralConfig *cur;
 
 static void ncd_freeappconfig(struct GeneralConfig *cur) {
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
-  gfreeifpresent(ncdcfg->output_distmat_fname);
-  gfreeandclear(ncdcfg);
+  clFreeifpresent(ncdcfg->output_distmat_fname);
+  clFreeandclear(ncdcfg);
 }
 static void ncd_printapphelp(struct GeneralConfig *cur) {
   char *s;
@@ -104,10 +104,10 @@ struct GeneralConfig *loadNCDEnvironment()
   if (!cur) {
     struct NCDConfig *ncdcfg;
     cur = loadDefaultEnvironment();
-    cur->ptr = gcalloc(sizeof(struct NCDConfig),1);
+    cur->ptr = clCalloc(sizeof(struct NCDConfig),1);
     ncdcfg = (struct NCDConfig *) cur->ptr;
     *ncdcfg = defaultNCDConfig;
-    ncdcfg->output_distmat_fname = gstrdup("distmatrix.clb");
+    ncdcfg->output_distmat_fname = clStrdup("distmatrix.clb");
     cur->freeappcfg = ncd_freeappconfig;
     cur->printapphelp = ncd_printapphelp;
   }
@@ -150,8 +150,8 @@ int main(int argc, char **argv)
 
     switch (next_option) {
       case 'o':
-        gfreeifpresent(ncdcfg->output_distmat_fname);
-        ncdcfg->output_distmat_fname = gstrdup(optarg);
+        clFreeifpresent(ncdcfg->output_distmat_fname);
+        ncdcfg->output_distmat_fname = clStrdup(optarg);
         break;
       case 'f':
         dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
         break;
       case 'g':
         dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
-        cur->compressor_name = gstrdup("google");
+        cur->compressor_name = clStrdup("google");
         break;
       case 'D':
         deleteSavedGC();
@@ -215,7 +215,7 @@ int main(int argc, char **argv)
         goodop = addNL(op);
       }
       else
-        goodop = gstrdup(op);
+        goodop = clStrdup(op);
       ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, goodop);
     }
   }

@@ -10,7 +10,7 @@ struct LabelPerm
 
 struct LabelPerm *labelpermNew(struct DoubleA *labelledNodes)
 {
-  struct LabelPerm *lp = gcalloc(sizeof(*lp), 1);
+  struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
   int i;
   assert(labelledNodes);
   assert(doubleaSize(labelledNodes) > 0);
@@ -35,7 +35,7 @@ void labelpermFree(struct LabelPerm *lph)
   doubleaFree(lph->nodetocol);
   lph->nodetocol = NULL;
   lph->size = 0;
-  gfreeandclear(lph);
+  clFreeandclear(lph);
 }
 
 static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes where)
@@ -71,7 +71,7 @@ void labelpermMutate(struct LabelPerm *lph)
 
 struct LabelPerm *labelpermClone(struct LabelPerm *lph)
 {
-  struct LabelPerm *lp = gcalloc(sizeof(*lp), 1);
+  struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
   assert(lph);
   assert(lph->nodetocol);
   lp->nodetocol = doubleaClone(lph->nodetocol);

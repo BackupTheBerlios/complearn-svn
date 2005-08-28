@@ -23,7 +23,7 @@ void treemolderFree(struct TreeMolder *tm)
   clnodesetFree(tm->flips);
   tm->flips = NULL;
   memset(tm, 0, sizeof(*tm));
-  gfreeandclear(tm);
+  clFreeandclear(tm);
 }
 
 static void calcRangesTM(struct TreeMolder *tm)
@@ -41,7 +41,7 @@ static void calcRangesTM(struct TreeMolder *tm)
 
 struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 {
-  struct TreeMolder *tm = gcalloc(sizeof(*tm), 1);
+  struct TreeMolder *tm = clCalloc(sizeof(*tm), 1);
   struct AdjAdaptor *aa;
   assert(gm->size1 > 0 && gm->size1 == gm->size2);
   aa = treeaAdjAdaptor(ta);

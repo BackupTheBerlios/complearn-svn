@@ -43,15 +43,15 @@ struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *met
   };
   struct CompAdaptor *ca;
   struct SOAPCompInstance *sci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct SOAPCompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct SOAPCompInstance), 1);
   sci = (struct SOAPCompInstance *) ca->cptr;
 
-  sci->url = gstrdup(url);
-  sci->urn = gstrdup(urn);
-  sci->method = gstrdup(method);
+  sci->url = clStrdup(url);
+  sci->urn = clStrdup(urn);
+  sci->method = clStrdup(method);
 
   return ca;
 }
@@ -131,7 +131,7 @@ static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	struct SOAPCompInstance *sci = (struct SOAPCompInstance *) ca->cptr;
 	//int s;
   double compsize;
-  char *str = gcalloc(1,src.size+1);
+  char *str = clCalloc(1,src.size+1);
   str = (char *) src.ptr;
 
   memcpy(str, src.ptr, src.size);
@@ -141,18 +141,18 @@ static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
   invokeMethod(sci, sci->ctx);
   compsize = getValue(sci);
-  gfreeandclear(str);
+  clFreeandclear(str);
 	return (double) compsize;
 }
 
 static void sca_freecompfunc(struct CompAdaptor *ca)
 {
 	struct SOAPCompInstance *ci = (struct SOAPCompInstance *) ca->cptr;
-  gfreeandclear(ci->urn);
-  gfreeandclear(ci->url);
-  gfreeandclear(ci->method);
-  gfreeandclear(ca->cptr);
-	gfreeandclear(ca);
+  clFreeandclear(ci->urn);
+  clFreeandclear(ci->url);
+  clFreeandclear(ci->method);
+  clFreeandclear(ca->cptr);
+	clFreeandclear(ca);
 }
 
 static char *sca_shortname(void)

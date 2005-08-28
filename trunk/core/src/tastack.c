@@ -23,7 +23,7 @@ struct TransformAdaptorStack {
 struct TransformAdaptorStack *newTAStack()
 {
 	struct TransformAdaptorStack *ts;
-	ts = (struct TransformAdaptorStack*)gcalloc(sizeof(struct TransformAdaptorStack), 1);
+	ts = (struct TransformAdaptorStack*)clCalloc(sizeof(struct TransformAdaptorStack), 1);
   ts->da = doubleaNew();
 	return ts;
 }

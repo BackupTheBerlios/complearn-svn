@@ -66,7 +66,7 @@ complearn/dlextcomp.h \
 complearn/doublea.h \
 complearn/environment.h \
 complearn/envmap.h \
-complearn/galloc.h \
+complearn/clalloc.h \
 complearn/gdbmhelper.h \
 complearn/googlecache.h \
 complearn/google.h \
@@ -130,7 +130,7 @@ dlextcomp.c \
 envmap.c \
 environment.c \
 gdbmhelper.c \
-galloc.c \
+clalloc.c \
 google.c \
 googlecache.c \
 incrdm.c \

@@ -65,9 +65,9 @@ struct CompAdaptor *builtin_BZIP(void)
   };
   struct CompAdaptor *ca;
   struct BZ2CompInstance *bzci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct BZ2CompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct BZ2CompInstance), 1);
   bzci = (struct BZ2CompInstance *) ca->cptr;
 
   /* default compressor options */
@@ -106,7 +106,7 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	int p;
 
 	p = src.size*1.02+600;
-	dbuff = (unsigned char*)gmalloc(p);
+	dbuff = (unsigned char*)clMalloc(p);
 	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) src.ptr,src.size,
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
 	if (s == BZ_OUTBUFF_FULL) {
@@ -126,8 +126,8 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void bz2a_freecompfunc(struct CompAdaptor *ca)
 {
-  gfreeandclear(ca->cptr);
-	gfreeandclear(ca);
+  clFreeandclear(ca->cptr);
+	clFreeandclear(ca);
 }
 
 static char *bz2a_shortname(void)

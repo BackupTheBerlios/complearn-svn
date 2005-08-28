@@ -35,7 +35,7 @@ static void dbe_sl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
 static struct DataBlockEnumerationIterator *dbe_sl_newenumiter(struct DataBlockEnumeration *ptr)
 {
   struct DBEStringListEnumeration *dbe = (struct DBEStringListEnumeration *) (ptr->eptr);
-  struct DBEStringListEnumerationIterator *dbi = gcalloc(sizeof(*dbi), 1);
+  struct DBEStringListEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
   assert(dbi);
   dbi->fp = clfopen(dbe->filename, "rb");
   assert(dbi->fp);
@@ -46,21 +46,21 @@ static struct DataBlockEnumerationIterator *dbe_sl_newenumiter(struct DataBlockE
 static void dbe_sl_iterfree(struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEStringListEnumerationIterator *fldbi = (struct DBEStringListEnumerationIterator *) dbi;
-  gfreeifpresent(fldbi->linebuf);
-  gfreeandclear(dbi);
+  clFreeifpresent(fldbi->linebuf);
+  clFreeandclear(dbi);
 }
 
 static void dbe_sl_enumfree(struct DataBlockEnumeration *dbe)
 {
-  gfreeandclear(dbe->eptr);
-  gfreeandclear(dbe);
+  clFreeandclear(dbe->eptr);
+  clFreeandclear(dbe);
 }
 
 static struct DataBlock *dbe_sl_istar(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEStringListEnumerationIterator *fldbi = (struct DBEStringListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
-    struct DataBlock *db = gcalloc(sizeof(struct DataBlock), 1);
+    struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
     *db = stringToDataBlock(fldbi->linebuf);
     return db;
   } else
@@ -113,8 +113,8 @@ static void dbe_sl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
       goodstr = convertLinebuf(linebuf);
       if (!goodstr)
         continue;
-      goodstr = gstrdup(goodstr);
-      gfreeifpresent(fldbi->linebuf);
+      goodstr = clStrdup(goodstr);
+      clFreeifpresent(fldbi->linebuf);
       fldbi->linebuf = goodstr;
       strncpy(fldbi->curlabel, fldbi->linebuf, MAXLABELSIZE-1);
       fldbi->curlabel[MAXLABELSIZE] = 0;
@@ -139,11 +139,11 @@ struct DataBlockEnumeration *dbeLoadStringList(const char *filename)
   struct DataBlockEnumeration *dbe;
   struct DBEStringListEnumeration *fldbe;
   assert(filename);
-  dbe = gcalloc(sizeof(struct DataBlockEnumeration),1);
+  dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
-  dbe->eptr = gcalloc(sizeof(struct DBEStringListEnumeration), 1);
+  dbe->eptr = clCalloc(sizeof(struct DBEStringListEnumeration), 1);
   fldbe = (struct DBEStringListEnumeration *) dbe->eptr;
-  fldbe->filename = gstrdup(filename);
+  fldbe->filename = clStrdup(filename);
   assert(fldbe->filename);
   return dbe;
 }

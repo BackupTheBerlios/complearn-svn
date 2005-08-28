@@ -40,7 +40,7 @@ struct CLDateTime {
  */
 struct CLDateTime *cldatetimeNow(void)
 {
-  struct CLDateTime *cldt = gcalloc(sizeof(struct CLDateTime), 1);
+  struct CLDateTime *cldt = clCalloc(sizeof(struct CLDateTime), 1);
 #if HAVE_GETTIMEOFDAY
   gettimeofday(&cldt->tv, &cldt->tz);
 #endif
@@ -55,7 +55,7 @@ struct CLDateTime *cldatetimeNow(void)
  */
 void cldatetimeFree(struct CLDateTime *cldt)
 {
-  gfreeandclear(cldt);
+  clFreeandclear(cldt);
 }
 
 /** \brief Converts a CLDateTime to a human-readable string
@@ -161,7 +161,7 @@ char *cldatetimeToDayString(struct CLDateTime *c)
  */
 struct CLDateTime *cldatetimeAddDays(const struct CLDateTime *basis, int offset)
 {
-  struct CLDateTime *newcldt = gcalloc(sizeof(struct CLDateTime), 1);
+  struct CLDateTime *newcldt = clCalloc(sizeof(struct CLDateTime), 1);
   *newcldt = *basis;
   newcldt->tv.tv_sec += offset * 3600 * 24;
   return newcldt;

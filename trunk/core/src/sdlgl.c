@@ -900,7 +900,7 @@ static void realDoDroppedFile(char *buf)
   if (buf[0] == 0)
     return;
   if (curFiles == NULL) {
-    curFiles = gcalloc(sizeof(struct DataBlockKeeper), 1);
+    curFiles = clCalloc(sizeof(struct DataBlockKeeper), 1);
   }
   if (clIsDirectory(buf)) {
     struct DataBlockEnumeration *dbe = dbeLoadDirectory(buf);
@@ -920,7 +920,7 @@ static void realDoDroppedFile(char *buf)
     lastpart = findLastPart(buf);
     stringstackPush(labels, lastpart);
   }
-  //gfree(buf);
+  //clFree(buf);
 }
 
 int main( int argc, char* argv[] )

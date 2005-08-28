@@ -28,7 +28,7 @@ int howManyMutationsWeirdLogFormula(void)
   if (d == NULL) {
     int i;
     double curp;
-    double *p = gcalloc(sizeof(*d), MAXMUT);
+    double *p = clCalloc(sizeof(*d), MAXMUT);
     double k;
     for (i = 0; i < MAXMUT; i += 1) {
       k = i + 2;
@@ -37,7 +37,7 @@ int howManyMutationsWeirdLogFormula(void)
     }
     d = gsl_ran_discrete_preproc(MAXMUT, p);
     r = gsl_rng_alloc(gsl_rng_taus);
-    gfreeifpresent(p);
+    clFreeifpresent(p);
   }
   return gsl_ran_discrete(r, d) + 2;
 #else

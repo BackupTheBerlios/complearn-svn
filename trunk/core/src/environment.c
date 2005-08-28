@@ -24,7 +24,7 @@ void freeDefaultEnvironment(struct GeneralConfig *g)
   assert(g == curEnv);
   if (curEnv->ptr && curEnv->freeappcfg)
     curEnv->freeappcfg(curEnv);
-  gfreeifpresent(curEnv->compressor_name);
+  clFreeifpresent(curEnv->compressor_name);
   if (curEnv->em) {
     envmapFree(curEnv->em);
     curEnv->em = NULL;
@@ -33,7 +33,7 @@ void freeDefaultEnvironment(struct GeneralConfig *g)
     compaFree(curEnv->ca);
     curEnv->ca = NULL;
   }
-  gfreeandclear(curEnv);
+  clFreeandclear(curEnv);
 }
 
 void updateEMToConfig(struct GeneralConfig *env)
@@ -93,11 +93,11 @@ struct GeneralConfig *loadDefaultEnvironment()
   };
 
   if (!curEnv) {
-    curEnv = gmalloc(sizeof(*curEnv));
+    curEnv = clMalloc(sizeof(*curEnv));
     *curEnv = defaultConfig;
     curEnv->em = envmapNew();
     curEnv->cmdKeeper = stringstackNew();
-    curEnv->compressor_name = gstrdup("blocksort");
+    curEnv->compressor_name = clStrdup("blocksort");
     readDefaultConfig(curEnv->em);
     updateEMToConfig(curEnv);
   }
@@ -132,7 +132,7 @@ void printOptionHelp(void)
 char *addNL(const char *inp)
 {
   char *out;
-  out = gcalloc(strlen(inp) + 2, 1);
+  out = clCalloc(strlen(inp) + 2, 1);
   strcpy(out, inp);
   strcat(out, "\n");
   return out;
@@ -176,7 +176,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
   assert(argv);
   assert(argc > 0);
   for (i = 0; i < argc; i += 1)
-    oldargv[i] = gstrdup(argv[i]);
+    oldargv[i] = clStrdup(argv[i]);
   oldargv[i] = NULL;
   if (!fCmdSaved) {
     saveCmd(cfg, oldargc, oldargv);
@@ -252,7 +252,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
         cleanupBeforeExit();
         exit(0);
       case 'T':
-        curEnv->output_tree_fname = gstrdup(optarg);
+        curEnv->output_tree_fname = clStrdup(optarg);
         break;
       case 'B':
         curEnv->fBinary = 1;
@@ -268,14 +268,14 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
         curEnv->fAscii = 1;
         break;
       case 'C':
-        gfreeifpresent(curEnv->compressor_name);
-        curEnv->compressor_name = gstrdup(optarg);
+        clFreeifpresent(curEnv->compressor_name);
+        curEnv->compressor_name = clStrdup(optarg);
         break;
       case 's':
         curEnv->fAscii = 0;
         break;
       case 'c':
-        curEnv->config_filename = gstrdup(optarg);
+        curEnv->config_filename = clStrdup(optarg);
         readSpecificFile(curEnv->em, curEnv->config_filename);
         updateEMToConfig(curEnv);
         break;

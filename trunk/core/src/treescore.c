@@ -14,7 +14,7 @@ struct TreeScore {
 
 struct TreeScore *initTreeScore(struct TreeAdaptor *ta)
 {
-  struct TreeScore *ts = gcalloc(sizeof(struct TreeScore), 1);
+  struct TreeScore *ts = clCalloc(sizeof(struct TreeScore), 1);
   ts->ta = ta;
   return ts;
 }
@@ -82,6 +82,6 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
 
 void freeTreeScore(struct TreeScore *ts)
 {
-  gfreeandclear(ts);
+  clFreeandclear(ts);
 }
 

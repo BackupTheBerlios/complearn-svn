@@ -27,7 +27,7 @@ static struct DataBlockEnumerationIterator *dbe_wi_newenumiter(struct DataBlockE
 {
   struct DBEWindowedEnumeration *widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
   struct DBEWindowedEnumerationIterator *widbi;
-  widbi = gcalloc(sizeof(struct DBEWindowedEnumerationIterator), 1);
+  widbi = clCalloc(sizeof(struct DBEWindowedEnumerationIterator), 1);
   widbi->curpos = widbe->firstpos;
   return (struct DataBlockEnumerationIterator *) widbi;
 }
@@ -37,7 +37,7 @@ static void dbe_wi_iterfree(struct DataBlockEnumerationIterator *dbi)
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   widbi->w.ptr = NULL;
   widbi->w.size = 0;
-  gfreeandclear(dbi);
+  clFreeandclear(dbi);
 }
 
 static void dbe_wi_enumfree(struct DataBlockEnumeration *dbe)
@@ -46,8 +46,8 @@ static void dbe_wi_enumfree(struct DataBlockEnumeration *dbe)
   datablockFree(widbe->db);
   widbe->db.ptr = NULL;
   widbe->db.size = 0;
-  gfreeandclear(dbe->eptr);
-  gfreeandclear(dbe);
+  clFreeandclear(dbe->eptr);
+  clFreeandclear(dbe);
 }
 static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
 {
@@ -55,7 +55,7 @@ static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   if (widbi->curpos >= 0 && widbi->curpos + widbe->width - 1 <= widbe->lastpos)
   {
-   struct DataBlock *db = gcalloc(sizeof(*db),1);
+   struct DataBlock *db = clCalloc(sizeof(*db),1);
    widbi->w.ptr = widbe->db.ptr + widbi->curpos;
    widbi->w.size = widbe->width;
    *db = datablockClone(widbi->w);
@@ -101,9 +101,9 @@ struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
   assert(width > 0);
   assert(firstpos >= 0);
   assert(lastpos >= firstpos);
-  dbe = gcalloc(sizeof(struct DataBlockEnumeration),1);
+  dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
-  dbe->eptr = gcalloc(sizeof(struct DBEWindowedEnumeration), 1);
+  dbe->eptr = clCalloc(sizeof(struct DBEWindowedEnumeration), 1);
   widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
   widbe->db = datablockClone(*db);
   widbe->firstpos = firstpos;

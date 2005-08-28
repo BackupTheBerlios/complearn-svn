@@ -12,9 +12,9 @@ struct AdjMatrix {
 
 struct AdjMatrix *adjmatrixNew(int howbig)
 {
-  struct AdjMatrix *adj = gcalloc(sizeof(struct AdjMatrix), 1);
+  struct AdjMatrix *adj = clCalloc(sizeof(struct AdjMatrix), 1);
   adj->size = howbig;
-  adj->adj = gcalloc(sizeof(adj->adj[0]), howbig*howbig);
+  adj->adj = clCalloc(sizeof(adj->adj[0]), howbig*howbig);
   return adj;
 }
 
@@ -32,9 +32,9 @@ void adjmatrixPrint(const struct AdjMatrix *which)
 
 struct AdjMatrix *adjmatrixClone(const struct AdjMatrix *inp)
 {
-  struct AdjMatrix *adj = gcalloc(sizeof(struct AdjMatrix), 1);
+  struct AdjMatrix *adj = clCalloc(sizeof(struct AdjMatrix), 1);
   adj->size = inp->size;
-  adj->adj = gcalloc(sizeof(adj->adj[0]), inp->size*inp->size);
+  adj->adj = clCalloc(sizeof(adj->adj[0]), inp->size*inp->size);
   memcpy(adj->adj, inp->adj, sizeof(adj->adj[0]) * inp->size * inp->size);
   return adj;
 }
@@ -42,8 +42,8 @@ struct AdjMatrix *adjmatrixClone(const struct AdjMatrix *inp)
 
 void adjmatrixFree(struct AdjMatrix *adj)
 {
-  gfreeandclear(adj->adj);
-  gfreeandclear(adj);
+  clFreeandclear(adj->adj);
+  clFreeandclear(adj);
 }
 
 int adjmatrixSize(const struct AdjMatrix *adj)
@@ -127,7 +127,7 @@ static void ajam_print(struct AdjAdaptor *aa)
 
 static struct AdjAdaptor *ajam_clone(struct AdjAdaptor *aa)
 {
-  struct AdjAdaptor *ab = (struct AdjAdaptor *) gcalloc(sizeof(*aa), 1);
+  struct AdjAdaptor *ab = (struct AdjAdaptor *) clCalloc(sizeof(*aa), 1);
   *ab = *aa;
   ab->ptr = adjmatrixClone(aa->ptr);
   return ab;
@@ -164,7 +164,7 @@ static int ajam_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize
 struct AdjAdaptor *adjaLoadAdjMatrix(int howBig)
 {
   struct AdjAdaptor *aj;
-  aj = gcalloc(sizeof(struct AdjAdaptor), 1);
+  aj = clCalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = adjmatrixNew(howBig);
   aj->adjafree = ajam_free;
   aj->adjasize = ajam_size;

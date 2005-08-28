@@ -16,7 +16,7 @@ static char *readHomeVar(void)
 struct StringStack *getDefaultFileList(void)
 {
   struct StringStack *ss;
-  char *homedir = gcalloc(1, 2048);
+  char *homedir = clCalloc(1, 2048);
   char *homeenv;
   ss = stringstackNew();
   stringstackPush(ss, SYSTEMDATAFILE);
@@ -50,7 +50,7 @@ int readDefaultConfig(struct EnvMap *dest)
     char *str = shiftSS(d);
     if (doesFileExist(str))
       readSpecificFile(dest, str);
-    gfreeandclear(str);
+    clFreeandclear(str);
   }
   stringstackFree(d);
   return CL_OK;
@@ -87,7 +87,7 @@ void handleLine(struct EnvMap *dest, const char *uline)
 {
   char *key = NULL, *val = NULL;
   char *kbuf, *vbuf;
-  char *line = gstrdup(uline);
+  char *line = clStrdup(uline);
   key = strtok(line, DELIMS);
   if (key == NULL)
     return;
@@ -101,7 +101,7 @@ void handleLine(struct EnvMap *dest, const char *uline)
       envmapSetKeyVal(dest, kbuf, vbuf);
     }
   }
-  gfreeandclear(line);
+  clFreeandclear(line);
 }
 
 /* Returns CL_OK or CL_ERRBADFILE if it cannot read the given file. */

@@ -35,7 +35,7 @@ struct GCSample {
 struct GoogleCache *newGC(void)
 {
   struct GoogleCache *gc;
-  gc = gcalloc(sizeof(struct GoogleCache), 1);
+  gc = clCalloc(sizeof(struct GoogleCache), 1);
   gc->samp = cldbopen("gsamp");
   return gc;
 }
@@ -49,7 +49,7 @@ void freeGC(struct GoogleCache *gc)
 {
   cldbclose(gc->samp);
   gc->samp = NULL;
-  gfreeandclear(gc);
+  clFreeandclear(gc);
 }
 
 static const char *makeCacheKey(const char *daystr, struct StringStack *terms)
@@ -92,15 +92,15 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
   struct CLDateTime *dt;
   if (udaystr == NULL) {
     dt = cldatetimeNow();
-    daystr = gstrdup(cldatetimeToDayString(dt));
+    daystr = clStrdup(cldatetimeToDayString(dt));
     cldatetimeFree(dt);
   }
   else
-    daystr = gstrdup(udaystr);
+    daystr = clStrdup(udaystr);
   if (gc == NULL)
     gc = newGC();
   fetchsample(gc, daystr, terms, &result, gkey);
-  gfreeandclear(daystr);
+  clFreeandclear(daystr);
   return result;
 }
 /** \brief Fetches a sample from the local count database with the help of the

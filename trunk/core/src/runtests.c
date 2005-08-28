@@ -39,7 +39,7 @@ struct GeneralConfig *loadNCDEnvironment()
   if (!gconf) {
     struct NCDConfig *ncdcfg;
     gconf = loadDefaultEnvironment();
-    gconf->ptr = gcalloc(sizeof(struct NCDConfig),1);
+    gconf->ptr = clCalloc(sizeof(struct NCDConfig),1);
     ncdcfg = (struct NCDConfig *) gconf->ptr;
     *ncdcfg = defaultNCDConfig;
   }
@@ -72,7 +72,7 @@ void testDataBlock()
   assert(dbfile.ptr != NULL);
   assert(dbfile.ptr != (unsigned char *) str);
   datablockFree(dbfile);
-  gfreeandclear(result);
+  clFreeandclear(result);
 }
 
 void testDL2()
@@ -167,26 +167,26 @@ void testSS()
   datablockWriteToFile(&db, "baddb.dat");
   s = shiftSS(ss);
   assert(strcmp(s,"ape") == 0);
-  gfreeandclear(s);
+  clFreeandclear(s);
   s = stringstackPop(ss);
   assert(strcmp(s,"dog") == 0);
-  gfreeandclear(s);
+  clFreeandclear(s);
   assert(stringstackSize(ss) == 2);
   s = shiftSS(ss);
-  gfreeandclear(s);
+  clFreeandclear(s);
   assert(!stringstackIsEmpty(ss));
   s = shiftSS(ss);
-  gfreeandclear(s);
+  clFreeandclear(s);
   assert(stringstackIsEmpty(ss));
   stringstackFree(ss);
   nss = stringstackLoad(db, 1);
   assert(stringstackSize(nss) == 4);
   s = shiftSS(nss);
   assert(strcmp(s, "ape") == 0);
-  gfreeandclear(s);
+  clFreeandclear(s);
   s = stringstackPop(nss);
   assert(strcmp(s, "dog") == 0);
-  gfreeandclear(s);
+  clFreeandclear(s);
   stringstackFree(nss);
   datablockFree(db);
 }
@@ -247,7 +247,7 @@ void testBlockSortCA()
   /* Blocks only 0 or 1 byte in size */
   for (i = 0; i < REPS; i +=1) {
     db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
-    db.ptr = (unsigned char*)gmalloc(db.size);
+    db.ptr = (unsigned char*)clMalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
     v = compaCompress(ca,db);
@@ -259,7 +259,7 @@ void testBlockSortCA()
   /* Blocks with the same character repeated */
   for (i = 0; i < REPS; i +=1) {
     db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
-    db.ptr = (unsigned char*)gmalloc(db.size);
+    db.ptr = (unsigned char*)clMalloc(db.size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(db.ptr, c, db.size);
     v = compaCompress(ca,db);
@@ -270,7 +270,7 @@ void testBlockSortCA()
 
   /* Blocks with randomly generated characters */
   for (i = 0; i < REPS; i +=1) {
-    db.ptr = (unsigned char*)gmalloc(db.size);
+    db.ptr = (unsigned char*)clMalloc(db.size);
     for (j = 0; j < db.size ; j +=1 ) {
       db.ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
@@ -404,7 +404,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 	int p, s;
 
 	p = src.size*1.001 + 12;
-	dbuff = (unsigned char*)gmalloc(p);
+	dbuff = (unsigned char*)clMalloc(p);
 	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,0);
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enough!\n");
@@ -415,7 +415,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 		exit(1);
 	}
 	result.size = p;
-	result.ptr = (unsigned char *) gmalloc(result.size);
+	result.ptr = (unsigned char *) clMalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
 	return result;
@@ -697,7 +697,7 @@ void testMarshalling(void)
   assert(strcmp(res, strtest) == 0);
   assert(res != strtest);
   datablockFree(m);
-  gfreeandclear(res);
+  clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
@@ -1058,7 +1058,7 @@ void testALTagFile(void)
   assert(strcmp(stringstackReadAt(nlabels,2), stringstackReadAt(ss,2)) == 0);
 
   stringstackFree(nes);
-  gfreeandclear(result);
+  clFreeandclear(result);
 
 #define TAGFILENAME "tagtest.clb"
   gm = gsl_matrix_alloc(2,1);
@@ -1097,7 +1097,7 @@ void testALTagFile(void)
       case TAGNUM_STRING:
         result = stringLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
         assert(strcmp(s,result) == 0);
-        gfreeandclear(result);
+        clFreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
         ngm = gslmatrixLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
@@ -1259,7 +1259,7 @@ char *findDir(const char *dir)
   const char *locations[] = { ".", "..", "../.."};
   int i;
   struct stat sbuf;
-  char *pbuf = gmalloc(1024);
+  char *pbuf = clMalloc(1024);
 
   for(i = 0; locations[i]; i += 1) {
     sprintf(pbuf,"%s/%s",locations[i],dir);
@@ -1274,17 +1274,17 @@ int main(int argc, char **argv)
 {
   char *testpath;
   char *srcpath;
-  testfile = gmalloc(1024);
+  testfile = clMalloc(1024);
   if (argc > 1)
     testpath = argv[1];
   else
     testpath = findDir("test");
   srcpath = findDir("src");
   sprintf(testfile, "%s/runtests.c", srcpath);
-  testbzfile = (char *)gmalloc(strlen(testpath)+20);
-  testgzfile = (char *)gmalloc(strlen(testpath)+20);
-  testzlibfile = (char *)gmalloc(strlen(testpath)+20);
-  testpg4dir = (char *)gmalloc(strlen(testpath)+20);
+  testbzfile = (char *)clMalloc(strlen(testpath)+20);
+  testgzfile = (char *)clMalloc(strlen(testpath)+20);
+  testzlibfile = (char *)clMalloc(strlen(testpath)+20);
+  testpg4dir = (char *)clMalloc(strlen(testpath)+20);
   sprintf(testbzfile,"%s/pg4/hello.txt.bz2",testpath);
   sprintf(testgzfile,"%s/pg4/hello.txt.gz",testpath);
   sprintf(testzlibfile,"%s/pg4/hello.txt.z",testpath);
@@ -1347,13 +1347,13 @@ int main(int argc, char **argv)
   gconf = NULL;
 
   if (testpath) {
-    gfreeandclear(testpath);
-    gfreeandclear(testbzfile);
-    gfreeandclear(testgzfile);
-    gfreeandclear(testzlibfile);
+    clFreeandclear(testpath);
+    clFreeandclear(testbzfile);
+    clFreeandclear(testgzfile);
+    clFreeandclear(testzlibfile);
   }
   if (srcpath) {
-    gfreeandclear(srcpath);
+    clFreeandclear(srcpath);
   }
   return 0;
 }

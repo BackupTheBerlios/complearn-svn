@@ -10,15 +10,15 @@
 
 #else
 
-char *gstrdup(const char *inp)
+char *clStrdup(const char *inp)
 {
-  char *n = gmalloc(strlen(inp) + 1);
+  char *n = clMalloc(strlen(inp) + 1);
   memcpy(n, inp, strlen(inp) + 1);
 //  printf("%p: %s strdup\n", n, n);
   return n;
 }
 
-void *gmalloc(size_t size)
+void *clMalloc(size_t size)
 {
   void *ptr;
   int whoami;
@@ -41,20 +41,20 @@ void *gmalloc(size_t size)
   return ptr;
 }
 
-void *gcalloc(size_t nmem, size_t size)
+void *clCalloc(size_t nmem, size_t size)
 {
   void *ptr;
   if (nmem == 0 || size == 0) {
-    printf("Bad gcalloc request: %d, %d\n", nmem, size);
+    printf("Bad clCalloc request: %d, %d\n", nmem, size);
   }
   assert(nmem > 0 && size > 0);
-  ptr =  gmalloc(nmem * size);
+  ptr =  clMalloc(nmem * size);
   assert(ptr);
   memset(ptr, 0, nmem * size);
   return ptr;
 }
 
-void gfree(void *ptr)
+void clFree(void *ptr)
 {
   assert(ptr);
   free(ptr);

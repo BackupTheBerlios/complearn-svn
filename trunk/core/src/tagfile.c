@@ -13,7 +13,7 @@ struct TagManager {
 
 struct TagManager *newTagManager(struct DataBlock db)
 {
-  struct TagManager *tm = gcalloc(sizeof(*tm),1);
+  struct TagManager *tm = clCalloc(sizeof(*tm),1);
   struct TagHdr *h = (struct TagHdr *) db.ptr;
   tm->db = db;
   tm->cur = db.ptr + sizeof(struct TagHdr);
@@ -48,7 +48,7 @@ void freeTagManager(struct TagManager *tm)
 {
   tm->cur = NULL;
   tm->db.ptr = NULL;
-  gfreeandclear(tm);
+  clFreeandclear(tm);
 }
 
 struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
@@ -82,7 +82,7 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   for ( i = 0; i < doubleaSize(parts); i += 1) {
     cur.size += doubleaGetValueAt(parts,i).db.size;
   }
-  cur.ptr = gcalloc(cur.size,1);
+  cur.ptr = clCalloc(cur.size,1);
   ptr = cur.ptr;
 
   for ( i = 0; i < doubleaSize(parts); i += 1) {
@@ -94,7 +94,7 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   h.size = cur.size;
 
   result.size = sizeof(h) + cur.size;
-  result.ptr = gcalloc(result.size,1);
+  result.ptr = clCalloc(result.size,1);
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), cur.ptr, h.size);
   datablockFree(cur);

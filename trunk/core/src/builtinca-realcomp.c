@@ -48,14 +48,14 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
   };
   struct CompAdaptor *ca;
 	struct RealCompInstance *rci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct RealCompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct RealCompInstance), 1);
   rci = (struct RealCompInstance *) ca->cptr;
 
   if (cmd) {
-    rci->cmd = gstrdup(cmd);
+    rci->cmd = clStrdup(cmd);
   }
   else {
     fprintf(stderr, "Error, no command specified for realcomp\n");
@@ -111,9 +111,9 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 static void rc_freecompfunc(struct CompAdaptor *ca)
 {
 	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
-  gfreeandclear(ci->cmd);
-  gfreeandclear(ca->cptr);
-	gfreeandclear(ca);
+  clFreeandclear(ci->cmd);
+  clFreeandclear(ca->cptr);
+	clFreeandclear(ca);
 }
 
 static char *rc_shortname(void)

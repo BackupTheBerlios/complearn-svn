@@ -39,7 +39,7 @@ struct DataBlock gslmatrixDump(const gsl_matrix *a)
   dubs = doubleaDump(dac);
   h.size = dubs.size + sizeof(m);
   result.size = dubs.size + sizeof(h) + sizeof(m);
-  result.ptr = gcalloc(result.size, 1);
+  result.ptr = clCalloc(result.size, 1);
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), &m, sizeof(m));
   memcpy(result.ptr + sizeof(h) + sizeof(m), dubs.ptr, dubs.size);

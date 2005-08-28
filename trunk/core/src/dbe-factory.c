@@ -11,7 +11,7 @@ struct DBEFactory {
 struct DBEFactory *dbefactoryNew(void)
 {
   struct DBEFactory *dbf;
-  dbf = gcalloc(sizeof(struct DBEFactory), 1);
+  dbf = clCalloc(sizeof(struct DBEFactory), 1);
   dbf->mode = DBF_MODE_FILE;
   return dbf;
 }
@@ -19,7 +19,7 @@ struct DBEFactory *dbefactoryNew(void)
 void dbefactoryFree(struct DBEFactory *dbf)
 {
   dbf->mode = 0;
-  gfreeandclear(dbf);
+  clFreeandclear(dbf);
 }
 
 int dbefactorySetMode(struct DBEFactory *dbf, int newMode)
@@ -58,9 +58,9 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
   int lastpos = 0;
   char *cstr, *cur;
   struct DataBlock *db;
-  db = gcalloc(sizeof(struct DataBlock), 1);
+  db = clCalloc(sizeof(struct DataBlock), 1);
 #define WINDELIMS ","
-  cstr = gstrdup(str);
+  cstr = clStrdup(str);
   fname = strtok(cstr, WINDELIMS);
   assert(fname && "Must specify filename for window");
   *db = fileToDataBlock(fname);
@@ -91,11 +91,11 @@ struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char
   struct DataBlock *db;
   switch (dbf->mode) {
     case DBF_MODE_QUOTED:
-      db = gcalloc(sizeof(struct DataBlock), 1);
-      *db = stringToDataBlock(gstrdup(str));
+      db = clCalloc(sizeof(struct DataBlock), 1);
+      *db = stringToDataBlock(clStrdup(str));
       return dbeLoadSingleton(db);
     case DBF_MODE_FILE:
-      db = gcalloc(sizeof(struct DataBlock), 1);
+      db = clCalloc(sizeof(struct DataBlock), 1);
       *db = fileToDataBlock(str);
       return dbeLoadSingleton(db);
     case DBF_MODE_FILELIST:

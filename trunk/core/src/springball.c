@@ -109,7 +109,7 @@ void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
 struct SBS3 *sbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
 {
   struct SBS3 *ts;
-  ts = gcalloc(sizeof(*ts), 1);
+  ts = clCalloc(sizeof(*ts), 1);
   ts->i = i;
   ts->j = j;
   ts->p1 = p1;
@@ -172,7 +172,7 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
   int i, j;
   int howBig = treeaNodeCount(ta);
   const double posRadius = 3.0;
-  struct SBS4 *sbs4 = gcalloc(sizeof(*sbs4), 1);
+  struct SBS4 *sbs4 = clCalloc(sizeof(*sbs4), 1);
   int pairnum = howBig * (howBig-1);
   sbs4->d = 3;
   /* initially, there are no springs */
@@ -180,14 +180,14 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
   sbs4->targetk = adjaToGSLMatrix(treeaAdjAdaptor(ta));
 
   /* views for position and velocity by ball */
-  sbs4->pos = gcalloc(sizeof(*sbs4->pos), howBig);
-  sbs4->vel = gcalloc(sizeof(*sbs4->vel), howBig);
+  sbs4->pos = clCalloc(sizeof(*sbs4->pos), howBig);
+  sbs4->vel = clCalloc(sizeof(*sbs4->vel), howBig);
 
-  sbs4->statear = gcalloc(sizeof(double), 2*sbs4->d*howBig);
-  sbs4->stateback = gcalloc(sizeof(double), 2*sbs4->d*howBig);
-  sbs4->statebackj = gcalloc(sizeof(double), 2*sbs4->d*howBig);
-  sbs4->foball = gcalloc(sizeof(double), 2*sbs4->d*howBig);
-  sbs4->foballbase = gcalloc(sizeof(double), 2*sbs4->d*howBig);
+  sbs4->statear = clCalloc(sizeof(double), 2*sbs4->d*howBig);
+  sbs4->stateback = clCalloc(sizeof(double), 2*sbs4->d*howBig);
+  sbs4->statebackj = clCalloc(sizeof(double), 2*sbs4->d*howBig);
+  sbs4->foball = clCalloc(sizeof(double), 2*sbs4->d*howBig);
+  sbs4->foballbase = clCalloc(sizeof(double), 2*sbs4->d*howBig);
 
   sbs4->subsys = doubleaNew();
 
@@ -560,7 +560,7 @@ int func(double t, const double uy[], double f[], void *params)
 struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta) {
   struct SpringBallSystem *sbs;
   int howManyNodes = treeaNodeCount(ta);
-  sbs = gcalloc(sizeof(*sbs), 1);
+  sbs = clCalloc(sizeof(*sbs), 1);
 
   sbs->sbs4 = sbsNew4(ta);
 

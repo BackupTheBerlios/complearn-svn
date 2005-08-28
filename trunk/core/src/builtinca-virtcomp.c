@@ -46,13 +46,13 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd)
   };
   struct CompAdaptor *ca;
 	struct VirtualCompInstance *vci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
 
-  ca->cptr = gcalloc(sizeof(struct VirtualCompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct VirtualCompInstance), 1);
   vci = (struct VirtualCompInstance *) ca->cptr;
   if (cmd) {
-    vci->cmd = gstrdup(cmd);
+    vci->cmd = clStrdup(cmd);
   }
   else {
     fprintf(stderr, "Error, no command specified for virtcomp\n");
@@ -78,9 +78,9 @@ static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 static void vc_freecompfunc(struct CompAdaptor *ca)
 {
 	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
-  gfreeandclear(ci->cmd);
-  gfreeandclear(ca->cptr);
-	gfreeandclear(ca);
+  clFreeandclear(ci->cmd);
+  clFreeandclear(ca->cptr);
+	clFreeandclear(ca);
 }
 
 static char *vc_shortname(void)

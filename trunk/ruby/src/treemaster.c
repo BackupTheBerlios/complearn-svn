@@ -69,8 +69,8 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   struct TreeObserverState *tos;
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  to = gcalloc(sizeof(*to), 1);
-  tos = gcalloc(sizeof(*tos), 1);
+  to = clCalloc(sizeof(*to), 1);
+  tos = clCalloc(sizeof(*tos), 1);
   if (rb_obj_is_kind_of(obs, cTreeObserver))
     tos->obs = obs;
   else {

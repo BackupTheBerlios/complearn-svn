@@ -53,9 +53,9 @@ struct CompAdaptor *builtin_ZLIB(void)
   };
   struct CompAdaptor *ca;
   struct ZlibCompInstance *zci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct ZlibCompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct ZlibCompInstance), 1);
   zci = (struct ZlibCompInstance *) ca->cptr;
 
 
@@ -91,7 +91,7 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	int p;
 
 	p = src.size*1.001 + 12;
-	dbuff = (unsigned char*)gmalloc(p);
+	dbuff = (unsigned char*)clMalloc(p);
 	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,ci->level);
 
 	if (s == Z_BUF_ERROR) {
@@ -108,8 +108,8 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 static void zlib_freecompfunc(struct CompAdaptor *ca)
 {
-  gfreeandclear(ca->cptr);
-	gfreeandclear(ca);
+  clFreeandclear(ca->cptr);
+	clFreeandclear(ca);
 }
 
 static char *zlib_shortname(void)

@@ -25,19 +25,19 @@ struct DBEArrayEnumerationIterator
 
 static struct DataBlockEnumerationIterator *dbe_ar_newenumiter(struct DataBlockEnumeration *ptr)
 {
-  return gcalloc(sizeof(struct DBEArrayEnumerationIterator), 1);
+  return clCalloc(sizeof(struct DBEArrayEnumerationIterator), 1);
 }
 
 static void dbe_ar_iterfree(struct DataBlockEnumerationIterator *dbi)
 {
-  gfreeandclear(dbi);
+  clFreeandclear(dbi);
 }
 static void dbe_ar_enumfree(struct DataBlockEnumeration *dbe)
 {
   struct DBEArrayEnumeration *ardbe = (struct DBEArrayEnumeration *) dbe->eptr;
-  gfreeandclear(ardbe->db);
-  gfreeandclear(dbe->eptr);
-  gfreeandclear(dbe);
+  clFreeandclear(ardbe->db);
+  clFreeandclear(dbe->eptr);
+  clFreeandclear(dbe);
 }
 static struct DataBlock *dbe_ar_istar(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
 {
@@ -46,7 +46,7 @@ static struct DataBlock *dbe_ar_istar(struct DataBlockEnumeration *dbe, struct D
   struct DataBlock *old, *cur = NULL;
   old = (ardbi->cur >= 0 && ardbi->cur < ardbe->size) ? ardbe->db + ardbi->cur : NULL;
   if (old) {
-    cur = gcalloc(sizeof(struct DataBlock), 1);
+    cur = clCalloc(sizeof(struct DataBlock), 1);
     *cur = datablockClone(*old);
   }
   return cur;
@@ -80,11 +80,11 @@ struct DataBlockEnumeration *dbeLoadArray(struct DataBlock *db, int size)
   struct DataBlockEnumeration *dbe;
   struct DBEArrayEnumeration *ardbe;
   assert(size > 0);
-  dbe = gcalloc(sizeof(struct DataBlockEnumeration),1);
+  dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = e;
-  dbe->eptr = gcalloc(sizeof(struct DBEArrayEnumeration), 1);
+  dbe->eptr = clCalloc(sizeof(struct DBEArrayEnumeration), 1);
   ardbe = (struct DBEArrayEnumeration *) dbe->eptr;
-  ardbe->db = gcalloc(sizeof(struct DataBlock), size);
+  ardbe->db = clCalloc(sizeof(struct DataBlock), size);
   memcpy(ardbe->db, db, sizeof(struct DataBlock) * size);
   ardbe->size = size;
   return dbe;

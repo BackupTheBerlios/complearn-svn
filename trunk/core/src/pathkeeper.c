@@ -55,7 +55,7 @@ void pk_setconstate(struct AdjAdaptor *ad, int i, int j, int which)
 struct AdjAdaptor *pk_clone(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
-  struct PathKeeper *pkc = gcalloc(sizeof(*pkc), 1);
+  struct PathKeeper *pkc = clCalloc(sizeof(*pkc), 1);
   pkc->basis = adjaClone(pk->basis);
   pkc->outer = pk->outer;
   pkc->outer.ptr = pkc;
@@ -83,12 +83,12 @@ void pk_free(struct AdjAdaptor *ad)
   pk_freespmifpresent(ad);
   adjaFree(pk->basis);
   memset(pk, 0, sizeof(*pk));
-  gfreeandclear(pk);
+  clFreeandclear(pk);
 }
 
 struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis)
 {
-  struct PathKeeper *pk = gcalloc(sizeof(*pk), 1);
+  struct PathKeeper *pk = clCalloc(sizeof(*pk), 1);
   pk->basis = basis;
   pk->outer.ptr = pk;
   pk->outer.adjaprint = pk_print;
@@ -181,8 +181,8 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   /* assert(root >= 0); */
 //  printf("Making SPM for tree %p and node %d\n", ub, root);
   assert(root < adjaSize(aa));
-  path = gcalloc(adjaSize(aa), sizeof(*path));
-  length = gcalloc(adjaSize(aa), sizeof(*length));
+  path = clCalloc(adjaSize(aa), sizeof(*path));
+  length = clCalloc(adjaSize(aa), sizeof(*length));
   result = doubleaNew();
   todo = doubleaNew();
   assert(doubleaSize(todo) < 100);

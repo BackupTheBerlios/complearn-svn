@@ -102,7 +102,7 @@ struct TreeMaster *treemasterNew(gsl_matrix *gsl, int isRooted)
   int i, howbig;
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
   struct TreeAdaptor *tra;
-  struct TreeMaster *tm = gcalloc(sizeof(struct TreeMaster), 1);
+  struct TreeMaster *tm = clCalloc(sizeof(struct TreeMaster), 1);
   struct AdjAdaptor *aa;
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
@@ -249,7 +249,7 @@ void treemasterFree(struct TreeMaster *tm)
   gsl_matrix_free(tm->dm);
   tm->dm = NULL;
   memset(tm, 0, sizeof(*tm));
-  gfreeandclear(tm);
+  clFreeandclear(tm);
 }
 
 struct TreeObserver *treemasterGetTreeObserver(struct TreeMaster *tm)
@@ -260,9 +260,9 @@ struct TreeObserver *treemasterGetTreeObserver(struct TreeMaster *tm)
 void treemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
 {
   if (tm->tob) {
-    gfreeandclear(tm->tob);
+    clFreeandclear(tm->tob);
   }
-  tm->tob = gcalloc(sizeof(*tob), 1);
+  tm->tob = clCalloc(sizeof(*tob), 1);
   *(tm->tob) = *tob;
 }
 

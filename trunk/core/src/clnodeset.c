@@ -9,7 +9,7 @@ struct CLNodeSet
 
 struct CLNodeSet *clnodesetNew(int howbig)
 {
-  struct CLNodeSet *result = gcalloc(sizeof(struct CLNodeSet), 1);
+  struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
   assert(howbig > 0);
   result->da = doubleaNew();
   doubleaSetValueAt(result->da, howbig-1, zeropct);
@@ -18,7 +18,7 @@ struct CLNodeSet *clnodesetNew(int howbig)
 
 struct CLNodeSet *clnodesetClone(const struct CLNodeSet *cl)
 {
-  struct CLNodeSet *result = gcalloc(sizeof(struct CLNodeSet), 1);
+  struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
   result->da = doubleaClone(cl->da);
   return result;
 }
@@ -31,7 +31,7 @@ void clnodesetPrint(struct CLNodeSet *cl)
 void clnodesetFree(struct CLNodeSet *cl)
 {
   doubleaFree(cl->da);
-  gfreeandclear(cl);
+  clFreeandclear(cl);
 }
 
 void clnodesetAddNode(struct CLNodeSet *cl, qbase_t which)
@@ -67,7 +67,7 @@ struct DoubleA *clnodesetToDoubleA(const struct CLNodeSet *cl)
 
 struct CLNodeSet *doubleaToCLNodeSet(const struct DoubleA *da)
 {
-  struct CLNodeSet *result = gcalloc(sizeof(struct CLNodeSet), 1);
+  struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
   result->da = doubleaClone(da);
   return result;
 }

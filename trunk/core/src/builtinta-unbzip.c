@@ -23,7 +23,7 @@ struct TransformAdaptor *builtin_UNBZIP(void)
     tf:    unbz2a_transform,
     tptr:  NULL,
   };
-  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
+  ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
   return ptr;
 }
@@ -35,7 +35,7 @@ static char *unbz2a_shortname(void)
 
 static void unbz2a_transfree(struct TransformAdaptor *ta)
 {
-  gfreeandclear(ta);
+  clFreeandclear(ta);
 }
 
 static int unbz2a_predicate(struct DataBlock db)
@@ -53,15 +53,15 @@ static struct DataBlock unbz2a_transform(struct DataBlock src)
   p = src.size * 3.0 + 1;
   do {
     if (dbuff != NULL)
-      gfreeandclear(dbuff);
-    dbuff = (unsigned char*)gmalloc(p);
+      clFreeandclear(dbuff);
+    dbuff = (unsigned char*)clMalloc(p);
     i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) src.ptr,src.size, 0, 0);
     p = 2*p;
   } while (i == BZ_OUTBUFF_FULL);
   result.size = p;
-  result.ptr = (unsigned char*)gmalloc(result.size);
+  result.ptr = (unsigned char*)clMalloc(result.size);
   memcpy(result.ptr,dbuff,result.size);
-  gfreeandclear(dbuff);
+  clFreeandclear(dbuff);
   // datablockFree(src); /* TODO: document this */
 # else
 	assert ( 0 && "bzip not supported");

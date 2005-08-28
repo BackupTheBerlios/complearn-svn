@@ -14,7 +14,7 @@ struct AdjList *adjlistNew(int howbig)
 {
   int i;
 #define MAXDEGREE 10
-  struct AdjList *adj = gmalloc(sizeof(struct AdjList) +
+  struct AdjList *adj = clMalloc(sizeof(struct AdjList) +
                                (sizeof(adj->adj[0]) * howbig * MAXDEGREE*2));
   adj->size = howbig;
   adj->rowsize = MAXDEGREE*2;
@@ -37,7 +37,7 @@ void adjlistPrint(const struct AdjList *which)
 }
 struct AdjList *adjlistClone(const struct AdjList *inp)
 {
-  struct AdjList *adj = gmalloc(sizeof(struct AdjList) + inp->size * inp->rowsize * sizeof(adj->adj[0]));
+  struct AdjList *adj = clMalloc(sizeof(struct AdjList) + inp->size * inp->rowsize * sizeof(adj->adj[0]));
   adj->size = inp->size;
   adj->rowsize = inp->rowsize;
   adj->adj = (unsigned char *) (adj + 1);
@@ -49,8 +49,8 @@ struct AdjList *adjlistClone(const struct AdjList *inp)
 void adjlistFree(struct AdjList *adj)
 {
   if (adj->adj && adj->adj != (unsigned char *) (adj + 1))
-    gfreeandclear(adj->adj);
-  gfreeandclear(adj);
+    clFreeandclear(adj->adj);
+  clFreeandclear(adj);
 }
 
 int adjlistSize(const struct AdjList *adj)
@@ -220,7 +220,7 @@ static void ajal_print(struct AdjAdaptor *aa)
 
 static struct AdjAdaptor *ajal_clone(struct AdjAdaptor *aa)
 {
-  struct AdjAdaptor *ab = (struct AdjAdaptor *) gmalloc(sizeof(*aa) * 1);
+  struct AdjAdaptor *ab = (struct AdjAdaptor *) clMalloc(sizeof(*aa) * 1);
   *ab = *aa;
   ab->ptr = adjlistClone(aa->ptr);
   return ab;
@@ -258,7 +258,7 @@ static int ajal_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize
 struct AdjAdaptor *adjaLoadAdjList(int howBig)
 {
   struct AdjAdaptor *aj;
-  aj = gcalloc(sizeof(struct AdjAdaptor), 1);
+  aj = clCalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = adjlistNew(howBig);
   aj->adjafree = ajal_free;
   aj->adjasize = ajal_size;

@@ -16,11 +16,11 @@ VALUE convertgslvectorToRubyVector(gsl_vector *v)
   VALUE *coords;
   int i, size;
   size = v->size;
-  coords = gcalloc(size, sizeof(VALUE));
+  coords = clCalloc(size, sizeof(VALUE));
   for (i = 0; i < v->size; i += 1)
     coords[i] = rb_float_new(gsl_vector_get(v, i));
   result = rb_funcall3(cVector, rb_intern("[]"), size, coords);
-  gfreeandclear(coords);
+  clFreeandclear(coords);
   return result;
 }
 
@@ -112,9 +112,9 @@ struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
   long length;
   struct DataBlock *db;
   char *cstr = rb_str2cstr(rstr, &length);
-  db = gcalloc(sizeof(struct DataBlock), 1);
+  db = clCalloc(sizeof(struct DataBlock), 1);
   db->size = length;
-  db->ptr = gmalloc(db->size);
+  db->ptr = clMalloc(db->size);
   memcpy(db->ptr, cstr, db->size);
   return db;
 }

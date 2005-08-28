@@ -21,8 +21,8 @@ static void freedotth (struct TreeHolder *dotth)
 
 static void maketree_freeappconfig(struct GeneralConfig *cur) {
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
-  gfreeifpresent(maketreecfg->output_tree_fname);
-  gfreeandclear(maketreecfg);
+  clFreeifpresent(maketreecfg->output_tree_fname);
+  clFreeandclear(maketreecfg);
 }
 static void maketree_printapphelp(struct GeneralConfig *cur) {
   char *s;
@@ -98,10 +98,10 @@ struct GeneralConfig *loadMakeTreeEnvironment()
   if (!cur) {
     struct MakeTreeConfig *maketreecfg;
     cur = loadDefaultEnvironment();
-    cur->ptr = gcalloc(sizeof(struct MakeTreeConfig),1);
+    cur->ptr = clCalloc(sizeof(struct MakeTreeConfig),1);
     maketreecfg = (struct MakeTreeConfig *) cur->ptr;
     *maketreecfg = defaultMakeTreeConfig;
-    maketreecfg->output_tree_fname = gstrdup("treefile.dot");
+    maketreecfg->output_tree_fname = clStrdup("treefile.dot");
     cur->freeappcfg = maketree_freeappconfig;
     cur->printapphelp = maketree_printapphelp;
   }
@@ -159,8 +159,8 @@ int main(int argc, char **argv)
         isText = 1;
         break;
       case 'o':
-        gfreeifpresent(maketreecfg->output_tree_fname);
-        maketreecfg->output_tree_fname = gstrdup(optarg);
+        clFreeifpresent(maketreecfg->output_tree_fname);
+        maketreecfg->output_tree_fname = clStrdup(optarg);
         break;
     }
   }
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
     dm = clbDistMatrix(fname);
     labels = clbLabels(fname);
     envmapFree(em);
-    gfreeandclear(cmd);
+    clFreeandclear(cmd);
   }
 
   printf("The matrix is %d by %d\n", dm->size1, dm->size2);

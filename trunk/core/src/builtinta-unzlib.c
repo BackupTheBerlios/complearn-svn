@@ -22,7 +22,7 @@ struct TransformAdaptor *builtin_UNZLIB(void)
     tptr:  NULL,
   };
   struct TransformAdaptor *ptr;
-  ptr = (struct TransformAdaptor*)gcalloc(sizeof(*ptr), 1);
+  ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
 	return ptr;
 }
@@ -34,7 +34,7 @@ static char *unzlib_shortname(void)
 
 static void unzlib_transfree(struct TransformAdaptor *ta)
 {
-  gfreeandclear(ta);
+  clFreeandclear(ta);
 }
 
 static int unzlib_predicate(struct DataBlock db)
@@ -53,13 +53,13 @@ static struct DataBlock unzlib_transform(struct DataBlock src)
     int p;
 		if (dbuff != NULL)
 			free(dbuff);
-		dbuff = (unsigned char*)gmalloc(p);
+		dbuff = (unsigned char*)clMalloc(p);
     p = triedp;
 		i = uncompress(dbuff,(uLongf *) &p,src.ptr,src.size);
 		triedp = 2*triedp;
 	} while (i == Z_BUF_ERROR);
 	result.size = triedp;
-	result.ptr = (unsigned char*)gmalloc(result.size);
+	result.ptr = (unsigned char*)clMalloc(result.size);
 	memcpy(result.ptr,dbuff,result.size);
 	free(dbuff);
 //	datablockFree(src); /* TODO: document this new non-free behavior */

@@ -16,7 +16,7 @@ struct IncrementalDistMatrix {
 struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca)
 {
   struct IncrementalDistMatrix *idm;
-  idm = gcalloc(sizeof(*idm), 1);
+  idm = clCalloc(sizeof(*idm), 1);
   idm->curmat = gsl_matrix_calloc(MAXDATABLOCK, MAXDATABLOCK);
   if (ca == NULL)
     ca = compaLoadBuiltin("blocksort");

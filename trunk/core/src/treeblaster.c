@@ -32,7 +32,7 @@ static void setBestPtr(struct TreeBlaster *tm)
 struct TreeBlaster *treebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
 {
   int i, howbig;
-  struct TreeBlaster *tm = gcalloc(sizeof(struct TreeBlaster), 1);
+  struct TreeBlaster *tm = clCalloc(sizeof(struct TreeBlaster), 1);
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
@@ -109,7 +109,7 @@ void treebFree(struct TreeBlaster *tm)
   for (i = 0; i < tm->k; i += 1) {
     treemolderFree(tm->tm[i]);
   }
-  gfreeandclear(tm);
+  clFreeandclear(tm);
 }
 
 void treebSetTreeOrderObserver(struct TreeBlaster *tm, struct TreeOrderObserver *tob)

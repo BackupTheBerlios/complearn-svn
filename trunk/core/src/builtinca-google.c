@@ -59,9 +59,9 @@ struct CompAdaptor *builtin_GOOG(void)
   };
   struct CompAdaptor *ca;
   struct GoogleCompInstance *gci;
-  ca = gcalloc(sizeof(*ca), 1);
+  ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
-  ca->cptr = gcalloc(sizeof(struct GoogleCompInstance), 1);
+  ca->cptr = clCalloc(sizeof(struct GoogleCompInstance), 1);
   gci = (struct GoogleCompInstance *) ca->cptr;
 
   goog_clsetenv(ca);
@@ -110,14 +110,14 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   herror_t err;
   err = soap_client_init_args(0, args);
   dt = cldatetimeNow();
-  ci->daystr = gstrdup(cldatetimeToDayString(dt));
+  ci->daystr = clStrdup(cldatetimeToDayString(dt));
   userKey = envmapValueForKey(em, "GoogleKey");
   envmapSetKeyPrivate(em, "GoogleKey");
   if (userKey == NULL) {
     fprintf(stderr, "Error, cannot use google adaptor without GoogleKey property set\n");
     exit(1);
   }
-  ci->gkey = gstrdup(userKey);
+  ci->gkey = clStrdup(userKey);
   ci->m = calculateM(ci->daystr, ci->gkey);
   cldatetimeFree(dt);
 }
@@ -127,7 +127,7 @@ static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   double pagecount, compsize;
   char *cur;
-  char *str = gcalloc(1,src.size+1);
+  char *str = clCalloc(1,src.size+1);
   struct StringStack *terms;
   const double NOTFOUNDWEIGHT = 0.5;
 
@@ -146,17 +146,17 @@ static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   compsize = -log(pagecount/sci->m)/log(2.0);
 
   stringstackFree(terms);
-  gfreeandclear(str);
+  clFreeandclear(str);
 	return (double) compsize;
 }
 
 static void goog_freecompfunc(struct CompAdaptor *ca)
 {
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
-  gfreeandclear(sci->gkey);
-  gfreeandclear(sci->daystr);
-  gfreeandclear(sci);
-	gfreeandclear(ca);
+  clFreeandclear(sci->gkey);
+  clFreeandclear(sci->daystr);
+  clFreeandclear(sci);
+	clFreeandclear(ca);
 }
 
 static char *goog_shortname(void)

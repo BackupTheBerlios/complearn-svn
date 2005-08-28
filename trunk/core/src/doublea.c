@@ -46,19 +46,19 @@ void doubleaFree(struct DoubleA *ptr)
   assert(ptr);
   callUserFunc(ptr);
   assert(ptr->pc);
-  gfreeandclear(ptr->pc);
+  clFreeandclear(ptr->pc);
   ptr->alloc = 0;
   ptr->size = 0;
-  gfreeandclear(ptr);
+  clFreeandclear(ptr);
 }
 
 struct DoubleA *doubleaNew(void)
 {
-  struct DoubleA *da = gcalloc(sizeof(struct DoubleA), 1);
+  struct DoubleA *da = clCalloc(sizeof(struct DoubleA), 1);
   da->alloc = 10;
   da->func = NULL;
   da->elemsize = sizeof(union PCTypes);
-  da->pc = gcalloc(da->elemsize, da->alloc);
+  da->pc = clCalloc(da->elemsize, da->alloc);
   return da;
 }
 
@@ -127,10 +127,10 @@ void makeSizeFor(struct DoubleA *da, int where)
   while (where >= da->alloc) {
     union PCTypes *newBlock;
     int newAlloc = da->alloc * 2;
-    newBlock = gcalloc(da->elemsize, newAlloc);
+    newBlock = clCalloc(da->elemsize, newAlloc);
     assert(newBlock);
     memcpy(newBlock, da->pc, da->elemsize * da->alloc);
-    gfreeandclear(da->pc);
+    clFreeandclear(da->pc);
     da->pc = newBlock;
     da->alloc = newAlloc;
   }
@@ -283,11 +283,11 @@ struct DoubleA *doubleaLoad(struct DataBlock d, int fmustbe)
     }
   }
   else {
-    result = gcalloc(sizeof(*result), 1);
+    result = clCalloc(sizeof(*result), 1);
     result->alloc = ddh->size;
     if (result->alloc < 10)
       result->alloc = 10;
-    result->pc = gcalloc(sizeof(result->pc[0]), result->alloc);
+    result->pc = clCalloc(sizeof(result->pc[0]), result->alloc);
     result->size = ddh->size;
     memcpy(result->pc, cur, sizeof(result->pc[0]) * result->size);
     doubleaVerify(result);
@@ -321,7 +321,7 @@ struct DataBlock doubleaDeepDump(const struct DoubleA *d, int level)
       doubleaPush(bufs, p);
       dbres.size += p.db.size;
     }
-    dbres.ptr = gcalloc(dbres.size + sizeof(h) + sizeof(ddh), 1);
+    dbres.ptr = clCalloc(dbres.size + sizeof(h) + sizeof(ddh), 1);
     h.size = dbres.size + sizeof(ddh);
     memcpy(dbres.ptr, &h, sizeof(h));
     memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
@@ -336,7 +336,7 @@ struct DataBlock doubleaDeepDump(const struct DoubleA *d, int level)
   else {
     dbres.size = (d->size * sizeof(d->pc[0])) + sizeof(h) + sizeof(ddh);
     h.size = dbres.size - sizeof(h);
-    dbres.ptr = gcalloc(dbres.size, 1);
+    dbres.ptr = clCalloc(dbres.size, 1);
     memcpy(dbres.ptr, &h, sizeof(h));
     memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
     memcpy(dbres.ptr + sizeof(h) + sizeof(ddh), d->pc, d->size * sizeof(d->pc[0]));
@@ -353,7 +353,7 @@ struct DataBlock stringDump(const char *s)
   h.tagnum = TAGNUM_STRING;
   h.size = strlen(s);
   result.size = h.size + sizeof(h);
-  result.ptr = gcalloc(result.size,1);
+  result.ptr = clCalloc(result.size,1);
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), s, h.size);
   return result;
@@ -373,7 +373,7 @@ char *stringLoad(struct DataBlock db, int fmustbe)
     else
       return NULL;
   }
-  result = gcalloc(h->size + 1, 1);
+  result = clCalloc(h->size + 1, 1);
   memcpy(result,db.ptr + sizeof(*h), h->size);
   result[h->size] = '\0';
   return result;

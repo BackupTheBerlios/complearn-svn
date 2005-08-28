@@ -232,7 +232,7 @@ struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 {
   int i;
   struct DoubleA *leaves;
-  struct UnrootedBinary *ub = gcalloc(sizeof(struct UnrootedBinary), 1);
+  struct UnrootedBinary *ub = clCalloc(sizeof(struct UnrootedBinary), 1);
   assert(howManyLeaves > 3);
   ub->nodecount = 2*howManyLeaves-2;
   ub->aa = newPathKeeper(adjaLoadAdjList(ub->nodecount));
@@ -257,7 +257,7 @@ struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 struct UnrootedBinary *unrootedbinaryClone(const struct UnrootedBinary *ub)
 {
   struct UnrootedBinary *cp;
-  cp = gcalloc(sizeof(*cp), 1);
+  cp = clCalloc(sizeof(*cp), 1);
   cp->nodecount = ub->nodecount;
   cp->startNode = ub->startNode;
   cp->mc = ub->mc;
@@ -332,7 +332,7 @@ void unrootedbinaryFree(struct UnrootedBinary *ub)
   if (ub->aa)
     adjaFree(ub->aa);
   ub->aa = NULL;
-  gfreeandclear(ub);
+  clFreeandclear(ub);
 }
 
 static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
@@ -369,7 +369,7 @@ struct LabelPerm *unrootedbinaryLabelPerm(struct UnrootedBinary *ub)
 struct TreeAdaptor *ub_treeclone(struct TreeAdaptor *ta)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  struct TreeAdaptor *result = gmalloc(sizeof(*result) * 1);
+  struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
   *result = *ta;
   result->ptr = unrootedbinaryClone(ub);
   return result;
@@ -387,7 +387,7 @@ void ub_treefree(struct TreeAdaptor *ta)
   unrootedbinaryFree(ub);
   ub = NULL;
   memset(ta, 0, sizeof(*ta));
-  gfreeandclear(ta);
+  clFreeandclear(ta);
 }
 
 struct LabelPerm *ub_treegetlabelperm(struct TreeAdaptor *ta)
@@ -452,7 +452,7 @@ static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
     treeperimpairs:ub_treeperimpairs
   };
 
-  struct TreeAdaptor *result = gmalloc(sizeof(*result) * 1);
+  struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
   *result = c;
   result->ptr = ub;
   return result;
