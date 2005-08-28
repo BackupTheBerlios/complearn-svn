@@ -57,31 +57,17 @@ struct Quartet {
   qbase_t q[4]; /*!< The quartet labels as an array of four elements */
 };
 
-/** \brief Holds undirected binary tree connection information for a particular topology
- * \struct CLTree
- *
- * This function holds information regarding the nodes and connections for a
- * given tree.
- */
-struct CLTree;
-
 /** \brief Holds the information necessary to evaluate a tree for its cost
  * within the context of a given distance matrix
  * \struct TreeScore
  */
 struct TreeScore;
 
-struct CLTree *newCLTree(void);
-void freeCLTree(struct CLTree *clt);
 struct Quartet permuteLabels(qbase_t lab[4], int which); /* between 0, 1, 2 */
 struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which);
 void normalizeQuartet(struct Quartet *q);
-struct CLTree *makeMutatedCopy(const struct CLTree *ft);
-struct DoubleA *makeSPMAt(const struct UnrootedBinary *clt, qbase_t fromWhere);
-int verifyPath(const struct CLTree *ft, qbase_t fromQ, qbase_t toQ, struct DoubleA *d);
 void freeSPMSingle(struct DoubleA *d);
 void freeSPMSet(struct DoubleA *d);
-struct DoubleA *findPath(const struct CLTree *clt, struct DoubleA *spmset, qbase_t qfrom, qbase_t qto);
 
 #endif
 

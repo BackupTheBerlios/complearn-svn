@@ -57,11 +57,6 @@ void freeSPMSet(struct DoubleA *d)
     freeSPMSingle(doubleaGetValueAt(d, i).ar);
 }
 
-struct DoubleA *findPath(const struct CLTree *clt, struct DoubleA *spmset, qbase_t qfrom, qbase_t qto)
-{
-  return doubleaGetValueAt(doubleaGetValueAt(spmset, qfrom).ar, qto).ar;
-}
-
 static void mustBeSorted(qbase_t labels[4])
 {
   int i;
