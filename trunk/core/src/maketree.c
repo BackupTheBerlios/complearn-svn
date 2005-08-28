@@ -14,7 +14,7 @@ gsl_matrix *dm;
 static void freedotth (struct TreeHolder *dotth)
 {
   if (dotth) {
-    freeTreeHolder(dotth);
+    treehFree(dotth);
     dotth = NULL;
   }
 }
@@ -51,10 +51,10 @@ static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet 
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
-  printf("Just got new tree with score %f\n", getCurScore(th));
-  writeDotFile(getCurTree(th), getCurScore(th), NULL);
+  printf("Just got new tree with score %f\n", treehScore(th));
+  writeDotFile(treehTreeAdaptor(th), treehScore(th), NULL);
   freedotth(dotth);
-  dotth = cloneTreeHolder(th);
+  dotth = treehClone(th);
 }
 
 struct TreeObserver tob = {
@@ -74,7 +74,7 @@ void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struc
   printf("order improvement Or(T) = %f\n", getScoreScaledTM(th));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
-  writeDotFile(getCurTreeTM(th), getScoreTM(th), flips);
+  writeDotFile(treehTreeAdaptorTM(th), getScoreTM(th), flips);
 }
 
 void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
@@ -83,7 +83,7 @@ void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CL
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
   assert(dotth);
-  writeDotFile(getCurTreeTM(tm), getCurScore(dotth), flips);
+  writeDotFile(treehTreeAdaptorTM(tm), treehScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
 
@@ -203,8 +203,8 @@ int main(int argc, char **argv)
   globtm = tm;
   setTreeObserverTM(tm, &tob);
   th = findTree(tm);
-  ub = getCurTree(th);
-  s = getCurScore(th);
+  ub = treehTreeAdaptor(th);
+  s = treehScore(th);
   j = totalTreesExamined(tm);
   printf("Examined %d trees total\n", j);
   if (isOrdered) {

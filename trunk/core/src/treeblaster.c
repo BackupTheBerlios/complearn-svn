@@ -63,13 +63,13 @@ static int doStep(struct TreeBlaster *tm)
   int result;
   choseTree = rand() % tm->k;
 //  printf("Trying tree %d\n", choseTree);
-  result = tryToImproveTM(tm->tm[choseTree]);
+  result = treehImproveTM(tm->tm[choseTree]);
   if (result) {
     tm->failcount = 0;
     setBestPtr(tm);
   } else {
     tm->failcount += 1;
-//    printf("no improvement, trying another tree... (%d)\n", getSuccessiveFailCount(tm->th[choseTree]));
+//    printf("no improvement, trying another tree... (%d)\n", treehFailCount(tm->th[choseTree]));
   }
   return result;
 }

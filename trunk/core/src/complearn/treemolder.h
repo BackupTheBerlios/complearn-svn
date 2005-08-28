@@ -80,7 +80,7 @@ struct CLNodeSet *getFlips(struct TreeMolder *tm);
 
 /** \brief randomly flips a traversal order
  *
- * This routine is analogous to scrambleTreeHolder() and serves much the
+ * This routine is analogous to treehScramble() and serves much the
  * same purpose but for orderwise search.  Note that with order searching
  * each traversal order has actually two distinct representations as a
  * CLNodeSet or its compliment.  There is no return value.
@@ -93,19 +93,19 @@ void scrambleTreeMolder(struct TreeMolder *tm);
  *
  * This routine tries a random mutation of the current best ordering for
  * the TreeMolder.  If it results in a better order-score then it keeps the
- * new mutation otherwise it discards it.  \sa tryToImprove()
+ * new mutation otherwise it discards it.  \sa treehImprove()
  *
  * \param tm pointer to the TreeMolder to try to improve
  * \return 0 indicating failure to improve or nonzer indicating success
  */
-int tryToImproveTM(struct TreeMolder *tm);
+int treehImproveTM(struct TreeMolder *tm);
 
 /** \brief Returns the TreeAdaptor corresponding to the tree in consideration
  *
  * \param tm pointer to the TreeMolder to try to investigate
  * \return pointer to a TreeAdaptor
  */
-struct TreeAdaptor *getCurTreeTM(const struct TreeMolder *tmo);
+struct TreeAdaptor *treehTreeAdaptorTM(const struct TreeMolder *tmo);
 
 /** \brief Returns the count of labelled nodes in this TreeMolder
  *

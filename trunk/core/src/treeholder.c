@@ -16,7 +16,7 @@ struct TreeHolder {
   int treeindex;
 };
 
-struct TreeHolder *cloneTreeHolder(const struct TreeHolder *th)
+struct TreeHolder *treehClone(const struct TreeHolder *th)
 {
   assert(th);
   assert(th->best && "th->best is NULL");
@@ -42,7 +42,7 @@ static double calculateScore(struct TreeHolder *th, struct TreeAdaptor *ta)
   return result;
 }
 
-struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *tra)
+struct TreeHolder *treehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra)
 {
   struct TreeHolder *th = gcalloc(sizeof(*th), 1);
   struct LabelPerm *lp;
@@ -60,7 +60,7 @@ struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *
   return th;
 }
 
-void scrambleTreeHolder(struct TreeHolder *th)
+void treehScramble(struct TreeHolder *th)
 {
   int i, mutnum = 10;
   assert(th->best);
@@ -69,28 +69,28 @@ void scrambleTreeHolder(struct TreeHolder *th)
   th->bestscore = calculateScore(th, th->best);
 }
 
-double getCurScore(const struct TreeHolder *th)
+double treehScore(const struct TreeHolder *th)
 {
   return th->bestscore;
 }
 
-void setTreeIndexTH(struct TreeHolder *th, int treeind)
+void treehSetTreeIndex(struct TreeHolder *th, int treeind)
 {
   th->treeindex = treeind;
 }
 
-int getTreeIndexTH(struct TreeHolder *th)
+int treehGetTreeIndex(struct TreeHolder *th)
 {
   return th->treeindex;
 }
 
-struct TreeAdaptor *getCurTree(const struct TreeHolder *th)
+struct TreeAdaptor *treehTreeAdaptor(const struct TreeHolder *th)
 {
   return th->best;
 }
 
 /* returns 1 if it did improve, 0 otherwise */
-int tryToImprove(struct TreeHolder *th)
+int treehImprove(struct TreeHolder *th)
 {
   int itWorked;
   double candscore;
@@ -113,22 +113,22 @@ int tryToImprove(struct TreeHolder *th)
   return itWorked;
 }
 
-int getTotalTreeCount(const struct TreeHolder *th)
+int treehTreeCount(const struct TreeHolder *th)
 {
   return th->totalCount;
 }
 
-int getSuccessiveFailCount(const struct TreeHolder *th)
+int treehFailCount(const struct TreeHolder *th)
 {
   return th->failedCount;
 }
 
-gsl_matrix *getDistMatrixTH(const struct TreeHolder *th)
+gsl_matrix *treehDistMatrix(const struct TreeHolder *th)
 {
   return th->dm;
 }
 
-void freeTreeHolder(struct TreeHolder *th)
+void treehFree(struct TreeHolder *th)
 {
   if (th->best) {
     treeaFree(th->best);

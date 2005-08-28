@@ -111,7 +111,7 @@ void scrambleTreeMolder(struct TreeMolder *tm)
   tm->score = -1;
 }
 
-int tryToImproveTM(struct TreeMolder *tm)
+int treehImproveTM(struct TreeMolder *tm)
 {
   struct CLNodeSet *cand = clnodesetClone(tm->flips);
   double candscore;
@@ -130,7 +130,7 @@ int tryToImproveTM(struct TreeMolder *tm)
   }
 }
 
-struct TreeAdaptor *getCurTreeTM(const struct TreeMolder *tmo)
+struct TreeAdaptor *treehTreeAdaptorTM(const struct TreeMolder *tmo)
 {
   return treeaClone(tmo->ta);
 }

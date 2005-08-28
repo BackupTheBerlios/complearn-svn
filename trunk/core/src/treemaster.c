@@ -34,9 +34,9 @@ int getKTM(struct TreeMaster *tm)
 static void callImprovedFunctionMaybe(struct TreeMaster *tm)
 {
   if (tm->tob && tm->tob->treeimproved) {
-    struct TreeHolder *th = cloneTreeHolder(tm->best);
+    struct TreeHolder *th = treehClone(tm->best);
     tm->tob->treeimproved(tm->tob, th);
-    freeTreeHolder(th);
+    treehFree(th);
   }
 }
 
@@ -44,15 +44,15 @@ static void setBestPtr(struct TreeMaster *tm)
 {
   int i;
   for (i = 0; i < tm->k; i += 1)
-    if (i == 0 || getCurScore(tm->best) < getCurScore(tm->th[i])) {
+    if (i == 0 || treehScore(tm->best) < treehScore(tm->th[i])) {
       if (tm->best) {
-        freeTreeHolder(tm->best);
+        treehFree(tm->best);
         tm->best = NULL;
         }
-      tm->best = cloneTreeHolder(tm->th[i]);
+      tm->best = treehClone(tm->th[i]);
     }
-  if (getCurScore(tm->best) > tm->printedScore) {
-    tm->printedScore = getCurScore(tm->best);
+  if (treehScore(tm->best) > tm->printedScore) {
+    tm->printedScore = treehScore(tm->best);
     callImprovedFunctionMaybe(tm);
   }
 }
@@ -126,9 +126,9 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
   aa = treeaAdjAdaptor(tra);
   tm->nodecount = adjaSize(aa);
   for (i = 0; i < tm->k; i += 1) {
-    tm->th[i] = newTreeHolder(tm->dm, tra);
-    setTreeIndexTH(tm->th[i], i);
-    scrambleTreeHolder(tm->th[i]);
+    tm->th[i] = treehNew(tm->dm, tra);
+    treehSetTreeIndex(tm->th[i], i);
+    treehScramble(tm->th[i]);
   }
   tm->activeConfig = tmc;
   treeaFree(tra);
@@ -142,10 +142,10 @@ int totalTreesExamined(struct TreeMaster *tm)
     int i;
     int sum = 0;
     for (i = 0; i < tm->k; i += 1)
-      sum += getTotalTreeCount(tm->th[i]);
+      sum += treehTreeCount(tm->th[i]);
     return sum;
   } else {
-    return getTotalTreeCount(tm->best);
+    return treehTreeCount(tm->best);
   }
 }
 
@@ -155,19 +155,19 @@ static int doStep(struct TreeMaster *tm)
   int choseTree;
   int result;
   if (!tm->activeConfig.fSelfAgreementTermination) {
-    result = tryToImprove(tm->best);
+    result = treehImprove(tm->best);
     if (result)
       callImprovedFunctionMaybe(tm);
     return result;
   }
   choseTree = rand() % tm->k;
-  result = tryToImprove(tm->th[choseTree]);
+  result = treehImprove(tm->th[choseTree]);
   if (result) {
-//    printf("Tree %d improved to %f after %d tries (%d mutation stepsize)\n", choseTree, getCurScore(tm->th[choseTree]), getTotalTreeCount(tm->th[choseTree]), treeaMutationCount(getCurTree(tm->th[choseTree])));
+//    printf("Tree %d improved to %f after %d tries (%d mutation stepsize)\n", choseTree, treehScore(tm->th[choseTree]), treehTreeCount(tm->th[choseTree]), treeaMutationCount(treehTreeAdaptor(tm->th[choseTree])));
     tm->lastChanged = choseTree;
     setBestPtr(tm);
   } else {
-//    printf("no improvement, trying another tree... (%d)\n", getSuccessiveFailCount(tm->th[choseTree]));
+//    printf("no improvement, trying another tree... (%d)\n", treehFailCount(tm->th[choseTree]));
     if (!tm->fAbortNow && tm->tob && tm->tob->treerejected)
       tm->tob->treerejected(tm->tob);
   }
@@ -185,15 +185,15 @@ static int checkDone(struct TreeMaster *tm)
   int i;
   if (tm->activeConfig.fSelfAgreementTermination) {
     for (i = 1; i < tm->k; ++i) {
-      if (getCurScore(tm->th[i-1]) != getCurScore(tm->th[i]))
+      if (treehScore(tm->th[i-1]) != treehScore(tm->th[i]))
         return 0;
-      if (!isIdenticalTreeTRA(getCurTree(tm->th[i-1]), getCurTree(tm->th[i])))
+      if (!isIdenticalTreeTRA(treehTreeAdaptor(tm->th[i-1]), treehTreeAdaptor(tm->th[i])))
         return 0;
     }
     return 1;
   } else {
-//    printf("failcount: %d  maxcount: %d\n", getSuccessiveFailCount(tm->best), tm->activeConfig.maxFailCount);
-    return !(getSuccessiveFailCount(tm->best) < tm->activeConfig.maxFailCount);
+//    printf("failcount: %d  maxcount: %d\n", treehFailCount(tm->best), tm->activeConfig.maxFailCount);
+    return !(treehFailCount(tm->best) < tm->activeConfig.maxFailCount);
   }
 }
 
@@ -225,9 +225,9 @@ struct TreeHolder *findTree(struct TreeMaster *tm)
   tm->endTime = cldatetimeNow();
 #if 1
   if (!tm->fAbortNow && tm->tob && tm->tob->treedone) {
-    struct TreeHolder *th = cloneTreeHolder(tm->th[0]);
+    struct TreeHolder *th = treehClone(tm->th[0]);
     tm->tob->treedone(tm->tob, th);
-    freeTreeHolder(th);
+    treehFree(th);
   }
 #endif
   tm->fAbortNow = 0;
@@ -239,11 +239,11 @@ void freeTreeMaster(struct TreeMaster *tm)
   int i;
 //  printf("Freeing treemaster at %p\n", tm);
   for (i = 0; i < tm->k; i += 1) {
-    freeTreeHolder(tm->th[i]);
+    treehFree(tm->th[i]);
     tm->th[i]=NULL;
   }
   if (tm->best) {
-    freeTreeHolder(tm->best);
+    treehFree(tm->best);
     tm->best=NULL;
   }
   gsl_matrix_free(tm->dm);
@@ -284,14 +284,14 @@ void abortTreeSearchTM(struct TreeMaster *tm)
 struct TreeHolder *getStarterTree(struct TreeMaster *tm)
 {
   assert(tm->th[0]);
-  return cloneTreeHolder(tm->th[0]);
+  return treehClone(tm->th[0]);
 }
 
 struct TreeHolder *getTreeAtIndex(struct TreeMaster *tm, int i)
 {
   assert(i >= 0);
   assert(i < tm->k);
-  return cloneTreeHolder(tm->th[i]);
+  return treehClone(tm->th[i]);
 }
 
 int getLabelCountTM(struct TreeMaster *tm)

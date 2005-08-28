@@ -6,7 +6,7 @@ static VALUE rbth_tree(VALUE tree)
   struct TreeHolder *th;
   struct TreeAdaptor *ta;
   Data_Get_Struct(tree, struct TreeHolder, th);
-  ta = getCurTree(th);
+  ta = treehTreeAdaptor(th);
   if (ta)
     return secretrbtra_new(ta);
   else
@@ -17,14 +17,14 @@ static VALUE rbth_score(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return rb_float_new(getCurScore(th));
+  return rb_float_new(treehScore(th));
 }
 
 static VALUE rbth_scramble(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  scrambleTreeHolder(th);
+  treehScramble(th);
   return Qnil;
 }
 
@@ -32,35 +32,35 @@ static VALUE rbth_improve(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return tryToImprove(th) ? Qtrue : Qfalse;
+  return treehImprove(th) ? Qtrue : Qfalse;
 }
 
 static VALUE rbth_failcount(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return INT2FIX(getSuccessiveFailCount(th));
+  return INT2FIX(treehFailCount(th));
 }
 
 static VALUE rbth_treecount(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return INT2FIX(getTotalTreeCount(th));
+  return INT2FIX(treehTreeCount(th));
 }
 
 static VALUE rbth_clone(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return secretrbth_new(cloneTreeHolder(th));
+  return secretrbth_new(treehClone(th));
 }
 
 static VALUE rbth_distmatrix(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return convertgslmatrixToRubyMatrix(getDistMatrixTH(th));
+  return convertgslmatrixToRubyMatrix(treehDistMatrix(th));
 }
 
 static VALUE rbth_init(VALUE self)
@@ -70,9 +70,9 @@ static VALUE rbth_init(VALUE self)
 VALUE secretrbth_new(struct TreeHolder *tomakeruby)
 {
   volatile VALUE tdata;
-/* TODO: figure out how come this segfaults with ruby tth.rb when freeTreeHolder is used */
+/* TODO: figure out how come this segfaults with ruby tth.rb when treehFree is used */
 //  TODO: Ara Howard: can you help us?
-//  tdata= Data_Wrap_Struct(cTreeHolder, 0, freeTreeHolder, tomakeruby);
+//  tdata= Data_Wrap_Struct(cTreeHolder, 0, treehFree, tomakeruby);
   tdata = Data_Wrap_Struct(cTreeHolder, 0, 0, tomakeruby);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
@@ -96,8 +96,8 @@ VALUE rbth_new(VALUE cl, VALUE rbm, VALUE isrooted)
     ta = loadNewUnrootedTRA(gslm->size1);
   else
     ta = treeaLoadRootedBinary(gslm->size1);
-  th = newTreeHolder(gslm,ta);
-  scrambleTreeHolder(th);
+  th = treehNew(gslm,ta);
+  treehScramble(th);
   return secretrbth_new(th);
 }
 

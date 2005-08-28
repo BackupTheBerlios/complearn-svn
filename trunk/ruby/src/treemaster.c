@@ -44,7 +44,7 @@ static void rbtmto_treerejected(struct TreeObserver *tob)
 static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
+  volatile VALUE vth = secretrbth_new(treehClone(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
     rb_funcall(tos->obs, rb_intern("treeImproved"), 1, vth);
@@ -55,7 +55,7 @@ static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
 static void rbtmto_treedone(struct TreeObserver *tob, struct TreeHolder *th)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
-  volatile VALUE vth = secretrbth_new(cloneTreeHolder(th));
+  volatile VALUE vth = secretrbth_new(treehClone(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
     rb_funcall(tos->obs, rb_intern("treeDone"), 1, vth);
@@ -98,7 +98,7 @@ static VALUE rbtm_findtree(VALUE self)
   struct TreeMaster *tm;
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  th = cloneTreeHolder(findTree(tm));
+  th = treehClone(findTree(tm));
   return secretrbth_new(th);
 }
 

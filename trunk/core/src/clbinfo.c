@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     tm2 = newTreeMaster(cdm, isRooted);
     th2 = findTree(tm2);
 
-    if (getCurScore(th1) == getCurScore(th2))
+    if (treehScore(th1) == treehScore(th2))
       matched +=1;
     gsl_matrix_free(cdm);
     freeTreeMaster(tm1);

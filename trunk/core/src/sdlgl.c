@@ -618,9 +618,9 @@ static void draw_screen(void)
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
-  double score = getCurScore(th);
-  if (getTreeIndexTH(th) == 0)
-    nextbest = treeaClone(getCurTree(th));
+  double score = treehScore(th);
+  if (treehGetTreeIndex(th) == 0)
+    nextbest = treeaClone(treehTreeAdaptor(th));
 }
 
 struct TreeObserver tob = {
@@ -655,7 +655,7 @@ int calcThreadFunc(void *unused)
         continue;
       }
       tm = newTreeMaster(incrdmDistMatrix(distmatglob), 0);
-      nextbest = getCurTree(getStarterTree(tm));
+      nextbest = treehTreeAdaptor(getStarterTree(tm));
       setTreeObserverTM(tm, &tob);
     }
     if (tm) {

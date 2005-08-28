@@ -16,7 +16,7 @@
  * every tree search gets progressively slower for some amount of time
  * before finally reaching a maximum.  For most distance matrices, this
  * maximum is below 1 and thus not convenient for a termination criterion.
- * In order to improve the existing tree simply call tryToImprove over and
+ * In order to improve the existing tree simply call treehImprove over and
  * over.  Occasionally it will succeed in improving the tree and it will
  * automatically retain the best improvements.
  *
@@ -30,23 +30,23 @@ struct TreeAdaptor;
 /** \brief allocates a new TreeHolder given a gsl_matrix distmat and TreeAdaptor
  *
  * This is the basic constructor for the TreeHolder struct.  After calling
- * this function the next step is typically scrambleTreeHolder() if
+ * this function the next step is typically treehScramble() if
  * randomization is required (for instance, in Monte Carlo agreement search)
- * and then many successive tryToImprove() calls.  The TreeHolder must
- * eventually be deallocated with freeTreeHolder().
+ * and then many successive treehImprove() calls.  The TreeHolder must
+ * eventually be deallocated with treehFree().
  *
  * \param distmat pointer to a distance matrix in the form of a gsl_matrix
  * \param tra pointer to a TreeAdaptor to use as a starting tree
  * \return pointer to the newly allocated TreeHolder
  */
-struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *tra);
+struct TreeHolder *treehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra);
 
 /** \brief Returns the current scaled S(T) tree benefit score between 0 and 1
  *
  * At any given point in time, a TreeHolder contains a TreeAdaptor in a
  * particular configuration.  This configuration may be scored in the
- * context of the distance matrix given at construction with newTreeHolder().
- * The result of this scoring is available through the getCurScore() function.
+ * context of the distance matrix given at construction with treehNew().
+ * The result of this scoring is available through the treehScore() function.
  * This scaled tree benefit score should be at least 0 and no more than 1.
  * 1 represents a perfect tree.  A typical random tree would score near
  * 1/3 most commonly.
@@ -54,7 +54,7 @@ struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *
  * \param th pointer to the TreeHolder to inspect
  * \return scaled S(T) tree benefit score value between 0 and 1
  */
-double getCurScore(const struct TreeHolder *th);
+double treehScore(const struct TreeHolder *th);
 
 /** \brief Returns the current TreeAdaptor stored in this TreeHolder
  *
@@ -64,7 +64,7 @@ double getCurScore(const struct TreeHolder *th);
  * \param th pointer to the TreeHolder to inspect
  * \return pointer to a TreeAdaptor that represents the current tree
  */
-struct TreeAdaptor *getCurTree(const struct TreeHolder *th);
+struct TreeAdaptor *treehTreeAdaptor(const struct TreeHolder *th);
 
 /** \brief Tries a single new random tree and with luck improves
  *
@@ -79,18 +79,18 @@ struct TreeAdaptor *getCurTree(const struct TreeHolder *th);
  * \param th pointer to the TreeHolder to inspect
  * \return 0 indicating no improvement or 1 indicating a successful mutation
  */
-int tryToImprove(struct TreeHolder *th);
+int treehImprove(struct TreeHolder *th);
 
 /** \brief makes a new copy of an existing TreeHolder
  *
  * This function clones a TreeHolder, making a whole new TreeAdaptor as
  * well based on the original.  It should be similar in every way.  You
- * must free this using freeTreeHolder() just as you must in newTreeHolder().
+ * must free this using treehFree() just as you must in treehNew().
  *
  * \param th pointer to the TreeHolder to be cloned
  * \return pointer to the new copy of the old TreeHolder
  */
-struct TreeHolder *cloneTreeHolder(const struct TreeHolder *th);
+struct TreeHolder *treehClone(const struct TreeHolder *th);
 
 /** \brief returns the total number of trees searched so far
  *
@@ -100,7 +100,7 @@ struct TreeHolder *cloneTreeHolder(const struct TreeHolder *th);
  * \param th pointer to the TreeHolder to be inspected
  * \return integer number of trees examined in the TreeHolder full lifetime
  */
-int getTotalTreeCount(const struct TreeHolder *th);
+int treehTreeCount(const struct TreeHolder *th);
 
 /** \brief returns the running number of consecutive failed improvement attempts
  *
@@ -112,7 +112,7 @@ int getTotalTreeCount(const struct TreeHolder *th);
  * \param th pointer to the TreeHolder to be inspected
  * \return integer number of successive failures up to the present
  */
-int getSuccessiveFailCount(const struct TreeHolder *th);
+int treehFailCount(const struct TreeHolder *th);
 
 /** \brief Randomly scrambles the TreeAdaptor within this TreeHolder
  *
@@ -121,24 +121,24 @@ int getSuccessiveFailCount(const struct TreeHolder *th);
  * TreeAdaptor, thus ensuring with high likelihood that the tree is
  * different than any other trees that have also been scrambled.
  * It is usually used as the first step after construction but before
- * attempts at improvement through tryToImprove().
+ * attempts at improvement through treehImprove().
  * This function always succeeds, there is no return value.
  *
  * \param th pointer to the TreeHolder to be scrambled
  */
-void scrambleTreeHolder(struct TreeHolder *th);
+void treehScramble(struct TreeHolder *th);
 
 /** \brief This function retrieves the distance matrix used for scoring
  *
  * Sometimes it is useful to retrieve the distance matrix that was used
  * for scoring the TreeAdaptor candidate trees in this TreeHolder.  In
- * that case the getDistMatrixTH function can return a gsl_matrix for
+ * that case the treehDistMatrix function can return a gsl_matrix for
  * general use.
  *
  * \param th pointer to the TreeHolder to be inspected
  * \return pointer to the gsl_matrix holding distance values
  */
-gsl_matrix *getDistMatrixTH(const struct TreeHolder *th);
+gsl_matrix *treehDistMatrix(const struct TreeHolder *th);
 
 /** \brief Sets the "tree index" opaque integer field for this TreeHolder
  *
@@ -147,16 +147,16 @@ gsl_matrix *getDistMatrixTH(const struct TreeHolder *th);
  * can be used as a simple label for instance for one of many concurrent
  * TreeHolder searches.  This function has no return value.
  *
- * \sa getTreeIndexTH()
+ * \sa treehGetTreeIndex()
  *
  * \param th pointer to the TreeHolder to be inspected
  * \param treeind integer indicating value to be stored
  */
-void setTreeIndexTH(struct TreeHolder *th, int treeind);
+void treehSetTreeIndex(struct TreeHolder *th, int treeind);
 
 /** \brief Gets the "tree index" opaque integer field for this TreeHolder
  *
- * This function reads the value previously stored using setTreeIndexTH()
+ * This function reads the value previously stored using treehSetTreeIndex()
  * for this TreeHolder.  It is most commonly used to label distinct but
  * concurrently running TreeHolder instances.  This can be used for
  * agreement tests in Monte Carlo style searches.
@@ -164,7 +164,7 @@ void setTreeIndexTH(struct TreeHolder *th, int treeind);
  * \param th pointer to the TreeHolder to be inspected
  * \return integer indicating value that was most recently stored
  */
-int getTreeIndexTH(struct TreeHolder *th);
+int treehGetTreeIndex(struct TreeHolder *th);
 
 /** \brief frees memory associated with a TreeHolder
  *
@@ -173,7 +173,7 @@ int getTreeIndexTH(struct TreeHolder *th);
  *
  * \param th pointer to the TreeHolder to be freed
  */
-void freeTreeHolder(struct TreeHolder *th);
+void treehFree(struct TreeHolder *th);
 
 #endif
 

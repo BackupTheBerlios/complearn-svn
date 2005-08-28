@@ -811,18 +811,18 @@ void testQuartet(void)
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
     struct TreeAdaptor *tra = treeaNew(0,dm->size1);
-    th = newTreeHolder(dm, tra);
+    th = treehNew(dm, tra);
     for (i = 0; i < 100; i += 1) {
-      score = getCurScore(th);
+      score = treehScore(th);
       if (score > 1.0 || score < 0.0) {
         printf("Error, got score %f\n", score);
       }
       assert(score >= 0.0 && score <= 1.0);
 //      printf("Got TH score: %f\n", score);
-      tryToImprove(th);
+      treehImprove(th);
     }
 #if 0
-    tb = treebNew(dm, getCurTree(th));
+    tb = treebNew(dm, treehTreeAdaptor(th));
     printf("tb is %p\n", tb);
     struct CLNodeSet *clns;
     treebSetTreeOrderObserver(tb, &too);
@@ -833,7 +833,7 @@ void testQuartet(void)
     printf("Done.\n");
 
 //    printf("score is %f\n", getScoreTB(tb));
-    freeTreeHolder(th);
+    treehFree(th);
     treebFree(tb);
 #endif
     th = NULL;
@@ -1200,7 +1200,7 @@ void testTreeMolder()
           printf("Error, got score %f\n", score);
         }
         //assert(score >= 0.0 && score <= 1.0);
-        tryToImproveTM(tmolder);
+        treehImproveTM(tmolder);
       }
       freeTreeMolder(tmolder);
       tmolder = NULL;
