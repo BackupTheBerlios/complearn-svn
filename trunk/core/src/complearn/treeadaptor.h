@@ -13,7 +13,7 @@
  *
  * The adaptor provides a simple direct polymorphism capability to extend
  * tree capabilities over certain restricted classes of simple graphs.  For
- * most users the basic newTreeTRA() constructor should be sufficient with
+ * most users the basic treeaNew() constructor should be sufficient with
  * its basic rooted or unrooted tree implementations.
  *
  * \sa treeadaptor.h
@@ -41,16 +41,16 @@ struct TreeAdaptor {
  *
  * \param tra pointer to a TreeAdaptor to be changed randomly
  */
-void treemutateTRA(struct TreeAdaptor *tra);
+void treeaMutate(struct TreeAdaptor *tra);
 
 /** \brief frees memory associated with the TreeAdaptor
  *
- * This function frees the memory allocated from newTreeTRA() or treecloneTRA().
+ * This function frees the memory allocated from treeaNew() or treeaClone().
  * There is no return.
  *
  * \param tra pointer to a TreeAdaptor to be deallocated
  */
-void treefreeTRA(struct TreeAdaptor *tra);
+void treeaFree(struct TreeAdaptor *tra);
 
 /** \brief constructs a new (unrooted = 0, rooted = 1) simple TreeAdaptor
  *
@@ -61,17 +61,17 @@ void treefreeTRA(struct TreeAdaptor *tra);
  * \param howbig integer specifying the number of leaf nodes
  * \return pointer to new TreeAdaptor of specified leaf-size and rootedness
  */
-struct TreeAdaptor *newTreeTRA(int isRooted, int howbig);
+struct TreeAdaptor *treeaNew(int isRooted, int howbig);
 
 /** \brief create an exact duplicate copy of a TreeAdaptor
  *
  * This function clones a TreeAdaptor.  It is useful in conjunction with
- * treemutateTRA() in order to conditionally keep a random mutation.
+ * treeaMutate() in order to conditionally keep a random mutation.
  *
  * \param tra pointer to a TreeAdaptor to be copied
  * \return pointer to new TreeAdaptor clone
  */
-struct TreeAdaptor *treecloneTRA(struct TreeAdaptor *tra);
+struct TreeAdaptor *treeaClone(struct TreeAdaptor *tra);
 
 /** \brief fetch a LabelPerm indicating current leaf label-placement
  *
@@ -84,7 +84,7 @@ struct TreeAdaptor *treecloneTRA(struct TreeAdaptor *tra);
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return pointer to the LabelPerm indicating label placement positions
  */
-struct LabelPerm *treegetlabelpermTRA(struct TreeAdaptor *tra);
+struct LabelPerm *treeaLabelPerm(struct TreeAdaptor *tra);
 
 /** \brief retrieves the underlying adjacency adaptor for the TreeAdaptor
  *
@@ -95,7 +95,7 @@ struct LabelPerm *treegetlabelpermTRA(struct TreeAdaptor *tra);
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return pointer to the AdjAdaptor showing connection information for this tree
  */
-struct AdjAdaptor *treegetadjaTRA(struct TreeAdaptor *tra);
+struct AdjAdaptor *treeaAdjAdaptor(struct TreeAdaptor *tra);
 
 /** \brief tests whether a given node is "quartettable", e.g. a labellable node
  *
@@ -107,24 +107,24 @@ struct AdjAdaptor *treegetadjaTRA(struct TreeAdaptor *tra);
  * numbers are used in LabelPerm; 0 values indicate that the node is not
  * quartettable, nonzero values indicate that it is.
  *
- * \sa treeIsFlippable(), treeIsRoot()
+ * \sa treeaIsFlippable(), treeaIsRoot()
  *
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return boolean indicating if the node number is quartettable or not
  */
-int treeIsQuartettable(struct TreeAdaptor *tra, int which);
+int treeaIsQuartettable(struct TreeAdaptor *tra, int which);
 /** \brief tests whether a given node is "flippable" with left-right ordering
  *
  * This function tests whether a given node is "flippable" in a left-right
  * child ordering sense or not.  This is used in the best order search for
  * trees after the best topology is determinedl.
  *
- * \sa treeIsQuartettable(), treeIsRoot()
+ * \sa treeaIsQuartettable(), treeaIsRoot()
  *
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return boolean indicating if the node number is flippable or not
  */
-int treeIsFlippable(struct TreeAdaptor *tra, int which);
+int treeaIsFlippable(struct TreeAdaptor *tra, int which);
 /** \brief tests whether a given node is the root node or not
  *
  * This function tests whether a given node is the root or not.
@@ -132,24 +132,24 @@ int treeIsFlippable(struct TreeAdaptor *tra, int which);
  * For rooted binary trees this returns nonzero only for the root node and
  * 0 everywhere else.
  *
- * \sa treeIsQuartettable(), treeIsFlippable()
+ * \sa treeaIsQuartettable(), treeaIsFlippable()
  *
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return boolean indicating if the node number is the root node or not
  */
-int treeIsRoot(struct TreeAdaptor *tra, int which);
+int treeaIsRoot(struct TreeAdaptor *tra, int which);
 
-/** \brief returns the number of simple mutations in the last treemutateTRA()
+/** \brief returns the number of simple mutations in the last treeaMutate()
  *
  * Each complex mutation is composed of one or more simple mutations.  For
  * statistical purposes, the number of simple mutations comprising the most
- * recent complex mutation (done through treemutateTRA()) is saved and
- * treemutecountTRA() accesses this register.
+ * recent complex mutation (done through treeaMutate()) is saved and
+ * treeaMutationCount() accesses this register.
  *
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return integer indicating the number of simple mutations used last mutation
  */
-int treemutecountTRA(struct TreeAdaptor *tra);
+int treeaMutationCount(struct TreeAdaptor *tra);
 
 /** \brief returns the number of (both leaf and kernel) nodes in this tree
  *
@@ -160,7 +160,7 @@ int treemutecountTRA(struct TreeAdaptor *tra);
  * \param tra pointer to a TreeAdaptor to be inspected
  * \return integer indicating the number of nodes in this tree in total
  */
-int treeGetNodeCountTRA(struct TreeAdaptor *tra);
+int treeaNodeCount(struct TreeAdaptor *tra);
 
 /** \brief returns a quartet-difference coefficient between two trees
  *
@@ -174,7 +174,7 @@ int treeGetNodeCountTRA(struct TreeAdaptor *tra);
  * \param tra2 pointer to second TreeAdaptor to be compared
  * \return double precision value between 0.0 and 1.0 and 0.0 means identical.
  */
-double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2);
+double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2);
 
 /** \brief Walks the tree perimeter in the depth-first order specified by the CLNodeSet
  *
@@ -182,7 +182,7 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
  * of node numbers to control its ordering.  By default node children are
  * visitted in ascending order, but if a node number is within the flips
  * object, then instead its children are visitted in reverse order.  Only
- * nodes who are true with regards to treeIsFlippable() should ever appear
+ * nodes who are true with regards to treeaIsFlippable() should ever appear
  * in the flips CLNodeSet object.  If no customized ordering is necessary,
  * NULL may be passed in for flips and will result in the same traversal
  * as an empty flips set would obtain.  This function is only useful for
@@ -196,7 +196,7 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
  * \param flips pointer to CLNodeSet controlling traversal or NULL for default
  * \return DoubleA containing IntPair with adjacent node numbers in order
  */
-struct DoubleA *treeperimpairsTRA(struct TreeAdaptor *tra, struct CLNodeSet *flips);
+struct DoubleA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 
-struct DoubleA *getTreeNodesTRA(struct TreeAdaptor *ta);
+struct DoubleA *treeaNodes(struct TreeAdaptor *ta);
 #endif

@@ -56,7 +56,7 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
   int i, j, k, m, p, x;
   double sum = 0;
   double maxtot = 0, mintot = 0;
-  struct LabelPerm *lp = treegetlabelpermTRA(ts->ta);
+  struct LabelPerm *lp = treeaLabelPerm(ts->ta);
   assert(dm->size1 == dm->size2);
   assert(dm->size1 == labelpermSize(lp));
   ALLQUARTETS(dm->size1, i, j, k, m) {
@@ -70,7 +70,7 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
         mincur = curcost;
       if (p == 0 || (curcost > maxcur))
         maxcur = curcost;
-      if (isConsistent(treegetadjaTRA(ts->ta), q))
+      if (isConsistent(treeaAdjAdaptor(ts->ta), q))
         sum += curcost;
     }
     maxtot += maxcur;

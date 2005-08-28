@@ -207,8 +207,8 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
 struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm)
 {
   int i, j;
-  struct LabelPerm *labelperm = treegetlabelpermTRA(ta);
-  struct AdjAdaptor *ad = treegetadjaTRA(ta);
+  struct LabelPerm *labelperm = treeaLabelPerm(ta);
+  struct AdjAdaptor *ad = treeaAdjAdaptor(ta);
   struct DoubleA *nodes;
   static char labbuf[128];
   static char lab[1024];
@@ -296,14 +296,14 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     assert(nodenum >= 0 && nodenum <= 3 * dasize);
     char *str;
     char *extrastr = "";
-    if (treeIsRoot(ta, nodenum)) {
+    if (treeaIsRoot(ta, nodenum)) {
       extrastr=",style=bold";
       rootnode = nodenum;
     }
-    if (treeIsQuartettable(ta, nodenum) && labels)
+    if (treeaIsQuartettable(ta, nodenum) && labels)
       str = stringstackReadAt(labels, labelpermColIndexForNodeID(labelperm,nodenum));
     else {
-      sprintf(labbuf, "%c%d", treeIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
+      sprintf(labbuf, "%c%d", treeaIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
       str = labbuf;
     }
     sprintf(lab,"%d [label=\"%s\"%s];", nodenum, str, extrastr);
@@ -337,7 +337,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   {
     int i;
     struct DoubleA *dapairs;
-    dapairs = treeperimpairsTRA(ta, flips);
+    dapairs = treeaPerimPairs(ta, flips);
     for (i = 0; i < doubleaSize(dapairs); i += 1) {
       int dmx = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.x);
       int dmy = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.y);

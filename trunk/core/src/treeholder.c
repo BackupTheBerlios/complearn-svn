@@ -22,7 +22,7 @@ struct TreeHolder *cloneTreeHolder(const struct TreeHolder *th)
   assert(th->best && "th->best is NULL");
   struct TreeHolder *result;
   result =  gcalloc(sizeof(*th), 1);
-  result->best = treecloneTRA(th->best);
+  result->best = treeaClone(th->best);
   result->dm = gslmatrixClone(th->dm);
   result->bestscore = th->bestscore;
   result->totalCount = th->totalCount;
@@ -49,8 +49,8 @@ struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *
   assert(tra);
   assert(distmat->size1 >= 4);
   assert(distmat->size1 == distmat->size2);
-  th->best = treecloneTRA(tra);
-  lp = treegetlabelpermTRA(th->best);
+  th->best = treeaClone(tra);
+  lp = treeaLabelPerm(th->best);
   assert(labelpermSize(lp) == distmat->size1);
   assert(th->best);
   assert(th->best->ptr);
@@ -65,7 +65,7 @@ void scrambleTreeHolder(struct TreeHolder *th)
   int i, mutnum = 10;
   assert(th->best);
   for (i = 0; i < mutnum; i += 1)
-    treemutateTRA(th->best);
+    treeaMutate(th->best);
   th->bestscore = calculateScore(th, th->best);
 }
 
@@ -94,21 +94,21 @@ int tryToImprove(struct TreeHolder *th)
 {
   int itWorked;
   double candscore;
-  struct TreeAdaptor *cand = treecloneTRA(th->best);
-  treemutateTRA(cand);
+  struct TreeAdaptor *cand = treeaClone(th->best);
+  treeaMutate(cand);
   candscore = calculateScore(th, cand);
 //  if (candscore == 1 || candscore > th->bestscore) {
   if (candscore > th->bestscore) {
     th->failedCount = 0;
     itWorked = 1;
-    treefreeTRA(th->best);
+    treeaFree(th->best);
     th->best = cand;
     th->bestscore = candscore;
   } else {
     th->failedCount += 1;
 //    printf("failedcount: %d\n",th->failedCount);
     itWorked = 0;
-    treefreeTRA(cand);
+    treeaFree(cand);
   }
   return itWorked;
 }
@@ -131,7 +131,7 @@ gsl_matrix *getDistMatrixTH(const struct TreeHolder *th)
 void freeTreeHolder(struct TreeHolder *th)
 {
   if (th->best) {
-    treefreeTRA(th->best);
+    treeaFree(th->best);
     th->best = NULL;
   }
   gsl_matrix_free(th->dm);

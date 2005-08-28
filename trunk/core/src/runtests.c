@@ -786,7 +786,7 @@ void testQuartet(void)
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
     struct TreeAdaptor *ta = loadNewUnrootedTRA(labelcount);
-    struct DoubleA *n = getTreeNodesTRA(ta);
+    struct DoubleA *n = treeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -810,7 +810,7 @@ void testQuartet(void)
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
-    struct TreeAdaptor *tra = newTreeTRA(0,dm->size1);
+    struct TreeAdaptor *tra = treeaNew(0,dm->size1);
     th = newTreeHolder(dm, tra);
     for (i = 0; i < 100; i += 1) {
       score = getCurScore(th);
@@ -842,7 +842,7 @@ void testQuartet(void)
     doubleaFree(n);
     freeTreeScore(ts);
 //    freeUnrootedBinary(ct);
-    treefreeTRA(ta);
+    treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
       datablockFree(db[i]);
@@ -1159,9 +1159,9 @@ void testPerimPairs()
   struct DoubleA *da;
   struct CLNodeSet *clns = clnodesetNew(9);
   clnodesetAddNode(clns, 2);
-  da = treeperimpairsTRA(tra, NULL);
+  da = treeaPerimPairs(tra, NULL);
   doubleaFree(da);
-  da = treeperimpairsTRA(tra, clns);
+  da = treeaPerimPairs(tra, clns);
   doubleaFree(da);
 }
 
@@ -1177,7 +1177,7 @@ void testTreeMolder()
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
     struct TreeAdaptor *ta = treeaLoadRootedBinary(labelcount);
-    struct DoubleA *n = getTreeNodesTRA(ta);
+    struct DoubleA *n = treeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -1192,7 +1192,7 @@ void testTreeMolder()
     ts = initTreeScore(ta);
     {
       struct TreeMolder *tmolder;
-      struct TreeAdaptor *tram = newTreeTRA(1,dm->size1);
+      struct TreeAdaptor *tram = treeaNew(1,dm->size1);
       tmolder = newTreeMolder(dm, tram);
       for (i = 0; i < 100; i += 1) {
         score = getScoreScaledTM(tmolder);
@@ -1208,7 +1208,7 @@ void testTreeMolder()
     doubleaFree(n);
     freeTreeScore(ts);
 //    freeUnrootedBinary(ct);
-    treefreeTRA(ta);
+    treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
       datablockFree(db[i]);
@@ -1241,14 +1241,14 @@ void printGSLMatrix(gsl_matrix *m){
 }
 void testSmoothing()
 {
-  struct TreeAdaptor *ta = newTreeTRA(0, 6);
+  struct TreeAdaptor *ta = treeaNew(0, 6);
   int i;
   gsl_matrix *m;
-  m = adjaToGSLMatrix(treegetadjaTRA(ta));
+  m = adjaToGSLMatrix(treeaAdjAdaptor(ta));
 //  printGSLMatrix(m);
 
   for (i = 0; i < 15 ; i += 1) {
-    treemutateTRA(ta);
+    treeaMutate(ta);
     clStepTowardsTree(m, ta, 1.0);
 //    printGSLMatrix(m);
   }

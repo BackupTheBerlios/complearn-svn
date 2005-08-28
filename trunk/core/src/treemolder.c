@@ -44,7 +44,7 @@ struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta)
   struct TreeMolder *tm = gcalloc(sizeof(*tm), 1);
   struct AdjAdaptor *aa;
   assert(gm->size1 > 0 && gm->size1 == gm->size2);
-  aa = treegetadjaTRA(ta);
+  aa = treeaAdjAdaptor(ta);
   assert(aa);
   tm->nodecount = adjaSize(aa);
   tm->ta = ta;
@@ -58,9 +58,9 @@ struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta)
 static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struct CLNodeSet *flips)
 {
   double acc = 0.0;
-  struct DoubleA *pairs = treeperimpairsTRA(ts, flips);
+  struct DoubleA *pairs = treeaPerimPairs(ts, flips);
   int i;
-  struct LabelPerm *lph = treegetlabelpermTRA(ts);
+  struct LabelPerm *lph = treeaLabelPerm(ts);
   for (i = 0; i < doubleaSize(pairs); i += 1) {
     union PCTypes p = doubleaGetValueAt(pairs, i);
     double x, y;
@@ -96,7 +96,7 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
   do {
     do {
       whichNode = rand() % tm->nodecount;
-    } while (!treeIsFlippable(tm->ta, whichNode));
+    } while (!treeaIsFlippable(tm->ta, whichNode));
     oldStatus = clnodesetHasNode(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
     clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
@@ -132,7 +132,7 @@ int tryToImproveTM(struct TreeMolder *tm)
 
 struct TreeAdaptor *getCurTreeTM(const struct TreeMolder *tmo)
 {
-  return treecloneTRA(tmo->ta);
+  return treeaClone(tmo->ta);
 }
 
 int getNodeCountTMO(const struct TreeMolder *tmo)

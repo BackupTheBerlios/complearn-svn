@@ -223,14 +223,14 @@ int main(int argc, char **argv)
   printf("\nLeaf ordering:\n");
   for (j = 0; j < doubleaSize(res); j += 1) {
     int nodenum = doubleaGetValueAt(res, j).i;
-    if (treeIsQuartettable(ub, nodenum))
+    if (treeaIsQuartettable(ub, nodenum))
       printf("%d ", nodenum);
   }
   printf("\nLeaf labels, in %s order:\n", isOrdered ? "best" : "arbitrary");
   for (j = 0; j < doubleaSize(res); j += 1) {
     int nodenum = doubleaGetValueAt(res, j).i;
-    struct LabelPerm *lph = treegetlabelpermTRA(ub);
-    if (!treeIsQuartettable(ub, nodenum))
+    struct LabelPerm *lph = treeaLabelPerm(ub);
+    if (!treeaIsQuartettable(ub, nodenum))
       continue;
     int indnum = labelpermColIndexForNodeID(lph, nodenum);
     printf("%s\n", stringstackReadAt(labels, indnum));

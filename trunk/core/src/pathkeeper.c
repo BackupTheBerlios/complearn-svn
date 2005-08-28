@@ -253,9 +253,9 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   union PCTypes p = zeropct;
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
-  struct CLNodeSet *done = clnodesetNew(treeGetNodeCountTRA(ta));
+  struct CLNodeSet *done = clnodesetNew(treeaNodeCount(ta));
   doubleaPush(border, p);
-  walkTree(treegetadjaTRA(ta), result, border, done, 0, flips);
+  walkTree(treeaAdjAdaptor(ta), result, border, done, 0, flips);
   doubleaFree(border);
   clnodesetFree(done);
   return result;

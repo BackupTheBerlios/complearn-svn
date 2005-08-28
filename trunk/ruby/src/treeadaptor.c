@@ -4,7 +4,7 @@ static VALUE rbtra_treemutate(VALUE self)
 {
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
+  treeaMutate(ta);
   return Qnil;
 }
 
@@ -31,7 +31,7 @@ static VALUE rbtra_diffscore(VALUE self, VALUE vtra2)
   struct TreeAdaptor *tra1, *tra2;
   Data_Get_Struct(self, struct TreeAdaptor, tra1);
   Data_Get_Struct(vtra2, struct TreeAdaptor, tra2);
-  return rb_float_new(getTreeDifferenceScore(tra1, tra2));
+  return rb_float_new(treeaDifferenceScore(tra1, tra2));
 }
 
 static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
@@ -45,7 +45,7 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   /* TODO: fix this hard limit */
 
-  pairs = treeperimpairsTRA(ta, clns);
+  pairs = treeaPerimPairs(ta, clns);
 
   if (pairs) {
     result = rb_ary_new();
@@ -73,8 +73,8 @@ static VALUE rbtra_mutationcount(VALUE self)
   struct TreeAdaptor *ta;
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
-  return INT2FIX(treemutecountTRA(ta));
+  treeaMutate(ta);
+  return INT2FIX(treeaMutationCount(ta));
 }
 
 static VALUE rbtra_mutate(VALUE self)
@@ -82,7 +82,7 @@ static VALUE rbtra_mutate(VALUE self)
   struct TreeAdaptor *ta;
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  treemutateTRA(ta);
+  treeaMutate(ta);
   return Qnil;
 }
 
@@ -93,7 +93,7 @@ static VALUE rbtra_nodetocol(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  lp = treegetlabelpermTRA(ta);
+  lp = treeaLabelPerm(ta);
   return INT2FIX(labelpermColIndexForNodeID(lp, n));
 }
 
@@ -104,7 +104,7 @@ static VALUE rbtra_coltonode(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  lp = treegetlabelpermTRA(ta);
+  lp = treeaLabelPerm(ta);
   return INT2FIX(labelpermNodeIDForColIndex(lp, n));
 }
 
@@ -114,7 +114,7 @@ static VALUE rbtra_isflippable(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  return treeIsFlippable(ta, n) ? Qtrue : Qfalse;
+  return treeaIsFlippable(ta, n) ? Qtrue : Qfalse;
 }
 
 static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
@@ -123,7 +123,7 @@ static VALUE rbtra_isquartetable(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  return treeIsQuartettable(ta, n) ? Qtrue : Qfalse;
+  return treeaIsQuartettable(ta, n) ? Qtrue : Qfalse;
 }
 
 static VALUE rbtra_getnodes(VALUE self)
@@ -133,7 +133,7 @@ static VALUE rbtra_getnodes(VALUE self)
   volatile VALUE nodes = rb_ary_new();
   int i;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  adja = treegetadjaTRA(ta);
+  adja = treeaAdjAdaptor(ta);
   for (i = 0; i < adja->adjasize(adja); i += 1)
     rb_ary_push(nodes, INT2FIX(i));
   return nodes;
@@ -157,7 +157,7 @@ static VALUE rbtra_getadja(VALUE self)
   struct AdjAdaptor *adja;
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  adja = treegetadjaTRA(ta);
+  adja = treeaAdjAdaptor(ta);
   return rbadja_secretnew(cAdjAdaptor, adja->adjaclone(adja));
 }
 
@@ -165,7 +165,7 @@ static VALUE rbtra_nodecount(VALUE self)
 {
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  return INT2FIX(treeGetNodeCountTRA(ta));
+  return INT2FIX(treeaNodeCount(ta));
 }
 
 static VALUE rbtra_isroot(VALUE self, VALUE vn)
@@ -174,14 +174,14 @@ static VALUE rbtra_isroot(VALUE self, VALUE vn)
   int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
-  return treeIsRoot(ta, n) ? Qtrue : Qfalse;
+  return treeaIsRoot(ta, n) ? Qtrue : Qfalse;
 }
 
 static VALUE rbtra_clone(VALUE self)
 {
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  return secretrbtra_new(treecloneTRA(ta));
+  return secretrbtra_new(treeaClone(ta));
 }
 
 void doInitTRA(void) {

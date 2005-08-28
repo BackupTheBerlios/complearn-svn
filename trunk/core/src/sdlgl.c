@@ -245,8 +245,8 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
         break;
     case SDLK_m:
         if (ta) {
-          nextbest = treecloneTRA(ta);
-          treemutateTRA(nextbest);
+          nextbest = treeaClone(ta);
+          treeaMutate(nextbest);
         }
         break;
     case SDLK_l:
@@ -538,9 +538,9 @@ static void draw_screen(void)
 //  glColor3fv(matspring_diff);
 
   if (ta && sbs) {
-    for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
+    for (i = 0; i < treeaNodeCount(ta); i += 1) {
       gsl_vector *p = sbsBallPosition(sbs, i);
-      for (j = i+1; j < treeGetNodeCountTRA(ta); j += 1) {
+      for (j = i+1; j < treeaNodeCount(ta); j += 1) {
         if (sbsGetSpringSmooth(sbs, i, j) < 0.7)
           continue;
         gsl_vector *p2 = sbsBallPosition(sbs, j);
@@ -551,9 +551,9 @@ static void draw_screen(void)
   glDisable(GL_COLOR_MATERIAL);
 //  glColor3f(1.0,1.0,1.0);
 
-    for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
+    for (i = 0; i < treeaNodeCount(ta); i += 1) {
       gsl_vector *p = sbsBallPosition(sbs, i);
-      if (treeIsQuartettable(ta, i)) {
+      if (treeaIsQuartettable(ta, i)) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, matball_diff);
         glMaterialfv(GL_FRONT, GL_SPECULAR, matball_spec);
         glMaterialfv(GL_FRONT, GL_SHININESS, matball_shine);
@@ -573,10 +573,10 @@ static void draw_screen(void)
 //    glColor3f(1.0,1.0,1.0);
   #if SDL_TTF
     if (fShowLabels) {
-      for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
+      for (i = 0; i < treeaNodeCount(ta); i += 1) {
         gsl_vector *p = sbsBallPosition(sbs, i);
-        if (treeIsQuartettable(ta, i)) {
-          int colind = labelpermColIndexForNodeID(treegetlabelpermTRA(ta), i);
+        if (treeaIsQuartettable(ta, i)) {
+          int colind = labelpermColIndexForNodeID(treeaLabelPerm(ta), i);
           static struct CLTexture texLabels[MAXTEX];
           draw_sdltext(stringstackReadAt(labels, colind), &texLabels[colind], p);
         }
@@ -605,7 +605,7 @@ static void draw_screen(void)
   if (sbs)
     sbsEvolveForward(sbs);
   if (nextbest) {
-    if (sbs == NULL || treeGetNodeCountTRA(nextbest) != sbsNodeCount(sbs)) {
+    if (sbs == NULL || treeaNodeCount(nextbest) != sbsNodeCount(sbs)) {
       sbs = sbsNew(nextbest);
       sbsSetModelSpeed(sbs, 4.0);
     }
@@ -620,7 +620,7 @@ void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
   double score = getCurScore(th);
   if (getTreeIndexTH(th) == 0)
-    nextbest = treecloneTRA(getCurTree(th));
+    nextbest = treeaClone(getCurTree(th));
 }
 
 struct TreeObserver tob = {

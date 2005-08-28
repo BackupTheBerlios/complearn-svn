@@ -122,8 +122,8 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
     tm->k += 1;
   if (gsl->size1 <= 5)
     tm->k += 1;
-  tra = newTreeTRA(isRooted, howbig);
-  aa = treegetadjaTRA(tra);
+  tra = treeaNew(isRooted, howbig);
+  aa = treeaAdjAdaptor(tra);
   tm->nodecount = adjaSize(aa);
   for (i = 0; i < tm->k; i += 1) {
     tm->th[i] = newTreeHolder(tm->dm, tra);
@@ -131,7 +131,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
     scrambleTreeHolder(tm->th[i]);
   }
   tm->activeConfig = tmc;
-  treefreeTRA(tra);
+  treeaFree(tra);
   setBestPtr(tm);
   return tm;
 }
@@ -163,7 +163,7 @@ static int doStep(struct TreeMaster *tm)
   choseTree = rand() % tm->k;
   result = tryToImprove(tm->th[choseTree]);
   if (result) {
-//    printf("Tree %d improved to %f after %d tries (%d mutation stepsize)\n", choseTree, getCurScore(tm->th[choseTree]), getTotalTreeCount(tm->th[choseTree]), treemutecountTRA(getCurTree(tm->th[choseTree])));
+//    printf("Tree %d improved to %f after %d tries (%d mutation stepsize)\n", choseTree, getCurScore(tm->th[choseTree]), getTotalTreeCount(tm->th[choseTree]), treeaMutationCount(getCurTree(tm->th[choseTree])));
     tm->lastChanged = choseTree;
     setBestPtr(tm);
   } else {
@@ -176,8 +176,8 @@ static int doStep(struct TreeMaster *tm)
 
 static int isIdenticalTreeTRA(struct TreeAdaptor *ta1, struct TreeAdaptor *ta2)
 {
-  return isIdenticalTree(treegetadjaTRA(ta1), treegetlabelpermTRA(ta1),
-                         treegetadjaTRA(ta2), treegetlabelpermTRA(ta2));
+  return isIdenticalTree(treeaAdjAdaptor(ta1), treeaLabelPerm(ta1),
+                         treeaAdjAdaptor(ta2), treeaLabelPerm(ta2));
 }
 
 static int checkDone(struct TreeMaster *tm)
