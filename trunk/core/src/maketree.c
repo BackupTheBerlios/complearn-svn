@@ -176,10 +176,10 @@ int main(int argc, char **argv)
 
   if (isText) {
     dm = get_dm_from_txt(fname);
-    labels = get_labels_from_txt(fname);
+    labels = cltxtLabels(fname);
   } else {
     struct EnvMap *em = clbEnvMap(fname);
-    struct StringStack *ss = get_clcmds_from_clb(fname);
+    struct StringStack *ss = clbCommands(fname);
     char *cmd = NULL;
     assert(ss);
     if (cur->cmdKeeper) {
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
       pushSS(cur->cmdKeeper, cmd);
     envmapMerge(cur->em, em);
     dm = get_cldm_from_clb(fname);
-    labels = get_labels_from_clb(fname);
+    labels = clbLabels(fname);
     envmapFree(em);
     gfreeandclear(cmd);
   }

@@ -1052,8 +1052,8 @@ void testALTagFile(void)
   assert(strcmp(readAtSS(nes,1), readAtSS(ss,1)) == 0);
   assert(strcmp(readAtSS(nes,2), readAtSS(ss,2)) == 0);
 
-  dblabels = dumpDMLabels(ss);
-  nlabels = loadDMLabels(dblabels,1);
+  dblabels = labelsDump(ss);
+  nlabels = labelsLoad(dblabels,1);
   assert(strcmp(readAtSS(nlabels,0), readAtSS(ss,0)) == 0);
   assert(strcmp(readAtSS(nlabels,1), readAtSS(ss,1)) == 0);
   assert(strcmp(readAtSS(nlabels,2), readAtSS(ss,2)) == 0);
@@ -1225,7 +1225,7 @@ void testReadTextDM()
   gsl_matrix *dm;
   struct StringStack *labels;
   dm = get_dm_from_txt("distmatrix.txt");
-  labels = get_labels_from_txt("distmatrix.txt");
+  labels = cltxtLabels("distmatrix.txt");
   assert(dm);
   assert(labels);
   gsl_matrix_free(dm);

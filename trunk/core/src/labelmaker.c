@@ -12,12 +12,12 @@ struct DataBlock dumpTaggedStringStack(struct StringStack *ss, int tagnum)
 }
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock dumpCommands(struct StringStack *ss)
+struct DataBlock commandsDump(struct StringStack *ss)
 {
   return dumpTaggedStringStack(ss, TAGNUM_COMMANDS);
 }
 
-struct DataBlock dumpDMLabels(struct StringStack *ss)
+struct DataBlock labelsDump(struct StringStack *ss)
 {
   return dumpTaggedStringStack(ss, TAGNUM_DMLABELS);
 }
@@ -47,12 +47,12 @@ struct StringStack *loadTaggedStringStack(struct DataBlock db, int fmustbe, cons
   return ss;
 }
 
-struct StringStack *loadDMLabels(struct DataBlock db, int fmustbe)
+struct StringStack *labelsLoad(struct DataBlock db, int fmustbe)
 {
   return loadTaggedStringStack(db, fmustbe, "DMLABELS", TAGNUM_DMLABELS);
 }
 
-struct StringStack *get_labels_from_clb(char *fname)
+struct StringStack *clbLabels(char *fname)
 {
   struct DataBlock db, dblabels;
   struct DoubleA *dd;
@@ -61,7 +61,7 @@ struct StringStack *get_labels_from_clb(char *fname)
   db = fileToDataBlock(fname);
   dd = load_DataBlock_package(db);
   dblabels = scanForTag(dd, TAGNUM_DMLABELS);
-  result = loadDMLabels(dblabels, 1);
+  result = labelsLoad(dblabels, 1);
 
   datablockFree(db);
   datablockFree(dblabels);
@@ -72,7 +72,7 @@ struct StringStack *get_labels_from_clb(char *fname)
 
 #define DELIMS " ,\t\r\n"
 #define MAXLINESIZE 1024
-struct StringStack *get_labels_from_txt(char *fname)
+struct StringStack *cltxtLabels(char *fname)
 {
   struct StringStack *labels = NULL;
   FILE *fp;
@@ -91,7 +91,7 @@ struct StringStack *get_labels_from_txt(char *fname)
 }
 
 /* TODO: needs new home; does not belong here */
-struct StringStack *get_clcmds_from_clb(char *fname)
+struct StringStack *clbCommands(char *fname)
 {
   struct DataBlock db, dbem;
   struct DoubleA *dd;

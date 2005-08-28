@@ -153,8 +153,8 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
       dbenvmap = envmapDump(em);
     dbdmtagged = dumpCLDistMatrix(gres);
     assert(labels);
-    dblabelstagged = dumpDMLabels(labels);
-    dbcommandstagged = dumpCommands(cur->cmdKeeper);
+    dblabelstagged = labelsDump(labels);
+    dbcommandstagged = commandsDump(cur->cmdKeeper);
     db = package_DataBlocks(TAGNUM_TAGMASTER, &dbdmtagged, &dblabelstagged, &dbcommandstagged, &dbenvmap, NULL);
     datablockWriteToFile(&db, ncdcfg->output_distmat_fname);
     datablockFree(db);
