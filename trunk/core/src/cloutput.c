@@ -35,7 +35,7 @@ gsl_matrix *svdProject(gsl_matrix *a)
   gsl_matrix *res;
   gsl_matrix *u, *v;
   gsl_vector *s;
-  u = cloneGSLMatrix(a);
+  u = gslmatrixClone(a);
   v = gsl_matrix_alloc(a->size2, a->size2);
   s = gsl_vector_alloc(a->size1);
   retval = gsl_linalg_SV_decomp_jacobi(u, v, s);
@@ -151,7 +151,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     }
     if (envmapSize(em) > 0)
       dbenvmap = envmapDump(em);
-    dbdmtagged = dumpCLDistMatrix(gres);
+    dbdmtagged = distmatrixDump(gres);
     assert(labels);
     dblabelstagged = labelsDump(labels);
     dbcommandstagged = commandsDump(cur->cmdKeeper);

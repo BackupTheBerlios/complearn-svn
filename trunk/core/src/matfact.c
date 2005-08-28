@@ -12,14 +12,14 @@ struct GSLMHdr {
 };
 
 #if GSL_RDY
-gsl_matrix *cloneGSLMatrix(const gsl_matrix *a)
+gsl_matrix *gslmatrixClone(const gsl_matrix *a)
 {
   gsl_matrix *u;
   u = gsl_matrix_alloc(a->size1, a->size2);
   gsl_matrix_memcpy(u, a);
   return u;
 }
-struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
+struct DataBlock gslmatrixDump(const gsl_matrix *a)
 {
   struct DataBlock result, dubs;
   struct DoubleA *dac = doubleaNew();
@@ -48,7 +48,7 @@ struct DataBlock dumpGSLMatrix(const gsl_matrix *a)
   return result;
 }
 
-gsl_matrix *loadGSLMatrix(const struct DataBlock d, int fmustbe)
+gsl_matrix *gslmatrixLoad(const struct DataBlock d, int fmustbe)
 {
   gsl_matrix *result;
   struct TagHdr *h;
@@ -80,15 +80,15 @@ gsl_matrix *loadGSLMatrix(const struct DataBlock d, int fmustbe)
   return result;
 }
 
-struct DataBlock dumpCLDistMatrix(gsl_matrix *m)
+struct DataBlock distmatrixDump(gsl_matrix *m)
 {
   struct DataBlock db, dbm;
-  db = dumpGSLMatrix(m);
+  db = gslmatrixDump(m);
   dbm = package_DataBlocks(TAGNUM_CLDISTMATRIX,&db,NULL);
   return dbm;
 }
 
-gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
+gsl_matrix *distmatrixLoad(struct DataBlock db, int fmustbe)
 {
   gsl_matrix *m;
   struct DoubleA *dd;
@@ -108,18 +108,18 @@ gsl_matrix *loadCLDistMatrix(struct DataBlock db, int fmustbe)
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
   dbda = *doubleaGetValueAt(dd,0).idbp.db;
-  m = loadGSLMatrix(dbdm, 1);
+  m = gslmatrixLoad(dbdm, 1);
   doubleaFree(dd);
   datablockFree(dbdm);
 
   return m;
 }
-void freeGSLMatrix(gsl_matrix *m)
+void gslmatrixFree(gsl_matrix *m)
 {
   gsl_matrix_free(m);
 }
 
-gsl_matrix *get_cldm_from_clb(char *fname)
+gsl_matrix *clbDistMatrix(char *fname)
 {
   struct DataBlock db, dbdm;
   struct DoubleA *dd;
@@ -128,7 +128,7 @@ gsl_matrix *get_cldm_from_clb(char *fname)
   db = fileToDataBlock(fname);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
-  result = loadCLDistMatrix(dbdm, 1);
+  result = distmatrixLoad(dbdm, 1);
 
   datablockFree(db);
   datablockFree(dbdm);
@@ -156,7 +156,7 @@ static struct DoubleA *get_dm_row_from_txt(char *linebuf, int isLabeled)
   return row;
 }
 
-int get_row_size_from_txt(char *fname)
+int cltxtRowSize(char *fname)
 {
   FILE *fp;
   int rows = 0;
@@ -169,7 +169,7 @@ int get_row_size_from_txt(char *fname)
   return rows;
 }
 
-int get_col_size_from_txt(char *fname)
+int cltxtColSize(char *fname)
 {
   FILE *fp;
   int cols = 0;
@@ -186,7 +186,7 @@ int get_col_size_from_txt(char *fname)
   return cols;
 }
 
-gsl_matrix *get_dm_from_txt(char *fname)
+gsl_matrix *cltxtDistMatrix(char *fname)
 {
   char linebuf[MAXLINESIZE];
   FILE *fp;
@@ -196,8 +196,8 @@ gsl_matrix *get_dm_from_txt(char *fname)
   int i, j;
   gsl_matrix *result;
 
-  rows = get_row_size_from_txt(fname);
-  cols = get_col_size_from_txt(fname);
+  rows = cltxtRowSize(fname);
+  cols = cltxtColSize(fname);
 
   if (cols > rows) isLabeled = 1;
   result = gsl_matrix_alloc(rows,rows);
@@ -217,7 +217,7 @@ gsl_matrix *get_dm_from_txt(char *fname)
   return result;
 }
 
-void print_gsl_matrix(gsl_matrix *m, char *delim)
+void gslmatrixPrint(gsl_matrix *m, char *delim)
 {
   int i, j;
   for (i = 0; i < m->size1 ; i += 1) {

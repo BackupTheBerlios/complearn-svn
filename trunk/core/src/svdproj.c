@@ -13,12 +13,12 @@ int main(int argc, char **argv)
   db = fileToDataBlock(argv[1]);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
-  dm = loadCLDistMatrix(dbdm, 1);
+  dm = distmatrixLoad(dbdm, 1);
   datablockFree(db);
   datablockFree(dbdm);
   //printf("The matrix is %d by %d\n", dm->size1, dm->size2);
   sdm = svdProject(dm);
-  freeGSLMatrix(dm);
+  gslmatrixFree(dm);
   return 0;
 #else
 	printf("no gsl support; svd projection impossible\n");

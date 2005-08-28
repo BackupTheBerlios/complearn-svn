@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   printf("opening %s\n", argv[1]);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
-  dm = loadCLDistMatrix(dbdm, 1);
+  dm = distmatrixLoad(dbdm, 1);
 
   maxtrials = atoi(argv[2]);
   printf("doing %d trials\n", maxtrials);
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     struct TreeMaster *tm1, *tm2;
     struct TreeHolder *th1, *th2;
     printf("starting trial #%d of %d\n", i+1, maxtrials);
-    gsl_matrix *cdm = cloneGSLMatrix(dm);
+    gsl_matrix *cdm = gslmatrixClone(dm);
 
     tm1 = newTreeMaster(cdm, isRooted);
     th1 = findTree(tm1);

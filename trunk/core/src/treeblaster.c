@@ -37,7 +37,7 @@ struct TreeBlaster *newTreeBlaster(gsl_matrix *gsl, struct TreeAdaptor *ta)
   assert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
   tm->ta = ta;
-  tm->dm = cloneGSLMatrix(gsl);
+  tm->dm = gslmatrixClone(gsl);
   tm->printedScore = -1;
   assert(tm->dm);
   if (gsl->size1 < 14)

@@ -10,7 +10,7 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   gsl_matrix *dm;
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
-  dm = loadCLDistMatrix(dbdm, 1);
+  dm = distmatrixLoad(dbdm, 1);
   assert(dm);
   result = convertgslmatrixToRubyMatrix(dm);
   gsl_matrix_free(dm);

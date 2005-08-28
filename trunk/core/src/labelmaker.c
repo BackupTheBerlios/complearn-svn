@@ -78,7 +78,7 @@ struct StringStack *cltxtLabels(char *fname)
   FILE *fp;
   char linebuf[MAXLINESIZE];
 
-  if ( get_row_size_from_txt(fname) == get_col_size_from_txt(fname) ) {
+  if ( cltxtRowSize(fname) == cltxtColSize(fname) ) {
     fprintf(stderr,"Error: no labels in this file\n");
     exit(1);
   }

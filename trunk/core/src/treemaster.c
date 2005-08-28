@@ -108,7 +108,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
   assert(gsl->size1 == gsl->size2);
   assert(gsl->size1 > 3);
   howbig = gsl->size1;
-  tm->dm = cloneGSLMatrix(gsl);
+  tm->dm = gslmatrixClone(gsl);
   tm->printedScore = -1;
   tm->fAbortNow = 0;
   assert(tm->dm);

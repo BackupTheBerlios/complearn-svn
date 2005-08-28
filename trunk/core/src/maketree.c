@@ -175,7 +175,7 @@ int main(int argc, char **argv)
   }
 
   if (isText) {
-    dm = get_dm_from_txt(fname);
+    dm = cltxtDistMatrix(fname);
     labels = cltxtLabels(fname);
   } else {
     struct EnvMap *em = clbEnvMap(fname);
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
     if (cmd)
       pushSS(cur->cmdKeeper, cmd);
     envmapMerge(cur->em, em);
-    dm = get_cldm_from_clb(fname);
+    dm = clbDistMatrix(fname);
     labels = clbLabels(fname);
     envmapFree(em);
     gfreeandclear(cmd);
@@ -239,7 +239,7 @@ int main(int argc, char **argv)
   doubleaFree(res);
   freedotth(dotth);
   freeTreeMaster(tm);
-  freeGSLMatrix(dm);
+  gslmatrixFree(dm);
   if (labels) {
     freeSS(labels);
   }

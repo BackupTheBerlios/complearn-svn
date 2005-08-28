@@ -23,7 +23,7 @@ struct TreeHolder *cloneTreeHolder(const struct TreeHolder *th)
   struct TreeHolder *result;
   result =  gcalloc(sizeof(*th), 1);
   result->best = treecloneTRA(th->best);
-  result->dm = cloneGSLMatrix(th->dm);
+  result->dm = gslmatrixClone(th->dm);
   result->bestscore = th->bestscore;
   result->totalCount = th->totalCount;
   result->failedCount = th->failedCount;
@@ -54,7 +54,7 @@ struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *
   assert(labelpermSize(lp) == distmat->size1);
   assert(th->best);
   assert(th->best->ptr);
-  th->dm = cloneGSLMatrix(distmat);
+  th->dm = gslmatrixClone(distmat);
   th->bestscore = calculateScore(th, th->best);
   th->treeindex = -1;
   return th;

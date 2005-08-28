@@ -701,8 +701,8 @@ void testMarshalling(void)
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
-  m = dumpGSLMatrix(gm);
-  ngm = loadGSLMatrix(m, 1);
+  m = gslmatrixDump(gm);
+  ngm = gslmatrixLoad(m, 1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
@@ -1065,16 +1065,16 @@ void testALTagFile(void)
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
-  dbgslm = dumpGSLMatrix(gm);
-  dbdm = dumpCLDistMatrix(gm);
-  ngm = loadGSLMatrix(dbgslm, 1);
+  dbgslm = gslmatrixDump(gm);
+  dbdm = distmatrixDump(gm);
+  ngm = gslmatrixLoad(dbgslm, 1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
   assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(ngm);
-  ngm = loadCLDistMatrix(dbdm,1);
+  ngm = distmatrixLoad(dbdm,1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
@@ -1101,7 +1101,7 @@ void testALTagFile(void)
         gfreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
-        ngm = loadGSLMatrix(*doubleaGetValueAt(dd,i).idbp.db, 1);
+        ngm = gslmatrixLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
         assert(gm != ngm);
         assert(gm->size1 == ngm->size1);
         assert(gm->size2 == ngm->size2);
@@ -1224,7 +1224,7 @@ void testReadTextDM()
 {
   gsl_matrix *dm;
   struct StringStack *labels;
-  dm = get_dm_from_txt("distmatrix.txt");
+  dm = cltxtDistMatrix("distmatrix.txt");
   labels = cltxtLabels("distmatrix.txt");
   assert(dm);
   assert(labels);
