@@ -102,8 +102,8 @@ VALUE convertStringStackToRubyArray(struct StringStack *ss)
 {
   VALUE result = rb_ary_new();
   int i;
-  for (i = 0; i < sizeSS(ss); i += 1)
-    rb_ary_push(result, rb_str_new2(readAtSS(ss, i)));
+  for (i = 0; i < stringstackSize(ss); i += 1)
+    rb_ary_push(result, rb_str_new2(stringstackReadAt(ss, i)));
   return result;
 }
 

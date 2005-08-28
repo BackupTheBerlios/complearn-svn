@@ -9,9 +9,9 @@ struct StringStack {
   struct DoubleA *da;
 };
 
-struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe)
+struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe)
 {
-  struct StringStack *result = newStringStack();
+  struct StringStack *result = stringstackNew();
   struct DataBlock cur;
   struct TagManager *tm;
   struct TagHdr *h = (struct TagHdr *) db.ptr;
@@ -31,7 +31,7 @@ struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe)
   while (getCurDataBlock(tm, &cur)) {
     char *str;
     str = stringLoad(cur, 1);
-    pushSS(result, str);
+    stringstackPush(result, str);
     gfreeandclear(str);
     stepNextDataBlock(tm);
   }
@@ -40,13 +40,13 @@ struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe)
   return result;
 }
 
-struct DataBlock stringDumpStack(const struct StringStack *ss)
+struct DataBlock stringstackDump(const struct StringStack *ss)
 {
   struct DataBlock result;
   struct DoubleA *parts = doubleaNew();
   int i;
 
-  for ( i = 0; i < sizeSS(ss); i += 1) {
+  for ( i = 0; i < stringstackSize(ss); i += 1) {
     union PCTypes p = zeropct;
     char *s = doubleaGetValueAt(ss->da,i).str;
     p.db = stringDump(s);
@@ -58,15 +58,15 @@ struct DataBlock stringDumpStack(const struct StringStack *ss)
   return result;
 }
 
-struct StringStack *newSingleSS(const char *str)
+struct StringStack *stringstackNewSingle(const char *str)
 {
 	struct StringStack *ss;
-  ss = newStringStack();
-  pushSS(ss, str);
+  ss = stringstackNew();
+  stringstackPush(ss, str);
   return ss;
 }
 
-struct StringStack *newStringStack()
+struct StringStack *stringstackNew()
 {
 	struct StringStack *ss;
 	ss = (struct StringStack*)gcalloc(sizeof(struct StringStack), 1);
@@ -75,12 +75,12 @@ struct StringStack *newStringStack()
 	return ss;
 }
 
-struct StringStack *cloneSS(struct StringStack *ss)
+struct StringStack *stringstackClone(struct StringStack *ss)
 {
   struct StringStack *nss;
   int i, sz;
-  sz = sizeSS(ss);
-  nss = newStringStack();
+  sz = stringstackSize(ss);
+  nss = stringstackNew();
   for (i = 0; i < sz; ++i) {
     union PCTypes p;
     p.str = gstrdup(doubleaGetValueAt(ss->da, i).str);
@@ -89,7 +89,7 @@ struct StringStack *cloneSS(struct StringStack *ss)
   return nss;
 }
 
-int freeSS(struct StringStack *ss)
+int stringstackFree(struct StringStack *ss)
 {
   int i;
   for (i = 0; i < doubleaSize(ss->da); i += 1) {
@@ -101,7 +101,7 @@ int freeSS(struct StringStack *ss)
 	return CL_OK;
 }
 
-int unshiftSS(struct StringStack *ss, const char *str)
+int stringstackUnshift(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
   assert(ss);
@@ -111,7 +111,7 @@ int unshiftSS(struct StringStack *ss, const char *str)
   return CL_OK;
 }
 
-int pushSS(struct StringStack *ss, const char *str)
+int stringstackPush(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
   assert(ss);
@@ -121,12 +121,12 @@ int pushSS(struct StringStack *ss, const char *str)
   return CL_OK;
 }
 
-int isEmptySS(struct StringStack *ss)
+int stringstackIsEmpty(struct StringStack *ss)
 {
 	return doubleaSize(ss->da) == 0;
 }
 
-int sizeSS(const struct StringStack *ss)
+int stringstackSize(const struct StringStack *ss)
 {
 	return doubleaSize(ss->da);
 }
@@ -137,34 +137,34 @@ int sizeSS(const struct StringStack *ss)
 char *shiftSS(struct StringStack *ss)
 {
   union PCTypes p;
-  assert(sizeSS(ss) > 0);
+  assert(stringstackSize(ss) > 0);
   memset(&p, 0, sizeof(p));
-	if (sizeSS(ss) == 0) return p.str;
+	if (stringstackSize(ss) == 0) return p.str;
 	p = doubleaShift(ss->da);
   return p.str;
 }
 
-/* After calling popSS, it is the responsibility of the programmer to free
+/* After calling stringstackPop, it is the responsibility of the programmer to free
  * the popped string
  */
-char *popSS(struct StringStack *ss)
+char *stringstackPop(struct StringStack *ss)
 {
   union PCTypes p;
   memset(&p, 0, sizeof(p));
-	if (sizeSS(ss) == 0) return p.str;
+	if (stringstackSize(ss) == 0) return p.str;
 	p = doubleaPop(ss->da);
   return p.str;
 }
 
-char *readAtSS(struct StringStack *ss, int i)
+char *stringstackReadAt(struct StringStack *ss, int i)
 {
 	return doubleaGetValueAt(ss->da, i).str;
 }
 
-int sortSS(struct StringStack *ss)
+int stringstackSort(struct StringStack *ss)
 {
   int flipped, i;
-  int sz = sizeSS(ss);
+  int sz = stringstackSize(ss);
   do {
     flipped = 0;
     for (i = 1; i < sz; ++i) {
@@ -177,20 +177,20 @@ int sortSS(struct StringStack *ss)
   return CL_OK;
 }
 
-struct StringStack *mergeSS(struct StringStack *ssa, struct StringStack *ssb)
+struct StringStack *stringstackMerge(struct StringStack *ssa, struct StringStack *ssb)
 {
   struct StringStack *result;
   int i;
-  result = cloneSS(ssa);
-  for (i = 0; i < sizeSS(ssb); i += 1)
-    pushSS(result, readAtSS(ssb, i));
+  result = stringstackClone(ssa);
+  for (i = 0; i < stringstackSize(ssb); i += 1)
+    stringstackPush(result, stringstackReadAt(ssb, i));
   return result;
 }
 
-void printSS(struct StringStack *ss)
+void stringstackPrint(struct StringStack *ss)
 {
   int i;
-  for (i = 0; i < sizeSS(ss); i += 1)
-    printf("%s\n", readAtSS(ss, i));
+  for (i = 0; i < stringstackSize(ss); i += 1)
+    printf("%s\n", stringstackReadAt(ss, i));
 }
 

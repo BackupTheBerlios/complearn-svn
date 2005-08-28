@@ -316,7 +316,7 @@ void doubleaVerify(const struct DoubleA *da);
  *  \param which node label in question
  *  \returns 1 if node label is stored in DoubleA, 0 if not
  */
-int doubleaQBIncluded(const struct DoubleA *da, qbase_t which);
+int doubleaHasQB(const struct DoubleA *da, qbase_t which);
 
 /** \brief Prints to stdout a DoubleA of IntPairs separated by spaces
  *

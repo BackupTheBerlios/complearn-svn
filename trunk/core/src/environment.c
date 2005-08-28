@@ -96,7 +96,7 @@ struct GeneralConfig *loadDefaultEnvironment()
     curEnv = gmalloc(sizeof(*curEnv));
     *curEnv = defaultConfig;
     curEnv->em = envmapNew();
-    curEnv->cmdKeeper = newStringStack();
+    curEnv->cmdKeeper = stringstackNew();
     curEnv->compressor_name = gstrdup("blocksort");
     readDefaultConfig(curEnv->em);
     updateEMToConfig(curEnv);
@@ -158,7 +158,7 @@ void saveCmd(struct GeneralConfig *ev, int argc, char **argv)
   ptr += sprintf(ptr, " # at %s", cldatetimeToHumString(cdt));
   cldatetimeFree(cdt);
   *ptr = '\0';
-  pushSS(ev->cmdKeeper, sbuf+1);
+  stringstackPush(ev->cmdKeeper, sbuf+1);
 }
 
 int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,

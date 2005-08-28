@@ -55,7 +55,7 @@ void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status)
   doubleaSetValueAt(cl->da, which, p);
 }
 
-int clnodesetNodeIncluded(const struct CLNodeSet *cl, qbase_t which)
+int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which)
 {
   return doubleaGetValueAt(cl->da, which).i;
 }

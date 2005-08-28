@@ -27,7 +27,7 @@ void clnodesetFree(struct CLNodeSet *cl);
 void clnodesetAddNode(struct CLNodeSet *cl, qbase_t which);
 void clnodesetRemoveNode(struct CLNodeSet *cl, qbase_t which);
 void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
-int clnodesetNodeIncluded(const struct CLNodeSet *cl, qbase_t which);
+int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which);
 void clnodesetPrint(struct CLNodeSet *cl);
 struct DoubleA *clnodesetToDoubleA(const struct CLNodeSet *cl);
 struct CLNodeSet *doubleaToCLNodeSet(const struct DoubleA *da);

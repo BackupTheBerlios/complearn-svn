@@ -379,7 +379,7 @@ char *stringLoad(struct DataBlock db, int fmustbe)
   return result;
 }
 
-int doubleaQBIncluded(const struct DoubleA *da, qbase_t which)
+int doubleaHasQB(const struct DoubleA *da, qbase_t which)
 {
   int i;
   for (i = 0; i < doubleaSize(da); i += 1)
@@ -390,7 +390,7 @@ int doubleaQBIncluded(const struct DoubleA *da, qbase_t which)
 
 void doubleaAddQBIfNew(struct DoubleA *da, qbase_t which)
 {
-  if (!doubleaQBIncluded(da, which)) {
+  if (!doubleaHasQB(da, which)) {
     union PCTypes p = zeropct;
     p.i = which;
     doubleaPush(da, p);

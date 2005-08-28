@@ -5,7 +5,7 @@
 struct DataBlock dumpTaggedStringStack(struct StringStack *ss, int tagnum)
 {
   struct DataBlock db, dblabels;
-  db = stringDumpStack(ss);
+  db = stringstackDump(ss);
   dblabels = package_DataBlocks(tagnum,&db,NULL);
   datablockFree(db);
   return dblabels;
@@ -41,7 +41,7 @@ struct StringStack *loadTaggedStringStack(struct DataBlock db, int fmustbe, cons
   }
   results = load_DataBlock_package(db);
   dbss = scanForTag(results, TAGNUM_STRINGSTACK);
-  ss = stringLoadStack(dbss, 1);
+  ss = stringstackLoad(dbss, 1);
   datablockFree(dbss);
   doubleaFree(results);
   return ss;
@@ -82,10 +82,10 @@ struct StringStack *cltxtLabels(char *fname)
     fprintf(stderr,"Error: no labels in this file\n");
     exit(1);
   }
-  labels = newStringStack();
+  labels = stringstackNew();
   fp = clfopen(fname, "r");
   while (fgets(linebuf, MAXLINESIZE, fp)) {
-    pushSS(labels, strtok(linebuf,DELIMS));
+    stringstackPush(labels, strtok(linebuf,DELIMS));
   }
   return labels;
 }

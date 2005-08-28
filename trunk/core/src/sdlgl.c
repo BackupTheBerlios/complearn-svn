@@ -578,7 +578,7 @@ static void draw_screen(void)
         if (treeIsQuartettable(ta, i)) {
           int colind = labelpermColIndexForNodeID(treegetlabelpermTRA(ta), i);
           static struct CLTexture texLabels[MAXTEX];
-          draw_sdltext(readAtSS(labels, colind), &texLabels[colind], p);
+          draw_sdltext(stringstackReadAt(labels, colind), &texLabels[colind], p);
         }
       }
     }
@@ -588,7 +588,7 @@ static void draw_screen(void)
   if (fShowHelp || !ta )
     draw_sdlhelp();
 
-  if ( !ta && (n = sizeSS(labels))) {
+  if ( !ta && (n = stringstackSize(labels))) {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matball_diff);
     glMaterialfv(GL_FRONT, GL_SPECULAR, matball_spec);
     glMaterialfv(GL_FRONT, GL_SHININESS, matball_shine);
@@ -643,7 +643,7 @@ int calcThreadFunc(void *unused)
       fIsCalculatingDM = 1;
       for (;;) {
         dmsize = incrdmSize(distmatglob);
-        if (dmsize < sizeSS(labels))
+        if (dmsize < stringstackSize(labels))
           addAndProcessDataBlock(distmatglob, &curFiles->db[dmsize]);
         else
           break;
@@ -911,14 +911,14 @@ static void realDoDroppedFile(char *buf)
     while ( ( cur = dbe->istar(dbe, dbi) ) ) {
       curFiles->db[curFiles->size++] = *cur;
       addAndProcessDataBlock(distmatglob, cur);
-      pushSS(labels, dbe->ilabel(dbe, dbi));
+      stringstackPush(labels, dbe->ilabel(dbe, dbi));
       dbe->istep(dbe, dbi);
       datablockFreePtr(cur);
     }
   } else {
     curFiles->db[curFiles->size++] =  fileToDataBlock(buf);
     lastpart = findLastPart(buf);
-    pushSS(labels, lastpart);
+    stringstackPush(labels, lastpart);
   }
   //gfree(buf);
 }
@@ -969,7 +969,7 @@ setRotParms(1, -1, -1, 1, 1);
 
   cam.angle1 = cam.angle2 = 0.0;
   cam.radius = 25.0;
-  labels = newStringStack();
+  labels = stringstackNew();
   glutInit(&argc, argv);
 
   /* Let's get some video information. */

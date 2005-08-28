@@ -156,38 +156,38 @@ void testEM()
 
 void testSS()
 {
-  struct StringStack *ss = newStringStack(), *nss;
+  struct StringStack *ss = stringstackNew(), *nss;
   struct DataBlock db;
   char *s;
-  pushSS(ss, "ape");
-  pushSS(ss, "bird");
-  pushSS(ss, "cat");
-  pushSS(ss, "dog");
-  db = stringDumpStack(ss);
+  stringstackPush(ss, "ape");
+  stringstackPush(ss, "bird");
+  stringstackPush(ss, "cat");
+  stringstackPush(ss, "dog");
+  db = stringstackDump(ss);
   datablockWriteToFile(&db, "baddb.dat");
   s = shiftSS(ss);
   assert(strcmp(s,"ape") == 0);
   gfreeandclear(s);
-  s = popSS(ss);
+  s = stringstackPop(ss);
   assert(strcmp(s,"dog") == 0);
   gfreeandclear(s);
-  assert(sizeSS(ss) == 2);
+  assert(stringstackSize(ss) == 2);
   s = shiftSS(ss);
   gfreeandclear(s);
-  assert(!isEmptySS(ss));
+  assert(!stringstackIsEmpty(ss));
   s = shiftSS(ss);
   gfreeandclear(s);
-  assert(isEmptySS(ss));
-  freeSS(ss);
-  nss = stringLoadStack(db, 1);
-  assert(sizeSS(nss) == 4);
+  assert(stringstackIsEmpty(ss));
+  stringstackFree(ss);
+  nss = stringstackLoad(db, 1);
+  assert(stringstackSize(nss) == 4);
   s = shiftSS(nss);
   assert(strcmp(s, "ape") == 0);
   gfreeandclear(s);
-  s = popSS(nss);
+  s = stringstackPop(nss);
   assert(strcmp(s, "dog") == 0);
   gfreeandclear(s);
-  freeSS(nss);
+  stringstackFree(nss);
   datablockFree(db);
 }
 
@@ -324,14 +324,14 @@ void testGoogle()
   double pg;
   wantedQStr = wantedQStr; /* warning stopper */
   em = envmapNew();
-  terms = newStringStack();
-  pushSS(terms, "ball");
-  pushSS(terms, "apple");
-  assert(readAtSS(terms, 0)[0] == 'b');
+  terms = stringstackNew();
+  stringstackPush(terms, "ball");
+  stringstackPush(terms, "apple");
+  assert(stringstackReadAt(terms, 0)[0] == 'b');
 
   normalizeSearchTerms(terms);
 
-  assert(readAtSS(terms, 0)[0] == 'a');
+  assert(stringstackReadAt(terms, 0)[0] == 'a');
 
   gotQStr = makeQueryString(terms);
   assert(strcmp(gotQStr, wantedQStr) == 0);
@@ -346,23 +346,23 @@ void testGoogle()
     if (gconf->fVerbose)
       printf("pg is %f\n", pg);
     assert(pg > 10 && pg < 1000000000000.0);
-    horse = newSingleSS("horse");
-    rider = newSingleSS("rider");
-    horserider = mergeSS(horse, rider);
+    horse = stringstackNewSingle("horse");
+    rider = stringstackNewSingle("rider");
+    horserider = stringstackMerge(horse, rider);
     if (gconf->fVerbose) {
       printf("[horse]: %f\n", fetchSampleSimple(horse, gkey, NULL));
       printf("[rider]: %f\n", fetchSampleSimple(rider, gkey, NULL));
       printf("[horse,rider]: %f\n", fetchSampleSimple(horserider, gkey, NULL));
     }
-    freeSS(horse);
-    freeSS(rider);
-    freeSS(horserider);
+    stringstackFree(horse);
+    stringstackFree(rider);
+    stringstackFree(horserider);
   } else {
     if (gconf->fVerbose) {
       printf("(no GoogleKey set, skipping Google test)\n");
     }
   }
-  freeSS(terms);
+  stringstackFree(terms);
   envmapFree(em);
 }
 
@@ -1040,24 +1040,24 @@ void testALTagFile(void)
   result = stringLoad(dbstr, 1);
   assert(strcmp(s,result) == 0);
 
-  ss = newStringStack();
-  pushSS(ss, "Liesl");
-  pushSS(ss, "Frederick");
-  pushSS(ss, "Louisa");
+  ss = stringstackNew();
+  stringstackPush(ss, "Liesl");
+  stringstackPush(ss, "Frederick");
+  stringstackPush(ss, "Louisa");
 
-  dbss = stringDumpStack(ss);
-  nes = stringLoadStack(dbss, 1);
-  assert(strcmp(readAtSS(nes,0), readAtSS(ss,0)) == 0);
-  assert(strcmp(readAtSS(nes,1), readAtSS(ss,1)) == 0);
-  assert(strcmp(readAtSS(nes,2), readAtSS(ss,2)) == 0);
+  dbss = stringstackDump(ss);
+  nes = stringstackLoad(dbss, 1);
+  assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
+  assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
+  assert(strcmp(stringstackReadAt(nes,2), stringstackReadAt(ss,2)) == 0);
 
   dblabels = labelsDump(ss);
   nlabels = labelsLoad(dblabels,1);
-  assert(strcmp(readAtSS(nlabels,0), readAtSS(ss,0)) == 0);
-  assert(strcmp(readAtSS(nlabels,1), readAtSS(ss,1)) == 0);
-  assert(strcmp(readAtSS(nlabels,2), readAtSS(ss,2)) == 0);
+  assert(strcmp(stringstackReadAt(nlabels,0), stringstackReadAt(ss,0)) == 0);
+  assert(strcmp(stringstackReadAt(nlabels,1), stringstackReadAt(ss,1)) == 0);
+  assert(strcmp(stringstackReadAt(nlabels,2), stringstackReadAt(ss,2)) == 0);
 
-  freeSS(nes);
+  stringstackFree(nes);
   gfreeandclear(result);
 
 #define TAGFILENAME "tagtest.clb"
@@ -1109,18 +1109,18 @@ void testALTagFile(void)
         gsl_matrix_free(ngm);
         break;
       case TAGNUM_STRINGSTACK:
-        nes = stringLoadStack(*doubleaGetValueAt(dd,i).idbp.db, 1);
-        assert(strcmp(readAtSS(nes,0), readAtSS(ss,0)) == 0);
-        assert(strcmp(readAtSS(nes,1), readAtSS(ss,1)) == 0);
-        assert(strcmp(readAtSS(nes,2), readAtSS(ss,2)) == 0);
-        freeSS(nes);
+        nes = stringstackLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
+        assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
+        assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
+        assert(strcmp(stringstackReadAt(nes,2), stringstackReadAt(ss,2)) == 0);
+        stringstackFree(nes);
         break;
       default:
         break;
     }
   }
   doubleaFree(dd);
-  freeSS(ss);
+  stringstackFree(ss);
   gsl_matrix_free(gm);
   datablockFree(dbpkg_read);
 }
@@ -1227,7 +1227,7 @@ void testReadTextDM()
   assert(dm);
   assert(labels);
   gsl_matrix_free(dm);
-  freeSS(labels);
+  stringstackFree(labels);
 }
 
 void printGSLMatrix(gsl_matrix *m){

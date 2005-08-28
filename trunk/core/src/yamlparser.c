@@ -18,12 +18,12 @@ struct StringStack *getDefaultFileList(void)
   struct StringStack *ss;
   char *homedir = gcalloc(1, 2048);
   char *homeenv;
-  ss = newStringStack();
-  pushSS(ss, SYSTEMDATAFILE);
+  ss = stringstackNew();
+  stringstackPush(ss, SYSTEMDATAFILE);
   homeenv = readHomeVar();
   if (homeenv) {
     sprintf(homedir, "%s/%s/%s", homeenv, COMPLEARNDIR, CONFIGNAME);
-    pushSS(ss, homedir);
+    stringstackPush(ss, homedir);
   }
   free(homedir);
   return ss;
@@ -43,16 +43,16 @@ int readDefaultConfig(struct EnvMap *dest)
   struct StringStack *d = getDefaultFileList();
   assert(dest);
   assert(d);
-  assert(sizeSS(d) > 0);
-  assert(sizeSS(d) < 10);
+  assert(stringstackSize(d) > 0);
+  assert(stringstackSize(d) < 10);
 
-  while (!isEmptySS(d)) {
+  while (!stringstackIsEmpty(d)) {
     char *str = shiftSS(d);
     if (doesFileExist(str))
       readSpecificFile(dest, str);
     gfreeandclear(str);
   }
-  freeSS(d);
+  stringstackFree(d);
   return CL_OK;
 }
 

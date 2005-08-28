@@ -37,20 +37,20 @@ struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe)
   tm = newTagManager(db);
 
   getCurDataBlock(tm, &cur);
-  keyparts = stringLoadStack(cur, 1);
+  keyparts = stringstackLoad(cur, 1);
   stepNextDataBlock(tm);
   getCurDataBlock(tm, &cur);
-  valparts = stringLoadStack(cur, 1);
+  valparts = stringstackLoad(cur, 1);
 
-  assert (sizeSS(keyparts)== sizeSS(valparts));
-  for (i = 0; i < sizeSS(keyparts) ; i += 1)
-    envmapSetKeyVal(result, readAtSS(keyparts,i), readAtSS(valparts,i));
+  assert (stringstackSize(keyparts)== stringstackSize(valparts));
+  for (i = 0; i < stringstackSize(keyparts) ; i += 1)
+    envmapSetKeyVal(result, stringstackReadAt(keyparts,i), stringstackReadAt(valparts,i));
 
   for (i = 0; i < doubleaSize(result->d); i += 1)
     clnodesetAddNode(result->marked, i);
 
   freeTagManager(tm);
-  freeSS(keyparts); freeSS(valparts);
+  stringstackFree(keyparts); stringstackFree(valparts);
   return result;
 }
 
@@ -58,20 +58,20 @@ struct DataBlock envmapDump(struct EnvMap *em)
 {
   struct DataBlock result;
   struct DataBlock keys, vals;
-  struct StringStack *keyparts = newStringStack();
-  struct StringStack *valparts = newStringStack();
+  struct StringStack *keyparts = stringstackNew();
+  struct StringStack *valparts = stringstackNew();
   int i;
 
   for (i = 0; i < envmapSize(em) ; i += 1) {
-    pushSS(keyparts, doubleaGetValueAt(em->d,i).sp.key);
-    pushSS(valparts, doubleaGetValueAt(em->d,i).sp.val);
+    stringstackPush(keyparts, doubleaGetValueAt(em->d,i).sp.key);
+    stringstackPush(valparts, doubleaGetValueAt(em->d,i).sp.val);
   }
-  keys = stringDumpStack(keyparts);
-  vals = stringDumpStack(valparts);
+  keys = stringstackDump(keyparts);
+  vals = stringstackDump(valparts);
 
   result = package_DataBlocks(TAGNUM_ENVMAP, &keys,&vals, NULL);
 
-  freeSS(keyparts); freeSS(valparts);
+  stringstackFree(keyparts); stringstackFree(valparts);
   datablockFree(keys); datablockFree(vals);
 
   return result;
@@ -224,12 +224,12 @@ void envmapSetKeyPrivate(struct EnvMap *em, const char *key)
 
 int envmapIsMarkedAt(struct EnvMap *em, int where)
 {
-  return clnodesetNodeIncluded(em->marked, where);
+  return clnodesetHasNode(em->marked, where);
 }
 
 int envmapIsPrivateAt(struct EnvMap *em, int where)
 {
-  return clnodesetNodeIncluded(em->private, where);
+  return clnodesetHasNode(em->private, where);
 }
 
 struct EnvMap *clbEnvMap(char *fname)
@@ -256,7 +256,7 @@ int envmapMerge(struct EnvMap *dest, struct EnvMap *src)
   for (i = 0; i < envmapSize(src); i += 1) {
     p = envmapKeyValAt(src,i);
     envmapSetKeyVal(dest, p.sp.key, p.sp.val);
-    if (clnodesetNodeIncluded(src->marked, i))
+    if (clnodesetHasNode(src->marked, i))
       envmapSetKeyMarked(dest, p.sp.key);
   }
   return CL_OK;

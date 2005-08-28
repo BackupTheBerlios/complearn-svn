@@ -184,12 +184,12 @@ int main(int argc, char **argv)
     assert(ss);
     if (cur->cmdKeeper) {
       cmd = shiftSS(cur->cmdKeeper);
-      freeSS(cur->cmdKeeper);
+      stringstackFree(cur->cmdKeeper);
       cur->cmdKeeper = NULL;
     }
     cur->cmdKeeper = ss;
     if (cmd)
-      pushSS(cur->cmdKeeper, cmd);
+      stringstackPush(cur->cmdKeeper, cmd);
     envmapMerge(cur->em, em);
     dm = clbDistMatrix(fname);
     labels = clbLabels(fname);
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
     if (!treeIsQuartettable(ub, nodenum))
       continue;
     int indnum = labelpermColIndexForNodeID(lph, nodenum);
-    printf("%s\n", readAtSS(labels, indnum));
+    printf("%s\n", stringstackReadAt(labels, indnum));
   }
   printf("Done.\n");
   doubleaFree(res);
@@ -241,7 +241,7 @@ int main(int argc, char **argv)
   freeTreeMaster(tm);
   gslmatrixFree(dm);
   if (labels) {
-    freeSS(labels);
+    stringstackFree(labels);
   }
   return 0;
 #else

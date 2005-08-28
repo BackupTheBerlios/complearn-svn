@@ -93,9 +93,9 @@ double calculateMbase(const char *daystr, const char *gkey)
   double acc = 0.0;
   int i;
   for (i = 0; refWords[i]; i += 1) {
-    struct StringStack *terms = newSingleSS(refWords[i]);
+    struct StringStack *terms = stringstackNewSingle(refWords[i]);
     acc += fetchSampleSimple(terms, gkey, daystr);
-    freeSS(terms);
+    stringstackFree(terms);
   }
   return acc;
 }
@@ -133,19 +133,19 @@ static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 
 
 
-  terms = newStringStack();
+  terms = stringstackNew();
 
   memset(str, 0, src.size+1);
   memcpy(str,src.ptr, src.size);
 //  printf("Str is <%s>\n", str);
   for (cur = strtok(str, "\r\n"); cur ; cur = strtok(NULL, "\r\n"))
-    pushSS(terms, cur);
+    stringstackPush(terms, cur);
   pagecount = fetchSampleSimple(terms, sci->gkey, NULL);
   if (pagecount < 1) /* probably 0 */
     pagecount = NOTFOUNDWEIGHT;   /* a small amount given just for asking */
   compsize = -log(pagecount/sci->m)/log(2.0);
 
-  freeSS(terms);
+  stringstackFree(terms);
   gfreeandclear(str);
 	return (double) compsize;
 }

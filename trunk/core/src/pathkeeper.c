@@ -275,7 +275,7 @@ void walkTree(struct AdjAdaptor *aa,
       cur = doubleaShift(border).i;
 /*    assert(cur >= 0); */
     assert(cur < adjaSize(aa));
-    if (!clnodesetNodeIncluded(done, cur)) {
+    if (!clnodesetHasNode(done, cur)) {
       union PCTypes p = zeropct;
       int i;
       int retval;
@@ -292,10 +292,10 @@ void walkTree(struct AdjAdaptor *aa,
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];
-        if (!clnodesetNodeIncluded(done, p.i))
+        if (!clnodesetHasNode(done, p.i))
           doubleaPush(nb, p);
       }
-      if (flipped && clnodesetNodeIncluded(flipped, cur)) {
+      if (flipped && clnodesetHasNode(flipped, cur)) {
         if (nsize < 2) {
           //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {

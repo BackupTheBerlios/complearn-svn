@@ -139,7 +139,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   struct DataBlock dbckey;
 
   dbroot = stringToDataBlock(ROOTSYM); /* FSA01 */
-  normed = cloneSS(terms);                    /* FSA02 */
+  normed = stringstackClone(terms);                    /* FSA02 */
   normalizeSearchTerms(normed);
 
   ckey = makeCacheKey(daystr, normed);
@@ -149,7 +149,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   if (db) {
     assert(db->size == sizeof(struct GCSample));
     *val = convertCacheVal(*db);
-    freeSS(normed);                       /* FSF02:1/2 */
+    stringstackFree(normed);                       /* FSF02:1/2 */
     datablockFreePtr(db);
     datablockFree(dbroot);                /* FSF01:1/2 */
     datablockFree(dbckey);                /* FSF03:1/2 */
@@ -170,7 +170,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
     newentry = makeCacheVal(pgc, *lastdbval, makeCacheKey(ROOTSYM, terms));
     cldbstore(gc->samp, dbckey, newentry);
     cldbstore(gc->samp, dblastkey, dbckey);
-    freeSS(normed);                          /* FSF02:2/2 */
+    stringstackFree(normed);                          /* FSF02:2/2 */
     datablockFree(dblastkey);
     datablockFree(newentry);
     datablockFree(dbroot);                /* FSF01:2/2 */

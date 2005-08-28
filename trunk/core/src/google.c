@@ -12,7 +12,7 @@ SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method);
 
 void normalizeSearchTerms(struct StringStack *terms)
 {
-  sortSS(terms);
+  stringstackSort(terms);
 }
 
 const char *makeQueryString(struct StringStack *terms)
@@ -20,9 +20,9 @@ const char *makeQueryString(struct StringStack *terms)
   static char buf[2536];
   int sb = 0;
   int i;
-  for (i = 0; i < sizeSS(terms); ++i) {
+  for (i = 0; i < stringstackSize(terms); ++i) {
     assert(sb + 100 < sizeof(buf));
-    sb += sprintf(buf+sb, "%s+\"%s\"",i==0?"":" ",readAtSS(terms, i));
+    sb += sprintf(buf+sb, "%s+\"%s\"",i==0?"":" ",stringstackReadAt(terms, i));
   }
   return buf;
 }
@@ -112,8 +112,8 @@ double getPageCount(struct StringStack *terms, const char *gkey)
 {
   char *word;
 
-  if (sizeSS(terms) == 1) {
-    word = readAtSS(terms, 0);
+  if (stringstackSize(terms) == 1) {
+    word = stringstackReadAt(terms, 0);
     if (word[1] == '\0' && (word[0] == 'm' || word[0] == 'M')) {
       const char *daystr;
       struct CLDateTime *cldt;

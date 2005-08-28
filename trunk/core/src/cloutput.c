@@ -124,12 +124,12 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
 #if GSL_RDY
   int n1c, n2c;
   struct DataBlockEnumerationIterator *dei = a->newenumiter(a);
-  struct StringStack *labels = newStringStack();
+  struct StringStack *labels = stringstackNew();
   struct DataBlock *curdb;
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   gsl_matrix *gres;
   while ( ( curdb = a->istar(a, dei) ) ) {
-    pushSS(labels, a->ilabel(a, dei));
+    stringstackPush(labels, a->ilabel(a, dei));
     a->istep(a, dei);
     datablockFreePtr(curdb);
   }
@@ -165,7 +165,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     printf(rowBegin);
     if (cur->fShowLabels) {
       printf(elemBegin);
-      printf("%s", readAtSS(labels, n1c));
+      printf("%s", stringstackReadAt(labels, n1c));
       printf(elemEnd);
     }
     for (n2c = 0; n2c < gres->size2; n2c++) {
@@ -176,7 +176,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     printf(rowEnd);
   }
   gsl_matrix_free(gres);
-	freeSS(labels);
+	stringstackFree(labels);
 #else
 	assert ( 0 && "GSL not supported");
 	exit(1);
@@ -188,7 +188,7 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
     *startparamstr, char *endparamstr)
 {
   int i;
-  struct StringStack *ss = newStringStack();
+  struct StringStack *ss = stringstackNew();
   char param[PARAMLINESIZE];
 
   for (i = 0; i < envmapSize(em); i += 1) {
@@ -196,11 +196,11 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
     p = envmapKeyValAt(em, i);
     if (envmapIsMarkedAt(em, i) && !envmapIsPrivateAt(em, i) ) {
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
-      pushSS(ss, param);
+      stringstackPush(ss, param);
     }
   }
   sprintf(param,"%sUsername: %s%s", startparamstr, getUsername(), endparamstr);
-  pushSS(ss,param);
+  stringstackPush(ss,param);
   return ss;
 }
 
@@ -224,54 +224,54 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   dasize = adjaSize(ad);
   assert(dasize > 0);
   assert(doubleaSize(nodes) == dasize);
-  dotacc = newStringStack();
+  dotacc = stringstackNew();
   assert(dotacc);
   assert(labelperm);
 
-  pushSS(dotacc, "graph \"tree\" {");
+  stringstackPush(dotacc, "graph \"tree\" {");
   if (cur && cur->fSuppressVisibleDetails) {
     startparamstr = "/* "; endparamstr = " */";
   } else {
-    pushSS(dotacc, "label=\"\\");
+    stringstackPush(dotacc, "label=\"\\");
     startparamstr = ""; endparamstr = "\\n\\";
   }
 
   sprintf(con1, "%s%s version %s%s", startparamstr, PACKAGE_NAME,
       PACKAGE_VERSION, endparamstr);
-  pushSS(dotacc, con1);
+  stringstackPush(dotacc, con1);
   if (score != 0.0) {
     sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
         endparamstr);
-    pushSS(dotacc, con1);
+    stringstackPush(dotacc, con1);
   }
   if (cur) {
     params = convertParamsToStringStack(cur->em, startparamstr, endparamstr);
-    for (i = 0; i < sizeSS(params); i += 1)
-      pushSS(dotacc, readAtSS(params,i));
+    for (i = 0; i < stringstackSize(params); i += 1)
+      stringstackPush(dotacc, stringstackReadAt(params,i));
   }
 
   if (!(cur && cur->fSuppressVisibleDetails))
-    pushSS(dotacc, "\";");
+    stringstackPush(dotacc, "\";");
 
   if (cur) {
-    for (i = 0; i < sizeSS(cur->cmdKeeper); i += 1) {
-      char *cmd = readAtSS(cur->cmdKeeper, i);
+    for (i = 0; i < stringstackSize(cur->cmdKeeper); i += 1) {
+      char *cmd = stringstackReadAt(cur->cmdKeeper, i);
       sprintf(con1, "/* Step %d: %s */", i+1, cmd);
-      pushSS(dotacc, con1);
+      stringstackPush(dotacc, con1);
     }
   }
   if (tm) {
     int t0, tf, dt;
     if (getStartTimeTM(tm)) {
       sprintf(con1, "/* start time %s */", cldatetimeToHumString(getStartTimeTM(tm)));
-      pushSS(dotacc, con1);
+      stringstackPush(dotacc, con1);
     }
     if (getEndTimeTM(tm)) {
       sprintf(con1, "/* end   time %s */", cldatetimeToHumString(getEndTimeTM(tm)));
-      pushSS(dotacc, con1);
+      stringstackPush(dotacc, con1);
     }
     sprintf(con1, "/* total trees: %d */", totalTreesExamined(tm));
-    pushSS(dotacc, con1);
+    stringstackPush(dotacc, con1);
     if (getEndTimeTM(tm) && getStartTimeTM(tm)) {
       t0 = cldatetimeToInt(getStartTimeTM(tm));
       tf = cldatetimeToInt(getEndTimeTM(tm));
@@ -279,16 +279,16 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
       if (dt > 0) {
         sprintf(con1, "/* trees / sec : %f */", totalTreesExamined(tm) /
             (double) dt);
-        pushSS(dotacc, con1);
+        stringstackPush(dotacc, con1);
       }
     }
   }
   sprintf(con1,"/* Hostname: %s */", getHostname());
-  pushSS(dotacc,con1);
+  stringstackPush(dotacc,con1);
   sprintf(con1,"/* Machine desc: %s */", getUTSName());
-  pushSS(dotacc,con1);
+  stringstackPush(dotacc,con1);
   sprintf(con1,"/* PID: %d */", getPID());
-  pushSS(dotacc,con1);
+  stringstackPush(dotacc,con1);
 
   int rootnode = -1;
   for (i = 0; i < dasize; i += 1) {
@@ -301,13 +301,13 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
       rootnode = nodenum;
     }
     if (treeIsQuartettable(ta, nodenum) && labels)
-      str = readAtSS(labels, labelpermColIndexForNodeID(labelperm,nodenum));
+      str = stringstackReadAt(labels, labelpermColIndexForNodeID(labelperm,nodenum));
     else {
       sprintf(labbuf, "%c%d", treeIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
       str = labbuf;
     }
     sprintf(lab,"%d [label=\"%s\"%s];", nodenum, str, extrastr);
-    pushSS(dotacc, lab);
+    stringstackPush(dotacc, lab);
   }
   for (i = 0; i < dasize; i += 1) {
     int n1 = doubleaGetValueAt(nodes, i).i;
@@ -322,15 +322,15 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
       if (n1 > n2 && adjaGetConState(ad, n1, n2)) {
         char buf[4096];
         sprintf(buf, "%s -- %s [weight=\"2\"];", con1, con2);
-        pushSS(dotacc, buf);
+        stringstackPush(dotacc, buf);
       }
     }
   }
   if (rootnode != -1) {
     sprintf(lab,"%d [label=\"%s\",color=white,fontcolor=black];", 9999, "root");
-    pushSS(dotacc, lab);
+    stringstackPush(dotacc, lab);
     sprintf(lab,"%d -- %d;", 9999, rootnode);
-    pushSS(dotacc, lab);
+    stringstackPush(dotacc, lab);
   }
   /* Perimeter walker */
   if (flips)
@@ -343,26 +343,26 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
       int dmy = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.y);
       double disthere = gsl_matrix_get(dm, dmx, dmy);
       sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
-      pushSS(dotacc, lab);
+      stringstackPush(dotacc, lab);
       sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.x);
-      pushSS(dotacc, lab);
+      stringstackPush(dotacc, lab);
       sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.y);
-      pushSS(dotacc, lab);
+      stringstackPush(dotacc, lab);
     }
     doubleaFree(dapairs);
   }
-  pushSS(dotacc, "}");
+  stringstackPush(dotacc, "}");
   result = gcalloc(sizeof(struct DataBlock), 1);
   result->size = 0;
-  for (i = 0; i < sizeSS(dotacc); i += 1)
-    result->size += strlen(readAtSS(dotacc, i)) + 1; /* for the \n */
+  for (i = 0; i < stringstackSize(dotacc); i += 1)
+    result->size += strlen(stringstackReadAt(dotacc, i)) + 1; /* for the \n */
   result->ptr = gcalloc(result->size+1, 1); /* extra byte for temporary \0 */
   j = 0;
-  for (i = 0; i < sizeSS(dotacc); i += 1)
-    j += sprintf((char *) (result->ptr + j), "%s\n", readAtSS(dotacc, i));
-  freeSS(dotacc);
+  for (i = 0; i < stringstackSize(dotacc); i += 1)
+    j += sprintf((char *) (result->ptr + j), "%s\n", stringstackReadAt(dotacc, i));
+  stringstackFree(dotacc);
   if (cur && params)
-    freeSS(params);
+    stringstackFree(params);
   doubleaFree(nodes);
   return result;
 }

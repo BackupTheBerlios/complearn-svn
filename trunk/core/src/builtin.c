@@ -106,7 +106,7 @@ static void addIfPresent(struct StringStack *ss, const char *name)
   struct CompAdaptor *ca;
   ca = compaLoadBuiltin(name);
   if (ca) {
-    pushSS(ss,compaShortName(ca));
+    stringstackPush(ss,compaShortName(ca));
     compaFree(ca);
   }
 }
@@ -114,7 +114,7 @@ static void addIfPresent(struct StringStack *ss, const char *name)
 struct StringStack *compaListBuiltin(void)
 {
   struct StringStack *ss;
-  ss = newStringStack();
+  ss = stringstackNew();
   addIfPresent(ss, "zlib");
   addIfPresent(ss, "bzip");
   addIfPresent(ss, "google");
@@ -127,6 +127,6 @@ void compaPrintBuiltin(void)
   struct StringStack *sup;
   printf("Your supported compressors are:\n\n");
   sup = compaListBuiltin();
-  printSS(sup);
-  freeSS(sup);
+  stringstackPrint(sup);
+  stringstackFree(sup);
 }

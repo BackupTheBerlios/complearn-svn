@@ -21,7 +21,7 @@ struct StringStack;
  *  Allocates memory and returns pointer to new StringStack object, which
  *  contains 0 elemments.
  */
-struct StringStack *newStringStack(void);
+struct StringStack *stringstackNew(void);
 
 /** \brief Returns pointer to a new StringStack and add one element
  *
@@ -30,18 +30,18 @@ struct StringStack *newStringStack(void);
  *  \param str a string to put in the StringStack
  *  \return pointer to the new StringStack
  */
-struct StringStack *newSingleSS(const char *str);
+struct StringStack *stringstackNewSingle(const char *str);
 
 /** \brief Loads a StringStack from a serialized format inside a DataBlock
  *
  * Allocates memory and returns a pointer to a deserialized StringStack
  * instance.  The DataBlock passed in to this function should have been made
- * using a stringDumpStack call earlier.
+ * using a stringstackDump call earlier.
  *
  * \param db a DataBlock containing the serialized format StringStack
  * \return pointer to the newly allocated deserialized StringStack
  */
-struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe);
+struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe);
 
 /** \brief Dumps a StringStack into a serialized format and returns a DataBlock
  *
@@ -51,46 +51,46 @@ struct StringStack *stringLoadStack(struct DataBlock db, int fmustbe);
  * \param ss pointer to the StringStack instance to be saved / serialized
  * \return DataBlock containing the serialized information
  */
-struct DataBlock stringDumpStack(const struct StringStack *ss);
+struct DataBlock stringstackDump(const struct StringStack *ss);
 
 /** \brief Duplicates StringStack and returns a pointer to a new StringStack.
  *  \param ss StringStack to be duplicated
  *  \return pointer to new StringStack
  */
-struct StringStack *cloneSS(struct StringStack *ss);
+struct StringStack *stringstackClone(struct StringStack *ss);
 
 /** \brief Frees StringStack object from memory.
  *  \param ss StringStack
  *  \return CL_OK on success
  */
-int freeSS(struct StringStack *ss);
+int stringstackFree(struct StringStack *ss);
 
 /** \brief Adds new element to StringStack.
  *  \param ss StringStack
  *  \param string
  *  \return CL_OK on success; CL_ERRFULL if stack has reached MAX_SS_SIZE
  */
-int pushSS(struct StringStack *ss, const char *str);
+int stringstackPush(struct StringStack *ss, const char *str);
 
 /** \brief Returns true value if StringStack is empty
  *  \param ss StringStack
  *  \return true if StringStack contains 0 elements
  */
-int isEmptySS(struct StringStack *ss);
+int stringstackIsEmpty(struct StringStack *ss);
 
 /** \brief Returns number of elements in StringStack.
  *  \param ss StringStack
  *  \return size
  */
-int sizeSS(const struct StringStack *ss);
+int stringstackSize(const struct StringStack *ss);
 
 /** \brief Sorts a StringStack lexicographically.
  *  \param ss StringStack
  *  \return nothing
  */
-int sortSS(struct StringStack *ss);
+int stringstackSort(struct StringStack *ss);
 
-int unshiftSS(struct StringStack *ss, const char *str);
+int stringstackUnshift(struct StringStack *ss, const char *str);
 
 /** \brief Removes and returns string from bottom of StringStack.
  *
@@ -110,26 +110,26 @@ char *shiftSS(struct StringStack *ss);
  *  \param ss StringStack
  *  \return pointer to string
  */
-char *popSS(struct StringStack *ss);
+char *stringstackPop(struct StringStack *ss);
 
 /** \brief Returns element at index i.
  *  \param ss StringStack
  *  \param i string array index
  *  \return pointer to string
  */
-char *readAtSS(struct StringStack *ss, int i);
+char *stringstackReadAt(struct StringStack *ss, int i);
 
 /** \brief merges two StringStacks.
  *  \param ssa StringStack
  *  \param ssb StringStack
  *  \return pointer to new StringStack containing combination
  */
-struct StringStack *mergeSS(struct StringStack *ssa, struct StringStack *ssb);
+struct StringStack *stringstackMerge(struct StringStack *ssa, struct StringStack *ssb);
 
 /** \brief Prints the contents of a StringStack, newline separated, to stdout
  *  \param ss pointer to StringStack
  */
-void printSS(struct StringStack *ss);
+void stringstackPrint(struct StringStack *ss);
 
 #endif
 

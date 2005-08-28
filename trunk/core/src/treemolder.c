@@ -97,7 +97,7 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
     do {
       whichNode = rand() % tm->nodecount;
     } while (!treeIsFlippable(tm->ta, whichNode));
-    oldStatus = clnodesetNodeIncluded(dst, whichNode);
+    oldStatus = clnodesetHasNode(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
     clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
   } while ((rand() % 2) == 0);

@@ -52,7 +52,7 @@ static VALUE rbcompa_names(VALUE kl)
   VALUE result;
   struct StringStack *ss = compaListBuiltin();
   result = convertStringStackToRubyArray(ss);
-  freeSS(ss);
+  stringstackFree(ss);
   return result;
 }
 
