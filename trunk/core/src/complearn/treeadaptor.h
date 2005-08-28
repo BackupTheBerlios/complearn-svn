@@ -198,4 +198,5 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
  */
 struct DoubleA *treeperimpairsTRA(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 
+struct DoubleA *getTreeNodesTRA(struct TreeAdaptor *ta);
 #endif

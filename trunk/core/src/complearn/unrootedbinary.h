@@ -231,7 +231,6 @@ struct LabelPerm *getLabelPerm(struct UnrootedBinary *ub);
 struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub);
 
 struct TreeAdaptor *loadNewUnrootedTRA(int howBig);
-struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub);
 
 #endif
 

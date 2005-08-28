@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub);
 static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub);
 
 struct UnrootedBinary {
@@ -435,7 +436,7 @@ struct TreeAdaptor *loadNewUnrootedTRA(int howBig)
   return loadUBTRA(newUnrootedBinary(howBig));
 }
 
-struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
+static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
 {
   struct TreeAdaptor c = {
     ptr:NULL,

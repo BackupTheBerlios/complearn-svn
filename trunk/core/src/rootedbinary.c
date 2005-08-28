@@ -8,6 +8,7 @@
 #include <gsl/gsl_randist.h>
 #endif
 
+static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb);
 static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb);
 
 struct RootedBinary {
@@ -18,7 +19,7 @@ struct RootedBinary {
   struct AdjAdaptor *aa;
 };
 
-struct AdjAdaptor *getAdjAdaptorForRB(struct RootedBinary *rb)
+struct AdjAdaptor *rootedbinaryAdjAdaptor(struct RootedBinary *rb)
 {
   return rb->aa;
 }
@@ -52,7 +53,7 @@ static int verifyTree(struct RootedBinary *rb)
 {
   int i, j;
   int nc;
-  struct DoubleA *result = getTreeNodesRB(rb);
+  struct DoubleA *result = rootedbinaryNodes(rb);
   if (doubleaSize(result) != rb->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
       doubleaSize(result), rb->nodecount);
@@ -217,17 +218,17 @@ static void mutateComplex(struct RootedBinary *rb)
   }
 }
 
-int getLastMutationCountRB(const struct RootedBinary *rb)
+int rootedbinaryLastMutationCount(const struct RootedBinary *rb)
 {
   return rb->mc;
 }
 
-void doComplexMutationRB(struct RootedBinary *rb)
+void rootedbinaryComplexMutation(struct RootedBinary *rb)
 {
   mutateComplex(rb);
 }
 
-struct RootedBinary *newRootedBinary(int howManyLeaves)
+struct RootedBinary *rootedbinaryNew(int howManyLeaves)
 {
   int i;
   struct DoubleA *leaves;
@@ -249,7 +250,7 @@ struct RootedBinary *newRootedBinary(int howManyLeaves)
   return rb;
 }
 
-struct RootedBinary *cloneTreeRB(const struct RootedBinary *rb)
+struct RootedBinary *rootedbinaryClone(const struct RootedBinary *rb)
 {
   struct RootedBinary *cp;
   cp = gcalloc(sizeof(*cp), 1);
@@ -263,37 +264,37 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *rb)
 }
 
 
-int isQuartetableNodeRB(const struct RootedBinary *rb, qbase_t which)
+int rootedbinaryIsQuartetableNode(const struct RootedBinary *rb, qbase_t which)
 {
   return adjaNeighborCount(rb->aa, which) < 3;
 }
 
-int isFlippableNodeRB(struct RootedBinary *rb, qbase_t which)
+int rootedbinaryIsFlippableNode(struct RootedBinary *rb, qbase_t which)
 {
   int nc = adjaNeighborCount(rb->aa, which);
 // return nc != 1;
   return nc == 2 || nc == 3;
 }
 
-qbase_t getStartingNodeRB(const struct RootedBinary *rb)
+qbase_t rootedbinaryStartingNode(const struct RootedBinary *rb)
 {
   return 0;
 }
 
-struct DoubleA *getTreeNodesRB(const struct RootedBinary *rb)
+struct DoubleA *rootedbinaryNodes(const struct RootedBinary *rb)
 {
   union PCTypes p = zeropct;
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   doubleaPush(border, p);
-  walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), result, border, done, 0, NULL);
+  walkTree(rootedbinaryAdjAdaptor((struct RootedBinary *) rb), result, border, done, 0, NULL);
   doubleaFree(border);
   clnodesetFree(done);
   return result;
 }
 
-struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNodeSet *flips)
+struct DoubleA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips)
 {
   struct DoubleA *pairs = doubleaNew();
   union PCTypes p = zeropct;
@@ -305,13 +306,13 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   p.i = rb->root; /* start at root */
   doubleaPush(border, p);
-  walkTree(getAdjAdaptorForRB((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
+  walkTree(rootedbinaryAdjAdaptor((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
 
   for (i = 0;i < doubleaSize(traversalseq); i += 1) {
     int curnode = doubleaGetValueAt(traversalseq, i).i;
     if (curnode == rb->root)
       continue;
-    if (isQuartetableNodeRB(rb, curnode)) {
+    if (rootedbinaryIsQuartetableNode(rb, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
       if (lastval != -1) {
@@ -327,7 +328,7 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
   return pairs;
 }
 
-void freeRootedBinaryRB(struct RootedBinary *rb)
+void rootedbinaryFreeRB(struct RootedBinary *rb)
 {
   labelpermFree(rb->labelperm);
   adjaFree(rb->aa);
@@ -340,7 +341,7 @@ static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb)
   int i;
   struct DoubleA *result = doubleaNew();
   for (i = 0; i < rb->nodecount; i += 1) {
-    if (isQuartetableNodeRB(rb, i) == 1) {
+    if (rootedbinaryIsQuartetableNode(rb, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
       doubleaPush(result, p);
@@ -349,7 +350,7 @@ static struct DoubleA *getLabellableNodes(const struct RootedBinary *rb)
   return result;
 }
 
-struct DoubleA *getLeafLabelsRB(const struct RootedBinary *rb)
+struct DoubleA *rootedbinaryLeafLabels(const struct RootedBinary *rb)
 {
   struct DoubleA *result = doubleaNew();
   int i;
@@ -361,7 +362,7 @@ struct DoubleA *getLeafLabelsRB(const struct RootedBinary *rb)
   return result;
 }
 
-struct LabelPerm *getLabelPermRB(struct RootedBinary *rb)
+struct LabelPerm *rootedbinaryLabelPerm(struct RootedBinary *rb)
 {
   return rb->labelperm;
 }
@@ -371,7 +372,7 @@ static struct TreeAdaptor *rb_treeclone(struct TreeAdaptor *ta)
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
   struct TreeAdaptor *result = gmalloc(sizeof(*result) * 1);
   *result = *ta;
-  result->ptr = cloneTreeRB(rb);
+  result->ptr = rootedbinaryClone(rb);
   return result;
 }
 
@@ -384,7 +385,7 @@ static void rb_treemutate(struct TreeAdaptor *ta)
 static void rb_treefree(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  freeRootedBinaryRB(rb);
+  rootedbinaryFreeRB(rb);
   rb = NULL;
   memset(ta, 0, sizeof(*ta));
   gfreeandclear(ta);
@@ -393,19 +394,19 @@ static void rb_treefree(struct TreeAdaptor *ta)
 static struct LabelPerm *rb_treegetlabelperm(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return getLabelPermRB(rb);
+  return rootedbinaryLabelPerm(rb);
 }
 
 static struct AdjAdaptor *rb_treegetadja(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return getAdjAdaptorForRB(rb);
+  return rootedbinaryAdjAdaptor(rb);
 }
 
 static int rb_treeisquartetable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return isQuartetableNodeRB(rb, which);
+  return rootedbinaryIsQuartetableNode(rb, which);
 }
 
 static int rb_treeisroot(struct TreeAdaptor *ta, int which)
@@ -417,27 +418,27 @@ static int rb_treeisroot(struct TreeAdaptor *ta, int which)
 int rb_treeisflippable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return isFlippableNodeRB(rb, which);
+  return rootedbinaryIsFlippableNode(rb, which);
 }
 
 struct DoubleA *rb_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return getPerimeterPairsRB(rb, flips);
+  return rootedbinaryPerimeterPairs(rb, flips);
 }
 
 int rb_treemutecount(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return getLastMutationCountRB(rb);
+  return rootedbinaryLastMutationCount(rb);
 }
 
-struct TreeAdaptor *loadNewRootedTRA(int howBig)
+struct TreeAdaptor *treeaLoadRootedBinary(int howBig)
 {
-  return loadRBTRA(newRootedBinary(howBig));
+  return loadRBTRA(rootedbinaryNew(howBig));
 }
 
-struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)
+static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)
 {
   struct TreeAdaptor c = {
     ptr:NULL,

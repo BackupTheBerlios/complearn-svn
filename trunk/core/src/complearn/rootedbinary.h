@@ -30,13 +30,13 @@ struct StringStack;
  * caterpillar-style pattern.  To get random variation, use the
  * doComplexMutation function with the cloneTree function.
  * This function allocates memory which must eventually be freed with
- * freeRootedBinary.
+ * rootedbinaryFree.
  *
  *  \param howManyLeaves an integer >=4 indicating how many leaves the tree
  *  should have.
  *  \return a pointer to a newly allocated tree
  */
-struct RootedBinary *newRootedBinary(int howManyLeaves);
+struct RootedBinary *rootedbinaryNew(int howManyLeaves);
 
 /** \brief Applies a complex mutation to a tree.
  *
@@ -52,18 +52,18 @@ struct RootedBinary *newRootedBinary(int howManyLeaves);
  * \param ub pointer to the RootedBinary to be modified.
  * \return nothing
  */
-void doComplexMutationRB(struct RootedBinary *ub);
+void rootedbinaryComplexMutation(struct RootedBinary *ub);
 
 /** \brief Clones an RootedBinary tree, allocating new memory for the copy
  *
  * This function copies an RootedBinary tree object.  This can be used
  * in conjunction with doComplexMutation for hill-climbing search.
  * This function allocates memory which must eventually be freed with
- * freeRootedBinary.
+ * rootedbinaryFree.
  * \param ub pointer to the RootedBinary that must be cloned
  * \return pointer to the new copy of the original tree
  */
-struct RootedBinary *cloneTreeRB(const struct RootedBinary *ub);
+struct RootedBinary *rootedbinaryClone(const struct RootedBinary *ub);
 
 /** \brief Indicates whether a given node identifier is a place for
  * a quartet-leaf object-label.
@@ -76,7 +76,7 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *ub);
  * \param which qbase_t indicating the node identifier under investigation
  * \return an integer value to be interpretted in a boolean context
  */
-int isQuartetableNodeRB(const struct RootedBinary *ub, qbase_t which);
+int rootedbinaryIsQuartetableNode(const struct RootedBinary *ub, qbase_t which);
 
 /** \brief Indicates whether a given node has orderable children.
  *
@@ -89,7 +89,7 @@ int isQuartetableNodeRB(const struct RootedBinary *ub, qbase_t which);
  * \param which qbase_t indicating the node identifier under investigation
  * \return an integer value to be interpretted in a boolean context
  */
-int isFlippableNodeRB(struct RootedBinary *ub, qbase_t which);
+int rootedbinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
 
 /** \brief Returns the first node returned in tree traversals
  *
@@ -99,7 +99,7 @@ int isFlippableNodeRB(struct RootedBinary *ub, qbase_t which);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return qbase_t indicating which node is first traversed in this tree
  */
-qbase_t getStartingNodeRB(const struct RootedBinary *ub);
+qbase_t rootedbinaryStartingNode(const struct RootedBinary *ub);
 
 /** \brief Returns a DoubleA contained an ordered traversal of all
  * the nodes in the tree.
@@ -120,7 +120,7 @@ qbase_t getStartingNodeRB(const struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return pointer to a DoubleA holding the list of all tree nodes
  */
-struct DoubleA *getTreeNodesRB(const struct RootedBinary *ub);
+struct DoubleA *rootedbinaryNodes(const struct RootedBinary *ub);
 
 
 /** \brief Returns a list of all adjacent border-pair node identifiers
@@ -147,7 +147,7 @@ struct DoubleA *getTreeNodesRB(const struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return pointer to a DoubleA holding the list of all perimeter pairs
  */
-struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNodeSet *flips);
+struct DoubleA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips);
 
 /** \brief tests to determine if two trees are identical
  *
@@ -168,12 +168,12 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
  * This function frees the memory associated with an RootedBinary.
  * After calling this function it is safest to set the pointer to NULL,
  * as you shouldn't try to use it after deallocation.  This function must
- * be called for every time newRootedBinary, cloneTree, or loadTree is called.
+ * be called for every time rootedbinaryNew, cloneTree, or loadTree is called.
  *
  * \param ub pointer to the RootedBinary that must be freed.
  * \return nothing
  */
-void freeRootedBinary(struct RootedBinary *ub);
+void rootedbinaryFree(struct RootedBinary *ub);
 
 /** \brief Returns a permutation array holding the column-index to leaf-node
  * identifier mapping in effect for this tree.
@@ -188,7 +188,7 @@ void freeRootedBinary(struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary to be examined
  * \return pointer to a DoubleA containing leaf label positions
  */
-struct DoubleA *getLeafLabelsRB(const struct RootedBinary *ub);
+struct DoubleA *rootedbinaryLeafLabels(const struct RootedBinary *ub);
 
 /** \brief This function returns the number of simple mutations used in
  * the most recent complex mutation step taken with doComplexMutation
@@ -196,7 +196,7 @@ struct DoubleA *getLeafLabelsRB(const struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary to be path queried
  * \return integer indicating the number of simple mutation steps last used
  */
-int getLastMutationCountRB(const struct RootedBinary *ub);
+int rootedbinaryLastMutationCount(const struct RootedBinary *ub);
 
 /** \brief Indicates whether or not a given pair of nodes are connected.
  *
@@ -208,14 +208,13 @@ int getLastMutationCountRB(const struct RootedBinary *ub);
  * \param b second node identifier
  * \return integer to be interpretted in a boolean context
  */
-int isConnectedRB(const struct RootedBinary *ub, qbase_t a, qbase_t b);
+int rootedbinaryAreNodesConnected(const struct RootedBinary *ub, qbase_t a, qbase_t b);
 
-struct LabelPerm *getLabelPermRB(struct RootedBinary *ub);
+struct LabelPerm *rootedbinaryLabelPerm(struct RootedBinary *ub);
 
 
-struct AdjAdaptor *getAdjAdaptorForRB(struct RootedBinary *ub);
+struct AdjAdaptor *rootedbinaryAdjAdaptor(struct RootedBinary *ub);
 
-struct TreeAdaptor *loadNewRootedTRA(int howBig);
-struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb);
+struct TreeAdaptor *treeaLoadRootedBinary(int howBig);
 #endif
 

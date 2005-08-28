@@ -785,9 +785,8 @@ void testQuartet(void)
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
-    struct UnrootedBinary *ct = newUnrootedBinary(labelcount);
-    struct TreeAdaptor *ta = loadUBTRA(ct);
-    struct DoubleA *n = getTreeNodes(ct, NULL);
+    struct TreeAdaptor *ta = loadNewUnrootedTRA(labelcount);
+    struct DoubleA *n = getTreeNodesTRA(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -1156,7 +1155,7 @@ void testLabelPerm(void)
 
 void testPerimPairs()
 {
-  struct TreeAdaptor *tra = loadNewRootedTRA(6);
+  struct TreeAdaptor *tra = treeaLoadRootedBinary(6);
   struct DoubleA *da;
   struct CLNodeSet *clns = clnodesetNew(9);
   clnodesetAddNode(clns, 2);
@@ -1177,9 +1176,8 @@ void testTreeMolder()
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
-    struct UnrootedBinary *ct = newUnrootedBinary(labelcount);
-    struct TreeAdaptor *ta = loadUBTRA(ct);
-    struct DoubleA *n = getTreeNodes(ct, NULL);
+    struct TreeAdaptor *ta = treeaLoadRootedBinary(labelcount);
+    struct DoubleA *n = getTreeNodesTRA(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;

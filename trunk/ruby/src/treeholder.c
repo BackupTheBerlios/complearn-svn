@@ -95,7 +95,7 @@ VALUE rbth_new(VALUE cl, VALUE rbm, VALUE isrooted)
   if (isrooted == Qnil || isrooted == Qfalse)
     ta = loadNewUnrootedTRA(gslm->size1);
   else
-    ta = loadNewRootedTRA(gslm->size1);
+    ta = treeaLoadRootedBinary(gslm->size1);
   th = newTreeHolder(gslm,ta);
   scrambleTreeHolder(th);
   return secretrbth_new(th);

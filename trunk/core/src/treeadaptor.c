@@ -9,7 +9,7 @@ void treemutateTRA(struct TreeAdaptor *tra)
 struct TreeAdaptor *newTreeTRA(int isRooted, int howbig)
 {
   if (isRooted)
-    return loadNewRootedTRA(howbig);
+    return treeaLoadRootedBinary(howbig);
   else
     return loadNewUnrootedTRA(howbig);
 }
@@ -95,3 +95,14 @@ double getTreeDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
   return nchoosefourScale(labelpermSize(lab1), diff);
 }
 
+struct DoubleA *getTreeNodesTRA(struct TreeAdaptor *ta)
+{
+  struct DoubleA *n = doubleaNew();
+  union PCTypes p = zeropct;
+  int i;
+  for (i = 0; i < treeGetNodeCountTRA(ta) ;  i += 1) {
+    p.i = i;
+    doubleaPush(n,p);
+  }
+  return n;
+}
