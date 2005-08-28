@@ -94,7 +94,7 @@ complearn/treemolder.h \
 complearn/treeblaster.h \
 complearn/treemaster.h \
 complearn/treescore.h \
-complearn/yamlparser.h
+complearn/clparser.h
 
 libcomplearn_a_SOURCES=\
 adjadaptor.c \
@@ -152,5 +152,5 @@ treeholder.c \
 treemolder.c \
 treemaster.c \
 treescore.c \
-yamlparser.c
+clparser.c
 

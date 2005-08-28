@@ -4,7 +4,7 @@
 #include <complearn/stringstack.h>
 #include <complearn/envmap.h>
 
-/*! \file yamlparser.h */
+/*! \file clparser.h */
 
 struct StringStack *getDefaultFileList(void);
 

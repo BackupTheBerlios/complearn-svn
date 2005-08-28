@@ -135,8 +135,8 @@ src/treemaster.c \
 src/complearn/treemaster.h \
 src/treescore.c \
 src/complearn/treescore.h \
-src/yamlparser.c \
-src/complearn/yamlparser.h
+src/clparser.c \
+src/complearn/clparser.h
 
 doc = \
 doc/notes.txt \
