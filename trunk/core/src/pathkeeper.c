@@ -11,6 +11,28 @@ struct PathKeeper {
   struct DoubleA *spmmap;
 };
 
+static void pk_free(struct AdjAdaptor *aa);
+static int pk_size(struct AdjAdaptor *aa);
+static void pk_print(struct AdjAdaptor *aa);
+static struct AdjAdaptor *pk_clone(struct AdjAdaptor *aa);
+static int pk_getconstate(struct AdjAdaptor *aa, int i, int j);
+static void pk_setconstate(struct AdjAdaptor *aa, int i, int j, int which);
+static int pk_getneighborcount(struct AdjAdaptor *aa, int i);
+static int pk_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
+static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad);
+
+static struct AdjImplementation pkimpl = {
+  adjafree : pk_free,
+  adjasize : pk_size,
+  adjaprint : pk_print,
+  adjaclone : pk_clone,
+  adjagetconstate : pk_getconstate,
+  adjasetconstate : pk_setconstate,
+  adjagetneighbors : pk_getneighbors,
+  adjagetneighborcount : pk_getneighborcount,
+  adjaspmmap : pk_spmmap,
+};
+
 int pk_getneighborcount(struct AdjAdaptor *ad, int i)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
@@ -68,7 +90,7 @@ int pk_size(struct AdjAdaptor *ad)
   return adjaSize(pk->basis);
 }
 
-struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
+static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap == NULL) {
@@ -91,16 +113,7 @@ struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis)
   struct PathKeeper *pk = clCalloc(sizeof(*pk), 1);
   pk->basis = basis;
   pk->outer.ptr = pk;
-  pk->outer.adjaprint = pk_print;
-  pk->outer.adjasize = pk_size;
-  pk->outer.adjafree = pk_free;
-  pk->outer.adjaclone = pk_clone;
-  pk->outer.adjagetconstate = pk_getconstate;
-  pk->outer.adjasetconstate = pk_setconstate;
-  pk->outer.adjagetneighborcount = pk_getneighborcount;
-  pk->outer.adjagetneighbors = pk_getneighbors;
-  pk->outer.adjaspmmap = pk_spmmap;
-
+  pk->outer.vptr = &pkimpl;
   return &pk->outer;
 }
 

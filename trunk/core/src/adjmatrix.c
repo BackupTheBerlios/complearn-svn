@@ -10,6 +10,26 @@ struct AdjMatrix {
   unsigned char *adj;
 };
 
+static void ajam_free(struct AdjAdaptor *aa);
+static int ajam_size(struct AdjAdaptor *aa);
+static void ajam_print(struct AdjAdaptor *aa);
+static struct AdjAdaptor *ajam_clone(struct AdjAdaptor *aa);
+static int ajam_getconstate(struct AdjAdaptor *aa, int i, int j);
+static void ajam_setconstate(struct AdjAdaptor *aa, int i, int j, int which);
+static int ajam_getneighborcount(struct AdjAdaptor *aa, int i);
+static int ajam_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
+
+static struct AdjImplementation adimpl = {
+  adjafree : ajam_free,
+  adjasize : ajam_size,
+  adjaprint : ajam_print,
+  adjaclone : ajam_clone,
+  adjagetconstate : ajam_getconstate,
+  adjasetconstate : ajam_setconstate,
+  adjagetneighbors : ajam_getneighbors,
+  adjagetneighborcount : ajam_getneighborcount
+};
+
 struct AdjMatrix *adjmatrixNew(int howbig)
 {
   struct AdjMatrix *adj = clCalloc(sizeof(struct AdjMatrix), 1);
@@ -166,15 +186,8 @@ struct AdjAdaptor *adjaLoadAdjMatrix(int howBig)
   struct AdjAdaptor *aj;
   aj = clCalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = adjmatrixNew(howBig);
-  aj->adjafree = ajam_free;
-  aj->adjasize = ajam_size;
-  aj->adjaprint = ajam_print;
-  aj->adjaclone = ajam_clone;
-  aj->adjagetconstate = ajam_getconstate;
-  aj->adjasetconstate = ajam_setconstate;
-  aj->adjagetneighbors = ajam_getneighbors;
-  aj->adjagetneighborcount = ajam_getneighborcount;
-  /* No spmmap */
+  aj->vptr = &adimpl;
+
   return aj;
 }
 

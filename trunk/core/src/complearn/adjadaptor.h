@@ -4,6 +4,8 @@
 #include <complearn/cltypes.h>
 /*! \file adjadaptor.h */
 
+struct AdjImplementation;
+
 /** \brief Adjacency matrix interface to CompLearn.
  *
  * \struct AdjAdaptor
@@ -22,6 +24,10 @@
  */
 struct AdjAdaptor {
   void *ptr;
+  struct AdjImplementation *vptr;
+};
+
+struct AdjImplementation {
   t_adjaprint adjaprint;  /*!< Pointer to function which prints a binary matrix
                                representing the connectivity of all nodes */
   t_adjasize adjasize;    /*!< Pointer to function which returns the size of

@@ -134,7 +134,7 @@ static VALUE rbtra_getnodes(VALUE self)
   int i;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   adja = treeaAdjAdaptor(ta);
-  for (i = 0; i < adja->adjasize(adja); i += 1)
+  for (i = 0; i < adjaSize(adja); i += 1)
     rb_ary_push(nodes, INT2FIX(i));
   return nodes;
 }
@@ -158,7 +158,7 @@ static VALUE rbtra_getadja(VALUE self)
   struct TreeAdaptor *ta;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   adja = treeaAdjAdaptor(ta);
-  return rbadja_secretnew(cAdjAdaptor, adja->adjaclone(adja));
+  return rbadja_secretnew(cAdjAdaptor, adjaClone(adja));
 }
 
 static VALUE rbtra_nodecount(VALUE self)

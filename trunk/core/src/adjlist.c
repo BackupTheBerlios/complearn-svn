@@ -10,6 +10,26 @@ struct AdjList {
   unsigned char *adj;
 };
 
+static void ajal_free(struct AdjAdaptor *aa);
+static int ajal_size(struct AdjAdaptor *aa);
+static void ajal_print(struct AdjAdaptor *aa);
+static struct AdjAdaptor *ajal_clone(struct AdjAdaptor *aa);
+static int ajal_getconstate(struct AdjAdaptor *aa, int i, int j);
+static void ajal_setconstate(struct AdjAdaptor *aa, int i, int j, int which);
+static int ajal_getneighborcount(struct AdjAdaptor *aa, int i);
+static int ajal_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
+
+static struct AdjImplementation adimpl = {
+  adjafree : ajal_free,
+  adjasize : ajal_size,
+  adjaprint : ajal_print,
+  adjaclone : ajal_clone,
+  adjagetconstate : ajal_getconstate,
+  adjasetconstate : ajal_setconstate,
+  adjagetneighbors : ajal_getneighbors,
+  adjagetneighborcount : ajal_getneighborcount
+};
+
 struct AdjList *adjlistNew(int howbig)
 {
   int i;
@@ -260,15 +280,6 @@ struct AdjAdaptor *adjaLoadAdjList(int howBig)
   struct AdjAdaptor *aj;
   aj = clCalloc(sizeof(struct AdjAdaptor), 1);
   aj->ptr = adjlistNew(howBig);
-  aj->adjafree = ajal_free;
-  aj->adjasize = ajal_size;
-  aj->adjaprint = ajal_print;
-  aj->adjaclone = ajal_clone;
-  aj->adjagetconstate = ajal_getconstate;
-  aj->adjasetconstate = ajal_setconstate;
-  aj->adjagetneighbors = ajal_getneighbors;
-  aj->adjagetneighborcount = ajal_getneighborcount;
-  /* no adjaspmmap */
+  aj->vptr = &adimpl;
   return aj;
 }
-

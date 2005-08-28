@@ -31,7 +31,7 @@ static VALUE rbadja_size(VALUE self)
 {
   struct AdjAdaptor *adja;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  return INT2FIX(adja->adjasize(adja));
+  return INT2FIX(adjaSize(adja));
 }
 
 static VALUE rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
@@ -60,7 +60,7 @@ static VALUE rbadja_getneighborcount(VALUE self, VALUE vi)
   int i;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   i = NUM2INT(vi);
-  return INT2FIX(adja->adjagetneighborcount(adja, i));
+  return INT2FIX(adjaGetNeighborCountAt(adja, i));
 }
 
 static VALUE rbadja_spmmap(VALUE self)
@@ -69,8 +69,7 @@ static VALUE rbadja_spmmap(VALUE self)
   struct DoubleA *da = NULL;
   volatile VALUE result;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  if (adja->adjaspmmap)
-    da = adjaSPMMap(adja);
+  da = adjaSPMMap(adja);
   if (da) {
     result = DoubleAOfIntsToRubyArray(da, 1);
   } else {
@@ -153,7 +152,7 @@ void doInitAdja(void) {
 VALUE rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja)
 {
   assert(adja);
-  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, adja->adjafree, adja);
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, adjaFree, adja);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, adja);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
