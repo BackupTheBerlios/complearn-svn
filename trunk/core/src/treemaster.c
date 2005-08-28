@@ -25,7 +25,7 @@ struct TreeMaster {
   struct CLDateTime *startTime, *endTime;
 };
 
-int getKTM(struct TreeMaster *tm)
+int treemasterK(struct TreeMaster *tm)
 {
   assert(tm);
   return tm->k;
@@ -70,7 +70,7 @@ static void tm_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int 
     *placeToSet = atoi(val);
 }
 
-struct TreeMaster *newTreeMasterEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em)
+struct TreeMaster *treemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em)
 {
   struct TreeMaster *result;
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
@@ -85,19 +85,19 @@ struct TreeMaster *newTreeMasterEx(gsl_matrix *gsl, int isRooted, struct EnvMap 
   else
     tmc.maxFailCount = -1;
 
-  result = newTreeMaster(gsl, tmc.fIsRooted);
+  result = treemasterNew(gsl, tmc.fIsRooted);
   result->activeConfig = tmc;
   if (!result->activeConfig.fSelfAgreementTermination)
     result->k = 1;
   return result;
 }
 
-struct TreeMaster *newTreeMasterEz(gsl_matrix *gsl)
+struct TreeMaster *treemasterNewEz(gsl_matrix *gsl)
 {
-  return newTreeMaster(gsl, 0);
+  return treemasterNew(gsl, 0);
 }
 
-struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
+struct TreeMaster *treemasterNew(gsl_matrix *gsl, int isRooted)
 {
   int i, howbig;
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
@@ -136,7 +136,7 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted)
   return tm;
 }
 
-int totalTreesExamined(struct TreeMaster *tm)
+int treemasterTreeCount(struct TreeMaster *tm)
 {
   if (tm->activeConfig.fSelfAgreementTermination) {
     int i;
@@ -197,17 +197,17 @@ static int checkDone(struct TreeMaster *tm)
   }
 }
 
-struct CLDateTime *getEndTimeTM(struct TreeMaster *tm)
+struct CLDateTime *treemasterEndTime(struct TreeMaster *tm)
 {
   return tm->endTime;
 }
 
-struct CLDateTime *getStartTimeTM(struct TreeMaster *tm)
+struct CLDateTime *treemasterStartTime(struct TreeMaster *tm)
 {
   return tm->startTime;
 }
 
-struct TreeHolder *findTree(struct TreeMaster *tm)
+struct TreeHolder *treemasterFindTree(struct TreeMaster *tm)
 {
   int retval;
   tm->startTime = cldatetimeNow();
@@ -234,7 +234,7 @@ struct TreeHolder *findTree(struct TreeMaster *tm)
   return tm->th[0];
 }
 
-void freeTreeMaster(struct TreeMaster *tm)
+void treemasterFree(struct TreeMaster *tm)
 {
   int i;
 //  printf("Freeing treemaster at %p\n", tm);
@@ -252,12 +252,12 @@ void freeTreeMaster(struct TreeMaster *tm)
   gfreeandclear(tm);
 }
 
-struct TreeObserver *getTreeObserverTM(struct TreeMaster *tm)
+struct TreeObserver *treemasterGetTreeObserver(struct TreeMaster *tm)
 {
   return tm->tob;
 }
 
-void setTreeObserverTM(struct TreeMaster *tm, struct TreeObserver *tob)
+void treemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
 {
   if (tm->tob) {
     gfreeandclear(tm->tob);
@@ -266,35 +266,35 @@ void setTreeObserverTM(struct TreeMaster *tm, struct TreeObserver *tob)
   *(tm->tob) = *tob;
 }
 
-void setUserDataTM(struct TreeMaster *tm, void *val)
+void treemasterSetUserData(struct TreeMaster *tm, void *val)
 {
   tm->udata = val;
 }
 
-void *getUserDataTM(struct TreeMaster *tm)
+void *treemasterGetUserData(struct TreeMaster *tm)
 {
   return tm->udata;
 }
 
-void abortTreeSearchTM(struct TreeMaster *tm)
+void treemasterAbortSearch(struct TreeMaster *tm)
 {
   tm->fAbortNow = 1;
 }
 
-struct TreeHolder *getStarterTree(struct TreeMaster *tm)
+struct TreeHolder *treemasterStarterTree(struct TreeMaster *tm)
 {
   assert(tm->th[0]);
   return treehClone(tm->th[0]);
 }
 
-struct TreeHolder *getTreeAtIndex(struct TreeMaster *tm, int i)
+struct TreeHolder *treemasterTreeAtIndex(struct TreeMaster *tm, int i)
 {
   assert(i >= 0);
   assert(i < tm->k);
   return treehClone(tm->th[i]);
 }
 
-int getLabelCountTM(struct TreeMaster *tm)
+int treemasterLabelCount(struct TreeMaster *tm)
 {
   return tm->dm->size1;
 }

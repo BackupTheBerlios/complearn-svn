@@ -330,7 +330,7 @@ static void doNextTree(void)
   assert(curFiles);
   assert(curFiles->size > 0);
   if (tm) {
-    abortTreeSearchTM(tm);
+    treemasterAbortSearch(tm);
     tm = NULL;
   }
 }
@@ -654,12 +654,12 @@ int calcThreadFunc(void *unused)
         clSleepMillis(40);
         continue;
       }
-      tm = newTreeMaster(incrdmDistMatrix(distmatglob), 0);
-      nextbest = treehTreeAdaptor(getStarterTree(tm));
-      setTreeObserverTM(tm, &tob);
+      tm = treemasterNew(incrdmDistMatrix(distmatglob), 0);
+      nextbest = treehTreeAdaptor(treemasterStarterTree(tm));
+      treemasterSetTreeObserver(tm, &tob);
     }
     if (tm) {
-      findTree(tm);
+      treemasterFindTree(tm);
     }
     else {
       clSleepMillis(40);  /* display help / status info here */

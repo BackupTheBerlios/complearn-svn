@@ -785,7 +785,7 @@ void testQuartet(void)
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
-    struct TreeAdaptor *ta = loadNewUnrootedTRA(labelcount);
+    struct TreeAdaptor *ta = treeaLoadUnrooted(labelcount);
     struct DoubleA *n = treeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
@@ -841,7 +841,7 @@ void testQuartet(void)
 #endif
     doubleaFree(n);
     freeTreeScore(ts);
-//    freeUnrootedBinary(ct);
+//    unrootedbinaryFree(ct);
     treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
@@ -860,8 +860,8 @@ void testCLTree(void)
 #define TREENODEWANTED (2*TREELEAFSIZE-2)
 #define MAXPATHTESTS 128
 #define MAXPATHLEN 16
-  struct UnrootedBinary *ct = newUnrootedBinary(TREELEAFSIZE);
-  struct DoubleA *n = getTreeNodes(ct, NULL);
+  struct UnrootedBinary *ct = unrootedbinaryNew(TREELEAFSIZE);
+  struct DoubleA *n = unrootedbinaryNodes(ct, NULL);
   struct DoubleA *spm, *spmmap, *pp;
   union PCTypes a, b;
   int retval;
@@ -872,7 +872,7 @@ void testCLTree(void)
 	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
   assert(doubleaSize(n) == TREENODEWANTED);
-  pp = getPerimeterPairs(ct, NULL);
+  pp = unrootedbinaryPerimPairs(ct, NULL);
   assert(doubleaSize(pp) == TREELEAFSIZE);
   doubleaFree(pp);
   spmmap = makeSPMMap(getAdjAdaptorForUB(ct));
@@ -910,12 +910,12 @@ void testCLTree(void)
   spmmap = NULL;
   doubleaFree(n);
   n = NULL;
-//  dotdb = convertTreeToDot(ct, NULL, getLabelPerm(ct));
+//  dotdb = convertTreeToDot(ct, NULL, unrootedbinaryLabelPerm(ct));
 //  datablockWriteToFile(dotdb, "treefile.dot");
 //  assert(dotdb);
 //  assert(dotdb->ptr);
 //  assert(dotdb->size > TREENODEWANTED * 2);
-  freeUnrootedBinary(ct);
+  unrootedbinaryFree(ct);
   ct = NULL;
 }
 
@@ -1193,21 +1193,21 @@ void testTreeMolder()
     {
       struct TreeMolder *tmolder;
       struct TreeAdaptor *tram = treeaNew(1,dm->size1);
-      tmolder = newTreeMolder(dm, tram);
+      tmolder = treemolderNew(dm, tram);
       for (i = 0; i < 100; i += 1) {
-        score = getScoreScaledTM(tmolder);
+        score = treemolderScoreScaled(tmolder);
         if (score > 1.0 || score < 0.0) {
           printf("Error, got score %f\n", score);
         }
         //assert(score >= 0.0 && score <= 1.0);
-        treehImproveTM(tmolder);
+        treemolderImprove(tmolder);
       }
-      freeTreeMolder(tmolder);
+      treemolderFree(tmolder);
       tmolder = NULL;
     }
     doubleaFree(n);
     freeTreeScore(ts);
-//    freeUnrootedBinary(ct);
+//    unrootedbinaryFree(ct);
     treeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)

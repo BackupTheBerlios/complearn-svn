@@ -20,12 +20,12 @@ static void setBestPtr(struct TreeBlaster *tm)
 {
   int i;
   for (i = 0; i < tm->k; i += 1)
-    if (i == 0 || getScoreScaledTM(tm->best) < getScoreScaledTM(tm->tm[i]))
+    if (i == 0 || treemolderScoreScaled(tm->best) < treemolderScoreScaled(tm->tm[i]))
       tm->best = tm->tm[i];
-  if (getScoreScaledTM(tm->best) > tm->printedScore) {
-    tm->printedScore = getScoreScaledTM(tm->best);
+  if (treemolderScoreScaled(tm->best) > tm->printedScore) {
+    tm->printedScore = treemolderScoreScaled(tm->best);
     if (tm->tob && tm->tob->treeorderimproved)
-      tm->tob->treeorderimproved(tm->tob, tm->best, getFlips(tm->best));
+      tm->tob->treeorderimproved(tm->tob, tm->best, treemolderFlips(tm->best));
   }
 }
 
@@ -47,10 +47,10 @@ struct TreeBlaster *treebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
   if (gsl->size1 < 10) /* small trees are very quick yet very uncertain */
     tm->k += 1;
   for (i = 0; i < tm->k; i += 1) {
-    tm->tm[i] = newTreeMolder(tm->dm, tm->ta);
-    printf("Tree holder %d starts with score %f\n", i, getScoreTM(tm->tm[i]));
-    scrambleTreeMolder(tm->tm[i]);
-    printf("Tree holder %d scrmables to score %f\n", i, getScoreTM(tm->tm[i]));
+    tm->tm[i] = treemolderNew(tm->dm, tm->ta);
+    printf("Tree holder %d starts with score %f\n", i, treemolderScore(tm->tm[i]));
+    treemolderScramble(tm->tm[i]);
+    printf("Tree holder %d scrmables to score %f\n", i, treemolderScore(tm->tm[i]));
   }
   setBestPtr(tm);
   return tm;
@@ -63,7 +63,7 @@ static int doStep(struct TreeBlaster *tm)
   int result;
   choseTree = rand() % tm->k;
 //  printf("Trying tree %d\n", choseTree);
-  result = treehImproveTM(tm->tm[choseTree]);
+  result = treemolderImprove(tm->tm[choseTree]);
   if (result) {
     tm->failcount = 0;
     setBestPtr(tm);
@@ -80,7 +80,7 @@ static int checkDone(struct TreeBlaster *tm)
   if (tm->failcount > MAXFAILS)
     return 1;
   for (i = 1; i < tm->k; ++i) {
-    if (getScoreScaledTM(tm->tm[i-1]) != getScoreScaledTM(tm->tm[i]))
+    if (treemolderScoreScaled(tm->tm[i-1]) != treemolderScoreScaled(tm->tm[i]))
       return 0;
   }
   return 1;
@@ -95,10 +95,10 @@ struct CLNodeSet *treebFindTreeOrder(struct TreeBlaster *tm, double *s)
     retval = doStep(tm);
   }
   if (tm->tob && tm->tob->treeorderdone)
-    tm->tob->treeorderdone(tm->tob, tm->best, getFlips(tm->best));
-  *s = getScoreScaledTM(tm->tm[0]);
+    tm->tob->treeorderdone(tm->tob, tm->best, treemolderFlips(tm->best));
+  *s = treemolderScoreScaled(tm->tm[0]);
   printf("Finished with tree, score is %f\n", *s);
-  return getFlips(tm->best); /* TODO: does this need clone? */
+  return treemolderFlips(tm->best); /* TODO: does this need clone? */
 }
 
 void treebFree(struct TreeBlaster *tm)
@@ -107,7 +107,7 @@ void treebFree(struct TreeBlaster *tm)
   gsl_matrix_free(tm->dm);
   tm->dm = NULL;
   for (i = 0; i < tm->k; i += 1) {
-    freeTreeMolder(tm->tm[i]);
+    treemolderFree(tm->tm[i]);
   }
   gfreeandclear(tm);
 }
@@ -127,7 +127,7 @@ int getNodeCountTB(struct TreeBlaster *tbl)
 {
   assert(tbl);
   struct TreeMolder *tmo = tbl->best;
-  return getNodeCountTMO(tmo);
+  return treemolderNodeCount(tmo);
 }
 
 int treebLabelCount(struct TreeBlaster *tbl)

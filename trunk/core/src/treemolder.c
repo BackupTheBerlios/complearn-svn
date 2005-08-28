@@ -18,7 +18,7 @@ struct TreeMolder {
   int k;
 */
 
-void freeTreeMolder(struct TreeMolder *tm)
+void treemolderFree(struct TreeMolder *tm)
 {
   clnodesetFree(tm->flips);
   tm->flips = NULL;
@@ -39,7 +39,7 @@ static void calcRangesTM(struct TreeMolder *tm)
   }
 }
 
-struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta)
+struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 {
   struct TreeMolder *tm = gcalloc(sizeof(*tm), 1);
   struct AdjAdaptor *aa;
@@ -72,20 +72,20 @@ static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struc
   return acc;
 }
 
-double getScoreScaledTM(struct TreeMolder *tm)
+double treemolderScoreScaled(struct TreeMolder *tm)
 {
-  double rawscore = getScoreTM(tm);
+  double rawscore = treemolderScore(tm);
   return 1.0 - ((rawscore - tm->minscore) / (tm->maxscore-tm->minscore));
 }
 
-double getScoreTM(struct TreeMolder *tm)
+double treemolderScore(struct TreeMolder *tm)
 {
   if (tm->score == -1)
     tm->score = scorePerimeter(tm->dm, tm->ta, tm->flips);
   return tm->score;
 }
 
-struct CLNodeSet *getFlips(struct TreeMolder *tm)
+struct CLNodeSet *treemolderFlips(struct TreeMolder *tm)
 {
   return tm->flips;
 }
@@ -103,7 +103,7 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
   } while ((rand() % 2) == 0);
 }
 
-void scrambleTreeMolder(struct TreeMolder *tm)
+void treemolderScramble(struct TreeMolder *tm)
 {
   int i;
   for (i = 0; i < tm->nodecount; i += 1)
@@ -111,13 +111,13 @@ void scrambleTreeMolder(struct TreeMolder *tm)
   tm->score = -1;
 }
 
-int treehImproveTM(struct TreeMolder *tm)
+int treemolderImprove(struct TreeMolder *tm)
 {
   struct CLNodeSet *cand = clnodesetClone(tm->flips);
   double candscore;
   mutateFlipArray(tm, cand);
   candscore = scorePerimeter(tm->dm, tm->ta, cand);
-  if (candscore < getScoreTM(tm)) {
+  if (candscore < treemolderScore(tm)) {
 //    printf("In treemolder %p, raw score impr from %f to %f\n", tm, tm->score, candscore );
     tm->score = candscore;
     clnodesetFree(tm->flips);
@@ -130,12 +130,12 @@ int treehImproveTM(struct TreeMolder *tm)
   }
 }
 
-struct TreeAdaptor *treehTreeAdaptorTM(const struct TreeMolder *tmo)
+struct TreeAdaptor *treemolderTreeAdaptor(const struct TreeMolder *tmo)
 {
   return treeaClone(tmo->ta);
 }
 
-int getNodeCountTMO(const struct TreeMolder *tmo)
+int treemolderNodeCount(const struct TreeMolder *tmo)
 {
   return tmo->nodecount;
 }

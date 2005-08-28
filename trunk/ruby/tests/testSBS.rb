@@ -191,6 +191,6 @@ end
 tm = CompLearn::TreeMaster.new(m, 1)
 toptreeoh = TreeObserverPrinter.new(tm)
 tm.setTreeObserver(toptreeoh)
-f = tm.findTree
+f = tm.treemasterFindTree
 Curses::init_screen
 Curses::close_screen

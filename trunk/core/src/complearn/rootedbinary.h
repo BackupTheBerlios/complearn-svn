@@ -28,7 +28,7 @@ struct StringStack;
  * is to support k leaves, then it must have k-2 kernel nodes, for a total
  * of 2 * k - 2 nodes.  When a new tree is created, it is made by a simple
  * caterpillar-style pattern.  To get random variation, use the
- * doComplexMutation function with the cloneTree function.
+ * unrootedbinaryDoComplexMutation function with the unrootedbinaryClone function.
  * This function allocates memory which must eventually be freed with
  * rootedbinaryFree.
  *
@@ -45,7 +45,7 @@ struct RootedBinary *rootedbinaryNew(int howManyLeaves);
  * specified in the Quartet Tree paper by Cilibrasi and Vitanyi.
  * It then applies the requisite number of simple mutations, using the
  * builtin random-number generator rand().  This function may be used
- * in combination with cloneTree to allow several different tries from
+ * in combination with unrootedbinaryClone to allow several different tries from
  * the same tree starting point.  It may also be used with the TreeScore
  * module which can allow for quartet-based hill-climbing algorithms.
  *
@@ -57,7 +57,7 @@ void rootedbinaryComplexMutation(struct RootedBinary *ub);
 /** \brief Clones an RootedBinary tree, allocating new memory for the copy
  *
  * This function copies an RootedBinary tree object.  This can be used
- * in conjunction with doComplexMutation for hill-climbing search.
+ * in conjunction with unrootedbinaryDoComplexMutation for hill-climbing search.
  * This function allocates memory which must eventually be freed with
  * rootedbinaryFree.
  * \param ub pointer to the RootedBinary that must be cloned
@@ -82,7 +82,7 @@ int rootedbinaryIsQuartetableNode(const struct RootedBinary *ub, qbase_t which);
  *
  * This function allows the user to determine if a given node identifier
  * has at least 2 children that can be flipped in more than one order.
- * This bit may be adjusted using flipNodeLayout
+ * This bit may be adjusted using unrootedbinaryFlipNodeLayout
  * Leaf nodes are thus not flippable, but kernel nodes are.
  *
  * \param ub pointer to the RootedBinary that must be examined
@@ -107,12 +107,12 @@ qbase_t rootedbinaryStartingNode(const struct RootedBinary *ub);
  * This function allows the user to get a dynamically-allocated list of
  * all the nodes in this tree.  They are returned in depth first order.
  * This is equivalent to the walkTree function with a 0 breadthFirst
- * parameter; thus the order returned by getTreeNodes will be affected
+ * parameter; thus the order returned by unrootedbinaryNodes will be affected
  * by the node child order flip bits.
  *
  * The DoubleA returned by this function use the .i field of PCTypes:
  *
- * struct DoubleA *da = getTreeNodes(ub);
+ * struct DoubleA *da = unrootedbinaryNodes(ub);
  * int i;
  * for (i = 0; i < doubleaSize(da); i += 1)
  *   printf("Got node %d\n", doubleaGetValueAt(da, i).i);
@@ -137,7 +137,7 @@ struct DoubleA *rootedbinaryNodes(const struct RootedBinary *ub);
  * The node identifiers are accessed using the .ip.x and .ip.y members of
  * PCTypes.  For example:
  *
- * struct DoubleA *da = getPerimeterPairs(ub);
+ * struct DoubleA *da = unrootedbinaryPerimPairs(ub);
  * int i;
  * for (i = 0; i < doubleaSize(da); i += 1) {
  *   union PCTypes pct = doubleaGetValueAt(da, i);
@@ -168,7 +168,7 @@ struct DoubleA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct
  * This function frees the memory associated with an RootedBinary.
  * After calling this function it is safest to set the pointer to NULL,
  * as you shouldn't try to use it after deallocation.  This function must
- * be called for every time rootedbinaryNew, cloneTree, or loadTree is called.
+ * be called for every time rootedbinaryNew, unrootedbinaryClone, or loadTree is called.
  *
  * \param ub pointer to the RootedBinary that must be freed.
  * \return nothing
@@ -191,7 +191,7 @@ void rootedbinaryFree(struct RootedBinary *ub);
 struct DoubleA *rootedbinaryLeafLabels(const struct RootedBinary *ub);
 
 /** \brief This function returns the number of simple mutations used in
- * the most recent complex mutation step taken with doComplexMutation
+ * the most recent complex mutation step taken with unrootedbinaryDoComplexMutation
  *
  * \param ub pointer to the RootedBinary to be path queried
  * \return integer indicating the number of simple mutation steps last used

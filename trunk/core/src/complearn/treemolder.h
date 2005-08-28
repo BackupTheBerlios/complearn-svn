@@ -35,14 +35,14 @@ struct TreeMolder;
  * \param ta pointer to TreeAdaptor
  * \return pointer to TreeMolder ready to find an optimal traversal ordering
  */
-struct TreeMolder *newTreeMolder(gsl_matrix *gm, struct TreeAdaptor *ta);
+struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta);
 /** \brief frees the memory used to hold a TreeMolder
  *
  * There is no return value.
  *
  * \param tm pointer to the TreeMolder to be freed
  */
-void freeTreeMolder(struct TreeMolder *tm);
+void treemolderFree(struct TreeMolder *tm);
 
 /** \brief returns the raw order score for this particular TreeMolder
  *
@@ -53,7 +53,7 @@ void freeTreeMolder(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to be inspected
  * \return double precision value indicating the raw order score
  */
-double getScoreTM(struct TreeMolder *tm);
+double treemolderScore(struct TreeMolder *tm);
 
 /** \brief returns the scaled order score for this particular TreeMolder
  *
@@ -63,7 +63,7 @@ double getScoreTM(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to be inspected
  * \return double precision value indicating the raw order score
  */
-double getScoreScaledTM(struct TreeMolder *tm);
+double treemolderScoreScaled(struct TreeMolder *tm);
 
 /** \brief returns the current best ordering for this TreeMolder
  *
@@ -76,7 +76,7 @@ double getScoreScaledTM(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to be inspected
  * \return CLNodeSet pointer containing node ids for all flipped nodes
  */
-struct CLNodeSet *getFlips(struct TreeMolder *tm);
+struct CLNodeSet *treemolderFlips(struct TreeMolder *tm);
 
 /** \brief randomly flips a traversal order
  *
@@ -87,7 +87,7 @@ struct CLNodeSet *getFlips(struct TreeMolder *tm);
  *
  * \param tm pointer to the TreeMolder to be scrambled
  */
-void scrambleTreeMolder(struct TreeMolder *tm);
+void treemolderScramble(struct TreeMolder *tm);
 
 /** \brief attempts to improve the current best ordering with a random mutation
  *
@@ -98,14 +98,14 @@ void scrambleTreeMolder(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to try to improve
  * \return 0 indicating failure to improve or nonzer indicating success
  */
-int treehImproveTM(struct TreeMolder *tm);
+int treemolderImprove(struct TreeMolder *tm);
 
 /** \brief Returns the TreeAdaptor corresponding to the tree in consideration
  *
  * \param tm pointer to the TreeMolder to try to investigate
  * \return pointer to a TreeAdaptor
  */
-struct TreeAdaptor *treehTreeAdaptorTM(const struct TreeMolder *tmo);
+struct TreeAdaptor *treemolderTreeAdaptor(const struct TreeMolder *tmo);
 
 /** \brief Returns the count of labelled nodes in this TreeMolder
  *
@@ -115,7 +115,7 @@ struct TreeAdaptor *treehTreeAdaptorTM(const struct TreeMolder *tmo);
  * \param tmo pointer to the TreeMolder to inspect
  * \return count of labelled nodes in this TreeMolder
  */
-int getNodeCountTMO(const struct TreeMolder *tmo);
+int treemolderNodeCount(const struct TreeMolder *tmo);
 
 #endif
 

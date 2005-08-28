@@ -60,7 +60,7 @@ static int verifyTree(struct UnrootedBinary *ub)
 {
   int i, j;
   int nc;
-  struct DoubleA *result = getTreeNodes(ub, NULL);
+  struct DoubleA *result = unrootedbinaryNodes(ub, NULL);
   if (doubleaSize(result) != ub->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
       doubleaSize(result), ub->nodecount);
@@ -218,17 +218,17 @@ static void mutateComplex(struct UnrootedBinary *ub)
   }
 }
 
-int getLastMutationCount(const struct UnrootedBinary *ub)
+int unrootedbinaryLastMutationCount(const struct UnrootedBinary *ub)
 {
   return ub->mc;
 }
 
-void doComplexMutation(struct UnrootedBinary *ub)
+void unrootedbinaryDoComplexMutation(struct UnrootedBinary *ub)
 {
   mutateComplex(ub);
 }
 
-struct UnrootedBinary *newUnrootedBinary(int howManyLeaves)
+struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 {
   int i;
   struct DoubleA *leaves;
@@ -254,7 +254,7 @@ struct UnrootedBinary *newUnrootedBinary(int howManyLeaves)
   return ub;
 }
 
-struct UnrootedBinary *cloneTree(const struct UnrootedBinary *ub)
+struct UnrootedBinary *unrootedbinaryClone(const struct UnrootedBinary *ub)
 {
   struct UnrootedBinary *cp;
   cp = gcalloc(sizeof(*cp), 1);
@@ -267,7 +267,7 @@ struct UnrootedBinary *cloneTree(const struct UnrootedBinary *ub)
 }
 
 
-int isQuartetableNode(const struct UnrootedBinary *ub, qbase_t which)
+int unrootedbinaryIsQuartetableNode(const struct UnrootedBinary *ub, qbase_t which)
 {
   return adjaNeighborCount(ub->aa, which) < 3;
 }
@@ -277,12 +277,12 @@ int isFlippableNode(struct UnrootedBinary *ub, qbase_t which)
   return adjaNeighborCount(ub->aa, which) == 3;
 }
 
-qbase_t getStartingNode(const struct UnrootedBinary *ub)
+qbase_t unrootedbinaryStartingNode(const struct UnrootedBinary *ub)
 {
   return 0;
 }
 
-struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
+struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
   union PCTypes p = zeropct;
   struct DoubleA *result = doubleaNew();
@@ -295,9 +295,9 @@ struct DoubleA *getTreeNodes(const struct UnrootedBinary *ub, struct CLNodeSet *
   return result;
 }
 
-struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
+struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
-  struct DoubleA *nodes = getTreeNodes(ub, flips);
+  struct DoubleA *nodes = unrootedbinaryNodes(ub, flips);
   struct DoubleA *pairs = doubleaNew();
   union PCTypes p;
   int i;
@@ -305,7 +305,7 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
   int firstnode = -1;
   for (i = 0;i < doubleaSize(nodes); i += 1) {
     int curnode = doubleaGetValueAt(nodes, i).i;
-    if (isQuartetableNode(ub, curnode)) {
+    if (unrootedbinaryIsQuartetableNode(ub, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
       if (lastval != -1) {
@@ -324,7 +324,7 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
   return pairs;
 }
 
-void freeUnrootedBinary(struct UnrootedBinary *ub)
+void unrootedbinaryFree(struct UnrootedBinary *ub)
 {
   if (ub->labelperm)
     labelpermFree(ub->labelperm);
@@ -340,7 +340,7 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
   int i;
   struct DoubleA *result = doubleaNew();
   for (i = 0; i < ub->nodecount; i += 1) {
-    if (isQuartetableNode(ub, i) == 1) {
+    if (unrootedbinaryIsQuartetableNode(ub, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
       doubleaPush(result, p);
@@ -349,7 +349,7 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
   return result;
 }
 
-struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
+struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
 {
   struct DoubleA *result = doubleaNew();
   int i;
@@ -361,7 +361,7 @@ struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
   return result;
 }
 
-struct LabelPerm *getLabelPerm(struct UnrootedBinary *ub)
+struct LabelPerm *unrootedbinaryLabelPerm(struct UnrootedBinary *ub)
 {
   return ub->labelperm;
 }
@@ -371,7 +371,7 @@ struct TreeAdaptor *ub_treeclone(struct TreeAdaptor *ta)
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
   struct TreeAdaptor *result = gmalloc(sizeof(*result) * 1);
   *result = *ta;
-  result->ptr = cloneTree(ub);
+  result->ptr = unrootedbinaryClone(ub);
   return result;
 }
 
@@ -384,7 +384,7 @@ void ub_treemutate(struct TreeAdaptor *ta)
 void ub_treefree(struct TreeAdaptor *ta)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  freeUnrootedBinary(ub);
+  unrootedbinaryFree(ub);
   ub = NULL;
   memset(ta, 0, sizeof(*ta));
   gfreeandclear(ta);
@@ -393,7 +393,7 @@ void ub_treefree(struct TreeAdaptor *ta)
 struct LabelPerm *ub_treegetlabelperm(struct TreeAdaptor *ta)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  return getLabelPerm(ub);
+  return unrootedbinaryLabelPerm(ub);
 }
 
 struct AdjAdaptor *ub_treegetadja(struct TreeAdaptor *ta)
@@ -405,7 +405,7 @@ struct AdjAdaptor *ub_treegetadja(struct TreeAdaptor *ta)
 int ub_treeisquartetable(struct TreeAdaptor *ta, int which)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  return isQuartetableNode(ub, which);
+  return unrootedbinaryIsQuartetableNode(ub, which);
 }
 
 static int ub_treeisroot(struct TreeAdaptor *ta, int which)
@@ -422,18 +422,18 @@ int ub_treeisflippable(struct TreeAdaptor *ta, int which)
 struct DoubleA *ub_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  return getPerimeterPairs(ub, flips);
+  return unrootedbinaryPerimPairs(ub, flips);
 }
 
 int ub_treemutecount(struct TreeAdaptor *ta)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
-  return getLastMutationCount(ub);
+  return unrootedbinaryLastMutationCount(ub);
 }
 
-struct TreeAdaptor *loadNewUnrootedTRA(int howBig)
+struct TreeAdaptor *treeaLoadUnrooted(int howBig)
 {
-  return loadUBTRA(newUnrootedBinary(howBig));
+  return loadUBTRA(unrootedbinaryNew(howBig));
 }
 
 static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)

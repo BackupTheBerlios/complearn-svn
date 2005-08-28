@@ -71,19 +71,19 @@ void funcstart(struct TreeOrderObserver *tob)
 }
 void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
 {
-  printf("order improvement Or(T) = %f\n", getScoreScaledTM(th));
+  printf("order improvement Or(T) = %f\n", treemolderScoreScaled(th));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
-  writeDotFile(treehTreeAdaptorTM(th), getScoreTM(th), flips);
+  writeDotFile(treemolderTreeAdaptor(th), treemolderScore(th), flips);
 }
 
 void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
 {
-  printf("Score done to Or(T) = %f\n", getScoreScaledTM(tm));
+  printf("Score done to Or(T) = %f\n", treemolderScoreScaled(tm));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
   assert(dotth);
-  writeDotFile(treehTreeAdaptorTM(tm), treehScore(dotth), flips);
+  writeDotFile(treemolderTreeAdaptor(tm), treehScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
 
@@ -199,13 +199,13 @@ int main(int argc, char **argv)
 
   printf("The matrix is %d by %d\n", dm->size1, dm->size2);
 
-  tm = newTreeMasterEx(dm, isRooted, cur->em);
+  tm = treemasterNewEx(dm, isRooted, cur->em);
   globtm = tm;
-  setTreeObserverTM(tm, &tob);
-  th = findTree(tm);
+  treemasterSetTreeObserver(tm, &tob);
+  th = treemasterFindTree(tm);
   ub = treehTreeAdaptor(th);
   s = treehScore(th);
-  j = totalTreesExamined(tm);
+  j = treemasterTreeCount(tm);
   printf("Examined %d trees total\n", j);
   if (isOrdered) {
     printf("Proceeding with ordering phase...\n");
@@ -238,7 +238,7 @@ int main(int argc, char **argv)
   printf("Done.\n");
   doubleaFree(res);
   freedotth(dotth);
-  freeTreeMaster(tm);
+  treemasterFree(tm);
   gslmatrixFree(dm);
   if (labels) {
     stringstackFree(labels);

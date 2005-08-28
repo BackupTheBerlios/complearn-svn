@@ -79,16 +79,16 @@ int main(int argc, char *argv[])
     printf("starting trial #%d of %d\n", i+1, maxtrials);
     gsl_matrix *cdm = gslmatrixClone(dm);
 
-    tm1 = newTreeMaster(cdm, isRooted);
-    th1 = findTree(tm1);
-    tm2 = newTreeMaster(cdm, isRooted);
-    th2 = findTree(tm2);
+    tm1 = treemasterNew(cdm, isRooted);
+    th1 = treemasterFindTree(tm1);
+    tm2 = treemasterNew(cdm, isRooted);
+    th2 = treemasterFindTree(tm2);
 
     if (treehScore(th1) == treehScore(th2))
       matched +=1;
     gsl_matrix_free(cdm);
-    freeTreeMaster(tm1);
-    freeTreeMaster(tm2);
+    treemasterFree(tm1);
+    treemasterFree(tm2);
   }
   finish = cldatetimeStaticTimer();
 

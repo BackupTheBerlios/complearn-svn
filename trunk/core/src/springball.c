@@ -620,7 +620,7 @@ void sbsEvolveForward(struct SpringBallSystem *sbs)
 
 void doSBS3Test(void)
 {
-  struct TreeAdaptor *ta = loadNewUnrootedTRA(4);
+  struct TreeAdaptor *ta = treeaLoadUnrooted(4);
   struct SpringBallSystem *sbs;
   int i;
   sbs = sbsNew(ta);

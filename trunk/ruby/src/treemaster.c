@@ -75,7 +75,7 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
     tos->obs = obs;
   else {
     tos->obs = Qnil;
-    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in setTreeObserverTM");
+    rb_raise(rb_eTypeError, "Error must have kind of TreeObserver in treemasterSetTreeObserver");
   }
   tos->th = Qnil;
 //  rb_gc_mark(tos->obs);
@@ -85,8 +85,8 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   to->treeimproved = rbtmto_treeimproved;
   to->treedone = rbtmto_treedone;
   to->treerejected = rbtmto_treerejected;
-  //rb_raise(rb_eTypeError, "Error setTreeObserverTM disabled.");
-  setTreeObserverTM(tm, to);
+  //rb_raise(rb_eTypeError, "Error treemasterSetTreeObserver disabled.");
+  treemasterSetTreeObserver(tm, to);
 }
 
 static VALUE rbtm_init(VALUE self)
@@ -98,7 +98,7 @@ static VALUE rbtm_findtree(VALUE self)
   struct TreeMaster *tm;
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  th = treehClone(findTree(tm));
+  th = treehClone(treemasterFindTree(tm));
   return secretrbth_new(th);
 }
 
@@ -106,28 +106,28 @@ static VALUE rbtm_examinedcount(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  return INT2NUM(totalTreesExamined(tm));
+  return INT2NUM(treemasterTreeCount(tm));
 }
 
 static VALUE rbtm_k(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  return INT2FIX(getKTM(tm));
+  return INT2FIX(treemasterK(tm));
 }
 
 static VALUE rbtm_labelcount(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  return INT2FIX(getLabelCountTM(tm));
+  return INT2FIX(treemasterLabelCount(tm));
 }
 
 void markTreeMaster(void *ptr)
 {
   struct TreeMaster *tm = (struct TreeMaster *) ptr;
 #if 0
-  struct TreeObserver *obs = getTreeObserverTM(tm);
+  struct TreeObserver *obs = treemasterGetTreeObserver(tm);
   //printf("Marking in TreeMaster...\n");
   if (obs) {
     struct TreeObserverState *tos = (struct TreeObserverState *) obs->ptr;
@@ -157,10 +157,10 @@ VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
   }
   if (isRooted == Qnil || isRooted == Qfalse)
     fIsRooted = 0;
-  tm = newTreeMaster(gdm, fIsRooted);
-  tdata = Data_Wrap_Struct(cl, markTreeMaster, freeTreeMaster, tm);
+  tm = treemasterNew(gdm, fIsRooted);
+  tdata = Data_Wrap_Struct(cl, markTreeMaster, treemasterFree, tm);
 //  tdata = Data_Wrap_Struct(cl, 0, 0, tm);
-  setUserDataTM(tm, (void *) tdata);
+  treemasterSetUserData(tm, (void *) tdata);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -189,21 +189,21 @@ static VALUE rbtm_getstarttime(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  return convertCLDateTimeToTime(getStartTimeTM(tm));
+  return convertCLDateTimeToTime(treemasterStartTime(tm));
 }
 
 static VALUE rbtm_getendtime(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  return convertCLDateTimeToTime(getEndTimeTM(tm));
+  return convertCLDateTimeToTime(treemasterEndTime(tm));
 }
 
 static VALUE rbtm_aborttreesearch(VALUE self)
 {
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
-  abortTreeSearchTM(tm);
+  treemasterAbortSearch(tm);
 }
 
 void doInitTreeMaster(void) {
@@ -213,7 +213,7 @@ void doInitTreeMaster(void) {
   rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
-  rb_define_method(cTreeMaster, "findTree", rbtm_findtree, 0);
+  rb_define_method(cTreeMaster, "treemasterFindTree", rbtm_findtree, 0);
   rb_define_method(cTreeMaster, "startTime", rbtm_getstarttime, 0);
   rb_define_method(cTreeMaster, "endTime", rbtm_getendtime, 0);
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);

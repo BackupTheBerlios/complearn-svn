@@ -34,7 +34,7 @@ curleaves = startleaves
 
 def get_tree_score(m)
   tm = TreeMaster.new(m, @isRooted)
-  tr = tm.findTree #TreeHolder is returned here
+  tr = tm.treemasterFindTree #TreeHolder is returned here
   tr.score
 end
 

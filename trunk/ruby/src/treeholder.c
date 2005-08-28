@@ -93,7 +93,7 @@ VALUE rbth_new(VALUE cl, VALUE rbm, VALUE isrooted)
   assert(rb_class_of(rbm) == cMatrix);
 //  gslm = convertRubyMatrixTogsl_matrix(rbm);
   if (isrooted == Qnil || isrooted == Qfalse)
-    ta = loadNewUnrootedTRA(gslm->size1);
+    ta = treeaLoadUnrooted(gslm->size1);
   else
     ta = treeaLoadRootedBinary(gslm->size1);
   th = treehNew(gslm,ta);

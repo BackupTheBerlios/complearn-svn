@@ -70,10 +70,10 @@ VALUE rbsbs_new(VALUE cl, VALUE tree, VALUE isRooted)
   }
   if (isRooted == Qnil || isRooted == Qfalse)
     fIsRooted = 0;
-  tm = newTreeMaster(gdm, fIsRooted);
-  tdata = Data_Wrap_Struct(cl, markTreeMaster, freeTreeMaster, tm);
+  tm = treemasterNew(gdm, fIsRooted);
+  tdata = Data_Wrap_Struct(cl, markTreeMaster, treemasterFree, tm);
 //  tdata = Data_Wrap_Struct(cl, 0, 0, tm);
-  setUserDataTM(tm, (void *) tdata);
+  treemasterSetUserData(tm, (void *) tdata);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }

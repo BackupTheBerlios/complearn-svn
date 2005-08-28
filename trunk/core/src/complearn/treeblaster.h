@@ -30,7 +30,7 @@ struct TreeBlaster;
  *
  * This function creates a new TreeBlaster for determining an optimal
  * child traversal ordering for the given tree topology.  It is normally
- * called after findTree() has determined a best-matching topology.
+ * called after treemasterFindTree() has determined a best-matching topology.
  * The result of an order-search is a CLNodeSet of internal node numbers.
  * These node-numbers correspond to kernel nodes in the TreeAdaptor.
  * Children are either visitted in order or in opposite order if the
@@ -39,7 +39,7 @@ struct TreeBlaster;
  * A gsl_matrix representing distances is necessary to judge which orders
  * are better.
  *
- * \sa findTree()
+ * \sa treemasterFindTree()
  *
  * \param gsl distance matrix as a pointer to a gsl_matrix
  * \param ta pointer to a TreeAdaptor
@@ -93,7 +93,7 @@ struct TreeOrderObserver {
  * to calculate in one thread and display the intermediate results in
  * realtime in another thread.
  *
- * \sa setTreeObserverTM()
+ * \sa treemasterSetTreeObserver()
  * \param tbl pointer to the TreeBlaster to observe
  * \param tob pointer to the TreeOrderObserver to connect to tbl
  */

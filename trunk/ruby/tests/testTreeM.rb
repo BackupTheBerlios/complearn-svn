@@ -157,7 +157,7 @@ tm.setTreeObserver(toptreeoh)
 Curses::init_screen
 Curses::close_screen
 zthread = Thread.new {
-  f = tm.findTree
+  f = tm.treemasterFindTree
   t = f.tree
   File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
 }

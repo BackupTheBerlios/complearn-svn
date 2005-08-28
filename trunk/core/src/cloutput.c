@@ -262,22 +262,22 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   }
   if (tm) {
     int t0, tf, dt;
-    if (getStartTimeTM(tm)) {
-      sprintf(con1, "/* start time %s */", cldatetimeToHumString(getStartTimeTM(tm)));
+    if (treemasterStartTime(tm)) {
+      sprintf(con1, "/* start time %s */", cldatetimeToHumString(treemasterStartTime(tm)));
       stringstackPush(dotacc, con1);
     }
-    if (getEndTimeTM(tm)) {
-      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(getEndTimeTM(tm)));
+    if (treemasterEndTime(tm)) {
+      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(treemasterEndTime(tm)));
       stringstackPush(dotacc, con1);
     }
-    sprintf(con1, "/* total trees: %d */", totalTreesExamined(tm));
+    sprintf(con1, "/* total trees: %d */", treemasterTreeCount(tm));
     stringstackPush(dotacc, con1);
-    if (getEndTimeTM(tm) && getStartTimeTM(tm)) {
-      t0 = cldatetimeToInt(getStartTimeTM(tm));
-      tf = cldatetimeToInt(getEndTimeTM(tm));
+    if (treemasterEndTime(tm) && treemasterStartTime(tm)) {
+      t0 = cldatetimeToInt(treemasterStartTime(tm));
+      tf = cldatetimeToInt(treemasterEndTime(tm));
       dt = tf - t0;
       if (dt > 0) {
-        sprintf(con1, "/* trees / sec : %f */", totalTreesExamined(tm) /
+        sprintf(con1, "/* trees / sec : %f */", treemasterTreeCount(tm) /
             (double) dt);
         stringstackPush(dotacc, con1);
       }

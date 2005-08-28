@@ -21,13 +21,13 @@
  * 3 neighbors.
  *
  * Callers have the option of registering a callback listener to receive
- * tree-changed events during the findTree() call.  This allows for interactive
+ * tree-changed events during the treemasterFindTree() call.  This allows for interactive
  * or realtime visualizations to occur before the final termination condition
- * is reached.  In these cases abortTreeSearchTM() may be useful to cut short
+ * is reached.  In these cases treemasterAbortSearch() may be useful to cut short
  * a search while in-progress.
  *
  * There are three ways to create a new TreeMaster :
- * newTreeMaster() , newTreeMasterEx(), or newTreeMasterEz()
+ * treemasterNew() , treemasterNewEx(), or treemasterNewEz()
  *
  * \sa treemaster.h
  */
@@ -51,7 +51,7 @@ struct TreeMasterConfig;
  * \param isRooted int flag indicating unrooted (0) or rooted (nonzero) trees
  * \return pointer to a new TreeMaster
  */
-struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted);
+struct TreeMaster *treemasterNew(gsl_matrix *gsl, int isRooted);
 /** \brief allocates a new TreeMaster with custom options and an explicit rootedness flag
  *
  * This function returns a pointer to a newly allocated TreeMaster that
@@ -64,11 +64,11 @@ struct TreeMaster *newTreeMaster(gsl_matrix *gsl, int isRooted);
  * \param em pointer to an EnvMap containing additional custom parameters
  * \return pointer to a new TreeMaster
  */
-struct TreeMaster *newTreeMasterEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em);
+struct TreeMaster *treemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em);
 
 /** \brief simplest all-defaults way to search for an unrooted binary tree
  *
- * newTreeMasterEz() offers the maximum convenience in constructing a TreeMaster
+ * treemasterNewEz() offers the maximum convenience in constructing a TreeMaster
  * by way of its extensive use of defaults.  It takes only the distance matrix
  * and can search only for the most common unrooted binary trees with no
  * custom parameters whatsoever.
@@ -76,34 +76,34 @@ struct TreeMaster *newTreeMasterEx(gsl_matrix *gsl, int isRooted, struct EnvMap 
  * \param gsl pointer to the gsl_matrix containing the distance matrix input
  * \return pointer to a new TreeMaster
  */
-struct TreeMaster *newTreeMasterEz(gsl_matrix *gsl);
+struct TreeMaster *treemasterNewEz(gsl_matrix *gsl);
 
-/** \brief inspects the random "starting" tree before findTree is called
+/** \brief inspects the random "starting" tree before treemasterFindTree is called
  *
  * This function allows visualization display layers and other users to
  * query the initial random starting configuration for one of the starting
  * TreeHolder instances used in the given TreeMaster.  There is no way to
  * specify which one is queried using this function; if you need to explicitly
- * control this, use getTreeAtIndex() instead.
+ * control this, use treemasterTreeAtIndex() instead.
  *
  * \param tm pointer to the TreeMaster to inspect
  * \return pointer to a TreeHolder with the starting tree in the TreeAdaptor
  */
-struct TreeHolder *getStarterTree(struct TreeMaster *tm);
+struct TreeHolder *treemasterStarterTree(struct TreeMaster *tm);
 
 /** \brief Searches for the next best tree
  *
- *  findTree() will search for a new tree, and return a pointer to a TreeHolder
+ *  treemasterFindTree() will search for a new tree, and return a pointer to a TreeHolder
  *  if the tree it is holding has a better tree score than the tree previously
- *  found in the last call of findTree().
+ *  found in the last call of treemasterFindTree().
  *
- *  If needed, abortTreeSearchTM(), can be called in a separate thread to
- *  prematurely interrupt findTree().
+ *  If needed, treemasterAbortSearch(), can be called in a separate thread to
+ *  prematurely interrupt treemasterFindTree().
  *
  *  \param tm pointer to TreeMaster
  *  \return pointer to the best TreeHolder that contains a best TreeAdaptor
  */
-struct TreeHolder *findTree(struct TreeMaster *tm);
+struct TreeHolder *treemasterFindTree(struct TreeMaster *tm);
 
 /** \brief inspects the tree at a given TreeHolder index 0 <= i < k
  *
@@ -112,13 +112,13 @@ struct TreeHolder *findTree(struct TreeMaster *tm);
  * instances which evolve seperately and may be queried through this
  * function.
  *
- * \sa getKTM()
+ * \sa treemasterK()
  *
  * \param tm pointer to the TreeMaster to inspect
  * \param i index of TreeHolder to retrieve between 0 and k-1 inclusive
  * \return pointer to a TreeHolder with the starting tree in the TreeAdaptor
  */
-struct TreeHolder *getTreeAtIndex(struct TreeMaster *tm, int i);
+struct TreeHolder *treemasterTreeAtIndex(struct TreeMaster *tm, int i);
 
 /** \brief counts the total number of trees examined so far in this search
  *
@@ -128,7 +128,7 @@ struct TreeHolder *getTreeAtIndex(struct TreeMaster *tm, int i);
  * \param tm pointer to the TreeMaster to inspect
  * \return count of the number of trees so far examined in the latest search
  */
-int totalTreesExamined(struct TreeMaster *tm);
+int treemasterTreeCount(struct TreeMaster *tm);
 
 /** \brief returns the number of distinct TreeHolder instances in a TreeMaster
  *
@@ -136,35 +136,35 @@ int totalTreesExamined(struct TreeMaster *tm);
  * concurrent TreeHolder searches are going to occur in dovetail fashion.
  * This number counts the number of distinct threads.  For smaller node sizes
  * larger k values must be used to get similar accuracies.  This number
- * bounds the maximum allowable range of getTreeAtIndex() .
+ * bounds the maximum allowable range of treemasterTreeAtIndex() .
  *
  * \param tm pointer to the TreeMaster to inspect
  * \return number of TreeHolder instances in use
  */
-int getKTM(struct TreeMaster *tm);
+int treemasterK(struct TreeMaster *tm);
 
 /** \brief simple opaque data pointer tunnel system for user expansion
  *
  * Provides a simple single void * for the user's arbitrary use.  There
- * is no return value, but see getUserDataTM() for the use.
+ * is no return value, but see treemasterGetUserData() for the use.
  *
  * \param tm pointer to the TreeMaster to store opaque pointer into
  * \param udata the opaque pointer (to your stuff) to store
  */
-void setUserDataTM(struct TreeMaster *tm, void *udata);
+void treemasterSetUserData(struct TreeMaster *tm, void *udata);
 
 /** \brief simple opaque data pointer tunnel system reader for your use
  *
  * This is the function to retrieve your "tunneled" data.  In this way
  * you can attach arbitrary bits of your own code or state to a given
  * TreeMaster and run several different TreeMaster instances in different
- * threads at the same time.  setUserDataTM() must be called before
+ * threads at the same time.  treemasterSetUserData() must be called before
  * calling this function.
  *
  * \param tm pointer to the TreeMaster where an opaque pointer was stored
- * \return the pointer that was stored earlier with setUserDataTM()
+ * \return the pointer that was stored earlier with treemasterSetUserData()
  */
-void *getUserDataTM(struct TreeMaster *tm);
+void *treemasterGetUserData(struct TreeMaster *tm);
 
 /** \brief frees a TreeMaster
  *
@@ -173,7 +173,7 @@ void *getUserDataTM(struct TreeMaster *tm);
  *
  * \param tm pointer to the TreeMaster to be freed
  */
-void freeTreeMaster(struct TreeMaster *tm);
+void treemasterFree(struct TreeMaster *tm);
 
 /** \brief callback system for realtime tree search progress feedback
  *
@@ -182,8 +182,8 @@ void freeTreeMaster(struct TreeMaster *tm);
  * This struct contains four callback functions for use in multithreaded
  * programming.
  *
- * treesearchstarted is called when a new search first begins with findTree()
- * in another thread.  This function will be called just once per findTree().
+ * treesearchstarted is called when a new search first begins with treemasterFindTree()
+ * in another thread.  This function will be called just once per treemasterFindTree().
  *
  * treeimproved is called each time a better tree is found in the search
  * this function may be called very many times.
@@ -204,10 +204,10 @@ struct TreeObserver {
   t_treedone treedone;
 };
 
-/** \brief attaches a TreeObserver to a TreeMaster prior to findTree()
+/** \brief attaches a TreeObserver to a TreeMaster prior to treemasterFindTree()
  *
- * This function must be called before findTree is called in order to
- * enable realtime feedback of tree progress before findTree returns in
+ * This function must be called before treemasterFindTree is called in order to
+ * enable realtime feedback of tree progress before treemasterFindTree returns in
  * the main computation thread.
  *
  * Before using this function, you must set unused function pointers in
@@ -220,16 +220,16 @@ struct TreeObserver {
  * \param tm pointer to the TreeMaster instance to observe
  * \param tob pointer to an already filled-in TreeObserver structure
  */
-void setTreeObserverTM(struct TreeMaster *tm, struct TreeObserver *tob);
+void treemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob);
 
 /** \brief returns the currently attached TreeObserver or NULL if none
  *
  * \param tm pointer to the TreeMaster instance to inspect
  * \return pointer to a TreeObserver structure or NULL if none has been set
  */
-struct TreeObserver *getTreeObserverTM(struct TreeMaster *tm);
+struct TreeObserver *treemasterGetTreeObserver(struct TreeMaster *tm);
 
-/** \brief returns the time when the most recent findTree() call finished
+/** \brief returns the time when the most recent treemasterFindTree() call finished
  *
  * This function may be used to determine the saved time when the last
  * tree search ended.  This is for historical purposes.
@@ -237,9 +237,9 @@ struct TreeObserver *getTreeObserverTM(struct TreeMaster *tm);
  * \param tm pointer to the TreeMaster instance to inspect
  * \return pointer to a CLDateTime containing the finish time
  */
-struct CLDateTime *getEndTimeTM(struct TreeMaster *tm);
+struct CLDateTime *treemasterEndTime(struct TreeMaster *tm);
 
-/** \brief returns the time when the most recent findTree() call started
+/** \brief returns the time when the most recent treemasterFindTree() call started
  *
  * This function may be used to determine the saved time when the last
  * tree search began.  This is for statistical and verification purposes.
@@ -247,16 +247,16 @@ struct CLDateTime *getEndTimeTM(struct TreeMaster *tm);
  * \param tm pointer to the TreeMaster instance to inspect
  * \return pointer to a CLDateTime containing the starting time
  */
-struct CLDateTime *getStartTimeTM(struct TreeMaster *tm);
+struct CLDateTime *treemasterStartTime(struct TreeMaster *tm);
 
 /** \brief Aborts current search for better tree
  *
  *  Interrupts search for better tree. Used for multi-threaded processing.
- *  Assumes findTree() has already been called in another thread for the same
+ *  Assumes treemasterFindTree() has already been called in another thread for the same
  *  TreeMaster.
  *  \param tm pointer to TreeMaster
  */
-void abortTreeSearchTM(struct TreeMaster *tm);
+void treemasterAbortSearch(struct TreeMaster *tm);
 
 /** \brief returns the number of labelled nodes in this TreeMaster
  *
@@ -266,5 +266,5 @@ void abortTreeSearchTM(struct TreeMaster *tm);
  * \param tm pointer to the TreeMaster instance to inspect
  * \return integer indicating number of labelled objects
  */
-int getLabelCountTM(struct TreeMaster *tm);
+int treemasterLabelCount(struct TreeMaster *tm);
 #endif

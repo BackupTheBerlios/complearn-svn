@@ -11,7 +11,7 @@ struct TreeAdaptor *treeaNew(int isRooted, int howbig)
   if (isRooted)
     return treeaLoadRootedBinary(howbig);
   else
-    return loadNewUnrootedTRA(howbig);
+    return treeaLoadUnrooted(howbig);
 }
 
 void treeaFree(struct TreeAdaptor *tra)
