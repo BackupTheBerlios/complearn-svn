@@ -58,14 +58,14 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
   double maxtot = 0, mintot = 0;
   struct LabelPerm *lp = treegetlabelpermTRA(ts->ta);
   assert(dm->size1 == dm->size2);
-  assert(dm->size1 == doubleaSizeLP(lp));
+  assert(dm->size1 == labelpermSize(lp));
   ALLQUARTETS(dm->size1, i, j, k, m) {
     double mincur=0, maxcur=0;
     for (p = 0; p < 3; p += 1) {
       struct Quartet q = permuteLabelsDirect(i, j, k, m, p);
       double curcost = gsl_matrix_get(dm, q.q[0], q.q[1]) + gsl_matrix_get(dm, q.q[2], q.q[3]);
       for (x = 0; x < 4; x += 1)
-        q.q[x] = getNodeIDForColumnIndexLP(lp, q.q[x]);
+        q.q[x] = labelpermNodeIDForColIndex(lp, q.q[x]);
       if (p == 0 || (curcost < mincur))
         mincur = curcost;
       if (p == 0 || (curcost > maxcur))

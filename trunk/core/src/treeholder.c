@@ -51,7 +51,7 @@ struct TreeHolder *newTreeHolder(const gsl_matrix *distmat, struct TreeAdaptor *
   assert(distmat->size1 == distmat->size2);
   th->best = treecloneTRA(tra);
   lp = treegetlabelpermTRA(th->best);
-  assert(doubleaSizeLP(lp) == distmat->size1);
+  assert(labelpermSize(lp) == distmat->size1);
   assert(th->best);
   assert(th->best->ptr);
   th->dm = cloneGSLMatrix(distmat);

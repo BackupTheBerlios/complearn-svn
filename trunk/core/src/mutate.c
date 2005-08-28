@@ -16,7 +16,7 @@ void flipCrosswise(struct AdjAdaptor *aa,
 
 void mutateSpecies(struct AdjAdaptor *aa, struct LabelPerm *labelperm)
 {
-  mutateLabelPerm(labelperm);
+  labelpermMutate(labelperm);
 }
 
 #define MAXMUT 1000

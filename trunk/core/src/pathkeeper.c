@@ -319,8 +319,8 @@ int countTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, stru
   int i, j, k, m;
   int spec;
   int acc = 0;
-  assert(doubleaSizeLP(lab1) == doubleaSizeLP(lab2));
-  spec = doubleaSizeLP(lab1);
+  assert(labelpermSize(lab1) == labelpermSize(lab2));
+  spec = labelpermSize(lab1);
   ALLQUARTETS(spec, i, j, k, m) {
     qbase_t lab[4];
     int qi1, qi2;

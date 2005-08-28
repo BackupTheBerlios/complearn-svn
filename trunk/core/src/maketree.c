@@ -232,7 +232,7 @@ int main(int argc, char **argv)
     struct LabelPerm *lph = treegetlabelpermTRA(ub);
     if (!treeIsQuartettable(ub, nodenum))
       continue;
-    int indnum = getColumnIndexForNodeIDLP(lph, nodenum);
+    int indnum = labelpermColIndexForNodeID(lph, nodenum);
     printf("%s\n", readAtSS(labels, indnum));
   }
   printf("Done.\n");

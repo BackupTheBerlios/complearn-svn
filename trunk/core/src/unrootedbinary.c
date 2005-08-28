@@ -244,7 +244,7 @@ struct UnrootedBinary *newUnrootedBinary(int howManyLeaves)
   leaves = getLabellableNodes(ub);
   assert(leaves);
   assert(doubleaSize(leaves) == howManyLeaves);
-  ub->labelperm = newLabelPerm(leaves);
+  ub->labelperm = labelpermNew(leaves);
   assert(ub->labelperm);
 
   doubleaFree(leaves);
@@ -261,7 +261,7 @@ struct UnrootedBinary *cloneTree(const struct UnrootedBinary *ub)
   cp->startNode = ub->startNode;
   cp->mc = ub->mc;
   cp->aa = adjaClone(ub->aa);
-  cp->labelperm = cloneLabelPerm(ub->labelperm);
+  cp->labelperm = labelpermClone(ub->labelperm);
   return cp;
 }
 
@@ -326,7 +326,7 @@ struct DoubleA *getPerimeterPairs(const struct UnrootedBinary *ub, struct CLNode
 void freeUnrootedBinary(struct UnrootedBinary *ub)
 {
   if (ub->labelperm)
-    freeLabelPerm(ub->labelperm);
+    labelpermFree(ub->labelperm);
   ub->labelperm = NULL;
   if (ub->aa)
     adjaFree(ub->aa);
@@ -352,9 +352,9 @@ struct DoubleA *getLeafLabels(const struct UnrootedBinary *ub)
 {
   struct DoubleA *result = doubleaNew();
   int i;
-  for (i = 0; i < doubleaSizeLP(ub->labelperm); i += 1) {
+  for (i = 0; i < labelpermSize(ub->labelperm); i += 1) {
     union PCTypes p = zeropct;
-    p.i = getNodeIDForColumnIndexLP(ub->labelperm, i);
+    p.i = labelpermNodeIDForColIndex(ub->labelperm, i);
     doubleaPush(result, p);
   }
   return result;

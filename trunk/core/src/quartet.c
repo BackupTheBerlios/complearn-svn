@@ -78,7 +78,7 @@ int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t la
     struct Quartet q = permuteLabels(labels, i);
     struct Quartet q1;
     for (z = 0; z < 4; z += 1) {
-      q1.q[z] = getNodeIDForColumnIndexLP(lab, q.q[z]);
+      q1.q[z] = labelpermNodeIDForColIndex(lab, q.q[z]);
     }
     if (isConsistent(ad, q1))
       return i;

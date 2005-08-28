@@ -301,7 +301,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
       rootnode = nodenum;
     }
     if (treeIsQuartettable(ta, nodenum) && labels)
-      str = readAtSS(labels, getColumnIndexForNodeIDLP(labelperm,nodenum));
+      str = readAtSS(labels, labelpermColIndexForNodeID(labelperm,nodenum));
     else {
       sprintf(labbuf, "%c%d", treeIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
       str = labbuf;
@@ -339,8 +339,8 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     struct DoubleA *dapairs;
     dapairs = treeperimpairsTRA(ta, flips);
     for (i = 0; i < doubleaSize(dapairs); i += 1) {
-      int dmx = getColumnIndexForNodeIDLP(labelperm,doubleaGetValueAt(dapairs,i).ip.x);
-      int dmy = getColumnIndexForNodeIDLP(labelperm,doubleaGetValueAt(dapairs,i).ip.y);
+      int dmx = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.x);
+      int dmy = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.y);
       double disthere = gsl_matrix_get(dm, dmx, dmy);
       sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
       pushSS(dotacc, lab);

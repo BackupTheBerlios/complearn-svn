@@ -8,7 +8,7 @@ struct LabelPerm
 };
 
 
-struct LabelPerm *newLabelPerm(struct DoubleA *labelledNodes)
+struct LabelPerm *labelpermNew(struct DoubleA *labelledNodes)
 {
   struct LabelPerm *lp = gcalloc(sizeof(*lp), 1);
   int i;
@@ -28,7 +28,7 @@ struct LabelPerm *newLabelPerm(struct DoubleA *labelledNodes)
   return lp;
 }
 
-void freeLabelPerm(struct LabelPerm *lph)
+void labelpermFree(struct LabelPerm *lph)
 {
   doubleaFree(lph->coltonode);
   lph->coltonode = NULL;
@@ -51,7 +51,7 @@ static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes 
   doubleaSetValueAt(lph->nodetocol, where.i, okey);
 }
 
-void mutateLabelPerm(struct LabelPerm *lph)
+void labelpermMutate(struct LabelPerm *lph)
 {
   int i, j;
   union PCTypes pi, pj;
@@ -69,7 +69,7 @@ void mutateLabelPerm(struct LabelPerm *lph)
 
 }
 
-struct LabelPerm *cloneLabelPerm(struct LabelPerm *lph)
+struct LabelPerm *labelpermClone(struct LabelPerm *lph)
 {
   struct LabelPerm *lp = gcalloc(sizeof(*lp), 1);
   assert(lph);
@@ -81,29 +81,29 @@ struct LabelPerm *cloneLabelPerm(struct LabelPerm *lph)
   return lp;
 }
 
-int doubleaSizeLP(struct LabelPerm *lph)
+int labelpermSize(struct LabelPerm *lph)
 {
   return lph->size;
 }
 
-int getNodeIDForColumnIndexLP(struct LabelPerm *lph, int which)
+int labelpermNodeIDForColIndex(struct LabelPerm *lph, int which)
 {
   return doubleaGetValueAt(lph->coltonode, which).i;
 }
 
-int getColumnIndexForNodeIDLP(struct LabelPerm *lph, int which)
+int labelpermColIndexForNodeID(struct LabelPerm *lph, int which)
 {
   return doubleaGetValueAt(lph->nodetocol, which).i;
 }
 
-int isLabelPermIdentical(struct LabelPerm *lpa, struct LabelPerm *lpb)
+int labelpermIdentical(struct LabelPerm *lpa, struct LabelPerm *lpb)
 {
   int i, sz;
-  sz = doubleaSizeLP(lpa);
-  if (sz != doubleaSizeLP(lpb))
+  sz = labelpermSize(lpa);
+  if (sz != labelpermSize(lpb))
     return 0;
   for (i = 0; i < sz; i += 1)
-    if (getNodeIDForColumnIndexLP(lpa, i) != getNodeIDForColumnIndexLP(lpb, i))
+    if (labelpermNodeIDForColIndex(lpa, i) != labelpermNodeIDForColIndex(lpb, i))
       return 0;
   return 1;
 }
@@ -121,7 +121,7 @@ static void printLabelPerm(struct LabelPerm *lp)
 }
 #endif
 
-void verifyLabelPerm(struct LabelPerm *lp)
+void labelpermVerify(struct LabelPerm *lp)
 {
   int i;
   assert(lp);

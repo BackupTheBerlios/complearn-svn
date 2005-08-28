@@ -1139,18 +1139,18 @@ void testLabelPerm(void)
     p.i = i + 23;
     doubleaSetValueAt(nodes, i, p);
   }
-  lpa = newLabelPerm(nodes);
-  lpb = cloneLabelPerm(lpa);
-  lpc = cloneLabelPerm(lpb);
-  assert(isLabelPermIdentical(lpa, lpb));
-  assert(isLabelPermIdentical(lpa, lpc));
-  mutateLabelPerm(lpb);
-  assert(!isLabelPermIdentical(lpa, lpb));
-  assert(isLabelPermIdentical(lpa, lpc));
-  assert(!isLabelPermIdentical(lpc, lpb));
-  freeLabelPerm(lpa);
-  freeLabelPerm(lpb);
-  freeLabelPerm(lpc);
+  lpa = labelpermNew(nodes);
+  lpb = labelpermClone(lpa);
+  lpc = labelpermClone(lpb);
+  assert(labelpermIdentical(lpa, lpb));
+  assert(labelpermIdentical(lpa, lpc));
+  labelpermMutate(lpb);
+  assert(!labelpermIdentical(lpa, lpb));
+  assert(labelpermIdentical(lpa, lpc));
+  assert(!labelpermIdentical(lpc, lpb));
+  labelpermFree(lpa);
+  labelpermFree(lpb);
+  labelpermFree(lpc);
   doubleaFree(nodes);
 }
 

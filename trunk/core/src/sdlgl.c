@@ -576,7 +576,7 @@ static void draw_screen(void)
       for (i = 0; i < treeGetNodeCountTRA(ta); i += 1) {
         gsl_vector *p = getBallPosition(sbs, i);
         if (treeIsQuartettable(ta, i)) {
-          int colind = getColumnIndexForNodeIDLP(treegetlabelpermTRA(ta), i);
+          int colind = labelpermColIndexForNodeID(treegetlabelpermTRA(ta), i);
           static struct CLTexture texLabels[MAXTEX];
           draw_sdltext(readAtSS(labels, colind), &texLabels[colind], p);
         }

@@ -94,7 +94,7 @@ static VALUE rbtra_nodetocol(VALUE self, VALUE vn)
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
   lp = treegetlabelpermTRA(ta);
-  return INT2FIX(getColumnIndexForNodeIDLP(lp, n));
+  return INT2FIX(labelpermColIndexForNodeID(lp, n));
 }
 
 static VALUE rbtra_coltonode(VALUE self, VALUE vn)
@@ -105,7 +105,7 @@ static VALUE rbtra_coltonode(VALUE self, VALUE vn)
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   n = NUM2INT(vn);
   lp = treegetlabelpermTRA(ta);
-  return INT2FIX(getNodeIDForColumnIndexLP(lp, n));
+  return INT2FIX(labelpermNodeIDForColIndex(lp, n));
 }
 
 static VALUE rbtra_isflippable(VALUE self, VALUE vn)

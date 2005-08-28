@@ -242,7 +242,7 @@ struct RootedBinary *newRootedBinary(int howManyLeaves)
 
   leaves = getLabellableNodes(rb);
   assert(doubleaSize(leaves) == howManyLeaves);
-  rb->labelperm = newLabelPerm(leaves);
+  rb->labelperm = labelpermNew(leaves);
   doubleaFree(leaves);
 
   verifyTree(rb);
@@ -258,7 +258,7 @@ struct RootedBinary *cloneTreeRB(const struct RootedBinary *rb)
   cp->mc = rb->mc;
   cp->nodecount = rb->nodecount;
   cp->aa = adjaClone(rb->aa);
-  cp->labelperm = cloneLabelPerm(rb->labelperm);
+  cp->labelperm = labelpermClone(rb->labelperm);
   return cp;
 }
 
@@ -329,7 +329,7 @@ struct DoubleA *getPerimeterPairsRB(const struct RootedBinary *rb, struct CLNode
 
 void freeRootedBinaryRB(struct RootedBinary *rb)
 {
-  freeLabelPerm(rb->labelperm);
+  labelpermFree(rb->labelperm);
   adjaFree(rb->aa);
   rb->aa = NULL;
   gfreeandclear(rb);
@@ -353,9 +353,9 @@ struct DoubleA *getLeafLabelsRB(const struct RootedBinary *rb)
 {
   struct DoubleA *result = doubleaNew();
   int i;
-  for (i = 0; i < doubleaSizeLP(rb->labelperm); i += 1) {
+  for (i = 0; i < labelpermSize(rb->labelperm); i += 1) {
     union PCTypes p = zeropct;
-    p.i = getNodeIDForColumnIndexLP(rb->labelperm, i);
+    p.i = labelpermNodeIDForColIndex(rb->labelperm, i);
     doubleaPush(result, p);
   }
   return result;

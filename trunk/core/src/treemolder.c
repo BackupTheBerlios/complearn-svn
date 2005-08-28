@@ -64,8 +64,8 @@ static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struc
   for (i = 0; i < doubleaSize(pairs); i += 1) {
     union PCTypes p = doubleaGetValueAt(pairs, i);
     double x, y;
-    x = getColumnIndexForNodeIDLP(lph, p.ip.x);
-    y = getColumnIndexForNodeIDLP(lph, p.ip.y);
+    x = labelpermColIndexForNodeID(lph, p.ip.x);
+    y = labelpermColIndexForNodeID(lph, p.ip.y);
     acc += gsl_matrix_get(dm, x, y);
   }
   doubleaFree(pairs);
