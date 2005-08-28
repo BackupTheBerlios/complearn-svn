@@ -49,10 +49,10 @@ struct TagHdr {
  *  package_DataBlocks(). Returns a pointer to the new TagManager which can
  *  then be immediately used to retrieve the first dumped DataBlock in the
  *  package.
- *  \param db DataBlock "package"
+ *  \param db pointer to the DataBlock to "package"
  *  \return pointer to new TagManager
  */
-struct TagManager *newTagManager(struct DataBlock db);
+struct TagManager *newTagManager(struct DataBlock *db);
 
 /** \brief Steps the DataBlock pointer forward to the next DataBlock
  *  \param tm pointer to TagManager
@@ -88,9 +88,9 @@ void freeTagManager(struct TagManager *tm);
  *
  *  \param overalltag describing the set of DataBlocks
  *  \param ... sequence of pointers to DataBlocks ending with NULL
- *  \return serialized DataBlock encompassing a series of DataBlocks
+ *  \return pointer to serialized DataBlock encompassing a series of DataBlocks
  */
-struct DataBlock package_DataBlocks(t_tagtype overalltag, ...);
+struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...);
 
 /** \brief Serializes a DoubleA of dumped DataBlocks into a singe DataBlock
  *
@@ -101,7 +101,7 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...);
  *  \param parts DoubleA of pointers to dumped DataBlocks
  *  \return serialized DataBlock encompassing a series of DataBlocks
  */
-struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts);
+struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts);
 
 /** \brief Given a DataBlock package, returns a DoubleA of tagnums & DataBlocks
  *
@@ -112,7 +112,7 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts);
  *  \param db DataBlock "package" as created by package_DataBlocks()
  *  \return DoubleA of IntDBPair objects
  */
-struct DoubleA *load_DataBlock_package(struct DataBlock db);
+struct DoubleA *load_DataBlock_package(struct DataBlock *db);
 
 /** \brief Retrieves DataBlock from DoubleA of IntDBPairs
  *
@@ -128,5 +128,5 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db);
  *  \param tnum tagnum of DataBlock in question
  *  \return DataBlock
  */
-struct DataBlock scanForTag(struct DoubleA *dd, int tnum);
+struct DataBlock *scanForTag(struct DoubleA *dd, int tnum);
 #endif

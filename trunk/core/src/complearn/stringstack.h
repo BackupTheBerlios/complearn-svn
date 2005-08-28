@@ -41,7 +41,7 @@ struct StringStack *stringstackNewSingle(const char *str);
  * \param db a DataBlock containing the serialized format StringStack
  * \return pointer to the newly allocated deserialized StringStack
  */
-struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe);
+struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe);
 
 /** \brief Dumps a StringStack into a serialized format and returns a DataBlock
  *
@@ -51,7 +51,7 @@ struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe);
  * \param ss pointer to the StringStack instance to be saved / serialized
  * \return DataBlock containing the serialized information
  */
-struct DataBlock stringstackDump(const struct StringStack *ss);
+struct DataBlock *stringstackDump(const struct StringStack *ss);
 
 /** \brief Duplicates StringStack and returns a pointer to a new StringStack.
  *  \param ss StringStack to be duplicated

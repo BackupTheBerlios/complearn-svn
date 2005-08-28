@@ -40,16 +40,6 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp);
 
 struct DataBlock *datablockClonePtr(struct DataBlock *db);
 
-/** \brief Frees DataBlock from memory.
- *  \param db DataBlock to be freed
- */
-void datablockFree(struct DataBlock db);
-
-/** \brief Writes contents of DataBlock ptr to stdout.
- *  \param db DataBlock
- */
-void datablockPrint(struct DataBlock db);
-
 /** \brief Writes contents of DataBlock ptr if exists to stdout.
  *  \param db DataBlock
  */

@@ -80,6 +80,7 @@ union PCTypes {
   struct IntPair ip;
   struct IntDBPair idbp;
   struct DataBlock db;
+  struct DataBlock *dbp;
   struct TransformAdaptor *ta;
   void *ptr;
 };
@@ -123,7 +124,7 @@ void doubleaFree(struct DoubleA *ptr);
  *  0 if not
  *  \return pointer to new DoubleA
  */
-struct DoubleA *doubleaLoad(struct DataBlock d, int fmustbe);
+struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe);
 
 /** \brief Serializes a single-level DoubleA into a DataBlock
  *
@@ -139,7 +140,7 @@ struct DoubleA *doubleaLoad(struct DataBlock d, int fmustbe);
  *  \param d pointer to DoubleA
  *  \return a DataBlock which can be written to file
  */
-struct DataBlock doubleaDump(const struct DoubleA *d);
+struct DataBlock *doubleaDump(const struct DoubleA *d);
 
 /** \brief Serializes a multi-level DoubleA into a DataBlock
  *
@@ -156,7 +157,7 @@ struct DataBlock doubleaDump(const struct DoubleA *d);
  *  \return a DataBlock which can be written to file
  *
  */
-struct DataBlock doubleaDeepDump(const struct DoubleA *d, int level);
+struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level);
 
 /** \brief Frees a multi-level DoubleA from memory
  *  \param ptr pointer to DoubleA
@@ -278,9 +279,9 @@ void doubleaPrintIntList(const struct DoubleA *da);
  *  stringLoad() function.
  *
  *  \param s pointer to character string
- *  \return a DataBlock which can be written to file
+ *  \return a pointer to a DataBlock which can be written to file
  */
-struct DataBlock stringDump(const char *s);
+struct DataBlock *stringDump(const char *s);
 
 /** \brief Converts a "dumped" string DataBlock back into a string
  *
@@ -299,7 +300,7 @@ struct DataBlock stringDump(const char *s);
  *  0 if not
  *  \return pointer to new DoubleA
  */
-char *stringLoad(struct DataBlock d, int fmustbe);
+char *stringLoad(struct DataBlock *d, int fmustbe);
 
 /** \brief Consistency function, to ensure a DoubleA is memory safe
  *

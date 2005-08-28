@@ -9,12 +9,12 @@ struct StringStack {
   struct DoubleA *da;
 };
 
-struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe)
+struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
 {
   struct StringStack *result = stringstackNew();
   struct DataBlock cur;
   struct TagManager *tm;
-  struct TagHdr *h = (struct TagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db->ptr;
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
@@ -30,7 +30,7 @@ struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe)
 
   while (getCurDataBlock(tm, &cur)) {
     char *str;
-    str = stringLoad(cur, 1);
+    str = stringLoad(&cur, 1);
     stringstackPush(result, str);
     clFreeandclear(str);
     stepNextDataBlock(tm);
@@ -40,16 +40,16 @@ struct StringStack *stringstackLoad(struct DataBlock db, int fmustbe)
   return result;
 }
 
-struct DataBlock stringstackDump(const struct StringStack *ss)
+struct DataBlock *stringstackDump(const struct StringStack *ss)
 {
-  struct DataBlock result;
+  struct DataBlock *result;
   struct DoubleA *parts = doubleaNew();
   int i;
 
   for ( i = 0; i < stringstackSize(ss); i += 1) {
     union PCTypes p = zeropct;
     char *s = doubleaGetValueAt(ss->da,i).str;
-    p.db = stringDump(s);
+    p.db = *stringDump(s); // TODO: fix mem leak here
     doubleaPush(parts,p);
   }
 

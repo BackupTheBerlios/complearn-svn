@@ -5,18 +5,18 @@
 #include <complearn/complearn.h>
 
 struct TagManager {
-  struct DataBlock db;
+  struct DataBlock *db;
   unsigned char *cur;
   int read;
   int size;
 };
 
-struct TagManager *newTagManager(struct DataBlock db)
+struct TagManager *newTagManager(struct DataBlock *db)
 {
   struct TagManager *tm = clCalloc(sizeof(*tm),1);
-  struct TagHdr *h = (struct TagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db->ptr;
   tm->db = db;
-  tm->cur = db.ptr + sizeof(struct TagHdr);
+  tm->cur = db->ptr + sizeof(struct TagHdr);
   tm->size = h->size;
   tm->read = 0;
   return tm;
@@ -47,14 +47,14 @@ int getCurDataBlock(struct TagManager *tm, struct DataBlock *cur)
 void freeTagManager(struct TagManager *tm)
 {
   tm->cur = NULL;
-  tm->db.ptr = NULL;
+  tm->db = NULL;
   clFreeandclear(tm);
 }
 
-struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
+struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...)
 {
   va_list ap;
-  struct DataBlock *db, result;
+  struct DataBlock *db, *result;
   struct DoubleA *parts = doubleaNew();
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
@@ -70,7 +70,7 @@ struct DataBlock package_DataBlocks(t_tagtype overalltag, ...)
   return result;
 }
 
-struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
+struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
 {
   struct DataBlock result,cur;
   struct TagHdr h;
@@ -97,8 +97,12 @@ struct DataBlock package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   result.ptr = clCalloc(result.size,1);
   memcpy(result.ptr, &h, sizeof(h));
   memcpy(result.ptr + sizeof(h), cur.ptr, h.size);
-  datablockFree(cur);
-  return result;
+  clFree(cur.ptr);
+  {
+    struct DataBlock *rr = clCalloc(sizeof(struct DataBlock), 1);
+    *rr = result;
+    return rr;
+  }
 }
 
 void free_DataBlock_package ( struct DoubleA *da, void *udata)
@@ -109,7 +113,7 @@ void free_DataBlock_package ( struct DoubleA *da, void *udata)
   }
 }
 
-struct DoubleA *load_DataBlock_package(struct DataBlock db)
+struct DoubleA *load_DataBlock_package(struct DataBlock *db)
 {
   struct DoubleA *result = doubleaNew();
   struct TagManager *tm;
@@ -129,20 +133,17 @@ struct DoubleA *load_DataBlock_package(struct DataBlock db)
   return result;
 }
 
-struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
+struct DataBlock *scanForTag(struct DoubleA *dd, int tnum)
 {
   int i;
-  struct DataBlock db, dbclone;
+  struct DataBlock db;
   t_tagtype curtnum;
   for (i = 0; i < doubleaSize(dd); i += 1) {
     curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
       db = *doubleaGetValueAt(dd,i).idbp.db;
-      dbclone =  *datablockClonePtr(&db);
-      return dbclone;
+      return datablockClonePtr(&db);
     }
   }
-  db.ptr = NULL;
-  db.size = 0;
-  return db;
+  return NULL;
 }

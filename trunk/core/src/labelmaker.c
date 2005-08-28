@@ -2,33 +2,33 @@
 #include <complearn/complearn.h>
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock dumpTaggedStringStack(struct StringStack *ss, int tagnum)
+struct DataBlock *dumpTaggedStringStack(struct StringStack *ss, int tagnum)
 {
-  struct DataBlock db, dblabels;
+  struct DataBlock *db, *dblabels;
   db = stringstackDump(ss);
-  dblabels = package_DataBlocks(tagnum,&db,NULL);
-  datablockFree(db);
+  dblabels = package_DataBlocks(tagnum,db,NULL);
+  datablockFreePtr(db);
   return dblabels;
 }
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock commandsDump(struct StringStack *ss)
+struct DataBlock *commandsDump(struct StringStack *ss)
 {
   return dumpTaggedStringStack(ss, TAGNUM_COMMANDS);
 }
 
-struct DataBlock labelsDump(struct StringStack *ss)
+struct DataBlock *labelsDump(struct StringStack *ss)
 {
   return dumpTaggedStringStack(ss, TAGNUM_DMLABELS);
 }
 
 /* TODO: needs new home; does not belong here */
-struct StringStack *loadTaggedStringStack(struct DataBlock db, int fmustbe, const char *tagname, int tagnum)
+struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, const char *tagname, int tagnum)
 {
   struct StringStack *ss;
-  struct DataBlock dbss;
+  struct DataBlock *dbss;
   struct DoubleA *results;
-  struct TagHdr *h = (struct TagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db->ptr;
 
   if (h->tagnum != tagnum) {
     if (fmustbe) {
@@ -42,29 +42,29 @@ struct StringStack *loadTaggedStringStack(struct DataBlock db, int fmustbe, cons
   results = load_DataBlock_package(db);
   dbss = scanForTag(results, TAGNUM_STRINGSTACK);
   ss = stringstackLoad(dbss, 1);
-  datablockFree(dbss);
+  datablockFreePtr(dbss);
   doubleaFree(results);
   return ss;
 }
 
-struct StringStack *labelsLoad(struct DataBlock db, int fmustbe)
+struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe)
 {
   return loadTaggedStringStack(db, fmustbe, "DMLABELS", TAGNUM_DMLABELS);
 }
 
 struct StringStack *clbLabels(char *fname)
 {
-  struct DataBlock *db, dblabels;
+  struct DataBlock *db, *dblabels;
   struct DoubleA *dd;
   struct StringStack *result;
 
   db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(*db);
+  dd = load_DataBlock_package(db);
   dblabels = scanForTag(dd, TAGNUM_DMLABELS);
   result = labelsLoad(dblabels, 1);
 
   datablockFreePtr(db);
-  datablockFree(dblabels);
+  datablockFreePtr(dblabels);
   doubleaFree(dd);
 
   return result;
@@ -93,17 +93,17 @@ struct StringStack *cltxtLabels(char *fname)
 /* TODO: needs new home; does not belong here */
 struct StringStack *clbCommands(char *fname)
 {
-  struct DataBlock *db, dbem;
+  struct DataBlock *db, *dbem;
   struct DoubleA *dd;
   struct StringStack *result;
 
   db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(*db);
+  dd = load_DataBlock_package(db);
   dbem = scanForTag(dd, TAGNUM_COMMANDS);
   result = loadTaggedStringStack(dbem, 1, "COMMANDS", TAGNUM_COMMANDS);
 
   datablockFreePtr(db);
-  datablockFree(dbem);
+  datablockFreePtr(dbem);
   doubleaFree(dd);
   return result;
 }

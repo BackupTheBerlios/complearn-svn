@@ -77,14 +77,9 @@ void datablockFreePtr(struct DataBlock *db)
 void datablockPrintPtr(struct DataBlock *db)
 {
   if (db)
-    datablockPrint(*db);
+    fwrite(db->ptr, 1, db->size, stdout);
   else
     fwrite("(null)", 1, 6, stdout);
-}
-
-void datablockPrint(struct DataBlock db)
-{
-  fwrite(db.ptr, 1, db.size, stdout);
 }
 
 char *datablockToString(struct DataBlock *db)

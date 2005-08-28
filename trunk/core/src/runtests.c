@@ -157,14 +157,14 @@ void testEM()
 void testSS()
 {
   struct StringStack *ss = stringstackNew(), *nss;
-  struct DataBlock db;
+  struct DataBlock *db;
   char *s;
   stringstackPush(ss, "ape");
   stringstackPush(ss, "bird");
   stringstackPush(ss, "cat");
   stringstackPush(ss, "dog");
   db = stringstackDump(ss);
-  datablockWriteToFile(&db, "baddb.dat");
+  datablockWriteToFile(db, "baddb.dat");
   s = shiftSS(ss);
   assert(strcmp(s,"ape") == 0);
   clFreeandclear(s);
@@ -188,7 +188,7 @@ void testSS()
   assert(strcmp(s, "dog") == 0);
   clFreeandclear(s);
   stringstackFree(nss);
-  datablockFree(db);
+  datablockFreePtr(db);
 }
 
 void testCAPtr(struct CompAdaptor *ca)
@@ -238,7 +238,7 @@ void testBlockSortCA()
 #define MAX_BLKSIZE 200
   int i, j, c;
   struct CompAdaptor *ca = compaLoadBuiltin("blocksort");
-  struct DataBlock db;
+  struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
   double v;
   assert(ca != NULL);
   srand( time(NULL) );
@@ -246,40 +246,41 @@ void testBlockSortCA()
 
   /* Blocks only 0 or 1 byte in size */
   for (i = 0; i < REPS; i +=1) {
-    db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
-    db.ptr = (unsigned char*)clMalloc(db.size);
+    db->size = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
+    db->ptr = (unsigned char*)clMalloc(db->size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
-    memset(db.ptr, c, db.size);
-    v = compaCompress(ca,&db);
+    memset(db->ptr, c, db->size);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    datablockFree(db);
+    clFree(db->ptr);
   }
 
   /* Blocks with the same character repeated */
   for (i = 0; i < REPS; i +=1) {
-    db.size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
-    db.ptr = (unsigned char*)clMalloc(db.size);
+    db->size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    db->ptr = (unsigned char*)clMalloc(db->size);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
-    memset(db.ptr, c, db.size);
-    v = compaCompress(ca,&db);
+    memset(db->ptr, c, db->size);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    datablockFree(db);
+    clFree(db->ptr);
   }
 
   /* Blocks with randomly generated characters */
   for (i = 0; i < REPS; i +=1) {
-    db.ptr = (unsigned char*)clMalloc(db.size);
-    for (j = 0; j < db.size ; j +=1 ) {
-      db.ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
+    db->ptr = (unsigned char*)clMalloc(db->size);
+    for (j = 0; j < db->size ; j +=1 ) {
+      db->ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
-    v = compaCompress(ca,&db);
+    v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    datablockFree(db);
+    clFree(db->ptr);
   }
   compaFree(ca);
+  clFree(db);
 }
 
 void testYamlParser()
@@ -390,7 +391,7 @@ void testTransformBZ()
     result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    datablockFree(result);
+    clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -436,7 +437,7 @@ void testTransformGZ()
     result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    datablockFree(result);
+    clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -458,7 +459,7 @@ void testTransformZLIB()
     result = t->tf(*db);
 		assert(result.size > 0);
 		assert(result.ptr != NULL);
-    datablockFree(result);
+    clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -688,7 +689,7 @@ void testMarshalling(void)
 {
   gsl_matrix *gm, *ngm;
   char *strtest = "the test string";
-  struct DataBlock m;
+  struct DataBlock *m;
   char *res = NULL;
   struct EnvMap *em = envmapNew();
   struct EnvMap *resem;
@@ -696,7 +697,7 @@ void testMarshalling(void)
   res = stringLoad(m, 1);
   assert(strcmp(res, strtest) == 0);
   assert(res != strtest);
-  datablockFree(m);
+  datablockFreePtr(m);
   clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
@@ -710,7 +711,7 @@ void testMarshalling(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(gm);
   gsl_matrix_free(ngm);
-  datablockFree(m);
+  datablockFreePtr(m);
   envmapSetKeyVal(em, "key1", "val1");
   envmapSetKeyVal(em, "key2", "val2");
   envmapSetKeyVal(em, "key3", "val3");
@@ -729,7 +730,7 @@ void testMarshalling(void)
 void testDoubleDoubler(void)
 {
   struct DoubleA *dd, *ee, *sm;
-  struct DataBlock dumptest;
+  struct DataBlock *dumptest;
   union PCTypes p = zeropct;
   dd = doubleaNew();
   assert(dd);
@@ -748,7 +749,7 @@ void testDoubleDoubler(void)
   assert(doubleaGetDValueAt(dd, 999) == doubleaGetDValueAt(ee, 999));
   doubleaFree(dd);
   doubleaFree(ee);
-  datablockFree(dumptest);
+  datablockFreePtr(dumptest);
   sm = doubleaNew();
   doubleaSetDValueAt(sm, 0, 7.0);
   doubleaSetDValueAt(sm, 1, 3.0);
@@ -768,7 +769,7 @@ void testDoubleDoubler(void)
   assert(doubleaGetValueAt(doubleaGetValueAt(ee, 0).ar, 2).d == doubleaGetValueAt(sm, 2).d);
   doubleaDeepFree(ee, 1);
   doubleaDeepFree(dd, 1);
-  datablockFree(dumptest);
+  datablockFreePtr(dumptest);
 }
 
 #if GSL_RDY
@@ -1031,7 +1032,7 @@ void testALTagFile(void)
   gsl_matrix *gm, *ngm;
   char *result;
   struct StringStack *ss, *nes, *nlabels;
-  struct DataBlock dbstr, dbss, dbgslm, dbdm, dblabels, dbpkg, *dbpkg_read;
+  struct DataBlock *dbstr, *dbss, *dbgslm, *dbdm, *dblabels, *dbpkg, *dbpkg_read;
   struct DoubleA *dd;
   int i;
   t_tagtype curtnum;
@@ -1081,26 +1082,29 @@ void testALTagFile(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(ngm);
 
-  dbpkg = package_DataBlocks(TAGNUM_TAGMASTER, &dbstr, &dbgslm, &dbss, NULL);
-  datablockFree(dbss);
-  datablockFree(dbstr);
-  datablockFree(dbgslm);
+  dbpkg = package_DataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
+  datablockFreePtr(dbss);
+  datablockFreePtr(dbstr);
+  datablockFreePtr(dbgslm);
 
-  datablockWriteToFile(&dbpkg,TAGFILENAME);
-  datablockFree(dbpkg);
+  datablockWriteToFile(dbpkg,TAGFILENAME);
+  datablockFreePtr(dbpkg);
   dbpkg_read = fileToDataBlockPtr(TAGFILENAME);
   unlink(TAGFILENAME);
-  dd = load_DataBlock_package(*dbpkg_read);
+  dd = load_DataBlock_package(dbpkg_read);
   for (i = 0; i < doubleaSize(dd); i += 1) {
+    struct DataBlock *dblame;
     curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
     switch (curtnum) {
       case TAGNUM_STRING:
-        result = stringLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
+        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        result = stringLoad(dblame, 1);
         assert(strcmp(s,result) == 0);
         clFreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
-        ngm = gslmatrixLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
+        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        ngm = gslmatrixLoad(dblame, 1);
         assert(gm != ngm);
         assert(gm->size1 == ngm->size1);
         assert(gm->size2 == ngm->size2);
@@ -1109,7 +1113,8 @@ void testALTagFile(void)
         gsl_matrix_free(ngm);
         break;
       case TAGNUM_STRINGSTACK:
-        nes = stringstackLoad(*doubleaGetValueAt(dd,i).idbp.db, 1);
+        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        nes = stringstackLoad(dblame, 1);
         assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
         assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
         assert(strcmp(stringstackReadAt(nes,2), stringstackReadAt(ss,2)) == 0);

@@ -99,7 +99,7 @@ char *envmapValueForKey(struct EnvMap *em, const char *key);
  *  \param em pointer to EnvMap
  *  \return DataBlock which can be written to file
  */
-struct DataBlock envmapDump(struct EnvMap *em);
+struct DataBlock *envmapDump(struct EnvMap *em);
 
 /** \brief Converts a DataBlock created by envmapDump() back into an EnvMap
  *
@@ -117,7 +117,7 @@ struct DataBlock envmapDump(struct EnvMap *em);
  *  0 if not
  *  \return pointer to new EnvMap
  */
-struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe);
+struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe);
 
 /** \brief Retrieves a key value pair at a given index of an EnvMap
  *  The key-value pair returned by envmapKeyValAt() is in the form of a PCTypes

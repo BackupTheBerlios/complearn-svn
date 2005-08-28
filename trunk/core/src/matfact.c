@@ -19,9 +19,9 @@ gsl_matrix *gslmatrixClone(const gsl_matrix *a)
   gsl_matrix_memcpy(u, a);
   return u;
 }
-struct DataBlock gslmatrixDump(const gsl_matrix *a)
+struct DataBlock *gslmatrixDump(const gsl_matrix *a)
 {
-  struct DataBlock result, dubs;
+  struct DataBlock *result, *dubs;
   struct DoubleA *dac = doubleaNew();
   struct TagHdr h;
   struct GSLMHdr m;
@@ -37,25 +37,27 @@ struct DataBlock gslmatrixDump(const gsl_matrix *a)
   m.size1 = a->size1;
   m.size2 = a->size2;
   dubs = doubleaDump(dac);
-  h.size = dubs.size + sizeof(m);
-  result.size = dubs.size + sizeof(h) + sizeof(m);
-  result.ptr = clCalloc(result.size, 1);
-  memcpy(result.ptr, &h, sizeof(h));
-  memcpy(result.ptr + sizeof(h), &m, sizeof(m));
-  memcpy(result.ptr + sizeof(h) + sizeof(m), dubs.ptr, dubs.size);
-  datablockFree(dubs);
+  h.size = dubs->size + sizeof(m);
+  result = clCalloc(sizeof(struct DataBlock), 1);
+  result->size = dubs->size + sizeof(h) + sizeof(m);
+  result->ptr = clCalloc(result->size, 1);
+  memcpy(result->ptr, &h, sizeof(h));
+  memcpy(result->ptr + sizeof(h), &m, sizeof(m));
+  memcpy(result->ptr + sizeof(h) + sizeof(m), dubs->ptr, dubs->size);
+  datablockFreePtr(dubs);
   doubleaFree(dac);
   return result;
 }
 
-gsl_matrix *gslmatrixLoad(const struct DataBlock d, int fmustbe)
+gsl_matrix *gslmatrixLoad(const struct DataBlock *ptrd, int fmustbe)
 {
   gsl_matrix *result;
   struct TagHdr *h;
   struct GSLMHdr *m;
-  struct DataBlock db;
+  struct DataBlock db, d;
   struct DoubleA *da;
   int x, y, i = 0;
+  d = *ptrd;
   assert(sizeof(*m)+sizeof(*h) <= d.size);
   h = (struct TagHdr *) d.ptr;
   m = (struct GSLMHdr *) (d.ptr + sizeof(*h));
@@ -71,7 +73,7 @@ gsl_matrix *gslmatrixLoad(const struct DataBlock d, int fmustbe)
   assert(m->size1 > 0 && m->size2 > 0);
   db.ptr = d.ptr + sizeof(*h) + sizeof(*m);
   db.size = d.size - (sizeof(*h) + sizeof(*m));
-  da = doubleaLoad(db, 1);
+  da = doubleaLoad(&db, 1);
   result = gsl_matrix_alloc(m->size1, m->size2);
   for (x = 0; x < m->size1; x += 1)
     for (y = 0; y < m->size2; y += 1)
@@ -80,20 +82,20 @@ gsl_matrix *gslmatrixLoad(const struct DataBlock d, int fmustbe)
   return result;
 }
 
-struct DataBlock distmatrixDump(gsl_matrix *m)
+struct DataBlock *distmatrixDump(gsl_matrix *m)
 {
-  struct DataBlock db, dbm;
+  struct DataBlock *db, *dbm;
   db = gslmatrixDump(m);
-  dbm = package_DataBlocks(TAGNUM_CLDISTMATRIX,&db,NULL);
+  dbm = package_DataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
   return dbm;
 }
 
-gsl_matrix *distmatrixLoad(struct DataBlock db, int fmustbe)
+gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
 {
   gsl_matrix *m;
   struct DoubleA *dd;
-  struct TagHdr *h = (struct TagHdr *) db.ptr;
-  struct DataBlock dbdm, dbda;
+  struct TagHdr *h = (struct TagHdr *) ptrdb->ptr;
+  struct DataBlock *dbdm;
 
   if (h->tagnum != TAGNUM_CLDISTMATRIX) {
     if (fmustbe) {
@@ -105,15 +107,15 @@ gsl_matrix *distmatrixLoad(struct DataBlock db, int fmustbe)
       return NULL;
   }
 
-  dd = load_DataBlock_package(db);
+  dd = load_DataBlock_package(ptrdb);
   dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
-  dbda = *doubleaGetValueAt(dd,0).idbp.db;
   m = gslmatrixLoad(dbdm, 1);
   doubleaFree(dd);
-  datablockFree(dbdm);
+  datablockFreePtr(dbdm);
 
   return m;
 }
+
 void gslmatrixFree(gsl_matrix *m)
 {
   gsl_matrix_free(m);
@@ -121,17 +123,17 @@ void gslmatrixFree(gsl_matrix *m)
 
 gsl_matrix *clbDistMatrix(char *fname)
 {
-  struct DataBlock *db, dbdm;
+  struct DataBlock *db, *dbdm;
   struct DoubleA *dd;
   gsl_matrix *result;
 
   db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(*db);
+  dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   result = distmatrixLoad(dbdm, 1);
 
   datablockFreePtr(db);
-  datablockFree(dbdm);
+  datablockFreePtr(dbdm);
   doubleaFree(dd);
   return result;
 }

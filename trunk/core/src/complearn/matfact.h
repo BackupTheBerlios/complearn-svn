@@ -37,9 +37,9 @@ gsl_matrix *gslmatrixClone(const gsl_matrix *a);
  * within a file, transmitted over the network, etc.
  *
  * \param a pointer to a gsl_matrix
- * \return newly created DataBlock
+ * \return pointer to a newly created DataBlock
  */
-struct DataBlock gslmatrixDump(const gsl_matrix *a);
+struct DataBlock *gslmatrixDump(const gsl_matrix *a);
 
 /** \brief Loads a gsl_matrix from a serialized format inside a DataBlock
  *
@@ -57,7 +57,7 @@ struct DataBlock gslmatrixDump(const gsl_matrix *a);
  * \return pointer to a deserialized gsl_matrix, or NULL if gslmatrixLoad()
  * does not recognize the serialized format.
  */
-gsl_matrix *gslmatrixLoad(const struct DataBlock d, int fmustbe);
+gsl_matrix *gslmatrixLoad(const struct DataBlock *d, int fmustbe);
 
 /** \brief Frees a gsl_matrix object from memory.
  *
@@ -86,7 +86,7 @@ void gslmatrixFree(gsl_matrix *m);
  * does not recognize the serialized format.
  *
  */
-gsl_matrix *distmatrixLoad(const struct DataBlock d, int fmustbe);
+gsl_matrix *distmatrixLoad(struct DataBlock *d, int fmustbe);
 
 /** \brief Dumps an gsl_matrix into a serialized format and returns a DataBlock
  *
@@ -99,7 +99,7 @@ gsl_matrix *distmatrixLoad(const struct DataBlock d, int fmustbe);
  *  \param m pointer to gsl_matrix
  *  \return DataBlock which can be written to file
  */
-struct DataBlock distmatrixDump(gsl_matrix *m);
+struct DataBlock *distmatrixDump(gsl_matrix *m);
 
 /** \brief Retrieves a gsl_matrix from a CompLearn binary file
  *

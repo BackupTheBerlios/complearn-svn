@@ -140,7 +140,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     gres = svdProject(gres);
   }
   if (cur->fBinary) {
-    struct DataBlock dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, db;
+    struct DataBlock *dbdmtagged, *dblabelstagged, *dbcommandstagged, *dbenvmap, *db;
     struct EnvMap *em = envmapNew();
     int i;
     for (i = 0; i < envmapSize(cur->em); i += 1) {
@@ -155,11 +155,11 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     assert(labels);
     dblabelstagged = labelsDump(labels);
     dbcommandstagged = commandsDump(cur->cmdKeeper);
-    db = package_DataBlocks(TAGNUM_TAGMASTER, &dbdmtagged, &dblabelstagged, &dbcommandstagged, &dbenvmap, NULL);
+    db = package_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
     datablockWriteToFile(&db, ncdcfg->output_distmat_fname);
-    datablockFree(db);
-    datablockFree(dblabelstagged);
-    datablockFree(dbdmtagged);
+    datablockFreePtr(db);
+    datablockFreePtr(dblabelstagged);
+    datablockFreePtr(dbdmtagged);
   }
   for (n1c = 0; n1c < gres->size1; n1c++) {
     printf(rowBegin);

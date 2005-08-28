@@ -12,14 +12,14 @@ struct EnvMap {
   struct CLNodeSet *private;
 };
 
-struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe)
+struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 {
   struct EnvMap *result = envmapNew();
   struct DataBlock cur;
   struct TagManager *tm;
   struct StringStack *keyparts;
   struct StringStack *valparts;
-  struct TagHdr *h = (struct TagHdr *) db.ptr;
+  struct TagHdr *h = (struct TagHdr *) db->ptr;
   int i;
 
   if (h->tagnum != TAGNUM_ENVMAP) {
@@ -37,10 +37,10 @@ struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe)
   tm = newTagManager(db);
 
   getCurDataBlock(tm, &cur);
-  keyparts = stringstackLoad(cur, 1);
+  keyparts = stringstackLoad(&cur, 1);
   stepNextDataBlock(tm);
   getCurDataBlock(tm, &cur);
-  valparts = stringstackLoad(cur, 1);
+  valparts = stringstackLoad(&cur, 1);
 
   assert (stringstackSize(keyparts)== stringstackSize(valparts));
   for (i = 0; i < stringstackSize(keyparts) ; i += 1)
@@ -54,10 +54,10 @@ struct EnvMap *envmapLoad(struct DataBlock db, int fmustbe)
   return result;
 }
 
-struct DataBlock envmapDump(struct EnvMap *em)
+struct DataBlock *envmapDump(struct EnvMap *em)
 {
-  struct DataBlock result;
-  struct DataBlock keys, vals;
+  struct DataBlock *rr;
+  struct DataBlock *keys, *vals;
   struct StringStack *keyparts = stringstackNew();
   struct StringStack *valparts = stringstackNew();
   int i;
@@ -69,12 +69,12 @@ struct DataBlock envmapDump(struct EnvMap *em)
   keys = stringstackDump(keyparts);
   vals = stringstackDump(valparts);
 
-  result = package_DataBlocks(TAGNUM_ENVMAP, &keys,&vals, NULL);
+  rr = package_DataBlocks(TAGNUM_ENVMAP, keys,vals, NULL);
 
   stringstackFree(keyparts); stringstackFree(valparts);
-  datablockFree(keys); datablockFree(vals);
+  datablockFreePtr(keys); datablockFreePtr(vals);
 
-  return result;
+  return rr;
 }
 #define MAXINDECES 10
 struct EnvMap *envmapNew() {
@@ -234,15 +234,15 @@ int envmapIsPrivateAt(struct EnvMap *em, int where)
 
 struct EnvMap *clbEnvMap(char *fname)
 {
-  struct DataBlock *db, dbem;
+  struct DataBlock *db, *dbem;
   struct DoubleA *dd;
   struct EnvMap *result = NULL;
 
   db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(*db);
+  dd = load_DataBlock_package(db);
   dbem = scanForTag(dd, TAGNUM_ENVMAP);
   result = envmapLoad(dbem, 1);
-  datablockFree(dbem);
+  datablockFreePtr(dbem);
 
   datablockFreePtr(db);
   doubleaFree(dd);

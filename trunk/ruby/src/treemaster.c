@@ -4,11 +4,11 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
 {
   char *fname = STR2CSTR(rfname);
   struct DataBlock *db = fileToDataBlockPtr(fname);
-  struct DataBlock dbdm;
+  struct DataBlock *dbdm;
   struct DoubleA *dd;
   volatile VALUE result;
   gsl_matrix *dm;
-  dd = load_DataBlock_package(*db);
+  dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = distmatrixLoad(dbdm, 1);
   assert(dm);

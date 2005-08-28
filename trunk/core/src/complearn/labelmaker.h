@@ -14,7 +14,7 @@
  *  \param ss pointer to StringStack
  *  \return serialized DataBlock
  */
-struct DataBlock labelsDump(struct StringStack *ss);
+struct DataBlock *labelsDump(struct StringStack *ss);
 
 /** \brief Converts DataBlock created by labelsDump() back into a StringStack
  *
@@ -27,12 +27,12 @@ struct DataBlock labelsDump(struct StringStack *ss);
  *  labelsDump() fails.  If the tag is not found, an error message is printed
  *  to stdout. Set fmustbe to 0 to return NULL instead.
  *
- *  \param db DataBlock
+ *  \param db pointer to a DataBlock
  *  \param fmustbe 1 if the DataBlock must contain the identifying DMLabels
  *  flag; 0 if not
  *  \return pointer to new StringStack
  */
-struct StringStack *labelsLoad(struct DataBlock db, int fmustbe);
+struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe);
 
 /** \brief Returns StringStack of distance matrix labels from CompLearn binary
  *
@@ -60,7 +60,7 @@ struct StringStack *cltxtLabels(char *fname);
  *  \param ss pointer to StringStack of commands
  *  \return DataBlock
  */
-struct DataBlock commandsDump(struct StringStack *ss);
+struct DataBlock *commandsDump(struct StringStack *ss);
 
 /** \brief Returns StringStack of commands from a CompLearn binary file
  *
