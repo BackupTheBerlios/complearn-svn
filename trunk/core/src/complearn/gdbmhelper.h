@@ -17,8 +17,8 @@ struct GDBMHelper;
 
 struct GDBMHelper *cldbopen(const char *filename);
 void cldbunlink(const char *filename);
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key);
-void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val);
+struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key);
+void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val);
 int cldbclose(struct GDBMHelper *gh);
 
 #endif

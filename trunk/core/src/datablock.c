@@ -121,19 +121,24 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 	return d;
 }
 
-struct DataBlock datablockClone(struct DataBlock db)
-{
-  struct DataBlock result;
-  result.size = db.size;
-  result.ptr = clMalloc(db.size);
-  memcpy(result.ptr, db.ptr, db.size);
-  return result;
-}
-
-struct DataBlock *datablockClonePtr(struct DataBlock *ptr)
+struct DataBlock *datablockClonePtr(struct DataBlock *db)
 {
   struct DataBlock *result;
   result = clCalloc(sizeof(*result), 1);
-  *result = datablockClone(*ptr);
+  result->size = db->size;
+  result->ptr = clMalloc(db->size);
+  memcpy(result->ptr, db->ptr, db->size);
   return result;
 }
+
+struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
+{
+  struct DataBlock *db;
+  db = clCalloc(sizeof(struct DataBlock), 1);
+  db->size = size;
+  db->ptr = clCalloc(size, 1);
+  memcpy(db->ptr, ptr, db->size);
+  return db;
+}
+
+

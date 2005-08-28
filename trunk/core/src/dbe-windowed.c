@@ -9,7 +9,7 @@
  */
 struct DBEWindowedEnumeration
 {
-  struct DataBlock db;
+  struct DataBlock *db;
   int firstpos, stepsize, width, lastpos;
 };
 
@@ -43,9 +43,8 @@ static void dbe_wi_iterfree(struct DataBlockEnumerationIterator *dbi)
 static void dbe_wi_enumfree(struct DataBlockEnumeration *dbe)
 {
   struct DBEWindowedEnumeration *widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
-  datablockFree(widbe->db);
-  widbe->db.ptr = NULL;
-  widbe->db.size = 0;
+  datablockFreePtr(widbe->db);
+  widbe->db = NULL;
   clFreeandclear(dbe->eptr);
   clFreeandclear(dbe);
 }
@@ -55,10 +54,10 @@ static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   if (widbi->curpos >= 0 && widbi->curpos + widbe->width - 1 <= widbe->lastpos)
   {
-   struct DataBlock *db = clCalloc(sizeof(*db),1);
-   widbi->w.ptr = widbe->db.ptr + widbi->curpos;
+   struct DataBlock *db;
+   widbi->w.ptr = widbe->db->ptr + widbi->curpos;
    widbi->w.size = widbe->width;
-   *db = datablockClone(widbi->w);
+   db = datablockClonePtr(&widbi->w);
    return db;
   }
   else
@@ -105,7 +104,7 @@ struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
   *dbe = c;
   dbe->eptr = clCalloc(sizeof(struct DBEWindowedEnumeration), 1);
   widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
-  widbe->db = datablockClone(*db);
+  widbe->db = datablockClonePtr(db);
   widbe->firstpos = firstpos;
   widbe->stepsize = stepsize;
   widbe->width = width;

@@ -24,11 +24,11 @@ const char *getHomeDir(void)
   return result;
 }
 
-datum convertDataBlockToDatum(struct DataBlock d)
+datum convertDataBlockToDatum(struct DataBlock *d)
 {
   datum gd;
-  gd.dptr = (char *) d.ptr;
-  gd.dsize = d.size;
+  gd.dptr = (char *) d->ptr;
+  gd.dsize = d->size;
   return gd;
 }
 
@@ -61,23 +61,19 @@ struct GDBMHelper *cldbopen(const char *userfilename)
 
 /* Allocates a new DataBlock and returns pointer to new DataBlock
  */
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key)
+struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   datum result;
   result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));
-  if (result.dptr) {
-    struct DataBlock *dbr = clCalloc(sizeof(struct DataBlock), 1);
-    dbr->ptr = (unsigned char *) result.dptr;
-    dbr->size = result.dsize;
-    return dbr;
-  }
+  if (result.dptr)
+    return datablockNewFromBlock(result.dptr, result.dsize);
   return NULL;
 }
 
-void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val)
+void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   datum gkey;
-  gkey.dptr = (char *) key.ptr;
+  gkey.dptr = (char *) key->ptr;
   gdbm_store(gh->db,
       convertDataBlockToDatum(key),
       convertDataBlockToDatum(val),
@@ -105,7 +101,7 @@ int cldbclose(struct GDBMHelper *gh)
 {
   assert("No GDBM installed." && 0);
 }
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock key)
+struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   assert("No GDBM installed." && 0);
 }

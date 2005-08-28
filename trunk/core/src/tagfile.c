@@ -138,7 +138,7 @@ struct DataBlock scanForTag(struct DoubleA *dd, int tnum)
     curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
       db = *doubleaGetValueAt(dd,i).idbp.db;
-      dbclone =  datablockClone(db);
+      dbclone =  *datablockClonePtr(&db);
       return dbclone;
     }
   }

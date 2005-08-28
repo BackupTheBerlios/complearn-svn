@@ -59,10 +59,9 @@ static const char *makeCacheKey(const char *daystr, struct StringStack *terms)
   return ckbuf;
 }
 
-struct DataBlock makeCacheVal(double pg, struct DataBlock lastdbval, const char *qorig)
+struct DataBlock *makeCacheVal(double pg, struct DataBlock *lastdbval, const char *qorig)
 {
   static struct GCSample d, lastd;
-  struct DataBlock dat;
   struct CLDateTime *dt;
   dt = cldatetimeNow();
 
@@ -71,12 +70,10 @@ struct DataBlock makeCacheVal(double pg, struct DataBlock lastdbval, const char 
   d.pagecount = pg;
   d.when = cldatetimeToInt(dt);
   strcpy(d.daystring, cldatetimeToDayString(dt));
-  memcpy(d.cknext, lastdbval.ptr, lastdbval.size);
+  memcpy(d.cknext, lastdbval->ptr, lastdbval->size);
   strcpy(d.qorig, qorig);
 
-  dat.ptr = (unsigned char *) &d;
-  dat.size = sizeof(d);
-  return datablockClone(dat);
+  return datablockNewFromBlock(&d, sizeof(d));
 }
 
 double convertCacheVal(struct DataBlock d)
@@ -145,7 +142,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   ckey = makeCacheKey(daystr, normed);
 
   dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
-  db = cldbfetch(gc->samp, *dbckey);
+  db = cldbfetch(gc->samp, dbckey);
   if (db) {
     assert(db->size == sizeof(struct GCSample));
     *val = convertCacheVal(*db);
@@ -156,7 +153,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
     return 1;
   } else {
     double pgc;
-    struct DataBlock newentry, *lastdbval;
+    struct DataBlock *newentry, *lastdbval;
     pgc = getPageCount(terms, gkey);
     if (pgc < 0) {
       printf("Error contacting Google, aborting...\n");
@@ -164,15 +161,15 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
     }
     *val = pgc;
     dblastkey = stringToDataBlockPtr(makeCacheKey(ROOTSYM, normed));
-    lastdbval = cldbfetch(gc->samp, *dblastkey);
+    lastdbval = cldbfetch(gc->samp, dblastkey);
     if (lastdbval == NULL)
       lastdbval = dbroot;
-    newentry = makeCacheVal(pgc, *lastdbval, makeCacheKey(ROOTSYM, terms));
-    cldbstore(gc->samp, *dbckey, newentry);
-    cldbstore(gc->samp, *dblastkey, *dbckey);
+    newentry = makeCacheVal(pgc, lastdbval, makeCacheKey(ROOTSYM, terms));
+    cldbstore(gc->samp, dbckey, newentry);
+    cldbstore(gc->samp, dblastkey, dbckey);
     stringstackFree(normed);                          /* FSF02:2/2 */
     datablockFreePtr(dblastkey);
-    datablockFree(newentry);
+    datablockFreePtr(newentry);
     datablockFreePtr(dbroot);                /* FSF01:2/2 */
     datablockFreePtr(dbckey);                /* FSF03:2/2 */
     if (lastdbval != &dbroot) {

@@ -38,7 +38,7 @@ struct DataBlock *fileToDataBlockPtr(const char *path);
 
 struct DataBlock *filePtrToDataBlockPtr(FILE *fp);
 
-struct DataBlock datablockClone(struct DataBlock db);
+struct DataBlock *datablockClonePtr(struct DataBlock *db);
 
 /** \brief Frees DataBlock from memory.
  *  \param db DataBlock to be freed
@@ -78,7 +78,14 @@ void datablockWriteToFile(struct DataBlock *db, const char *path);
  */
 struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b);
 
-struct DataBlock *datablockClonePtr(struct DataBlock *ptr);
+/** \brief Creates a new DataBlock given a pointer to an address and a
+ * size in bytes.
+ *
+ * \param ptr a pointer to the base of the memory block to convert
+ * \param size number of bytes of space to convert to the DataBlock
+ * \return pointer to a new DataBlock containing the data in the block you gave
+ */
+struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size);
 
 void datablockFreePtr(struct DataBlock *db);
 #endif
