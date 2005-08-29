@@ -172,7 +172,7 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
     datablockFreePtr(newentry);
     datablockFreePtr(dbroot);                /* FSF01:2/2 */
     datablockFreePtr(dbckey);                /* FSF03:2/2 */
-    if (lastdbval != &dbroot) {
+    if (lastdbval != dbroot) {
       datablockFreePtr(lastdbval);
       lastdbval = NULL;
     }
