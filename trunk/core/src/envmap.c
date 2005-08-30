@@ -15,11 +15,11 @@ struct EnvMap {
 struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 {
   struct EnvMap *result = envmapNew();
-  struct DataBlock cur;
+  struct DataBlock *cur;
   struct TagManager *tm;
   struct StringStack *keyparts;
   struct StringStack *valparts;
-  struct TagHdr *h = (struct TagHdr *) db->ptr;
+  struct TagHdr *h = (struct TagHdr *) datablockData(db);
   int i;
 
   if (h->tagnum != TAGNUM_ENVMAP) {
@@ -36,11 +36,11 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 
   tm = newTagManager(db);
 
-  getCurDataBlock(tm, &cur);
-  keyparts = stringstackLoad(&cur, 1);
+  getCurDataBlock(tm, cur);
+  keyparts = stringstackLoad(cur, 1);
   stepNextDataBlock(tm);
-  getCurDataBlock(tm, &cur);
-  valparts = stringstackLoad(&cur, 1);
+  getCurDataBlock(tm, cur);
+  valparts = stringstackLoad(cur, 1);
 
   assert (stringstackSize(keyparts)== stringstackSize(valparts));
   for (i = 0; i < stringstackSize(keyparts) ; i += 1)

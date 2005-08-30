@@ -19,7 +19,8 @@ struct DBEWindowedEnumeration
 struct DBEWindowedEnumerationIterator
 {
   int curpos;
-  struct DataBlock w;
+  unsigned char *dbptr;
+  int dbsize;
   char curlabel[32];
 };
 
@@ -35,8 +36,8 @@ static struct DataBlockEnumerationIterator *dbe_wi_newenumiter(struct DataBlockE
 static void dbe_wi_iterfree(struct DataBlockEnumerationIterator *dbi)
 {
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
-  widbi->w.ptr = NULL;
-  widbi->w.size = 0;
+  widbi->dbptr = NULL;
+  widbi->dbsize = 0;
   clFreeandclear(dbi);
 }
 
@@ -54,11 +55,9 @@ static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   if (widbi->curpos >= 0 && widbi->curpos + widbe->width - 1 <= widbe->lastpos)
   {
-   struct DataBlock *db;
-   widbi->w.ptr = widbe->db->ptr + widbi->curpos;
-   widbi->w.size = widbe->width;
-   db = datablockClonePtr(&widbi->w);
-   return db;
+   widbi->dbptr = widbe->db->ptr + widbi->curpos;
+   widbi->dbsize = widbe->width;
+   return datablockNewFromBlock(widbi->dbptr, widbi->dbsize);
   }
   else
     return NULL;

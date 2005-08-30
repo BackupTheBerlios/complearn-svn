@@ -27,8 +27,8 @@ const char *getHomeDir(void)
 datum convertDataBlockToDatum(struct DataBlock *d)
 {
   datum gd;
-  gd.dptr = (char *) d->ptr;
-  gd.dsize = d->size;
+  gd.dptr = (char *) datablockData(d);
+  gd.dsize = datablockSize(d);
   return gd;
 }
 
