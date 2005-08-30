@@ -42,6 +42,7 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
   struct DoubleA *parts = doubleaNew();
   unsigned char *ptr;
   unsigned char *partsbuf;
+  struct DataBlock *result;
 
   totalbytes = 0;
 	while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
@@ -61,7 +62,9 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
 
   doubleaFree(parts);
 
-  return datablockNewFromBlock(partsbuf,totalbytes);
+  result = datablockNewFromBlock(partsbuf,totalbytes);
+  clFree(partsbuf);
+  return result;
 }
 
 void datablockFree(struct DataBlock db)

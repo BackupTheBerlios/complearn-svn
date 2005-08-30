@@ -58,13 +58,13 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
   int lastpos = 0;
   char *cstr, *cur;
   struct DataBlock *db;
-  db = clCalloc(sizeof(struct DataBlock), 1);
+  db = clCalloc(sizeof(struct DataBlock *), 1);
 #define WINDELIMS ","
   cstr = clStrdup(str);
   fname = strtok(cstr, WINDELIMS);
   assert(fname && "Must specify filename for window");
   db = fileToDataBlockPtr(fname);
-  lastpos = db->size - 1;
+  lastpos = datablockSize(db) - 1;
   cur = strtok(NULL, WINDELIMS);
   if (cur) {
     width = atoi(cur);

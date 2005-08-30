@@ -303,11 +303,13 @@ struct DataBlock *doubleaDump(const struct DoubleA *d)
 struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
 {
   struct DoubleA *bufs = doubleaNew();
-  struct DataBlock dbres;
+  unsigned char *ptr;
+  int dbsize;
+  struct DataBlock *result;
 
   struct TagHdr h;
   struct DAHdr ddh;
-  dbres.size = 0;
+  dbsize = 0;
 
   ddh.level = level;
   ddh.size = d->size;
@@ -319,58 +321,56 @@ struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
       union PCTypes p;
       p.dbp = doubleaDeepDump(doubleaGetValueAt(d, i).ar, level-1);
       doubleaPush(bufs, p);
-      dbres.size += p.dbp->size;
+      dbsize += datablockSize(p.dbp);
     }
-    dbres.ptr = clCalloc(dbres.size + sizeof(h) + sizeof(ddh), 1);
-    h.size = dbres.size + sizeof(ddh);
-    memcpy(dbres.ptr, &h, sizeof(h));
-    memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
-    dbres.size = sizeof(h) + sizeof(ddh);
+    ptr = clCalloc(dbsize + sizeof(h) + sizeof(ddh), 1);
+    h.size = dbsize + sizeof(ddh);
+    memcpy(ptr, &h, sizeof(h));
+    memcpy(ptr + sizeof(h), &ddh, sizeof(ddh));
+    dbsize = sizeof(h) + sizeof(ddh);
     for (i = 0; i < bufs->size; i += 1) {
       struct DataBlock *cur = doubleaGetValueAt(bufs, i).dbp;
-      memcpy(dbres.ptr + dbres.size, cur->ptr, cur->size);
-      dbres.size += cur->size;
+      memcpy(ptr + dbsize, datablockData(cur), datablockSize(cur));
+      dbsize += datablockSize(cur);
       datablockFreePtr(cur);
     }
   }
   else {
-    dbres.size = (d->size * sizeof(d->pc[0])) + sizeof(h) + sizeof(ddh);
-    h.size = dbres.size - sizeof(h);
-    dbres.ptr = clCalloc(dbres.size, 1);
-    memcpy(dbres.ptr, &h, sizeof(h));
-    memcpy(dbres.ptr + sizeof(h), &ddh, sizeof(ddh));
-    memcpy(dbres.ptr + sizeof(h) + sizeof(ddh), d->pc, d->size * sizeof(d->pc[0]));
+    dbsize = (d->size * sizeof(d->pc[0])) + sizeof(h) + sizeof(ddh);
+    h.size = dbsize - sizeof(h);
+    ptr = clCalloc(dbsize, 1);
+    memcpy(ptr, &h, sizeof(h));
+    memcpy(ptr + sizeof(h), &ddh, sizeof(ddh));
+    memcpy(ptr + sizeof(h) + sizeof(ddh), d->pc, d->size * sizeof(d->pc[0]));
   }
 
-  {
-    struct DataBlock *rr = datablockNewFromBlock(dbres.ptr, dbres.size);
-    clFree(dbres.ptr);
-    return rr;
-  }
+  result = datablockNewFromBlock(ptr, dbsize);
+  clFree(ptr);
+  return result;
 }
 
 struct DataBlock *stringDump(const char *s)
 {
-  struct DataBlock result, *rr;
+  struct DataBlock *result;
+  unsigned char *ptr;
   struct TagHdr h;
+  int dbsize;
 
   h.tagnum = TAGNUM_STRING;
   h.size = strlen(s);
-  result.size = h.size + sizeof(h);
-  result.ptr = clCalloc(result.size,1);
-  memcpy(result.ptr, &h, sizeof(h));
-  memcpy(result.ptr + sizeof(h), s, h.size);
-  {
-    rr = datablockNewFromBlock(result.ptr, result.size);
-    clFree(result.ptr);
-    return rr;
-  }
+  dbsize = h.size + sizeof(h);
+  ptr = clCalloc(dbsize,1);
+  memcpy(ptr, &h, sizeof(h));
+  memcpy(ptr + sizeof(h), s, h.size);
+  result = datablockNewFromBlock(ptr, dbsize);
+  clFree(ptr);
+  return result;
 }
 
 char *stringLoad(struct DataBlock *db, int fmustbe)
 {
   char *result;
-  struct TagHdr *h = (struct TagHdr *) db->ptr;
+  struct TagHdr *h = (struct TagHdr *) datablockData(db);
 
   if (h->tagnum != TAGNUM_STRING) {
     if (fmustbe) {
@@ -382,7 +382,7 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
       return NULL;
   }
   result = clCalloc(h->size + 1, 1);
-  memcpy(result,db->ptr + sizeof(*h), h->size);
+  memcpy(result,datablockData(db) + sizeof(*h), h->size);
   result[h->size] = '\0';
   return result;
 }

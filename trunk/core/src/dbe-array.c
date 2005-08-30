@@ -82,7 +82,7 @@ struct DataBlockEnumeration *dbeLoadArray(struct DataBlock **db, int size)
   *dbe = e;
   dbe->eptr = clCalloc(sizeof(struct DBEArrayEnumeration), 1);
   ardbe = (struct DBEArrayEnumeration *) dbe->eptr;
-  ardbe->db = clCalloc(sizeof(struct DataBlock), size);
+  ardbe->db = clCalloc(sizeof(struct DataBlock *), size);
   memcpy(ardbe->db, db, sizeof(struct DataBlock *) * size);
   ardbe->size = size;
   return dbe;
