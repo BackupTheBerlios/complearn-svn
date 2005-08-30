@@ -12,7 +12,7 @@ static const double refFactor = 2.0;
 
 
 static void goog_clsetenv(struct CompAdaptor *ca);
-static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void goog_freecompfunc(struct CompAdaptor *ca);
 static char *goog_shortname(void);
 static char *goog_longname(void);
@@ -122,21 +122,19 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   cldatetimeFree(dt);
 }
 
-static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   double pagecount, compsize;
   char *cur;
-  char *str = clCalloc(1,src.size+1);
+  char *str = clCalloc(1,datablockSize(src)+1);
   struct StringStack *terms;
   const double NOTFOUNDWEIGHT = 0.5;
 
-
-
   terms = stringstackNew();
 
-  memset(str, 0, src.size+1);
-  memcpy(str,src.ptr, src.size);
+  memset(str, 0, datablockSize(src)+1);
+  memcpy(str,datablockData(src), datablockSize(src));
 //  printf("Str is <%s>\n", str);
   for (cur = strtok(str, "\r\n"); cur ; cur = strtok(NULL, "\r\n"))
     stringstackPush(terms, cur);

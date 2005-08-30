@@ -4,15 +4,19 @@
 #include <malloc.h>
 #include <complearn/complearn.h>
 
+#if 0 //TODO: remove when datablock ptr conversion complete
+struct DataBlock {
+  unsigned char *ptr; /*!< Pointer to data buffer */
+	int size;           /*!< Size of data buffer in bytes */
+};
+#endif  //TODO: remove when datablock ptr conversion complete
+
 /* Allocates memory for a new DataBlock and copies string into new
  * DataBlock without a terminal nul
  */
-struct DataBlock *stringToDataBlockPtr(const char *s) {
-  struct DataBlock *d = clCalloc(sizeof(struct DataBlock), 1);
-  d->size = strlen(s);
-  d->ptr = clMalloc(d->size);
-  memcpy(d->ptr, s, d->size);
-	return d;
+struct DataBlock *stringToDataBlockPtr(const char *s)
+{
+  return datablockNewFromBlock(s,strlen(s));
 }
 
 struct DataBlock *fileToDataBlockPtr(const char *path)
@@ -32,35 +36,32 @@ struct DataBlock *fileToDataBlockPtr(const char *path)
 
 struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
 {
-  struct DataBlock *d;
-  d = clCalloc(sizeof(struct DataBlock), 1);
   int toread = 812;
-	int bytesread, i;
+	int incrbytes,totalbytes, i;
   char *dbuf[toread];
   struct DoubleA *parts = doubleaNew();
   unsigned char *ptr;
+  unsigned char *partsbuf;
 
-  d->size = 0;
-	while ( (bytesread = fread(dbuf,1,toread,fp)) > 0) {
+  totalbytes = 0;
+	while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
     union PCTypes p;
-    p.db.size = bytesread;
-    d->size += bytesread;
-    p.db.ptr = (unsigned char*)clMalloc(p.db.size);
-    memcpy(p.db.ptr, dbuf, p.db.size);
+    totalbytes += incrbytes;
+    p.dbp = datablockNewFromBlock(dbuf,incrbytes);
     doubleaPush(parts,p);
   }
 
-  d->ptr = clCalloc(d->size,1);
-  ptr = d->ptr;
+  partsbuf = clCalloc(totalbytes,1);
+  ptr = partsbuf;
 
   for ( i = 0; i < doubleaSize(parts); i += 1) {
-    memcpy(ptr, doubleaGetValueAt(parts,i).db.ptr, doubleaGetValueAt(parts,i).db.size);
-    ptr += doubleaGetValueAt(parts,i).db.size;
+    memcpy(ptr, datablockData(doubleaGetValueAt(parts,i).dbp), datablockSize(doubleaGetValueAt(parts,i).dbp));
+    ptr += datablockSize(doubleaGetValueAt(parts,i).dbp);
   }
 
   doubleaFree(parts);
 
-  return d;
+  return datablockNewFromBlock(partsbuf,totalbytes);
 }
 
 void datablockFree(struct DataBlock db)
@@ -118,12 +119,7 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 
 struct DataBlock *datablockClonePtr(struct DataBlock *db)
 {
-  struct DataBlock *result;
-  result = clCalloc(sizeof(*result), 1);
-  result->size = db->size;
-  result->ptr = clMalloc(db->size);
-  memcpy(result->ptr, db->ptr, db->size);
-  return result;
+  return datablockNewFromBlock(datablockData(db),datablockSize(db));
 }
 
 struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
@@ -136,4 +132,12 @@ struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
   return db;
 }
 
+int datablockSize(struct DataBlock *db)
+{
+  return db->size;
+}
 
+unsigned char *datablockData(struct DataBlock *db)
+{
+  return db->ptr;
+}

@@ -16,7 +16,7 @@ struct SOAPCompInstance;
 #include <malloc.h>
 
 
-static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void sca_freecompfunc(struct CompAdaptor *ca);
 static char *sca_shortname(void);
 static char *sca_longname(void);
@@ -126,15 +126,15 @@ SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method)
   return ctx;
 }
 
-static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct SOAPCompInstance *sci = (struct SOAPCompInstance *) ca->cptr;
 	//int s;
   double compsize;
-  char *str = clCalloc(1,src.size+1);
-  str = (char *) src.ptr;
+  char *str = clCalloc(1,datablockSize(src)+1);
+  str = (char *) datablockData(src);
 
-  memcpy(str, src.ptr, src.size);
+  memcpy(str, datablockData(src), datablockSize(src));
 
   sci->ctx = prepareSOAPEnvForMethod(sci);
   soap_env_add_item(sci->ctx->env, "xsd:string", "str",str);

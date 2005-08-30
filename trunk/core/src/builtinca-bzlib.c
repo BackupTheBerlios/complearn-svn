@@ -7,7 +7,7 @@
 #include <bzlib.h>
 
 static void bz2a_clsetenv(struct CompAdaptor *ca);
-static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void bz2a_freecompfunc(struct CompAdaptor *ca);
 static char *bz2a_shortname(void);
 static char *bz2a_longname(void);
@@ -96,7 +96,7 @@ static void bz2a_clsetenv(struct CompAdaptor *ca)
   bz_setIntValueMaybe(em, "bzverbosity", &bzci->verbosity);
 }
 
-static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 #if BZIP2_RDY
 	struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
@@ -105,9 +105,9 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   unsigned char *dbuff;
 	int p;
 
-	p = src.size*1.02+600;
+	p = datablockSize(src)*1.02+600;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) src.ptr,src.size,
+	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
 	if (s == BZ_OUTBUFF_FULL) {
 		printf ("destLen not big enough!\n");

@@ -9,8 +9,8 @@
 
 static char *unbz2a_shortname(void);
 static void unbz2a_transfree(struct TransformAdaptor *ta);
-static int unbz2a_predicate(struct DataBlock db);
-static struct DataBlock unbz2a_transform(struct DataBlock src);
+static int unbz2a_predicate(struct DataBlock *db);
+static struct DataBlock *unbz2a_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNBZIP(void)
 {
@@ -38,29 +38,27 @@ static void unbz2a_transfree(struct TransformAdaptor *ta)
   clFreeandclear(ta);
 }
 
-static int unbz2a_predicate(struct DataBlock db)
+static int unbz2a_predicate(struct DataBlock *db)
 {
-	return db.size > 2 && db.ptr[0]==0x42 && db.ptr[1]==0x5a && db.ptr[2]==0x68;
+	return datablockSize(db) > 2 && datablockData(db)[0]==0x42 && datablockData(db)[1]==0x5a && datablockData(db)[2]==0x68;
 }
 
-static struct DataBlock unbz2a_transform(struct DataBlock src)
+static struct DataBlock *unbz2a_transform(struct DataBlock *src)
 {
-  struct DataBlock result;
+  struct DataBlock *result;
 #if BZIP2_RDY
   int i;
   unsigned char *dbuff = NULL;
   int p;
-  p = src.size * 3.0 + 1;
+  p = datablockSize(src) * 3.0 + 1;
   do {
     if (dbuff != NULL)
       clFreeandclear(dbuff);
     dbuff = (unsigned char*)clMalloc(p);
-    i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) src.ptr,src.size, 0, 0);
+    i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) datablockData(src),datablockSize(src), 0, 0);
     p = 2*p;
   } while (i == BZ_OUTBUFF_FULL);
-  result.size = p;
-  result.ptr = (unsigned char*)clMalloc(result.size);
-  memcpy(result.ptr,dbuff,result.size);
+  result = datablockNewFromBlock(dbuff,p);
   clFreeandclear(dbuff);
   // datablockFree(src); /* TODO: document this */
 # else

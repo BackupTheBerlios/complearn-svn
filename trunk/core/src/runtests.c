@@ -386,12 +386,12 @@ void testTransformBZ()
 	}
  	db = fileToDataBlockPtr(testbzfile);
 	assert(strcmp(t->sn(),"unbzip") == 0);
-	if (t->pf(*db)) {
-	  struct DataBlock result;
-    result = t->tf(*db);
-		assert(result.size > 0);
-		assert(result.ptr != NULL);
-    clFree(result.ptr);
+	if (t->pf(db)) {
+	  struct DataBlock *result;
+    result = t->tf(db);
+		assert(datablockSize(result) > 0);
+		assert(datablockData(result) != NULL);
+    //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -432,12 +432,12 @@ void testTransformGZ()
 	}
 	db = fileToDataBlockPtr(testgzfile);
 	assert(strcmp(t->sn(),"ungz") == 0);
-	if (t->pf(*db)) {
-	  struct DataBlock result;
-    result = t->tf(*db);
-		assert(result.size > 0);
-		assert(result.ptr != NULL);
-    clFree(result.ptr);
+	if (t->pf(db)) {
+	  struct DataBlock *result;
+    result = t->tf(db);
+		assert(datablockSize(result) > 0);
+		assert(datablockData(result) != NULL);
+    //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -454,12 +454,12 @@ void testTransformZLIB()
 	}
  	db = fileToDataBlockPtr(testzlibfile);
 	assert(strcmp(t->sn(),"unzlib") == 0);
-	if (t->pf(*db)) {
-	  struct DataBlock result;
-    result = t->tf(*db);
-		assert(result.size > 0);
-		assert(result.ptr != NULL);
-    clFree(result.ptr);
+	if (t->pf(db)) {
+	  struct DataBlock *result;
+    result = t->tf(db);
+		assert(datablockSize(result) > 0);
+		assert(datablockData(result) != NULL);
+    //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
@@ -1314,7 +1314,7 @@ int main(int argc, char **argv)
 #endif
 #if CSOAP_RDY
 //  testSOAPComp();      //TODO: investigate massive memory leaks here
-//  testGoogle();        //TODO: more memory leaks left here
+  testGoogle();        //TODO: more memory leaks left here
 #endif
 //  testYamlParser();    //FIXME: convert to new parser or fix Syck
   testRealComp();

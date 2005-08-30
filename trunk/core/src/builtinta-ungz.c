@@ -13,8 +13,8 @@
 
 static char *ungz_shortname(void);
 static void ungz_transfree(struct TransformAdaptor *ta);
-static int ungz_predicate(struct DataBlock db);
-static struct DataBlock ungz_transform(struct DataBlock src);
+static int ungz_predicate(struct DataBlock *db);
+static struct DataBlock *ungz_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNGZ(void)
 {
@@ -42,15 +42,15 @@ static void ungz_transfree(struct TransformAdaptor *ta)
   clFreeandclear(ta);
 }
 
-static int ungz_predicate(struct DataBlock db)
+static int ungz_predicate(struct DataBlock *db)
 {
-	return db.size > 1 && db.ptr[0]==0x1f && db.ptr[1]==0x8b;
+	return datablockSize(db) > 1 && datablockData(db)[0]==0x1f && datablockData(db)[1]==0x8b;
 }
 
-static struct DataBlock ungz_transform(struct DataBlock src)
+static struct DataBlock *ungz_transform(struct DataBlock *src)
 {
   const char *dirs[] = { "/tmp","/temp", "."};
-	struct DataBlock result;
+	struct DataBlock *result;
 	unsigned char *dbuff=NULL;
 	int p = 0;
   int fd, i, err, written;
@@ -72,7 +72,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
   close(fd);
  	fp = clfopen(tmpfile,"wb");
   assert(fp != NULL && "Error opening tmp file!");
-	written = fwrite(src.ptr,1,src.size,fp);
+	written = fwrite(datablockData(src),1,datablockSize(src),fp);
 	if (written == 0) {
 		exit(1);
 	}
@@ -98,9 +98,7 @@ static struct DataBlock ungz_transform(struct DataBlock src)
 	}
 	gzclose(gzfp);
 	unlink(tmpfile);
-	result.size = p;
-	result.ptr = clMalloc(result.size);
-	memcpy(result.ptr,dbuff,result.size);
+  result = datablockNewFromBlock(dbuff,p);
 	free(dbuff);
 	// datablockFree(src); /* TODO: document me */
 	return result;

@@ -24,7 +24,7 @@ struct GeneralConfig;
 typedef unsigned int t_tagtype;
 
 typedef struct CompAdaptor *(*t_clnewca)(void);
-typedef double (*t_compfunc)(struct CompAdaptor *ca, struct DataBlock src);
+typedef double (*t_compfunc)(struct CompAdaptor *ca, struct DataBlock *src);
 typedef void (*t_freecompfunc)(struct CompAdaptor *ca);
 typedef char *(*t_shortname)(void);
 typedef char *(*t_longname)(void);
@@ -33,10 +33,10 @@ typedef int (*t_apiver)(void);
 
 typedef void (*t_doublefreefunc)(struct DoubleA *da, void *udata);
 
-typedef int (*t_predicate)(struct DataBlock db);
+typedef int (*t_predicate)(struct DataBlock *db);
 typedef void (*t_transfree)(struct TransformAdaptor *ta);
 
-typedef struct DataBlock (*t_transform)(struct DataBlock db);
+typedef struct DataBlock *(*t_transform)(struct DataBlock *db);
 typedef struct DataBlockEnumerationIterator *(*t_newenumiter)(struct DataBlockEnumeration *);
 typedef void (*t_iterfree)(struct DataBlockEnumerationIterator *);
 typedef void (*t_enumfree)(struct DataBlockEnumeration *);

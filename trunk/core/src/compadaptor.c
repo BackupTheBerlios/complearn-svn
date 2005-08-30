@@ -2,7 +2,7 @@
 
 double compaCompress(struct CompAdaptor *ca, struct DataBlock *src)
 {
-  return ca->cf(ca, *src);
+  return ca->cf(ca, src);
 }
 
 void compaFree(struct CompAdaptor *ca)

@@ -186,10 +186,10 @@ void bs_freecompfunc(struct CompAdaptor *ca) {
   free(ca);
 }
 
-static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock src) {
+static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock *src) {
   struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
-  return bs_compress(bsci, src.ptr, src.size);
+  return bs_compress(bsci, datablockData(src), datablockSize(src));
 }
 
 static char *bs_shortname(void) { return "blocksort"; }

@@ -28,7 +28,7 @@ struct RealCompInstance {
 
 
 //static void rc_clsetenv(struct CompAdaptor *ca, struct EnvMap *em);
-static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void rc_freecompfunc(struct CompAdaptor *ca);
 static char *rc_shortname(void);
 static char *rc_longname(void);
@@ -70,7 +70,7 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
  * \param cmd string indicating pathname for external program
  * \return fd that may be read to get data from external program stdout
  */
-int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd)
+int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
 {
 	int pout[2], pin[2];
   int childid;
@@ -78,7 +78,7 @@ int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd)
   pipe(pin);
   childid = fork();
   if (childid) { // parent
-    write(pout[1], inp->ptr, inp->size);
+    write(pout[1], datablockData(inp), datablockSize(inp));
     close(pout[1]);
     close(pout[0]);
     close(pin[1]);
@@ -94,14 +94,14 @@ int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd)
   return pin[0];
 }
 
-static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
   char dummy;
   int readfd;
 
   ci->bytecount = 0;
-  readfd = forkPipeExecAndFeed(&src, ci->cmd);
+  readfd = forkPipeExecAndFeed(src, ci->cmd);
   while (read(readfd, &dummy, 1) == 1) {
     ci->bytecount += 1;
   }

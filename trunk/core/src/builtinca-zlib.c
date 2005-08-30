@@ -7,7 +7,7 @@
 #include <malloc.h>
 
 static void zlib_clsetenv(struct CompAdaptor *ca);
-static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void zlib_freecompfunc(struct CompAdaptor *ca);
 static char *zlib_shortname(void);
 static char *zlib_longname(void);
@@ -82,7 +82,7 @@ static void zlib_clsetenv(struct CompAdaptor *ca)
   zlib_setIntValueMaybe(em, "zliblevel", &ci->level);
 }
 
-static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
 	int s;
@@ -90,9 +90,9 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock src)
   unsigned char *dbuff;
 	int p;
 
-	p = src.size*1.001 + 12;
+	p = datablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,ci->level);
+	s = compress2(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src),ci->level);
 
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enough!\n");

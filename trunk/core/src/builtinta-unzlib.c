@@ -8,8 +8,8 @@
 
 static char *unzlib_shortname(void);
 static void unzlib_transfree(struct TransformAdaptor *ta);
-static int unzlib_predicate(struct DataBlock db);
-static struct DataBlock unzlib_transform(struct DataBlock src);
+static int unzlib_predicate(struct DataBlock *db);
+static struct DataBlock *unzlib_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNZLIB(void)
 {
@@ -37,30 +37,28 @@ static void unzlib_transfree(struct TransformAdaptor *ta)
   clFreeandclear(ta);
 }
 
-static int unzlib_predicate(struct DataBlock db)
+static int unzlib_predicate(struct DataBlock *db)
 {
-	return db.size > 1 && db.ptr[0]==0x78 && db.ptr[1]==0xda;
+	return datablockSize(db) > 1 && datablockData(db)[0]==0x78 && datablockData(db)[1]==0xda;
 }
 
-static struct DataBlock unzlib_transform(struct DataBlock src)
+static struct DataBlock *unzlib_transform(struct DataBlock *src)
 {
-	struct DataBlock result;
+	struct DataBlock *result;
 	int i;
 	unsigned char *dbuff = NULL;
 	int triedp;
-	triedp = src.size * 3.0 + 1;
+	triedp = datablockSize(src) * 3.0 + 1;
 	do {
     int p;
 		if (dbuff != NULL)
 			free(dbuff);
 		dbuff = (unsigned char*)clMalloc(p);
     p = triedp;
-		i = uncompress(dbuff,(uLongf *) &p,src.ptr,src.size);
+		i = uncompress(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src));
 		triedp = 2*triedp;
 	} while (i == Z_BUF_ERROR);
-	result.size = triedp;
-	result.ptr = (unsigned char*)clMalloc(result.size);
-	memcpy(result.ptr,dbuff,result.size);
+  result = datablockNewFromBlock(dbuff, triedp);
 	free(dbuff);
 //	datablockFree(src); /* TODO: document this new non-free behavior */
 	return result;

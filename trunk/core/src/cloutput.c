@@ -59,11 +59,9 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
 
 struct DataBlock *createCloneWithNLFree(struct DataBlock *db)
 {
-  struct DataBlock *result = clCalloc(sizeof(*result),1);
-  result->size = db->size + 1;
-  result->ptr = clMalloc(result->size);
-  memcpy(result->ptr, db->ptr, db->size);
-  result->ptr[db->size] = '\n';
+  struct DataBlock *result;
+  result = datablockNewFromBlock(datablockData(db),datablockSize(db)+1);
+  datablockData(result)[datablockSize(db)] = '\n';
   datablockFreePtr(db);
   return result;
 }
@@ -216,8 +214,9 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   struct StringStack *dotacc;
   struct StringStack *params = NULL;
   char con1[1024];
-  int dasize;
+  int dasize, tmpsize;
   char *startparamstr, *endparamstr;
+  unsigned char *dbuff;
 
   assert(ad);
   nodes = simpleWalkTree(ta, flips);
@@ -352,14 +351,14 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     doubleaFree(dapairs);
   }
   stringstackPush(dotacc, "}");
-  result = clCalloc(sizeof(struct DataBlock), 1);
-  result->size = 0;
+  tmpsize = 0;
   for (i = 0; i < stringstackSize(dotacc); i += 1)
-    result->size += strlen(stringstackReadAt(dotacc, i)) + 1; /* for the \n */
-  result->ptr = clCalloc(result->size+1, 1); /* extra byte for temporary \0 */
+    tmpsize += strlen(stringstackReadAt(dotacc, i)) + 1; /* for the \n */
+  dbuff = clCalloc(tmpsize+1, 1); /* extra byte for temporary \0 */
   j = 0;
   for (i = 0; i < stringstackSize(dotacc); i += 1)
-    j += sprintf((char *) (result->ptr + j), "%s\n", stringstackReadAt(dotacc, i));
+    j += sprintf((char *) (dbuff + j), "%s\n", stringstackReadAt(dotacc, i));
+  result = datablockNewFromBlock(dbuff,tmpsize);
   stringstackFree(dotacc);
   if (cur && params)
     stringstackFree(params);

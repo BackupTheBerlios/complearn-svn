@@ -263,9 +263,9 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
   struct DAHdr *ddh;
   struct DoubleA *result;
   unsigned char *cur;
-  cur = d->ptr + sizeof(*h) + sizeof(*ddh);
-  h = (struct TagHdr *) d->ptr;
-  ddh = (struct DAHdr *) (d->ptr + sizeof(*h));
+  cur = datablockData(d) + sizeof(*h) + sizeof(*ddh);
+  h = (struct TagHdr *) datablockData(d);
+  ddh = (struct DAHdr *) (datablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_DOUBLEDOUBLER) {
     fprintf(stderr,"Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
         TAGNUM_DOUBLEDOUBLER, h->tagnum);
@@ -275,11 +275,11 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
     result = doubleaNew();
     for (i = 0; i < ddh->size; ++i) {
       union PCTypes p = zeropct;
-      struct DataBlock dbcur;
-      dbcur.ptr = cur;
-      dbcur.size = cur + d->size - d->ptr;
-      p.ar = doubleaLoad(&dbcur, 1);
+      struct DataBlock *dbcur;
+      dbcur = datablockNewFromBlock(cur,cur+datablockSize(d)-datablockData(d));
+      p.ar = doubleaLoad(dbcur, 1);
       doubleaPush(result, p);
+      datablockFreePtr(dbcur);
     }
   }
   else {

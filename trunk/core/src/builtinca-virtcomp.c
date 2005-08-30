@@ -26,7 +26,7 @@ struct VirtualCompInstance {
 //static void vc_clsetenv(struct CompAdaptor *ca, struct EnvMap *em);
 int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd);
 
-static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock src);
+static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void vc_freecompfunc(struct CompAdaptor *ca);
 static char *vc_shortname(void);
 static char *vc_longname(void);
@@ -62,12 +62,12 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd)
 	return ca;
 }
 
-static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
   int readfd;
   char ch;
-  readfd = forkPipeExecAndFeed(&src, ci->cmd);
+  readfd = forkPipeExecAndFeed(src, ci->cmd);
   while (read(readfd, &ch, 1) == 1 && ci->curpt < 512) {
     ci->sbuf[ci->curpt++] = ch;
   }
