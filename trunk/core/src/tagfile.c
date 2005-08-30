@@ -57,7 +57,7 @@ struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...)
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
     union PCTypes p = zeropct;
-    p.db = *db;
+    p.dbp = db;
     doubleaPush(parts, p);
   }
   va_end(ap);
@@ -78,14 +78,14 @@ struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   cur.size = 0;
 
   for ( i = 0; i < doubleaSize(parts); i += 1) {
-    cur.size += doubleaGetValueAt(parts,i).db.size;
+    cur.size += datablockSize(doubleaGetValueAt(parts,i).dbp);
   }
   cur.ptr = clCalloc(cur.size,1);
   ptr = cur.ptr;
 
   for ( i = 0; i < doubleaSize(parts); i += 1) {
-    memcpy(ptr, doubleaGetValueAt(parts,i).db.ptr, doubleaGetValueAt(parts,i).db.size);
-    ptr += doubleaGetValueAt(parts,i).db.size;
+    memcpy(ptr, datablockData(doubleaGetValueAt(parts,i).dbp), datablockSize(doubleaGetValueAt(parts,i).dbp));
+    ptr += datablockSize(doubleaGetValueAt(parts,i).dbp);
   }
 
   h.tagnum = tnum;

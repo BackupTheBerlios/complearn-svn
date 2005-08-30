@@ -57,7 +57,7 @@ struct DataBlock *gslmatrixDump(const gsl_matrix *a);
  * \return pointer to a deserialized gsl_matrix, or NULL if gslmatrixLoad()
  * does not recognize the serialized format.
  */
-gsl_matrix *gslmatrixLoad(const struct DataBlock *d, int fmustbe);
+gsl_matrix *gslmatrixLoad(struct DataBlock *d, int fmustbe);
 
 /** \brief Frees a gsl_matrix object from memory.
  *
