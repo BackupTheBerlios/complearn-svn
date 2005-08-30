@@ -68,7 +68,7 @@ void stepNextDataBlock(struct TagManager *tm);
  *  \param cur pointer used for retrieved DataBlock
  *  \return 0 if no DataBlock to read; 1 if current DataBlock successfully read
  */
-int getCurDataBlock(struct TagManager *tm, struct DataBlock *cur);
+struct DataBlock *getCurDataBlock(struct TagManager *tm);
 
 /** \brief Retrieve the tagnum of the current DataBlock
  *  \param tm pointer to TagManager

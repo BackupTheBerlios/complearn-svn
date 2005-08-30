@@ -12,7 +12,7 @@ struct StringStack {
 struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
 {
   struct StringStack *result = stringstackNew();
-  struct DataBlock cur;
+  struct DataBlock *cur = NULL;
   struct TagManager *tm;
   struct TagHdr *h = (struct TagHdr *) db->ptr;
 
@@ -28,12 +28,13 @@ struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
 
   tm = newTagManager(db);
 
-  while (getCurDataBlock(tm, &cur)) {
+  while ((cur = getCurDataBlock(tm))) {
     char *str;
-    str = stringLoad(&cur, 1);
+    str = stringLoad(cur, 1);
     stringstackPush(result, str);
     clFreeandclear(str);
     stepNextDataBlock(tm);
+    datablockFreePtr(cur);
   }
 
   freeTagManager(tm);

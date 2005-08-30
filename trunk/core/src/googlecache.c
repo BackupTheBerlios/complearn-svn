@@ -70,15 +70,15 @@ struct DataBlock *makeCacheVal(double pg, struct DataBlock *lastdbval, const cha
   d.pagecount = pg;
   d.when = cldatetimeToInt(dt);
   strcpy(d.daystring, cldatetimeToDayString(dt));
-  memcpy(d.cknext, lastdbval->ptr, lastdbval->size);
+  memcpy(d.cknext, datablockData(lastdbval), datablockSize(lastdbval));
   strcpy(d.qorig, qorig);
 
   return datablockNewFromBlock(&d, sizeof(d));
 }
 
-double convertCacheVal(struct DataBlock d)
+double convertCacheVal(struct DataBlock *d)
 {
-  struct GCSample *r = (struct GCSample *) d.ptr;
+  struct GCSample *r = (struct GCSample *) datablockData(d);
   return r->pagecount;
 }
 double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char *udaystr)
@@ -144,8 +144,8 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
   db = cldbfetch(gc->samp, dbckey);
   if (db) {
-    assert(db->size == sizeof(struct GCSample));
-    *val = convertCacheVal(*db);
+    assert(datablockSize(db) == sizeof(struct GCSample));
+    *val = convertCacheVal(db);
     stringstackFree(normed);                       /* FSF02:1/2 */
     datablockFreePtr(db);
     datablockFreePtr(dbroot);                /* FSF01:1/2 */

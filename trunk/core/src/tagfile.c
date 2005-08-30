@@ -35,13 +35,11 @@ void stepNextDataBlock(struct TagManager *tm)
   tm->read += h->size + sizeof(*h);
 }
 
-int getCurDataBlock(struct TagManager *tm, struct DataBlock *cur)
+struct DataBlock *getCurDataBlock(struct TagManager *tm)
 {
   struct TagHdr *h = (struct TagHdr *) tm->cur;
-  if (tm->read >= tm->size) return 0;
-  cur->ptr = tm->cur;
-  cur->size = h->size + sizeof(*h);
-  return 1;
+  if (tm->read >= tm->size) return NULL;
+  return datablockNewFromBlock(tm->cur, h->size + sizeof(*h));
 }
 
 void freeTagManager(struct TagManager *tm)
@@ -117,16 +115,17 @@ struct DoubleA *load_DataBlock_package(struct DataBlock *db)
 {
   struct DoubleA *result = doubleaNew();
   struct TagManager *tm;
-  struct DataBlock cur;
+  struct DataBlock *cur = NULL;
 
   tm = newTagManager(db);
 
-  while (getCurDataBlock(tm, &cur)) {
+  while ((cur = getCurDataBlock(tm))) {
     union PCTypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
-    p.idbp.db = datablockClonePtr(&cur);
+    p.idbp.db = datablockClonePtr(cur);
     doubleaPush(result, p);
     stepNextDataBlock(tm);
+    datablockFreePtr(cur);
   }
   freeTagManager(tm);
 

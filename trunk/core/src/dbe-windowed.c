@@ -55,7 +55,7 @@ static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   if (widbi->curpos >= 0 && widbi->curpos + widbe->width - 1 <= widbe->lastpos)
   {
-   widbi->dbptr = widbe->db->ptr + widbi->curpos;
+   widbi->dbptr = datablockData(widbe->db) + widbi->curpos;
    widbi->dbsize = widbe->width;
    return datablockNewFromBlock(widbi->dbptr, widbi->dbsize);
   }
@@ -93,8 +93,8 @@ struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
   struct DataBlockEnumeration *dbe;
   struct DBEWindowedEnumeration *widbe;
   assert(db);
-  assert(db->size > 0);
-  assert(db->size < 10000000); /* TODO: remove me */
+  assert(datablockSize(db) > 0);
+  assert(datablockSize(db) < 10000000); /* TODO: remove me */
   assert(stepsize > 0);
   assert(width > 0);
   assert(firstpos >= 0);

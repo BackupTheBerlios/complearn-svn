@@ -28,7 +28,7 @@ struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, con
   struct StringStack *ss;
   struct DataBlock *dbss;
   struct DoubleA *results;
-  struct TagHdr *h = (struct TagHdr *) db->ptr;
+  struct TagHdr *h = (struct TagHdr *) datablockData(db);
 
   if (h->tagnum != tagnum) {
     if (fmustbe) {

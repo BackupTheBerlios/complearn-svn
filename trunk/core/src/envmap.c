@@ -15,7 +15,7 @@ struct EnvMap {
 struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 {
   struct EnvMap *result = envmapNew();
-  struct DataBlock *cur;
+  struct DataBlock *cur = NULL;
   struct TagManager *tm;
   struct StringStack *keyparts;
   struct StringStack *valparts;
@@ -36,11 +36,13 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 
   tm = newTagManager(db);
 
-  getCurDataBlock(tm, cur);
+  cur = getCurDataBlock(tm);
   keyparts = stringstackLoad(cur, 1);
   stepNextDataBlock(tm);
-  getCurDataBlock(tm, cur);
+  datablockFreePtr(cur);
+  getCurDataBlock(tm);
   valparts = stringstackLoad(cur, 1);
+  datablockFreePtr(cur);
 
   assert (stringstackSize(keyparts)== stringstackSize(valparts));
   for (i = 0; i < stringstackSize(keyparts) ; i += 1)

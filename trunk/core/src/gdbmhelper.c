@@ -73,7 +73,7 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   datum gkey;
-  gkey.dptr = (char *) key->ptr;
+  gkey.dptr = (char *) datablockData(key);
   gdbm_store(gh->db,
       convertDataBlockToDatum(key),
       convertDataBlockToDatum(val),
