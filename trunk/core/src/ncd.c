@@ -80,7 +80,7 @@ void printCounts(struct DataBlockEnumeration *a)
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
     double pg;
-    if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && dba->size == 1 && (dba->ptr[0] == 'm' || dba->ptr[0] == 'M')) {
+    if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && datablockSize(dba) == 1 && (datablockData(dba)[0] == 'm' || datablockData(dba)[0] == 'M')) {
       pg = 0.0;
     }
     else {

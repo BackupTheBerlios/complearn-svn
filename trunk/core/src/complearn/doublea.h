@@ -79,9 +79,6 @@ union PCTypes {
   struct StringPair sp;
   struct IntPair ip;
   struct IntDBPair idbp;
-#if 1 //TODO: leave only prototype when complete with dbptr conv
-  struct DataBlock db;
-#endif
   struct DataBlock *dbp;
   struct TransformAdaptor *ta;
   void *ptr;

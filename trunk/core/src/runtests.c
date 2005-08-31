@@ -53,24 +53,24 @@ void testDataBlock()
 	char *str2 = "welcome to the jungle\n";
 	char *result;
   dbstr = stringToDataBlockPtr(str);
-  assert(strlen(str) == dbstr->size);
-  assert(dbstr->ptr != NULL);
-  assert(dbstr->ptr != (unsigned char *) str);
+  assert(strlen(str) == datablockSize(dbstr));
+  assert(datablockData(dbstr) != NULL);
+  assert(datablockData(dbstr) != (unsigned char *) str);
 	result = datablockToString(dbstr);
 	assert(strcmp(result,str) == 0);
   dbstr2 = stringToDataBlockPtr(str2);
-  assert(dbstr2->ptr != NULL);
-  assert(dbstr2->ptr != (unsigned char *) str2);
+  assert(datablockData(dbstr2) != NULL);
+  assert(datablockData(dbstr2) != (unsigned char *) str2);
   dbcat = datablockCatPtr(dbstr,dbstr2);
-  assert(dbcat->ptr != NULL);
-  assert(dbcat->ptr != dbstr->ptr);
-  assert(dbcat->ptr != dbstr2->ptr);
+  assert(datablockData(dbcat) != NULL);
+  assert(datablockData(dbcat) != datablockData(dbstr));
+  assert(datablockData(dbcat) != datablockData(dbstr2));
   datablockFreePtr(dbcat);
   datablockFreePtr(dbstr);
   datablockFreePtr(dbstr2);
   dbfile = fileToDataBlockPtr(testfile);
-  assert(dbfile->ptr != NULL);
-  assert(dbfile->ptr != (unsigned char *) str);
+  assert(datablockData(dbfile) != NULL);
+  assert(datablockData(dbfile) != (unsigned char *) str);
   datablockFreePtr(dbfile);
   clFreeandclear(result);
 }
@@ -99,9 +99,9 @@ void testDL2()
   sn = compaShortName(comp);
   assert(strcmp(sn, "art") == 0);
   cdbab = compaCompress(comp, dbab);
-  assert(cdbab >= dbab->size*8);
+  assert(cdbab >= datablockSize(dbab)*8);
   cdbaa = compaCompress(comp, dbaa);
-  assert(cdbaa <= dbaa->size*8);
+  assert(cdbaa <= datablockSize(dbaa)*8);
   cdbsa = compaCompress(comp, dbsmallalpha);
   cdbla = compaCompress(comp, dblargealpha);
   assert(cdbsa < cdbla);
@@ -238,49 +238,58 @@ void testBlockSortCA()
 #define MAX_BLKSIZE 200
   int i, j, c;
   struct CompAdaptor *ca = compaLoadBuiltin("blocksort");
-  struct DataBlock *db = clCalloc(sizeof(struct DataBlock), 1);
+  struct DataBlock *db = NULL;
   double v;
+  int dbsize;
+  unsigned char *dbptr;
   assert(ca != NULL);
   srand( time(NULL) );
     assert(ca->cf != NULL);
 
   /* Blocks only 0 or 1 byte in size */
   for (i = 0; i < REPS; i +=1) {
-    db->size = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
-    db->ptr = (unsigned char*)clMalloc(db->size);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
+    if (!dbsize) continue;
+    dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
-    memset(db->ptr, c, db->size);
+    memset(dbptr, c, dbsize);
+    db = datablockNewFromBlock(dbptr,dbsize);
     v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    clFree(db->ptr);
+    clFree(dbptr);
+    datablockFreePtr(db);
   }
 
   /* Blocks with the same character repeated */
   for (i = 0; i < REPS; i +=1) {
-    db->size = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
-    db->ptr = (unsigned char*)clMalloc(db->size);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
-    memset(db->ptr, c, db->size);
+    memset(dbptr, c, dbsize);
+    db = datablockNewFromBlock(dbptr,dbsize);
     v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    clFree(db->ptr);
+    clFree(dbptr);
+    datablockFreePtr(db);
   }
 
   /* Blocks with randomly generated characters */
   for (i = 0; i < REPS; i +=1) {
-    db->ptr = (unsigned char*)clMalloc(db->size);
-    for (j = 0; j < db->size ; j +=1 ) {
-      db->ptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    dbptr = (unsigned char*)clMalloc(dbsize);
+    for (j = 0; j < dbsize ; j +=1 ) {
+      dbptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
+    db = datablockNewFromBlock(dbptr,dbsize);
     v = compaCompress(ca,db);
     if (gconf->fVerbose)
       printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
-    clFree(db->ptr);
+    clFree(dbptr);
+    datablockFreePtr(db);
   }
   compaFree(ca);
-  clFree(db);
 }
 
 void testYamlParser()
@@ -398,15 +407,15 @@ void testTransformBZ()
   datablockFreePtr(db);
 }
 
-struct DataBlock zlibCompressDataBlock(struct DataBlock src)
+struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
 {
-	struct DataBlock result;
+	struct DataBlock *result;
   unsigned char *dbuff;
 	int p, s;
 
-	p = src.size*1.001 + 12;
+	p = datablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = compress2(dbuff,(uLongf *) &p,src.ptr,src.size,0);
+	s = compress2(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src),0);
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enough!\n");
 		exit(1);
@@ -415,9 +424,7 @@ struct DataBlock zlibCompressDataBlock(struct DataBlock src)
 		printf ("Unknown error: zlibBuff returned %d\n",s);
 		exit(1);
 	}
-	result.size = p;
-	result.ptr = (unsigned char *) clMalloc(result.size);
-	memcpy(result.ptr,dbuff,result.size);
+  result = datablockNewFromBlock(dbuff,p);
 	free(dbuff);
 	return result;
 }
@@ -478,7 +485,7 @@ void testSingletonDBE()
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 3 && cur->ptr[0] == 'f' && cur->ptr[2] == 'o');
+  assert(cur && datablockSize(cur) == 3 && datablockData(cur)[0] == 'f' && datablockData(cur)[2] == 'o');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
@@ -500,21 +507,21 @@ void testWindowedDBE()
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   db = stringToDataBlockPtr(teststr);
-  lastpos = db->size - 1;
+  lastpos = datablockSize(db) - 1;
   dbe = dbeLoadWindowed(db, firstpos, stepsize, width, lastpos);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == width && cur->ptr[0] == 'b');
+  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'b');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == width && cur->ptr[0] == 'c');
+  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'c');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == width && cur->ptr[0] == 'd');
+  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'd');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
@@ -555,7 +562,7 @@ void testArrayDBE()
   struct DataBlock *cur;
   int i;
   db[0] = stringToDataBlockPtr("a");
-  assert(db[0]->size == 1);
+  assert(datablockSize(db[0]) == 1);
   db[1] = stringToDataBlockPtr("b");
   db[2] = stringToDataBlockPtr("c");
   dbe = dbeLoadArray(db, size);
@@ -563,15 +570,15 @@ void testArrayDBE()
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 1 && cur->ptr[0] == 'a');
+  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'a');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 1 && cur->ptr[0] == 'b');
+  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'b');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 1 && cur->ptr[0] == 'c');
+  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'c');
   datablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);

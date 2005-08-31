@@ -4,12 +4,10 @@
 #include <malloc.h>
 #include <complearn/complearn.h>
 
-#if 0 //TODO: remove when datablock ptr conversion complete
 struct DataBlock {
   unsigned char *ptr; /*!< Pointer to data buffer */
 	int size;           /*!< Size of data buffer in bytes */
 };
-#endif  //TODO: remove when datablock ptr conversion complete
 
 /* Allocates memory for a new DataBlock and copies string into new
  * DataBlock without a terminal nul

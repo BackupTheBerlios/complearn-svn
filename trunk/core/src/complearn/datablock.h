@@ -13,14 +13,7 @@
  *  a const char *ptr which points to a data buffer, and a int size to
  *  indicate length of the buffer in bytes.
  */
-#ifndef __DATABLOCK_ //TODO: leave only prototype when complete with dbptr conv
-struct DataBlock {
-  unsigned char *ptr; /*!< Pointer to data buffer */
-  	int size;           /*!< Size of data buffer in bytes */
-  };
-  #else
-struct DataBlock;
-  #endif
+  struct DataBlock;
 
 /** \brief Converts C string to CompLearn DataBlock.
  *
