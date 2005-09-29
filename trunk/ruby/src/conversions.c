@@ -112,9 +112,6 @@ struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
   long length;
   struct DataBlock *db;
   char *cstr = rb_str2cstr(rstr, &length);
-  db = clCalloc(sizeof(struct DataBlock), 1);
-  db->size = length;
-  db->ptr = clMalloc(db->size);
-  memcpy(db->ptr, cstr, db->size);
+  db = datablockNewFromBlock(cstr, length);
   return db;
 }
