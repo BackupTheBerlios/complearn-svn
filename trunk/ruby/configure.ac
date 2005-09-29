@@ -1,7 +1,7 @@
 AC_INIT(src/complearn4r.c)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(libcomplearn-ruby1.8 , 0.5.1, cilibrar@gmail.com)
+AM_INIT_AUTOMAKE(libcomplearn-ruby1.8 , 0.5.2, cilibrar@gmail.com)
 AC_PROG_CC
 #AC_PROG_LIBTOOL
 AC_PROG_RANLIB
