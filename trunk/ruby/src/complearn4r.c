@@ -17,6 +17,7 @@ VALUE cIncrementalDistMatrix;
 VALUE cMatrix;
 VALUE cVector;
 VALUE cTime;
+VALUE cMarshal;
 
 static dummySOAP(void)
 {
@@ -36,6 +37,7 @@ void Init_complearn4r(void)
   cVector = rb_const_get(rb_cObject, rb_intern("Vector"));
 
   cTime = rb_const_get(rb_cObject, rb_intern("Time"));
+  cMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));
 
   doInitAdja();
   doInitCompa();

@@ -3,6 +3,7 @@
 #define MAXPATHLEN 1024
 
 VALUE rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja);
+static VALUE rbadja_tomatrix(VALUE self);
 
 static VALUE rbadja_path(VALUE self, VALUE vsrc, VALUE vdest)
 {
@@ -120,6 +121,28 @@ static VALUE rbadja_clone(VALUE self)
   return rbadja_secretnew(cAdjAdaptor, adja);
 }
 
+static VALUE rbadja_dump(VALUE self, VALUE depth) {
+  VALUE obj = rbadja_tomatrix(self);
+  return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
+}
+
+static VALUE rbadja_load(VALUE kl, VALUE mat)
+{
+  int i, j;
+  VALUE self;
+  struct AdjAdaptor *adja;
+  mat = rb_funcall(cMarshal, rb_intern("load"), 1, mat);
+  gsl_matrix *gslm = convertRubyMatrixTogsl_matrix(mat);
+  adja = adjaLoadAdjList(gslm->size1);
+  self = rbadja_secretnew(cAdjAdaptor, adja);
+  //adja = rbadja_new((VALUE) cAdjAdaptor, (VALUE) INT2FIX(gslm->size1));
+  for (i = 0; i < gslm->size1; i += 1)
+    for (j = i + 1; j < gslm->size2; j += 1)
+        adjaSetConState(adja, i, j, (gsl_matrix_get(gslm, i, j) == 0) ? 0:1);
+  gsl_matrix_free(gslm);
+  return self;
+}
+
 static VALUE rbadja_tomatrix(VALUE self)
 {
   struct AdjAdaptor *adja;
@@ -146,6 +169,8 @@ void doInitAdja(void) {
   rb_define_method(cAdjAdaptor, "spmmap", rbadja_spmmap, 0);
   rb_define_method(cAdjAdaptor, "path", rbadja_path, 2);
   rb_define_method(cAdjAdaptor, "to_matrix", rbadja_tomatrix, 0);
+  rb_define_method(cAdjAdaptor, "_dump", rbadja_dump, 1);
+  rb_define_singleton_method(cAdjAdaptor, "_load", rbadja_load, 1);
 }
 
 /* used in tree.adja */

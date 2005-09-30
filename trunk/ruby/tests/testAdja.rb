@@ -16,6 +16,11 @@ def printAdjAdaptor(ad)
 end
 
 ad = AdjAdaptor.new(11)
+ad.setconstate(0,1,1)
+m = Marshal.dump(ad)
+backobj = Marshal.load(m)
+fail "bad adja class marshalling" unless backobj.class == ad.class
+fail "bad marshalling of AdjA" unless backobj.getconstate(0,1)
 ad = ad.clone  # quick test clone
 puts "First it is "
 printAdjAdaptor(ad)

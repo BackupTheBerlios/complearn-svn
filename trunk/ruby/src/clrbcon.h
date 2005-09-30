@@ -25,6 +25,7 @@ extern VALUE cIncrementalDistMatrix;
 extern VALUE cMatrix;
 extern VALUE cVector;
 extern VALUE cTime;
+extern VALUE cMarshal;
 
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
 #endif
