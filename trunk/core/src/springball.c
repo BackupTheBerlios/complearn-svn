@@ -562,7 +562,7 @@ struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta) {
   int howManyNodes = treeaNodeCount(ta);
   sbs = clCalloc(sizeof(*sbs), 1);
 
-  sbs->sbs4 = sbsNew4(ta);
+  sbs->sbs4 = sbsNew4(treeaClone(ta));
 
   sbs->sys.function = func;
   sbs->sys.jacobian = NULL;

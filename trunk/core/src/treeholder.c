@@ -86,7 +86,7 @@ int treehGetTreeIndex(struct TreeHolder *th)
 
 struct TreeAdaptor *treehTreeAdaptor(const struct TreeHolder *th)
 {
-  return th->best;
+  return treeaClone(th->best);
 }
 
 /* returns 1 if it did improve, 0 otherwise */

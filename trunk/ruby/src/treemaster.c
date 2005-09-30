@@ -81,6 +81,7 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   to->treerejected = rbtmto_treerejected;
   //rb_raise(rb_eTypeError, "Error treemasterSetTreeObserver disabled.");
   treemasterSetTreeObserver(tm, to);
+  treemasterSetUserData(tm, tos);
 }
 
 static VALUE rbtm_init(VALUE self)
@@ -120,6 +121,9 @@ static VALUE rbtm_labelcount(VALUE self)
 void markTreeMaster(void *ptr)
 {
   struct TreeMaster *tm = (struct TreeMaster *) ptr;
+  struct TreeObserverState *tos = (struct TreeObserverState *) treemasterGetUserData(tm);
+  rb_gc_mark(tos->obs);
+  rb_gc_mark(tos->th);
 #if 0
   struct TreeObserver *obs = treemasterGetTreeObserver(tm);
   //printf("Marking in TreeMaster...\n");

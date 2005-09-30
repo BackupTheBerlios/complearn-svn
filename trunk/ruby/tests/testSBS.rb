@@ -60,7 +60,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
   end
   def treeRejected()
     redrawTime
-    redrawStats
+    redrawStats if rand(0) < 0.05
     Curses::refresh
   end
   def treeImproved(th)
@@ -194,3 +194,15 @@ tm.setTreeObserver(toptreeoh)
 f = tm.treemasterFindTree
 Curses::init_screen
 Curses::close_screen
+
+#tests/testSBS.rb:88:in `+': method `coerce' called on terminated object (0xb7e1f
+#06c) (NotImplementedError)
+#        from tests/testSBS.rb:88:in `ballToScreen'
+#        from tests/testSBS.rb:117:in `drawIt'
+#        from tests/testSBS.rb:115:in `times'
+#        from tests/testSBS.rb:115:in `drawIt'
+#        from tests/testSBS.rb:130:in `drawTree'
+#        from tests/testSBS.rb:51:in `redrawStats'
+#        from tests/testSBS.rb:63:in `treeRejected'
+#        from tests/testSBS.rb:194:in `treemasterFindTree'
+#        from tests/testSBS.rb:194

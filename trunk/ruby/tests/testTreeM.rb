@@ -136,7 +136,9 @@ def makeNewMat(howbig)
   Matrix.rows(rows)
 end
 
+puts "Loading DM.."
 m = CompLearn::TreeMaster.loadMatrix("distmatrix.clb")
+puts "Startin TH..."
 th = CompLearn::TreeHolder.new(m,t)
 
 # simple method calls to see if errors are generated
@@ -162,5 +164,5 @@ zthread = Thread.new {
   File.open("tree.dot", "w") { |fp| fp.write t.to_dot }
 }
 
-sleep 2   # maximum time to wait for tree
+sleep 2000   # maximum time to wait for tree
 tm.abortTreeSearch
