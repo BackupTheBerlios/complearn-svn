@@ -71,6 +71,7 @@ pre {
   margin: 12px;
   padding: 7px 15px 7px 15px;
   background: mistyrose;
+  border: lightgrey 1 dashed;
 }
 h1 {
   color: #1b5894;
