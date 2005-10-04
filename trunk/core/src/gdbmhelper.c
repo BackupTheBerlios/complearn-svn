@@ -49,14 +49,22 @@ void cldbunlink(const char *userfilename)
   unlink(makefilename(userfilename));
 }
 
+static void printfunc(const char *str)
+{
+  fprintf(stderr, "GDBM error: %s\n", str);
+}
+
 struct GDBMHelper *cldbopen(const char *userfilename)
 {
   char *filename;
   struct GDBMHelper *gh;
   filename = makefilename(userfilename);
   gh = clCalloc(sizeof(struct GDBMHelper), 1);
-  gh->db = gdbm_open(filename, 0, GDBM_WRCREAT, 0664, 0);
-  return gh;
+  gh->db = gdbm_open(filename, 0, GDBM_WRCREAT, 0664, printfunc);
+  if (gh->db)
+    return gh;
+  clFree(gh);
+  return NULL;
 }
 
 /* Allocates a new DataBlock and returns pointer to new DataBlock
@@ -64,6 +72,8 @@ struct GDBMHelper *cldbopen(const char *userfilename)
 struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   datum result;
+  assert(gh);
+  assert(gh->db);
   result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));
   if (result.dptr)
     return datablockNewFromBlock(result.dptr, result.dsize);
@@ -73,6 +83,8 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   datum gkey;
+  assert(gh);
+  assert(gh->db);
   gkey.dptr = (char *) datablockData(key);
   gdbm_store(gh->db,
       convertDataBlockToDatum(key),
@@ -82,6 +94,8 @@ void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
 
 int cldbclose(struct GDBMHelper *gh)
 {
+  assert(gh);
+  assert(gh->db);
   gdbm_close(gh->db);
   gh->db = NULL;
   clFreeandclear(gh);

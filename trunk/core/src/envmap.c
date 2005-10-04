@@ -40,7 +40,7 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
   keyparts = stringstackLoad(cur, 1);
   stepNextDataBlock(tm);
   datablockFreePtr(cur);
-  getCurDataBlock(tm);
+  cur = getCurDataBlock(tm);
   valparts = stringstackLoad(cur, 1);
   datablockFreePtr(cur);
 
