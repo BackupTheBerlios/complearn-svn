@@ -1,3 +1,4 @@
+#include <string.h>
 #include <complearn/complearn.h>
 
 double compaCompress(struct CompAdaptor *ca, struct DataBlock *src)
@@ -7,6 +8,7 @@ double compaCompress(struct CompAdaptor *ca, struct DataBlock *src)
 
 void compaFree(struct CompAdaptor *ca)
 {
+  paramlistFree(ca->pl);
   ca->fcf(ca);
 }
 
@@ -42,4 +44,45 @@ double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock 
 
 /* temporary hard-coded ncd variation */
 	return mndf(ca,cb,cab,cba);
+}
+
+/** \brief Should be called from each CompAdaptor Implementation constructor
+ */
+void compaInitParameters(struct CompAdaptor *ca)
+{
+  ca->pl = paramlistNew();
+}
+
+struct ParamList *compaParameters(struct CompAdaptor *comp)
+{
+  return paramlistClone(comp->pl);
+}
+
+void compaPushParameter(struct CompAdaptor *ca, const char *key, const char *value, int type)
+{
+  struct ParamList *pl = ca->pl;
+  pl->fields[pl->size] = fielddescNew(key,value,type);
+  assert(pl->fields[pl->size]);
+  pl->size += 1;
+}
+
+void compaSetValueForKey(struct CompAdaptor *ca, const char *key, void *dest)
+{
+  struct ParamList *pl = ca->pl;
+  char *value;
+  int i;
+  assert(pl->em);
+  value = envmapValueForKey(pl->em,key);
+  for ( i = 0; i < pl->size; i += 1 ) {
+    if (strcmp(pl->fields[i]->key,key) == 0) {
+      if (value) {
+        clFree(pl->fields[i]->value);
+        pl->fields[i]->value = clStrdup(value);
+      }
+      paramlistGetValue(pl, key, dest, paramlistParamType(pl, key));
+      return;
+    }
+  }
+  fprintf(stderr, "Error: can not set key %s without default value.\n", key);
+  assert(0);
 }

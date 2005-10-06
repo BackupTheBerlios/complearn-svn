@@ -53,6 +53,8 @@ struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *met
   sci->urn = clStrdup(urn);
   sci->method = clStrdup(method);
 
+  compaInitParameters(ca);
+
   return ca;
 }
 

@@ -1,21 +1,58 @@
 #include "clrbcon.h"
 
-static VALUE rbcompa_dump(VALUE self) {
+
+static VALUE rbcompa_params(VALUE self) {
   struct CompAdaptor *ca;
-  VALUE obj;
+  int i;
+  struct ParamList *pl;
+  char *key, *val;
+  VALUE hash;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  VALUE obj = rb_str_new2(compaShortName(ca));
-  return rb_funcall(cMarshal, rb_intern("dump"), 0, obj);
+  assert(ca);
+  pl = compaParameters(ca);
+  assert(pl);
+
+  hash = rb_hash_new();
+  rb_hash_aset(hash, rb_str_new2("compressor"),rb_str_new2(compaShortName(ca)));
+  for (i = 0; i < pl->size ; i += 1) {
+    key = pl->fields[i]->key; val = pl->fields[i]->value;
+    rb_hash_aset(hash, rb_str_new2(key), rb_str_new2(val));;
+  }
+  assert(pl);
+  paramlistFree(pl);
+  return hash;
 }
 
-static VALUE rbcompa_load(VALUE cl, VALUE dump)
+static VALUE rbcompa_dump(VALUE self) {
+  return rb_funcall(cMarshal, rb_intern("dump"), 1, rbcompa_params(self));
+}
+
+static VALUE rbcompa_load(VALUE cl, VALUE rdata)
 {
-  VALUE self;
-  char *cstr;
-  dump = rb_funcall(cMarshal, rb_intern("load"), 1, dump);
-  cstr = STR2CSTR(dump);
-  self = rb_str_new2(cstr);
-  return self;
+  struct CompAdaptor *ca;
+  int i;
+  struct EnvMap *em = envmapNew();
+  char *key;
+  char *val;
+  volatile VALUE tdata;
+  VALUE cname, rkeys, rsize;
+
+  rdata = rb_funcall(cMarshal, rb_intern("load"), 1, rdata);
+  rkeys = rb_funcall(rdata, rb_intern("keys"), 0);
+  rsize = rb_funcall(rdata, rb_intern("size"), 0);
+  cname = rb_hash_aref(rdata, rb_str_new2("compressor"));
+  for ( i = 0; i < NUM2INT(rsize) ; i += 1) {
+    key = STR2CSTR(rb_ary_entry(rkeys, i));
+    val = STR2CSTR(rb_hash_aref(rdata, rb_ary_entry(rkeys, i)));
+    envmapSetKeyVal(em, key, val);
+  }
+  envmapMerge(loadDefaultEnvironment()->em, em);
+  ca = compaLoadBuiltin(STR2CSTR(cname));
+  assert(ca);
+
+  tdata = Data_Wrap_Struct(cCompAdaptor, 0, compaFree, ca);
+  rb_obj_call_init(tdata, 0, 0);
+  return tdata;
 }
 
 static VALUE rbcompa_shortname(VALUE self)
@@ -98,7 +135,8 @@ void doInitCompa(void) {
   rb_define_method(cCompAdaptor, "shortname", rbcompa_shortname, 0);
   rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
   rb_define_method(cCompAdaptor, "apiver", rbcompa_apiver, 0);
+  rb_define_method(cCompAdaptor, "params", rbcompa_params, 0);
   rb_define_method(cCompAdaptor, "ncd", rbcompa_ncd, 2);
-  rb_define_method(cAdjAdaptor, "_dump", rbcompa_dump, 0);
-  rb_define_singleton_method(cAdjAdaptor, "_load", rbcompa_load, 1);
+  rb_define_method(cCompAdaptor, "_dump", rbcompa_dump, 1);
+  rb_define_singleton_method(cCompAdaptor, "_load", rbcompa_load, 1);
 }

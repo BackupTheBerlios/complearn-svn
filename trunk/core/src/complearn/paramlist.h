@@ -8,15 +8,15 @@
 #include <complearn/cltypes.h>
 
 struct FieldDesc {
-  const char *key;
-  const char *value;
+  char *key;
+  char *value;
   int type;
-  int fIsPrivate;
 };
 
 struct ParamList {
-  struct FieldDesc fields[MAXFIELDS];
   int size;
+  struct EnvMap *em;
+  struct FieldDesc *fields[MAXFIELDS];
 };
 
 int paramlistParamType(struct ParamList *pl, const char *key);
@@ -24,9 +24,12 @@ char *paramlistGetString(struct ParamList *pl, const char *key);
 int paramlistGetInt(struct ParamList *pl, const char *key);
 double paramlistGetDouble(struct ParamList *pl, const char *key);
 char *paramlistToString(struct ParamList *pl);
-void paramlistPushField(struct ParamList *pl, const char *key, const char *value, int type);
-void paramlistSetValueForKey(struct ParamList *pl, struct EnvMap *em, const char *key, void *dest);
 struct ParamList *paramlistNew(void);
 void paramlistFree(struct ParamList *pl);
+struct ParamList *paramlistClone(struct ParamList *pl);
+struct FieldDesc *fielddescNew(const char *key, const char *value, int type);
+void fielddescFree(struct FieldDesc *fd);
+int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type);
+
 
 #endif

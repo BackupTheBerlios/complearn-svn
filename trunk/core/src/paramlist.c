@@ -1,10 +1,12 @@
 #include <string.h>
 #include <complearn/complearn.h>
 
+
 struct ParamList *paramlistNew()
 {
    struct ParamList *pl;
    pl = clCalloc(sizeof(struct ParamList), 1);
+   pl->em = loadDefaultEnvironment()->em;
    return pl;
 }
 
@@ -12,8 +14,8 @@ char *paramlistValForKey(struct ParamList *pl, const char *key)
 {
   int i;
   for ( i = 0; i < pl->size; i += 1) {
-    if (strcmp(pl->fields[i].key, key) == 0)
-      return clStrdup(pl->fields[i].value);
+    if (strcmp(pl->fields[i]->key, key) == 0)
+      return clStrdup(pl->fields[i]->value);
   }
   return NULL;
 }
@@ -21,9 +23,9 @@ char *paramlistValForKey(struct ParamList *pl, const char *key)
 int paramlistParamType(struct ParamList *pl, const char *key)
 {
   int i;
-  for ( i = 0; i < MAXFIELDS; i += 1) {
-    if (strcmp(pl->fields[i].key, key) == 0)
-      return pl->fields[i].type;
+  for ( i = 0; i < pl->size; i += 1) {
+    if (strcmp(pl->fields[i]->key, key) == 0)
+      return pl->fields[i]->type;
   }
   return 0;
 }
@@ -49,7 +51,7 @@ double paramlistGetDouble(struct ParamList *pl, const char *key)
   return -1;
 }
 
-static int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type)
+int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type)
 {
   switch (type) {
     case PARAMSTRING:
@@ -72,37 +74,51 @@ char *paramlistToString(struct ParamList *pl)
   int i;
   char *result;
   for ( i = 0; i < pl->size ; i += 1)
-    incr+=sprintf(buff+incr, "%s: %s; ",pl->fields[i].key,pl->fields[i].value);
+    incr+=sprintf(buff+incr,"%s: %s; ",pl->fields[i]->key,pl->fields[i]->value);
   result = clCalloc(incr, 1);
   memcpy(result, buff, incr);
   result[incr-2]='\0';
   return result;
 }
 
-void paramlistPushField(struct ParamList *pl, const char *key, const char *value, int type)
+struct FieldDesc *fielddescNew(const char *key, const char *value, int type)
 {
-  pl->fields[pl->size].key = clStrdup(key);
-  pl->fields[pl->size].value = clStrdup(value);
-  pl->fields[pl->size].type = type;
-  pl->size += 1;
+  struct FieldDesc *fd;
+  fd = clCalloc(sizeof(struct FieldDesc), 1);
+  fd->key = clStrdup(key);
+  fd->value = clStrdup(value);
+  fd->type = type;
+  return fd;
 }
 
-void paramlistSetValueForKey(struct ParamList *pl, struct EnvMap *em, const char *key, void *dest)
+struct FieldDesc *fielddescClone(struct FieldDesc *fd)
 {
-  char *value;
-  int i;
-  if((value = envmapValueForKey(em,key))) {
-    for ( i = 0; i < pl->size; i += 1 ) {
-      if (strcmp(pl->fields[i].key,key) == 0) {
-        pl->fields[i].value = clStrdup(value);
-        paramlistGetValue(pl, key, dest, paramlistParamType(pl, key));
-        break;
-      }
-    }
-  }
+  return fielddescNew(fd->key, fd->value, fd->type);
+}
+
+void fielddescFree(struct FieldDesc *fd)
+{
+  assert(fd);
+  clFreeandclear(fd->key);
+  clFreeandclear(fd->value);
+  clFreeandclear(fd);
+}
+struct ParamList *paramlistClone(struct ParamList *pl)
+{
+   struct ParamList *result;
+   int i;
+   result = clCalloc(sizeof(struct ParamList), 1);
+   result->em = pl->em;
+   result->size = pl->size;
+   for ( i = 0 ; i < pl->size ; i += 1)
+     result->fields[i] = fielddescClone(pl->fields[i]);
+   return result;
 }
 
 void paramlistFree(struct ParamList *pl)
 {
+  int i;
+  for (i = 0; i < pl->size ; i += 1)
+    fielddescFree(pl->fields[i]);
   clFreeandclear(pl);
 }

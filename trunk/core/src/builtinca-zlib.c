@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-static void zlib_clsetenv(struct CompAdaptor *ca);
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void zlib_freecompfunc(struct CompAdaptor *ca);
 static char *zlib_shortname(void);
@@ -22,7 +21,6 @@ static int zlib_apiver(void);
  */
 struct ZlibCompInstance {
 	int level; // 0 - 9
-  struct ParamList *pl;
 };
 
 /** \brief Initializes a ZLIB CompAdaptor instance
@@ -58,24 +56,14 @@ struct CompAdaptor *builtin_ZLIB(void)
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct ZlibCompInstance), 1);
   zci = (struct ZlibCompInstance *) ca->cptr;
-  zci->pl = paramlistNew();
+
+  compaInitParameters(ca);
 
   /* default compressor options */
-	zci->level = 9;
-  paramlistPushField(zci->pl, "zliblevel", "9", PARAMINT);
-
-  zlib_clsetenv(ca);
+  compaPushParameter(ca, "zliblevel", "9", PARAMINT);
+  compaSetValueForKey(ca, "zliblevel", &zci->level);
 
   return ca;
-}
-
-static void zlib_clsetenv(struct CompAdaptor *ca)
-{
-	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
-  struct ParamList *zpl = (struct ParamList *) ci->pl;
-  struct EnvMap *em = loadDefaultEnvironment()->em;
-
-  paramlistSetValueForKey(zpl, em, "zliblevel", &ci->level);
 }
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
@@ -104,7 +92,6 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 
 static void zlib_freecompfunc(struct CompAdaptor *ca)
 {
-  paramlistFree(((struct ZlibCompInstance *) ca->cptr)->pl);
   clFreeandclear(ca->cptr);
 	clFreeandclear(ca);
 }

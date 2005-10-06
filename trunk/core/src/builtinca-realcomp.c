@@ -61,6 +61,7 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
     fprintf(stderr, "Error, no command specified for realcomp\n");
     exit(1);
   }
+  compaInitParameters(ca);
   return ca;
 }
 

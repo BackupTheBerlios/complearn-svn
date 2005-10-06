@@ -1265,11 +1265,12 @@ void testSmoothing()
 //    printGSLMatrix(m);
   }
 }
-
+#if 0
 void testParamList()
 {
   struct ParamList *pl = paramlistNew();
-  struct EnvMap *em = envmapNew();
+  struct ParamList *plclone;
+  struct EnvMap *em = loadDefaultEnvironment()->em;
   int bs;
   double wf;
   char *vb;
@@ -1280,16 +1281,21 @@ void testParamList()
   envmapSetKeyVal(em, "blocksize", "4");
   envmapSetKeyVal(em, "workfactor", "30.0");
   envmapSetKeyVal(em, "shortname", "compatest");
-  paramlistSetValueForKey(pl, em, "blocksize", &bs);
-  paramlistSetValueForKey(pl, em, "workfactor", &wf);
-  paramlistSetValueForKey(pl, em, "shortname", &vb);
+  paramlistSetValueForKey(pl, "blocksize", &bs);
+  paramlistSetValueForKey(pl, "workfactor", &wf);
+  paramlistSetValueForKey(pl, "shortname", &vb);
   assert(paramlistGetInt(pl,"blocksize") == 4);
   assert(paramlistGetDouble(pl,"workfactor") == 30.0);
   assert(strcmp(paramlistGetString(pl,"shortname"),"compatest") == 0);
   assert(strcmp(vb,"compatest") == 0);
-  envmapFree(em);
+  plclone = paramlistClone(pl);
+  assert(paramlistGetInt(plclone,"blocksize") == 4);
+  assert(paramlistGetDouble(plclone,"workfactor") == 30.0);
+  assert(strcmp(paramlistGetString(plclone,"shortname"),"compatest") == 0);
   paramlistFree(pl);
+  paramlistFree(plclone);
 }
+#endif
 
 char *findDir(const char *dir)
 {
@@ -1355,7 +1361,7 @@ int main(int argc, char **argv)
 //  testDL2();  //TODO: investigate mem leaks which may be caused by dlopen
   testArrayDBE();
   testDirectoryDBE();
-  testParamList();
+//  testParamList();
 #if GSL_RDY
   testMarshalling();
   testSpringBall();

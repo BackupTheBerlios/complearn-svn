@@ -29,7 +29,6 @@ struct GoogleCompInstance {
   char *gkey;    /*!< GoogleKey which must be obtained by Google */
   char *daystr;
   double m;
-  struct ParamList *pl;
 };
 
 /** \brief Initializes a GOOGLE CompAdaptor instance
@@ -66,6 +65,8 @@ struct CompAdaptor *builtin_GOOG(void)
   gci = (struct GoogleCompInstance *) ca->cptr;
 
   goog_clsetenv(ca);
+
+  compaInitParameters(ca);
 
   return ca;
 }

@@ -6,7 +6,6 @@
 #if BZIP2_RDY
 #include <bzlib.h>
 
-static void bz2a_clsetenv(struct CompAdaptor *ca);
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void bz2a_freecompfunc(struct CompAdaptor *ca);
 static char *bz2a_shortname(void);
@@ -31,9 +30,8 @@ struct BZ2CompInstance {
                        highly repetitive low-entropy files.  This parameter
                        should now affect results, but may effect the time it
                        takes to reach them. */
-	int verbosity;  /*!< a bzip-only verbosity flag, either 0 or 1, to suppress
+  int verbosity;  /*!< a bzip-only verbosity flag, either 0 or 1, to suppress
                        or encourage the printing of status or other messages.*/
-  struct ParamList *pl;
 };
 
 /** \brief Initializes a BZIP2 CompAdaptor instance
@@ -70,29 +68,18 @@ struct CompAdaptor *builtin_BZIP(void)
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct BZ2CompInstance), 1);
   bzci = (struct BZ2CompInstance *) ca->cptr;
-  bzci->pl = paramlistNew();
+  compaInitParameters(ca);
 
   /* default compressor options */
-  bzci->blocksize = 9;
-  paramlistPushField(bzci->pl, "blocksize", "9", PARAMINT);
-  bzci->workfactor = 30;
-  paramlistPushField(bzci->pl, "workfactor", "30" , PARAMINT);
-  bzci->verbosity = 0;
-  paramlistPushField(bzci->pl, "bzverbosity", "0", PARAMINT);
+  compaPushParameter(ca, "blocksize", "9", PARAMINT);
+  compaPushParameter(ca, "workfactor", "30" , PARAMINT);
+  compaPushParameter(ca, "bzverbosity", "0", PARAMINT);
 
-  bz2a_clsetenv(ca);
+  compaSetValueForKey(ca, "blocksize", &bzci->blocksize);
+  compaSetValueForKey(ca, "workfactor", &bzci->workfactor);
+  compaSetValueForKey(ca, "bzverbosity", &bzci->verbosity);
+
   return ca;
-}
-
-static void bz2a_clsetenv(struct CompAdaptor *ca)
-{
-  struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
-  struct ParamList *bzpl = (struct ParamList *) bzci->pl;
-  struct EnvMap *em = loadDefaultEnvironment()->em;
-
-  paramlistSetValueForKey(bzpl, em, "blocksize", &bzci->blocksize);
-  paramlistSetValueForKey(bzpl, em, "workfactor", &bzci->workfactor);
-  paramlistSetValueForKey(bzpl, em, "bzverbosity", &bzci->verbosity);
 }
 
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
@@ -125,9 +112,8 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 
 static void bz2a_freecompfunc(struct CompAdaptor *ca)
 {
-  paramlistFree(((struct BZ2CompInstance *) ca->cptr)->pl);
   clFreeandclear(ca->cptr);
-	clFreeandclear(ca);
+  clFreeandclear(ca);
 }
 
 static char *bz2a_shortname(void)

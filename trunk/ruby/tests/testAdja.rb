@@ -111,4 +111,17 @@ puts "Done testing tree."
 #  m.evolve
 #}
 
+bzca = CompAdaptor.new("bzip")
+bzca.params.each do |k,v|
+  puts "#{k} => #{v}"
+end
+
+puts "Here's the CompAdaptor: #{bzca.inspect}"
+cdump = Marshal.dump(bzca)
+cloaded = Marshal.load(cdump)
+puts cloaded.class
+cloaded.params.each do |k,v|
+  puts "#{k} => #{v}"
+end
+
 exit 0

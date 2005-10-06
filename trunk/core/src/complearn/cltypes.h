@@ -34,6 +34,7 @@ typedef char *(*t_shortname)(void);
 typedef char *(*t_longname)(void);
 typedef char *(*t_compparam)(struct CompAdaptor *ca);
 typedef int (*t_apiver)(void);
+typedef struct ParamList *(*t_getparams)(void);
 
 typedef void (*t_doublefreefunc)(struct DoubleA *da, void *udata);
 

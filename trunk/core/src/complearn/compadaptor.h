@@ -29,6 +29,9 @@ struct CompAdaptor {
 											     CompAdaptor object */
   t_apiver apiv;      /*!< Pointer to function which returns int api version
 												   of CompAdaptor interface */
+  t_getparams params; /*!< Pointer to function which returns a paramlist
+												   of CompAdaptor interface */
+  struct ParamList *pl;
 };
 
 /** When using this interface, you must return APIVER_V1.  Future versions
@@ -72,6 +75,10 @@ int compaAPIVer(struct CompAdaptor *ca);
  *  \returns ncd a double precision floating-point value
  */
 double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock *b);
+struct ParamList *compaParameters(struct CompAdaptor *comp);
+void compaInitParameters(struct CompAdaptor *ca);
+void compaPushParameter(struct CompAdaptor *ca, const char *key, const char *value, int type);
+void compaSetValueForKey(struct CompAdaptor *ca, const char *key, void *dest);
 
 #endif
 

@@ -59,6 +59,8 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd)
     exit(1);
   }
 
+  compaInitParameters(ca);
+
 	return ca;
 }
 
