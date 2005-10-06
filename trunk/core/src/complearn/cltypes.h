@@ -1,6 +1,10 @@
 #ifndef __CLTYPES_H
 #define __CLTYPES_H
 
+#define PARAMSTRING 1
+#define PARAMINT    2
+#define PARAMDOUBLE 3
+
 #include <complearn/datablock.h>
 #include <complearn/quartet.h>
 

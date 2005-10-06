@@ -29,7 +29,6 @@ struct CompAdaptor {
 											     CompAdaptor object */
   t_apiver apiv;      /*!< Pointer to function which returns int api version
 												   of CompAdaptor interface */
-												
 };
 
 /** When using this interface, you must return APIVER_V1.  Future versions

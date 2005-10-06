@@ -76,6 +76,7 @@ complearn/labelperm.h \
 complearn/matfact.h \
 complearn/mutate.h \
 complearn/ncd-calc.h \
+complearn/paramlist.h \
 complearn/pathkeeper.h \
 complearn/quartet.h \
 complearn/quartetobs.h \
@@ -139,6 +140,7 @@ labelperm.c \
 matfact.c \
 mutate.c \
 ncd-calc.c \
+paramlist.c \
 pathkeeper.c \
 quartet.c \
 rootedbinary.c \

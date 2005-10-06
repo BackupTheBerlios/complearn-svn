@@ -25,6 +25,7 @@ struct BlockSortCompInstance {
   int code2state[256];
   int nstates;
   int *x, *p, allocated;
+//  struct ParamList *pl;
 };
 
 void suffixsort(int *x, int *p, int n, int k, int l);
@@ -178,6 +179,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 void bs_freecompfunc(struct CompAdaptor *ca) {
   struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
+//  paramlistFree(bsci->pl);
   if (bsci->allocated > 0) {
     free(bsci->x);
     free(bsci->p);
@@ -210,12 +212,13 @@ struct CompAdaptor *builtin_blocksort(void) {
   struct CompAdaptor *ca;
   struct BlockSortCompInstance *bsci;
 
-  ca   = calloc(sizeof(*ca), 1);
-  bsci = calloc(sizeof(*bsci), 1);
+  ca   = clCalloc(sizeof(*ca), 1);
+  bsci = clCalloc(sizeof(*bsci), 1);
 
   if (ca==NULL || bsci==NULL) { perror("builtin_blocksort"); exit(1); }
   *ca = c;
   ca->cptr= bsci;
+//  bsci->pl = paramlistNew();
 
   bsci->x = bsci->p = NULL;
   bsci->allocated = 0;

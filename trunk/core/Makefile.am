@@ -101,6 +101,8 @@ src/ncd.c \
 src/ncd-calc.c \
 src/complearn/ncd-calc.h \
 src/complearn/ncdapp.h \
+src/paramlist.c \
+src/complearn/paramlist.h \
 src/pathkeeper.c \
 src/complearn/pathkeeper.h \
 src/quartet.c \

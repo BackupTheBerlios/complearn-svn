@@ -22,6 +22,7 @@ static int zlib_apiver(void);
  */
 struct ZlibCompInstance {
 	int level; // 0 - 9
+  struct ParamList *pl;
 };
 
 /** \brief Initializes a ZLIB CompAdaptor instance
@@ -57,29 +58,24 @@ struct CompAdaptor *builtin_ZLIB(void)
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct ZlibCompInstance), 1);
   zci = (struct ZlibCompInstance *) ca->cptr;
-
+  zci->pl = paramlistNew();
 
   /* default compressor options */
 	zci->level = 9;
+  paramlistPushField(zci->pl, "zliblevel", "9", PARAMINT);
 
   zlib_clsetenv(ca);
 
   return ca;
 }
 
-static void zlib_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int *placeToSet) {
-  char *val;
-  val = envmapValueForKey(srcenv,keyname);
-  if (val)
-    *placeToSet = atoi(val);
-}
-
 static void zlib_clsetenv(struct CompAdaptor *ca)
 {
 	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
+  struct ParamList *zpl = (struct ParamList *) ci->pl;
   struct EnvMap *em = loadDefaultEnvironment()->em;
 
-  zlib_setIntValueMaybe(em, "zliblevel", &ci->level);
+  paramlistSetValueForKey(zpl, em, "zliblevel", &ci->level);
 }
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
@@ -108,6 +104,7 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 
 static void zlib_freecompfunc(struct CompAdaptor *ca)
 {
+  paramlistFree(((struct ZlibCompInstance *) ca->cptr)->pl);
   clFreeandclear(ca->cptr);
 	clFreeandclear(ca);
 }

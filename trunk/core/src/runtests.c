@@ -246,9 +246,9 @@ void testBlockSortCA()
   srand( time(NULL) );
     assert(ca->cf != NULL);
 
-  /* Blocks only 0 or 1 byte in size */
+  /* Blocks only 1 or 2 bytes in size */
   for (i = 0; i < REPS; i +=1) {
-    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * 1);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX) * 1) + 1;
     if (!dbsize) continue;
     dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
@@ -263,7 +263,7 @@ void testBlockSortCA()
 
   /* Blocks with the same character repeated */
   for (i = 0; i < REPS; i +=1) {
-    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE + 1);
     dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(dbptr, c, dbsize);
@@ -277,7 +277,7 @@ void testBlockSortCA()
 
   /* Blocks with randomly generated characters */
   for (i = 0; i < REPS; i +=1) {
-    dbsize = (int) ((double)rand()/((double)RAND_MAX + 1) * MAX_BLKSIZE);
+    dbsize = (int) ((double)rand()/((double)RAND_MAX) * MAX_BLKSIZE + 1);
     dbptr = (unsigned char*)clMalloc(dbsize);
     for (j = 0; j < dbsize ; j +=1 ) {
       dbptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
@@ -1266,6 +1266,31 @@ void testSmoothing()
   }
 }
 
+void testParamList()
+{
+  struct ParamList *pl = paramlistNew();
+  struct EnvMap *em = envmapNew();
+  int bs;
+  double wf;
+  char *vb;
+  paramlistPushField(pl, "blocksize", "9", PARAMINT);
+  paramlistPushField(pl, "workfactor", "30.0", PARAMDOUBLE);
+  paramlistPushField(pl, "shortname", "compatest", PARAMSTRING);
+  assert(paramlistGetInt(pl,"blocksize") == 9);
+  envmapSetKeyVal(em, "blocksize", "4");
+  envmapSetKeyVal(em, "workfactor", "30.0");
+  envmapSetKeyVal(em, "shortname", "compatest");
+  paramlistSetValueForKey(pl, em, "blocksize", &bs);
+  paramlistSetValueForKey(pl, em, "workfactor", &wf);
+  paramlistSetValueForKey(pl, em, "shortname", &vb);
+  assert(paramlistGetInt(pl,"blocksize") == 4);
+  assert(paramlistGetDouble(pl,"workfactor") == 30.0);
+  assert(strcmp(paramlistGetString(pl,"shortname"),"compatest") == 0);
+  assert(strcmp(vb,"compatest") == 0);
+  envmapFree(em);
+  paramlistFree(pl);
+}
+
 char *findDir(const char *dir)
 {
   const char *locations[] = { ".", "..", "../.."};
@@ -1330,6 +1355,7 @@ int main(int argc, char **argv)
 //  testDL2();  //TODO: investigate mem leaks which may be caused by dlopen
   testArrayDBE();
   testDirectoryDBE();
+  testParamList();
 #if GSL_RDY
   testMarshalling();
   testSpringBall();

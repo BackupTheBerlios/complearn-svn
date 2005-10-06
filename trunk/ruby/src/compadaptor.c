@@ -1,5 +1,23 @@
 #include "clrbcon.h"
 
+static VALUE rbcompa_dump(VALUE self) {
+  struct CompAdaptor *ca;
+  VALUE obj;
+  Data_Get_Struct(self, struct CompAdaptor, ca);
+  VALUE obj = rb_str_new2(compaShortName(ca));
+  return rb_funcall(cMarshal, rb_intern("dump"), 0, obj);
+}
+
+static VALUE rbcompa_load(VALUE cl, VALUE dump)
+{
+  VALUE self;
+  char *cstr;
+  dump = rb_funcall(cMarshal, rb_intern("load"), 1, dump);
+  cstr = STR2CSTR(dump);
+  self = rb_str_new2(cstr);
+  return self;
+}
+
 static VALUE rbcompa_shortname(VALUE self)
 {
   struct CompAdaptor *ca;
@@ -81,4 +99,6 @@ void doInitCompa(void) {
   rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
   rb_define_method(cCompAdaptor, "apiver", rbcompa_apiver, 0);
   rb_define_method(cCompAdaptor, "ncd", rbcompa_ncd, 2);
+  rb_define_method(cAdjAdaptor, "_dump", rbcompa_dump, 0);
+  rb_define_singleton_method(cAdjAdaptor, "_load", rbcompa_load, 1);
 }

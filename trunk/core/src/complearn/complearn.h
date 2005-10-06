@@ -40,6 +40,7 @@
 #include <complearn/matfact.h>
 #include <complearn/mutate.h>
 #include <complearn/ncd-calc.h>
+#include <complearn/paramlist.h>
 #include <complearn/pathkeeper.h>
 #include <complearn/quartet.h>
 #include <complearn/rootedbinary.h>

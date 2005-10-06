@@ -1,4 +1,4 @@
-#include <complearn.h>
+#include <complearn/complearn.h>
 
 double compaCompress(struct CompAdaptor *ca, struct DataBlock *src)
 {
@@ -43,4 +43,3 @@ double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock 
 /* temporary hard-coded ncd variation */
 	return mndf(ca,cb,cab,cba);
 }
-
