@@ -2,17 +2,6 @@
 
 #include <gsl/gsl_matrix.h>
 
-#define MAXDATABLOCK 256
-
-struct IncrementalDistMatrix {
-  int dbcount;
-  struct DataBlock *db[MAXDATABLOCK];
-  double singlesize[MAXDATABLOCK];
-  gsl_matrix *curmat;
-  gsl_matrix_view result;
-  struct CompAdaptor *ca;
-};
-
 struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca)
 {
   struct IncrementalDistMatrix *idm;
@@ -41,6 +30,7 @@ void incrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db)
     gsl_matrix_set(idm->curmat, i, curguy, curcell);
     gsl_matrix_set(idm->curmat, curguy, i, curcell);
   }
+  idm->result = gsl_matrix_submatrix(idm->curmat, 0, 0, idm->dbcount, idm->dbcount);
 }
 
 void incrdmFree(struct IncrementalDistMatrix *idm)
@@ -55,7 +45,6 @@ void incrdmFree(struct IncrementalDistMatrix *idm)
 
 gsl_matrix *incrdmDistMatrix(struct IncrementalDistMatrix *idm)
 {
-  idm->result = gsl_matrix_submatrix(idm->curmat, 0, 0, idm->dbcount, idm->dbcount);
   return (gsl_matrix *) &idm->result;
 }
 

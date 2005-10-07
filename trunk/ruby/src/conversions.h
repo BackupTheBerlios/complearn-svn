@@ -10,4 +10,5 @@ VALUE convertCLDateTimeToTime(struct CLDateTime *cldt);
 VALUE convertgslvectorToRubyVector(gsl_vector *v);
 struct DataBlock *convertRubyStringToDataBlock(VALUE rstr);
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
+VALUE convertDataBlockToRubyString(struct DataBlock *db);
 #endif

@@ -2,6 +2,9 @@
 #define __INCRDM_H
 
 #include <gsl/gsl_matrix.h>
+#include <complearn/complearn.h>
+
+#define MAXDATABLOCK 256
 
 /*! \file incrdm.h */
 
@@ -18,7 +21,15 @@
  *
  * \struct IncrementalDistMatrix
  */
-struct IncrementalDistMatrix;
+struct IncrementalDistMatrix {
+  int dbcount;
+  struct DataBlock *db[MAXDATABLOCK];
+  double singlesize[MAXDATABLOCK];
+  gsl_matrix *curmat;
+  gsl_matrix_view result;
+  struct CompAdaptor *ca;
+};
+
 
 /** \brief creates a new IncrementalDistMatrix using a given CompAdaptor
  *

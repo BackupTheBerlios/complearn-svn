@@ -29,8 +29,6 @@ VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm)
   int i, j;
   volatile VALUE result;
   assert(dm);
-//  printf("Trying to convert dm %p\n", dm);
-//    printf("With size %d, %d\n", dm->size1, dm->size2);
   volatile VALUE rows = rb_ary_new();
   for (i = 0; i < dm->size1; i += 1) {
     volatile VALUE currow = rb_ary_new();
@@ -105,6 +103,11 @@ VALUE convertStringStackToRubyArray(struct StringStack *ss)
   for (i = 0; i < stringstackSize(ss); i += 1)
     rb_ary_push(result, rb_str_new2(stringstackReadAt(ss, i)));
   return result;
+}
+
+VALUE convertDataBlockToRubyString(struct DataBlock *db)
+{
+  return rb_str_new(datablockData(db), datablockSize(db));
 }
 
 struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
