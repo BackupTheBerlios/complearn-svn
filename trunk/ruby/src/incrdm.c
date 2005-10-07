@@ -138,6 +138,7 @@ static VALUE rbincrdm_load(VALUE kl, VALUE str)
   }
 
   tdata = Data_Wrap_Struct(cIncrementalDistMatrix, 0, incrdmFree, idm);
+  rb_ivar_set(tdata, rb_intern("ca"), rca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
