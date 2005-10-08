@@ -228,22 +228,33 @@ void rootedbinaryComplexMutation(struct RootedBinary *rb)
   mutateComplex(rb);
 }
 
-struct RootedBinary *rootedbinaryNew(int howManyLeaves)
+struct RootedBinary *rootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
 {
   int i;
   struct DoubleA *leaves;
   struct RootedBinary *rb = clCalloc(sizeof(struct RootedBinary), 1);
+
   assert(howManyLeaves > 3);
+
   rb->nodecount = 2*howManyLeaves-3;
-  rb->aa = newPathKeeper(adjaLoadAdjList(rb->nodecount));
-  for (i = 0; i < howManyLeaves-2; ++i) {
-    adjaSetConState(rb->aa, i, i+howManyLeaves-1, 1);
-    adjaSetConState(rb->aa, i, i+1, 1);
+
+  if (uaa) {
+    rb->aa = newPathKeeper(uaa);
+  }
+    else {
+      rb->aa = newPathKeeper(adjaLoadAdjList(rb->nodecount));
+    for (i = 0; i < howManyLeaves-2; ++i) {
+      adjaSetConState(rb->aa, i, i+howManyLeaves-1, 1);
+      adjaSetConState(rb->aa, i, i+1, 1);
+    }
   }
 
   leaves = getLabellableNodes(rb);
   assert(doubleaSize(leaves) == howManyLeaves);
-  rb->labelperm = labelpermNew(leaves);
+
+  if (! (rb->labelperm = ulabelperm))
+    rb->labelperm = labelpermNew(leaves);
+
   doubleaFree(leaves);
 
   verifyTree(rb);
@@ -435,7 +446,7 @@ int rb_treemutecount(struct TreeAdaptor *ta)
 
 struct TreeAdaptor *treeaLoadRootedBinary(int howBig)
 {
-  return loadRBTRA(rootedbinaryNew(howBig));
+  return loadRBTRA(rootedbinaryNew(howBig, NULL, NULL));
 }
 
 static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)

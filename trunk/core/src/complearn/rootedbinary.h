@@ -34,9 +34,13 @@ struct StringStack;
  *
  *  \param howManyLeaves an integer >=4 indicating how many leaves the tree
  *  should have.
+ *  \param uaa an optional parameter specifying an AdjAdaptor (without pathing)
+ *  to use for initial connectivity.  This may be NULL to specify a default
+ *  catterpillar type connection pattern.
+ *  \param ulabelperm an optional parameter specifying which leaves are placed where in the tree.  This may be NULL as well.
  *  \return a pointer to a newly allocated tree
  */
-struct RootedBinary *rootedbinaryNew(int howManyLeaves);
+struct RootedBinary *rootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm);
 
 /** \brief Applies a complex mutation to a tree.
  *

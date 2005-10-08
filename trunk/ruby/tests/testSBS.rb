@@ -60,7 +60,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
   end
   def treeRejected()
     redrawTime
-    redrawStats if rand(0) < 0.05
+    redrawStats if rand(0) < 0.05  # how come this segfaults
     Curses::refresh
   end
   def treeImproved(th)
