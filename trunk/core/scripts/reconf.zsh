@@ -32,7 +32,7 @@ case $HOST in
    SDLTTFPREFIX=/usr
     ;;
   "ns1.alcruz.com")
-   SOAPREFIX=/home/webuser/mySoftware/csoap-1.0.3
+   SOAPREFIX=/usr/local
    XMLPREFIX=/usr
    GSLPREFIX=/usr
    BZ2PREFIX=/usr
