@@ -58,9 +58,16 @@ struct GDBMHelper *cldbopen(const char *userfilename)
 {
   char *filename;
   struct GDBMHelper *gh;
+  struct stat buf;
+  int i;
   filename = makefilename(userfilename);
   gh = clCalloc(sizeof(struct GDBMHelper), 1);
-  gh->db = gdbm_open(filename, 0, GDBM_WRCREAT, 0664, printfunc);
+  if(stat(filename, &buf)) {
+    GDBM_FILE db;
+    db = gdbm_open(filename, 0, GDBM_WRCREAT, 0664, printfunc);
+    gdbm_close(db);
+  }
+  gh->db = gdbm_open(filename, 0, GDBM_READER, 0664, printfunc);
   if (gh->db)
     return gh;
   clFree(gh);
@@ -82,14 +89,22 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 
 void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
+  GDBM_FILE db;
   datum gkey;
   assert(gh);
   assert(gh->db);
   gkey.dptr = (char *) datablockData(key);
-  gdbm_store(gh->db,
+  while(1) {
+    db = gdbm_open(makefilename("gsamp"), 0, GDBM_WRCREAT, 0664, printfunc);
+    if (db)
+      break;
+    clSleepMillis(100);
+  }
+  gdbm_store(db,
       convertDataBlockToDatum(key),
       convertDataBlockToDatum(val),
       GDBM_REPLACE);
+  gdbm_close(db);
 }
 
 int cldbclose(struct GDBMHelper *gh)
