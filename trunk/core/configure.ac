@@ -57,7 +57,10 @@ AC_SUBST(GENLDFLAGS)
 
 case "${target}" in
   *apple*darwin*)
-     # fink tools instead of Apple's
+  echo "Building for Darwin : ${target}"
+     CFLAGS="$CFLAGS -I /usr/local/include/libcsoap-1.0 -I /usr/local/include/nanohttp-1.0 -I /usr/include/libxml2 -I /opt/local/include"
+     LDFLAGS="-L/usr/local/lib -L/opt/local/lib"
+     CPPFLAGS="$CFLAGS"
      LIBTOOLIZE="/sw/bin/glibtoolize --ltdl"
      GENLDFLAGS=""
 ;;
