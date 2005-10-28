@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <complearn/datablock.h>
 #include <complearn/complearn.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <string.h>
 #include <unistd.h>
 

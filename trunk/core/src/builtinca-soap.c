@@ -13,7 +13,7 @@ struct SOAPCompInstance;
 #include <zlib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 
 static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src);

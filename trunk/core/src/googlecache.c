@@ -1,7 +1,7 @@
 #include <complearn/googlecache.h>
 #include <assert.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <stdio.h>
 #include <complearn/complearn.h>
 

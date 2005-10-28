@@ -1,5 +1,5 @@
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <complearn/complearn.h>
 
 #include <complearn/transadaptor.h>

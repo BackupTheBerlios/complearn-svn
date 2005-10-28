@@ -8,7 +8,7 @@
 
 #include <complearn/gdbmhelper.h>
 #include <stdlib.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 #include <gdbm.h>
 
@@ -134,7 +134,7 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   assert("No GDBM installed." && 0);
 }
-void cldbstore(struct GDBMHelper *gh, struct DataBlock key, struct DataBlock val)
+void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   assert("No GDBM installed." && 0);
 }

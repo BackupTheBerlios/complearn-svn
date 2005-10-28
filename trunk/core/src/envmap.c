@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 #include <complearn/complearn.h>
 #define MAXINDECES 10

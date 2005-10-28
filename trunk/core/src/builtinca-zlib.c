@@ -4,7 +4,7 @@
 #include <zlib.h>
 
 #include <stdlib.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void zlib_freecompfunc(struct CompAdaptor *ca);

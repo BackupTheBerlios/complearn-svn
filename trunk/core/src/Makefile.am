@@ -1,4 +1,4 @@
-GENLDFLAGS=-Wl,-export-dynamic
+GENLDFLAGS=@GENLDFLAGS@
 GENLDADD=libcomplearn.a
 
 if WANT_SDLGLPROG

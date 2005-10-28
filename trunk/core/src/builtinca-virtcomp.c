@@ -1,6 +1,6 @@
 #include <complearn/envmap.h>
 #include <sys/types.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <complearn/complearn.h>
 #include <string.h>
 #include <unistd.h>

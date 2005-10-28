@@ -5,7 +5,7 @@
 #define _GNU_SOURCE
 #include <getopt.h>
 
-#include <malloc.h>
+#include "clmalloc.h"
 
 #if GSL_RDY
 #include <gsl/gsl_matrix.h>

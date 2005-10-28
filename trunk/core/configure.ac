@@ -52,7 +52,15 @@ ac_optimize=0;
 ac_profile=0;
 ac_nogalloc=0;
 
+GENLDFLAGS="-Wl,-export-dynamic"
+AC_SUBST(GENLDFLAGS)
+
 case "${target}" in
+  *apple*darwin*)
+     # fink tools instead of Apple's
+     LIBTOOLIZE="/sw/bin/glibtoolize --ltdl"
+     GENLDFLAGS=""
+;;
   *-*-cygwin*)
   echo "Building for Cygwin : ${target}"
   CFLAGS="$CFLAGS -DWINCHOICE -I /usr/local/include -I /usr/local/include/SDL"

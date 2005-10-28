@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 #include <complearn/complearn.h>
 

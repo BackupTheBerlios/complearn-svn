@@ -1,6 +1,6 @@
 #include <sys/time.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>

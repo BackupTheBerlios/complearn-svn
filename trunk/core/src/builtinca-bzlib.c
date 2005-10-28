@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <complearn/complearn.h>
 
 #if BZIP2_RDY

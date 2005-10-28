@@ -5,7 +5,7 @@
 
 #include <zlib.h>
 #include <string.h>
-#include <malloc.h>
+#include "clmalloc.h"
 
 #include <complearn/transadaptor.h>
 

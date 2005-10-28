@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <complearn/complearn.h>
 
 #if GSL_RDY

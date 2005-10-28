@@ -1,4 +1,4 @@
-#include <malloc.h>
+#include "clmalloc.h"
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>

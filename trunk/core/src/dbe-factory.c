@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <malloc.h>
+#include "clmalloc.h"
 #include <string.h>
 #include <stdio.h>
 #include <complearn/complearn.h>

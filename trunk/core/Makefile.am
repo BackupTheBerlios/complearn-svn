@@ -24,6 +24,7 @@ src/adjmatrix.c \
 src/complearn/adjmatrix.h \
 src/adjlist.c \
 src/complearn/adjlist.h \
+src/clmalloc.h \
 src/builtin.c \
 src/builtinca-bzlib.c \
 src/builtinca-google.c \
