@@ -35,7 +35,6 @@ struct CLTextStyle {
   TTF_Font *font;
   int size;
 };
-
 char *subfontpath = "%s/Fonts/arial.ttf";
 int screenwidth = 640;
 int screenheight = 480;
@@ -76,7 +75,11 @@ void init_sdltext()
   GetWindowsDirectory(wdirspace, 1024);
   sprintf(fontpath, subfontpath, wdirspace);
 #else
+#ifdef __APPLE__
+  strcpy(fontpath, "/Library/Fonts/Arial.ttf");
+#else
   strcpy(fontpath, "/mnt/dosc/winnt/Fonts/arial.ttf");
+#endif
 #endif
   if(!(font = TTF_OpenFont(fontpath, 14))) {
     printf("Error loading font\n");

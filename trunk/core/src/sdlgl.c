@@ -383,9 +383,9 @@ static gboolean process_idle_events(gpointer data)
   return TRUE;
 }
 
-typedef enum {
+enum {
         TARGET_URI
-} complearn_drop_target_info;
+};
 
 static GtkTargetEntry target_list[] = {
         { "text/uri-list",     0, TARGET_URI },
@@ -401,6 +401,7 @@ drag_data_received_handl
 {
         gboolean dnd_success = FALSE;
         gboolean delete_selection_data = FALSE;
+        printf("In the drag data received handler...\n");
         if((selection_data != NULL) && (selection_data-> length >= 0))
         {
           char *seldatastr = (char *) selection_data->data;
@@ -660,7 +661,7 @@ int calcThreadFunc(void *unused)
       for (;;) {
         dmsize = incrdmSize(distmatglob);
         if (dmsize < stringstackSize(labels))
-          addAndProcessDataBlock(distmatglob, &curFiles->db[dmsize]);
+          addAndProcessDataBlock(distmatglob, curFiles->db[dmsize]);
         else
           break;
       }
@@ -932,7 +933,7 @@ static void realDoDroppedFile(char *buf)
 //      datablockFreePtr(cur);
     }
   } else {
-    curFiles->db[curFiles->size++] =  fileToDataBlock(buf);
+    curFiles->db[curFiles->size++] =  fileToDataBlockPtr(buf);
     lastpart = findLastPart(buf);
     stringstackPush(labels, lastpart);
   }
@@ -964,8 +965,12 @@ int main( int argc, char* argv[] )
   }
 #if LINUX
   gtk_window_set_default_size (GTK_WINDOW(window), win_xsize, win_ysize);
-
   initDragDropSubsystem(window);
+#else
+#ifdef __APPLE__
+  gtk_window_set_default_size (GTK_WINDOW(window), win_xsize, win_ysize);
+  initDragDropSubsystem(window);
+#endif
 #endif
   distmatglob = incrdmNew(NULL);
   myPI = atan(1.0)*4;
@@ -1085,6 +1090,12 @@ setRotParms(1, -1, -1, 1, 1);
   setupDemo();
 //  drawHelpPane();
 #if LINUX
+  gtk_widget_show_all (window);
+  gtk_idle_add(process_idle_events, window);
+  gtk_main();
+  exit(0);
+#endif
+#ifdef __APPLE__
   gtk_widget_show_all (window);
   gtk_idle_add(process_idle_events, window);
   gtk_main();

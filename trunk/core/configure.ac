@@ -181,7 +181,7 @@ then
 #    [LIBS="-lgtk $LIBS" ; fgtk_lib=1])
   AC_CHECK_LIB(gtk-x11-2.0,main,
     echo "Enabling gtk-x11-2.0 support."
-    [LIBS="$LIBS -lgtk-x11-2.0" ; fgtkx11_lib=1])
+    [LIBS="$LIBS -lgtk-x11-2.0" ; fgtkx11_lib=1 ; fgtk_lib=1])
   AC_CHECK_LIB(gdk-x11-2.0,main,
     echo "Enabling gdk-x11-2.0 support."
     [LIBS="$LIBS -lgdk-x11-2.0" ; fgdkx11_lib=1])
