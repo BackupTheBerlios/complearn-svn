@@ -5,9 +5,9 @@ AM_INIT_AUTOMAKE(libcomplearn , 0.8.19, cilibrar@gmail.com)
 AC_PROG_CC
 #AC_PROG_LIBTOOL
 AC_PROG_RANLIB
-AC_CHECK_PROG(MKTEMP, mktemp, mktemp)
-
-AC_CHECK_PROG(SDLCONFIG, sdl-config, missing)
+AC_CHECK_PROG(MKTEMP, mktemp, mktemp, missing)
+#export PATH="$PATH:/sw/bin"
+AC_PATH_PROG(SDLCONFIG, sdl-config, missing, [$PATH:/sw/bin] )
 
 if test "x$SDLCONFIG" = "x" -o "x$SDLCONFIG" = "xmissing"; then
   echo "No sdl-config found in path"
@@ -58,11 +58,14 @@ AC_SUBST(GENLDFLAGS)
 case "${target}" in
   *apple*darwin*)
   echo "Building for Darwin : ${target}"
-     CFLAGS="$CFLAGS -I /usr/local/include/libcsoap-1.0 -I /usr/local/include/nanohttp-1.0 -I /usr/include/libxml2 -I /opt/local/include"
-     LDFLAGS="-L/usr/local/lib -L/opt/local/lib"
+     LIBS="$LIBS -framework OpenGL -framework GLUT -framework Cocoa"
+     CFLAGS="$CFLAGS -I /usr/local/include/libcsoap-1.0 -I /usr/local/include/nanohttp-1.0 -I /usr/include/libxml2 -I /opt/local/include -I /sw/include -I /Library/Frameworks/SDL_ttf.framework/Headers"
+     LDFLAGS="-L/usr/local/lib -L/opt/local/lib -L/sw/lib -L/Library/Frameworks/SDL_ttf.framework/Versions/Current"
      CPPFLAGS="$CFLAGS"
      LIBTOOLIZE="/sw/bin/glibtoolize --ltdl"
      GENLDFLAGS=""
+      fglu_lib=1
+      fglut_h=1
 ;;
   *-*-cygwin*)
   echo "Building for Cygwin : ${target}"
@@ -97,6 +100,7 @@ then
   CFLAGS="$CFLAGS -fno-strict-aliasing"
 fi
 
+AC_CHECK_FUNC(glNewList,[echo 'found OpenGL';fgl_lib=1])
 AC_ARG_WITH(bzip2,[--with-bzip2=PREFIX   where bzip2 is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(zlib,[--with-zlib=PREFIX   where zlib is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(xml2,[--with-xml2=PREFIX   where xml2 is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/libxml2" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
@@ -277,8 +281,11 @@ AC_CHECK_HEADER([SDL/SDL.h], [fsdl_h=1])
 AC_CHECK_HEADER([SDL/SDL_ttf.h], [fsdlttf_h=1])
 AC_CHECK_HEADER([SDL/SDL_thread.h], [fsdlthread_h=1])
 AC_CHECK_HEADER([GL/gl.h], [fgl_h=1])
+AC_CHECK_HEADER([OpenGL/gl.h], [fgl_h=1])
 AC_CHECK_HEADER([GL/glu.h], [fglu_h=1])
+AC_CHECK_HEADER([OpenGL/glu.h], [fglu_h=1])
 AC_CHECK_HEADER([GL/glut.h], [fglut_h=1])
+AC_CHECK_HEADER([OpenGL/glut.h], [fglut_h=1])
 AC_CHECK_HEADER([gtk/gtk.h], [fgtk_h=1])
 AC_CHECK_HEADER([gdk/gdk.h], [fgdk_h=1])
 AC_CHECK_HEADER([glib.h], [fglib_h=1])
@@ -353,8 +360,19 @@ AC_CHECK_LIB(glu32, main,
 AC_CHECK_LIB(pthread, main,
     [LIBS="$LIBS -lpthread" ; fpthread_lib=1])
 
+if test ${fgl_lib} -eq 0; then
+case "${target}" in
+  *apple*darwin*)
+AC_CHECK_LIB(fltk_gl, main,
+    [LIBS="$LIBS -lfltk_gl"])
+AC_CHECK_LIB(fltk, main,
+    [LIBS="$LIBS -lfltk" ; fgl_lib=1])
+;;
+  *)
 AC_CHECK_LIB(GL, main,
     [LIBS="$LIBS -lGL" ; fgl_lib=1])
+esac
+fi
 
 AC_CHECK_LIB(opengl32, main,
     [LIBS="$LIBS -lopengl32" ; fgl_lib=1])
@@ -376,6 +394,16 @@ if test ${fgl_lib} -eq 1 -a ${fglu_lib} -eq 1 ; then
     fi
   fi
 fi
+
+if test ${fgl_rdy} -eq 0 ; then
+  echo "=GLLIB: $fgl_lib"
+  echo "=GLULIB: $fglu_lib"
+  echo "=GLUTLIB: $fglut_lib"
+  echo "=GLH: $fgl_h"
+  echo "=GLUH: $fglu_h"
+  echo "=GLUTH: $fglut_h"
+fi
+
 
 if test ${fsdlttf_lib} -eq 1 -a ${fsdlttf_h} -eq 1; then
     fsdlttf_rdy=1 ; AC_DEFINE(SDLTTF_RDY, 1, sdl_ttf ready)
