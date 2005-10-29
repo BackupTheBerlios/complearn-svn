@@ -12,7 +12,12 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
-#include <OpenGL/glut.h>
+#include <GLUT/glut.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
+#include <glib-object.h>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -31,7 +36,9 @@
 #define SDL_TTF 1
 
 #if !LINUX
+#ifndef __APPLE__
 #include <windows.h>
+#endif
 #else
 #if GTK_RDY
 #include <gtk/gtk.h>
@@ -70,14 +77,16 @@ struct TransformAdaptor *builtin_UNZLIB(void);
 struct DataBlock *testCompression(struct DataBlock *db, struct TransformAdaptor *t) {
   struct DataBlock *result = db;
   if (!t) return result;
-  if (t->pf(*db)) {
-    result = calloc(sizeof(struct DataBlock), 1);
-    *result = t->tf(*db);
-    assert(result->size > 0);
-    assert(result->ptr != NULL);
-  } /* TODO: consider fixing the memory leak pattern here with incoming db */
+  if (t->pf(db)) {
+//    result = calloc(sizeof(struct DataBlock), 1);
+    result = t->tf(db);
+    assert(datablockSize(result) > 0);
+    assert(datablockData(result) != NULL);
+  } 
   return result;
 }
+
+/* TODO: consider fixing the memory leak pattern here with incoming db */
 
 void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db) {
 
@@ -327,7 +336,7 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
  * \sa DataBlock
  */
 struct DataBlockKeeper {
-  struct DataBlock db[MAXTREESIZE];
+  struct DataBlock *db[MAXTREESIZE];
   int size;
 };
 
@@ -374,9 +383,9 @@ static gboolean process_idle_events(gpointer data)
   return TRUE;
 }
 
-enum {
+typedef enum {
         TARGET_URI
-};
+} complearn_drop_target_info;
 
 static GtkTargetEntry target_list[] = {
         { "text/uri-list",     0, TARGET_URI },
@@ -916,11 +925,11 @@ static void realDoDroppedFile(char *buf)
     dbi = dbe->newenumiter(dbe);
     assert(dbi);
     while ( ( cur = dbe->istar(dbe, dbi) ) ) {
-      curFiles->db[curFiles->size++] = *cur;
+      curFiles->db[curFiles->size++] = cur;
       addAndProcessDataBlock(distmatglob, cur);
       stringstackPush(labels, dbe->ilabel(dbe, dbi));
       dbe->istep(dbe, dbi);
-      datablockFreePtr(cur);
+//      datablockFreePtr(cur);
     }
   } else {
     curFiles->db[curFiles->size++] =  fileToDataBlock(buf);
