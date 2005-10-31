@@ -66,6 +66,8 @@ case "${target}" in
      GENLDFLAGS=""
       fglu_lib=1
       fglut_h=1
+      # remove this line
+      fgtk_rdy=1
 ;;
   *-*-cygwin*)
   echo "Building for Cygwin : ${target}"
