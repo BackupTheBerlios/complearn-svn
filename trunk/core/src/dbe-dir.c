@@ -154,9 +154,11 @@ int clIsDirectory(const char *dirname)
   int result = 0;
   DIR *cur;
   cur = opendir(dirname);
-  if (cur)
+  if (cur) {
     result = 1;
-  closedir(cur);
+    closedir(cur);
+    cur = NULL;
+  }
   return result;
 }
 

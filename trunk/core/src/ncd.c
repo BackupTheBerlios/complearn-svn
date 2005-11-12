@@ -120,7 +120,7 @@ int main(int argc, char **argv)
   struct NCDConfig *ncdcfg;
   int next_option, whichLongOpt;
   void testGSoapReq(void);
-  const char *const ncd_short_options="f:l:Lp:t:d:w:gDo:";
+  const char *const ncd_short_options="f:l:Lp:t:d:w:gDo:r:";
   struct option ncd_long_options[] = {
       { "file-mode", 1, NULL, 'f' },
       { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */ { "list", 0, NULL, 'L' },         /* list compressors */
@@ -131,6 +131,7 @@ int main(int argc, char **argv)
       { "google", 0, NULL, 'g' },
       { "delcache", 0, NULL, 'D' }, /* clear the google cache */
       { "outfile", 1, NULL, 'o' },   /* distmatrix output file <filename> */
+      { "realcomp", 1, NULL, 'r' },  /* real compressor with command <cmd> */
       { NULL, 0, NULL, 0 },
   };
   cur = loadNCDEnvironment();
@@ -182,6 +183,10 @@ int main(int argc, char **argv)
       case 'w':
         dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
         ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        break;
+      case 'r':
+        cur->ca = compaLoadReal(optarg);
+        cur->compressor_name = clStrdup(optarg);
         break;
       case 'g':
         dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);

@@ -106,6 +106,7 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   while (read(readfd, &dummy, 1) == 1) {
     ci->bytecount += 1;
   }
+//  printf("Got bytecount %f\n", (float) ci->bytecount);
   return ci->bytecount * 8.0;
 }
 
