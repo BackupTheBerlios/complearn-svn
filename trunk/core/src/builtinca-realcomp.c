@@ -74,9 +74,14 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
 int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
 {
 	int pout[2], pin[2];
+  int retval;
   int childid;
-  pipe(pout);
-  pipe(pin);
+  retval = pipe(pout);
+  if (retval)
+    perror("pipe");
+  retval = pipe(pin);
+  if (retval)
+    perror("pipe");
   childid = fork();
   if (childid) { // parent
     write(pout[1], datablockData(inp), datablockSize(inp));
@@ -106,6 +111,7 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   while (read(readfd, &dummy, 1) == 1) {
     ci->bytecount += 1;
   }
+  close(readfd);
 //  printf("Got bytecount %f\n", (float) ci->bytecount);
   return ci->bytecount * 8.0;
 }
