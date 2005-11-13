@@ -362,6 +362,15 @@ AC_CHECK_LIB(glu32, main,
 AC_CHECK_LIB(pthread, main,
     [LIBS="$LIBS -lpthread" ; fpthread_lib=1])
 
+case "${target}" in
+  *apple*darwin*)
+AC_CHECK_LIB(gobject-2.0, main,
+    [LIBS="$LIBS -lgobject-2.0"])
+;;
+  *)
+  echo -n
+esac
+
 if test ${fgl_lib} -eq 0; then
 case "${target}" in
   *apple*darwin*)

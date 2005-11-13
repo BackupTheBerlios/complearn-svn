@@ -20,6 +20,17 @@ case $HOST in
    SDLPREFIX=/ufs/alcruz/mySoftware/SDL-1.2.8
    SDLTTFPREFIX=/ufs/alcruz/mySoftware/SDL_ttf-2.0.7
     ;;
+  "rainbow.rhouse.local")
+   SOAPREFIX=/opt/soft1/local
+   XMLPREFIX=/usr
+   GSLPREFIX=/usr
+   BZ2PREFIX=/usr
+   ZLIBPREFIX=/usr
+   GDBMPREFIX=/usr
+   GTKPREFIX=/sw
+   SDLPREFIX=/ufs/alcruz/mySoftware/SDL-1.2.8
+   SDLTTFPREFIX=/ufs/alcruz/mySoftware/SDL_ttf-2.0.7
+    ;;
   "wax.rhouse.local")
    SOAPREFIX=/usr/local
    XMLPREFIX=/usr
