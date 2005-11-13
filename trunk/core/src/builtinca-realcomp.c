@@ -1,5 +1,6 @@
 #include <complearn/envmap.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <complearn/datablock.h>
 #include <complearn/complearn.h>
 #include "clmalloc.h"
@@ -65,6 +66,12 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
   return ca;
 }
 
+void zombie_reaper(int q)
+{
+  int stat;
+  while(waitpid(-1, &stat, WNOHANG) > 0) ;
+}
+
 /** \brief Returns an fd to read the output of given command with DataBlock
  * fed in through stdin.
  * \param inp pointer to DataBlock to feed in to external program
@@ -82,17 +89,35 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
   retval = pipe(pin);
   if (retval)
     perror("pipe");
+  signal(SIGCHLD, (void(*)(int))zombie_reaper);
   childid = fork();
+  if (childid < 0) { // An error
+        perror("fork");
+      }
   if (childid) { // parent
-    write(pout[1], datablockData(inp), datablockSize(inp));
+    int wlen, wtot = 0, wleft;
+    wleft = datablockSize(inp);
+    while (wleft > 0) {
+      wlen = write(pout[1], datablockData(inp)+wtot, wleft);
+      if (wlen < 0) {
+        perror("write");
+        continue;
+      }
+      wtot += wlen;
+      wleft -= wlen;
+    }
     close(pout[1]);
     close(pout[0]);
     close(pin[1]);
   } else       { // child
     close(pin[0]);
     close(pout[1]);
-    dup2(pout[0],0);
-    dup2(pin[1],1);
+    retval = dup2(pout[0],0);
+    if (retval < 0)
+      perror("dup2");
+    retval = dup2(pin[1],1);
+    if (retval < 0)
+      perror("dup2");
     execl(cmd, cmd, NULL);
     printf("Shouldn't be here, wound up returning from exec!!\n");
     exit(1);
@@ -103,13 +128,14 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
 static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
-  char dummy;
-  int readfd;
+#define READBLOCKSIZE 16384
+  static char dummy[READBLOCKSIZE];
+  int readfd, readlen;
 
   ci->bytecount = 0;
   readfd = forkPipeExecAndFeed(src, ci->cmd);
-  while (read(readfd, &dummy, 1) == 1) {
-    ci->bytecount += 1;
+  while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
+    ci->bytecount += readlen;
   }
   close(readfd);
 //  printf("Got bytecount %f\n", (float) ci->bytecount);
