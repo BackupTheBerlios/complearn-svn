@@ -42,6 +42,7 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 "  -g, --google                use Google compression (NGD)\n"
 "  -D, --delcache              clear the Google cache\n"
 "  -o, --outfile=distmatname   set the default distance matrix output name\n"
+"  -r, --realcomp=pathname     use real compressor, passing in pathname of compressor\n"
 "\n";
   printf("%s",s);
 }
