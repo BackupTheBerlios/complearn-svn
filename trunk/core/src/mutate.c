@@ -1,4 +1,5 @@
 #include <complearn/complearn.h>
+#include <math.h>
 
 #if GSL_RDY
 #include <gsl/gsl_randist.h>
@@ -18,6 +19,15 @@ void mutateSpecies(struct AdjAdaptor *aa, struct LabelPerm *labelperm)
 {
   labelpermMutate(labelperm);
 }
+
+/*
+double tryNumAdjustment(struct TreeHolder *th)
+{
+  double fc = treehFailCount;
+  double n = treeh
+  return log(treehFailCount(th)) / 
+}
+*/
 
 #define MAXMUT 1000
 int howManyMutationsWeirdLogFormula(void)
@@ -40,6 +50,7 @@ int howManyMutationsWeirdLogFormula(void)
     clFreeifpresent(p);
   }
   return gsl_ran_discrete(r, d) + 2;
+ // + tryNumAdjustment();
 #else
 	assert (0 && "gsl not supported");
 	exit(1);

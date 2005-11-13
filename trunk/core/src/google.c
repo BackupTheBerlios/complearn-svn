@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <unistd.h>
+
 #if CSOAP_RDY
 
 #include <libcsoap/soap-client.h>
@@ -54,9 +56,9 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     soap_env_add_item(ctx->env, "xsd:string", "lr","");
     soap_env_add_item(ctx->env, "xsd:string", "ie","latin1");
     soap_env_add_item(ctx->env, "xsd:string", "oe","latin1");
-    printf("Invoking...\n");
+//    printf("Invoking...\n");
     err = soap_client_invoke(ctx, &ctx2, url, method);
-    printf("Done: %d,%d\n", err,trynum);
+//    printf("Done: %d,%d\n", err,trynum);
     if (err != H_OK) {
       //log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
       herror_release(err);
