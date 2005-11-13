@@ -2,6 +2,9 @@
 #
 
 require 'mkmf'
+$CFLAGS += " #{ENV['CFLAGS']}" || ''
+$CPPFLAGS += " #{ENV['CPPFLAGS']}" || ''
+$LDFLAGS += " #{ENV['LDFLAGS']}" || ''
 dir_config 'complearn'
 dir_config 'gsl'
 have_library('gslcblas', 'cblas_sspr') || find_library('gslcblas', 'cblas_sspr', '/lib' , '/usr/lib', '/usr/local/lib')

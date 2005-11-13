@@ -134,7 +134,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
   end
 end
 
-t = CompLearn::TreeAdaptor.new(4)
+t = CompLearn::TreeAdaptor.new(8)
 tadja = t.adja
 nodes = t.nodes
 descs = [ ]
