@@ -1,14 +1,14 @@
-#include <sys/time.h>
-#include <string.h>
-#include "clmalloc.h"
-#include <stdio.h>
-#include <time.h>
-#include <unistd.h>
-#include <complearn/complearn.h>
-
 #if WINCHOICE
 #include <windows.h>
+#else
+#include <sys/time.h>
+#include <unistd.h>
 #endif
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
+#include "clmalloc.h"
+#include <complearn/complearn.h>
 
 
 /** \brief The generic date / time structure in CompLearn

@@ -3,7 +3,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#if WINCHOICE
+#include <sys/dirent.h>
+#else
 #include <dirent.h>
+#endif
 #include <stdio.h>
 #include "clmalloc.h"
 

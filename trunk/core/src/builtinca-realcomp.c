@@ -6,6 +6,7 @@
 #include "clmalloc.h"
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 /** \brief a structure containing instance information for a real compressor
  * \struct RealCompInstance
