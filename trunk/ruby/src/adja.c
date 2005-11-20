@@ -5,7 +5,8 @@
 VALUE rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja);
 static VALUE rbadja_tomatrix(VALUE self);
 
-static VALUE rbadja_path(VALUE self, VALUE vsrc, VALUE vdest)
+static VALUE
+rbadja_path(VALUE self, VALUE vsrc, VALUE vdest)
 {
   static int pbuf[MAXPATHLEN];
   int plen;
@@ -28,14 +29,16 @@ static VALUE rbadja_path(VALUE self, VALUE vsrc, VALUE vdest)
   return result;
 }
 
-static VALUE rbadja_size(VALUE self)
+static VALUE
+rbadja_size(VALUE self)
 {
   struct AdjAdaptor *adja;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   return INT2FIX(adjaSize(adja));
 }
 
-static VALUE rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
+static VALUE
+rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
 {
   struct AdjAdaptor *adja;
   int i, j;
@@ -45,7 +48,8 @@ static VALUE rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
   return adjaGetConState(adja, i, j)?Qtrue:Qnil;
 }
 
-static VALUE rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
+static VALUE
+rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
 {
   struct AdjAdaptor *adja;
   int i, j;
@@ -55,7 +59,8 @@ static VALUE rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
   adjaSetConState(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
 }
 
-static VALUE rbadja_getneighborcount(VALUE self, VALUE vi)
+static VALUE
+rbadja_getneighborcount(VALUE self, VALUE vi)
 {
   struct AdjAdaptor *adja;
   int i;
@@ -64,7 +69,8 @@ static VALUE rbadja_getneighborcount(VALUE self, VALUE vi)
   return INT2FIX(adjaGetNeighborCountAt(adja, i));
 }
 
-static VALUE rbadja_spmmap(VALUE self)
+static VALUE
+rbadja_spmmap(VALUE self)
 {
   struct AdjAdaptor *adja;
   struct DoubleA *da = NULL;
@@ -80,7 +86,8 @@ static VALUE rbadja_spmmap(VALUE self)
   return result;
 }
 
-static VALUE rbadja_getneighbors(VALUE self, VALUE vwhich)
+static VALUE
+rbadja_getneighbors(VALUE self, VALUE vwhich)
 {
   struct AdjAdaptor *adja;
   volatile VALUE result = rb_ary_new();
@@ -103,17 +110,20 @@ static VALUE rbadja_getneighbors(VALUE self, VALUE vwhich)
   return result;
 }
 
-static VALUE rbadja_init(VALUE self)
+static VALUE
+rbadja_init(VALUE self)
 {
 }
 
-VALUE rbadja_new(VALUE cl, VALUE sz)
+VALUE
+rbadja_new(VALUE cl, VALUE sz)
 {
   struct AdjAdaptor *adja = adjaLoadAdjList(NUM2INT(sz));
   return rbadja_secretnew(cl, adja);
 }
 
-static VALUE rbadja_clone(VALUE self)
+static VALUE
+rbadja_clone(VALUE self)
 {
   struct AdjAdaptor *adja;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
@@ -121,12 +131,14 @@ static VALUE rbadja_clone(VALUE self)
   return rbadja_secretnew(cAdjAdaptor, adja);
 }
 
-static VALUE rbadja_dump(VALUE self, VALUE depth) {
+static VALUE
+rbadja_dump(VALUE self, VALUE depth) {
   VALUE obj = rbadja_tomatrix(self);
   return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
-static VALUE rbadja_load(VALUE kl, VALUE mat)
+static VALUE
+rbadja_load(VALUE kl, VALUE mat)
 {
   int i, j;
   VALUE self;
@@ -143,7 +155,8 @@ static VALUE rbadja_load(VALUE kl, VALUE mat)
   return self;
 }
 
-static VALUE rbadja_tomatrix(VALUE self)
+static VALUE
+rbadja_tomatrix(VALUE self)
 {
   struct AdjAdaptor *adja;
   gsl_matrix *mat;
@@ -155,7 +168,8 @@ static VALUE rbadja_tomatrix(VALUE self)
   return result;
 }
 
-void doInitAdja(void) {
+void
+doInitAdja(void) {
   cAdjAdaptor = rb_define_class_under(mCompLearn, "AdjAdaptor", rb_cObject);
   rb_define_method(cAdjAdaptor, "initialize", rbadja_init, 0);
   rb_define_singleton_method(cAdjAdaptor, "new", rbadja_new, 1);
@@ -174,7 +188,8 @@ void doInitAdja(void) {
 }
 
 /* used in tree.adja */
-VALUE rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja)
+VALUE
+rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja)
 {
   assert(adja);
   volatile VALUE tdata = Data_Wrap_Struct(cl, 0, adjaFree, adja);

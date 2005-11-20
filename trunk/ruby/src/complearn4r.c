@@ -28,7 +28,8 @@ struct TreeOrderObserverState {
   volatile VALUE obs;
 };
 
-void Init_complearn4r(void)
+void
+Init_complearn4r(void)
 {
   mCompLearn = rb_define_module("CompLearn");
 
