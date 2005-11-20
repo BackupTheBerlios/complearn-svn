@@ -36,7 +36,7 @@ void *clMalloc(size_t size)
 
        )
      )  /* lisp is just alright */ {
-    printf("%p: Warning, dangerous size %d allocated\n", ptr, size);
+    printf("%p: Warning, dangerous size %d allocated\n", ptr, (int) size);
   }
   return ptr;
 }
@@ -45,7 +45,7 @@ void *clCalloc(size_t nmem, size_t size)
 {
   void *ptr;
   if (nmem == 0 || size == 0) {
-    printf("Bad clCalloc request: %d, %d\n", nmem, size);
+    printf("Bad clCalloc request: %d, %d\n", (int) nmem, (int) size);
   }
   assert(nmem > 0 && size > 0);
   ptr =  clMalloc(nmem * size);

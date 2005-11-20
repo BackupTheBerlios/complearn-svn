@@ -59,7 +59,6 @@ struct GDBMHelper *cldbopen(const char *userfilename)
   char *filename;
   struct GDBMHelper *gh;
   struct stat buf;
-  int i;
   filename = makefilename(userfilename);
   gh = clCalloc(sizeof(struct GDBMHelper), 1);
   if(stat(filename, &buf)) {
