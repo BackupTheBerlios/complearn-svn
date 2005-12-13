@@ -78,21 +78,14 @@ static char *convertLinebuf(char *linebuf)
     }
     ptr += 1;
   }
-  ptr = linebuf;
-  while (isspace(*ptr))
-    ptr++;
-  if (isprint(*ptr))
-    {
-      char *ptr2 = ptr + strlen(ptr) - 1;
-      while ((isspace(*ptr2) || *ptr2 == '\n' || *ptr2 == '\r') && ptr2 >= ptr)
-      {
-        *ptr2 = 0;
-        ptr2--;
-      }
-      return strlen(ptr) ? ptr : NULL;
-    }
-  else
-    return NULL;
+  ptr = linebuf; /* TODO: check Unicode handling here, is \n etc bad? */
+  char *ptr2 = ptr + strlen(ptr) - 1;
+  while ((*ptr2 == '\n' || *ptr2 == '\r') && ptr2 >= ptr)
+  {
+    *ptr2 = 0;
+    ptr2--;
+  }
+  return strlen(ptr) ? ptr : NULL;
 }
 
 static char *dbe_sl_ilabel(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
