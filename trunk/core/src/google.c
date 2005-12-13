@@ -54,7 +54,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     soap_env_add_item(ctx->env, "xsd:string", "restrict","");
     soap_env_add_item(ctx->env, "xsd:boolean", "safeSearch","false");
     soap_env_add_item(ctx->env, "xsd:string", "lr","");
-    soap_env_add_item(ctx->env, "xsd:string", "ie","latin1");
+    soap_env_add_item(ctx->env, "xsd:string", "ie","utf8");
     soap_env_add_item(ctx->env, "xsd:string", "oe","latin1");
 //    printf("Invoking...\n");
     err = soap_client_invoke(ctx, &ctx2, url, method);
@@ -62,7 +62,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     if (err != H_OK) {
       //log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
       herror_release(err);
-      sleep(1 << trynum);
+      sleep(trynum*trynum+5);
       continue;
     }
     function = soap_env_get_method(ctx2->env);
