@@ -70,12 +70,30 @@ static void tm_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int 
     *placeToSet = atoi(val);
 }
 
+static void validateMatrixForTree(gsl_matrix *gsl)
+{
+  int i, j;
+  if (gsl->size1 != gsl->size2) {
+    fprintf(stderr, "Matrix must be square, but this one is %d by %d\n", gsl->size1, gsl->size2);
+    exit(1);
+  }
+  for (i = 0; i < gsl->size1; i += 1) {
+    for (j = 0; j < gsl->size2; j += 1) {
+      if (gsl_matrix_get(gsl, i, j) != gsl_matrix_get(gsl, 0, 0))
+        return;
+    }
+  }
+  fprintf(stderr, "Sorry, this is a constant matrix so no information is available.\n");
+  exit(1);
+}
+
 struct TreeMaster *treemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMap *em)
 {
   struct TreeMaster *result;
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
   assert(em);
 
+  validateMatrixForTree(gsl);
   tmc.fIsRooted = isRooted;
 
   tm_setIntValueMaybe(em, "isRooted", &tmc.fIsRooted);
