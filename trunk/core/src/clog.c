@@ -10,7 +10,7 @@ void clogGenericPrint( const char *filename, int lineno, const char *msg, const 
 {
   va_list args;
   va_start( args, msg );
-  fprintf( stderr, "%s:%d  %s", filename, lineno, msg);
+  fprintf( stderr, "%s:%d  %s\n", filename, lineno, msg);
   vfprintf( stderr, fmt, args );
   fprintf( stderr, "\n" );
   va_end( args );
