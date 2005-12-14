@@ -122,8 +122,8 @@ void testDL()
   envmapSetKeyVal(em, "padding", "20");
   dlh = dlopen(DLNAME, RTLD_NOW | RTLD_GLOBAL);
   if (dlh == NULL) {
-    fprintf(stderr, "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
-    fprintf(stderr, "reason given: %s\n", dlerror());
+    clogError( "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
+    clogError( "reason given: %s\n", dlerror());
     exit(1);
   }
   assert("Error: cannot open dynamic library, did you build it yet?" && dlh);
@@ -905,10 +905,10 @@ void testCLTree(void)
     retval = pathFinder(getAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
     assert(retval == CL_OK);
     if (plen != psize) {
-      fprintf(stderr, "Error, plen %d and psize %d\n", plen, psize);
-      fprintf(stderr, "nodes %d and %d\n", a.i, b.i);
+      clogError( "Error, plen %d and psize %d\n", plen, psize);
+      clogError( "nodes %d and %d\n", a.i, b.i);
       if (plen == 2)
-        fprintf(stderr, "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
+        clogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
     assert(plen == psize);
     doubleaFree(spm);

@@ -18,7 +18,7 @@ struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
-      fprintf(stderr,"Error: expecting STRINGSTACK tagnum %x, got %x\n",
+      clogError("Error: expecting STRINGSTACK tagnum %x, got %x\n",
           TAGNUM_STRINGSTACK,h->tagnum);
       exit(1);
     }

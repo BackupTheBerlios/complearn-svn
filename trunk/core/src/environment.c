@@ -296,7 +296,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
       default:
         fDidOurOption = 0;
         if (oldopterr)
-          fprintf(stderr,"Unrecognized command-line option phase %d with long index %d\n", result, *longindex);
+          clogError("Unrecognized command-line option phase %d with long index %d\n", result, *longindex);
         break;
     }
   }

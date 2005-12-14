@@ -97,7 +97,7 @@ union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
   assert(where >= 0);
   assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
-    fprintf(stderr, "Error, trying to read element index %d but only of size %d\n",
+    clogError( "Error, trying to read element index %d but only of size %d\n",
         where, da->size);
     assert(where < da->size && "reading unitialized element in array");
   }
@@ -267,7 +267,7 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
   h = (struct TagHdr *) datablockData(d);
   ddh = (struct DAHdr *) (datablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_DOUBLEDOUBLER) {
-    fprintf(stderr,"Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
+    clogError("Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
         TAGNUM_DOUBLEDOUBLER, h->tagnum);
     exit(1);
   }
@@ -374,7 +374,7 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
 
   if (h->tagnum != TAGNUM_STRING) {
     if (fmustbe) {
-      fprintf(stderr,"Error: expecting STRING tagnum %x, got %x\n",
+      clogError("Error: expecting STRING tagnum %x, got %x\n",
         TAGNUM_STRING,h->tagnum);
       exit(1);
     }

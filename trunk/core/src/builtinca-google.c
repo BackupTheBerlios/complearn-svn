@@ -116,8 +116,7 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   userKey = envmapValueForKey(em, "GoogleKey");
   envmapSetKeyPrivate(em, "GoogleKey");
   if (userKey == NULL) {
-    fprintf(stderr, "Error, cannot use google adaptor without GoogleKey property set\n");
-    exit(1);
+    clogError("Cannot use google adaptor without %s property set","GoogleKey");
   }
   ci->gkey = clStrdup(userKey);
   ci->m = calculateM(ci->daystr, ci->gkey);

@@ -24,7 +24,7 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
 
   if (h->tagnum != TAGNUM_ENVMAP) {
     if (fmustbe) {
-      fprintf(stderr,"Error: expecting ENVMAP tagnum %x, got %x\n",
+      clogError("Error: expecting ENVMAP tagnum %x, got %x\n",
           TAGNUM_ENVMAP,h->tagnum);
       exit(1);
     }

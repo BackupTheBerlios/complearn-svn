@@ -1,16 +1,14 @@
 #ifndef __CLOG_H
 #define __CLOG_H
 
-#include <complearn/quartet.h>
-
 /*! \file clog.h */
 
 /* prints with msg */
-void clogGenericPrint(const char *msg, const char *fmt, const char *filename, int lineno, ...);
+void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...);
 
 /* prints and exits */
-#define clogError(x, args...) do { clogGenericPrint("CompLearn Error", x, __FILE__, __LINE__, args); exit(1); } while (0)
+#define clogError(x...) do { clogGenericPrint( __FILE__, __LINE__, "CompLearn Error",x); exit(1); } while (0)
 /* prints */
-#define clogWarning(x, args...) do { clogGenericPrint("CompLearn Warning", x, __FILE__, __LINE__, args); } while (0)
+#define clogWarning(x...) do { clogGenericPrint(__FILE__, __LINE__, "CompLearn Warning",x); } while (0)
 
 #endif

@@ -118,7 +118,7 @@ tryagain:
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems < 2) {
-    fprintf(stderr, "Warning, got node %d with too many (%d) neighbors, %d...\n",
+    clogError( "Warning, got node %d with too many (%d) neighbors, %d...\n",
         i1, nsizems, m1);
     assert(nsizems == 2);
   }

@@ -60,7 +60,7 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
     rci->cmd = clStrdup(cmd);
   }
   else {
-    fprintf(stderr, "Error, no command specified for realcomp\n");
+    clogError( "Error, no command specified for realcomp\n");
     exit(1);
   }
   compaInitParameters(ca);
@@ -86,14 +86,14 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
   int childid;
   retval = pipe(pout);
   if (retval)
-    perror("pipe");
+    clogError("pipe");
   retval = pipe(pin);
   if (retval)
-    perror("pipe");
+    clogError("pipe");
   signal(SIGCHLD, (void(*)(int))zombie_reaper);
   childid = fork();
   if (childid < 0) { // An error
-        perror("fork");
+        clogError("fork");
       }
   if (childid) { // parent
     int wlen, wtot = 0, wleft;
@@ -101,7 +101,7 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
     while (wleft > 0) {
       wlen = write(pout[1], datablockData(inp)+wtot, wleft);
       if (wlen < 0) {
-        perror("write");
+        clogError("write");
         continue;
       }
       wtot += wlen;
@@ -115,10 +115,10 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
     close(pout[1]);
     retval = dup2(pout[0],0);
     if (retval < 0)
-      perror("dup2");
+      clogError("dup2");
     retval = dup2(pin[1],1);
     if (retval < 0)
-      perror("dup2");
+      clogError("dup2");
     execl(cmd, cmd, NULL);
     printf("Shouldn't be here, wound up returning from exec!!\n");
     exit(1);

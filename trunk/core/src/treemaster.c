@@ -74,7 +74,7 @@ static void validateMatrixForTree(gsl_matrix *gsl)
 {
   int i, j;
   if (gsl->size1 != gsl->size2) {
-    fprintf(stderr, "Matrix must be square, but this one is %d by %d\n", gsl->size1, gsl->size2);
+    clogError( "Matrix must be square, but this one is %d by %d\n", gsl->size1, gsl->size2);
     exit(1);
   }
   for (i = 0; i < gsl->size1; i += 1) {
@@ -83,7 +83,7 @@ static void validateMatrixForTree(gsl_matrix *gsl)
         return;
     }
   }
-  fprintf(stderr, "Sorry, this is a constant matrix so no information is available.\n");
+  clogError( "Sorry, this is a constant matrix so no information is available.\n");
   exit(1);
 }
 

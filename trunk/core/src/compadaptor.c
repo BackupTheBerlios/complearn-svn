@@ -83,6 +83,6 @@ void compaSetValueForKey(struct CompAdaptor *ca, const char *key, void *dest)
       return;
     }
   }
-  fprintf(stderr, "Error: can not set key %s without default value.\n", key);
+  clogError( "Error: can not set key %s without default value.\n", key);
   assert(0);
 }

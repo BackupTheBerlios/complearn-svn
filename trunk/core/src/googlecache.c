@@ -38,7 +38,7 @@ struct GoogleCache *newGC(void)
   gc = clCalloc(sizeof(struct GoogleCache), 1);
   gc->samp = cldbopen("gsamp");
   if (gc->samp == NULL) {
-    fprintf(stderr, "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
+    clogError( "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
     exit(1);
   }
   return gc;

@@ -43,7 +43,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
     CI->allocated = 10 + size * 1.2;
     CI->x = realloc(CI->x, CI->allocated * sizeof(int));
     CI->p = realloc(CI->p, CI->allocated * sizeof(int));
-    if (CI->x==NULL || CI->p==NULL) { perror("do_compress"); exit(1); }
+    if (CI->x==NULL || CI->p==NULL) { clogError("do_compress"); }
   }
   x = CI->x;
   p = CI->p;
@@ -213,7 +213,7 @@ struct CompAdaptor *builtin_blocksort(void) {
   ca   = clCalloc(sizeof(*ca), 1);
   bsci = clCalloc(sizeof(*bsci), 1);
 
-  if (ca==NULL || bsci==NULL) { perror("builtin_blocksort"); exit(1); }
+  if (ca==NULL || bsci==NULL) { clogError("builtin_blocksort"); }
   *ca = c;
   ca->cptr= bsci;
 
@@ -232,7 +232,7 @@ struct CompAdaptor *builtin_blocksort(void) {
   }
   bsci->nstates = s+1;
   if (bsci->nstates > MAXSTATES) {
-    fprintf(stderr, "MAXSTATES should be at least %d\n", s+1);
+    clogError( "MAXSTATES should be at least %d\n", s+1);
     exit(1);
   }
 

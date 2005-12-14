@@ -32,7 +32,7 @@ struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, con
 
   if (h->tagnum != tagnum) {
     if (fmustbe) {
-      fprintf(stderr,"Error: expecting %s tagnum %x, got %x\n",
+      clogError("Error: expecting %s tagnum %x, got %x\n",
           tagname, tagnum,h->tagnum);
       exit(1);
     }
@@ -79,7 +79,7 @@ struct StringStack *cltxtLabels(char *fname)
   char linebuf[MAXLINESIZE];
 
   if ( cltxtRowSize(fname) == cltxtColSize(fname) ) {
-    fprintf(stderr,"Error: no labels in this file\n");
+    clogError("Error: no labels in this file\n");
     exit(1);
   }
   labels = stringstackNew();

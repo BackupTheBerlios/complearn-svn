@@ -51,7 +51,7 @@ void cldbunlink(const char *userfilename)
 
 static void printfunc(const char *str)
 {
-  fprintf(stderr, "GDBM error: %s\n", str);
+  clogError( "GDBM error: %s\n", str);
 }
 
 struct GDBMHelper *cldbopen(const char *userfilename)

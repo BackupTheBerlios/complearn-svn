@@ -67,7 +67,7 @@ gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
   m = (struct GSLMHdr *) (datablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_GSLMATRIX) {
     if (fmustbe) {
-    fprintf(stderr,"Error: expecting GSLMATRIX tagnum %x, got %x\n",
+    clogError("Error: expecting GSLMATRIX tagnum %x, got %x\n",
         TAGNUM_GSLMATRIX,h->tagnum);
     exit(1);
     }
@@ -105,7 +105,7 @@ gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
 
   if (h->tagnum != TAGNUM_CLDISTMATRIX) {
     if (fmustbe) {
-      fprintf(stderr,"Error: expecting CLDISTMATRIX tagnum %x, got %x\n",
+      clogError("Error: expecting CLDISTMATRIX tagnum %x, got %x\n",
           TAGNUM_CLDISTMATRIX,h->tagnum);
       exit(1);
     }

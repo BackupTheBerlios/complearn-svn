@@ -9,7 +9,7 @@ static void *dl_musthavesymbol(void *dlhandle, const char *str)
 	void *result;
 	result = dlsym(dlhandle, str);
 	if (result == NULL) {
-		fprintf(stderr, "Error, symbol %s not defined for "
+		clogError( "Error, symbol %s not defined for "
                     "dynamic library compressor\n", str);
 		exit(1);
 	}
@@ -23,7 +23,7 @@ struct CompAdaptor *compaLoadDynamicLib(const char *libraryname)
   t_clnewca nca;
 	dlhandle = dlopen(libraryname, RTLD_LAZY);
 	if (dlhandle == NULL) {
-		fprintf(stderr, "Error opening dynamic library %s\n", libraryname);
+		clogError( "Error opening dynamic library %s\n", libraryname);
 		exit(1);
 	}
 

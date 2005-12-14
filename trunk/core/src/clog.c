@@ -6,10 +6,10 @@ struct Clog { /* TODO: more */
   FILE *fp;
 };
 
-void clogGenericPrint(const char *msg, const char *fmt, const char *filename, int lineno, ...)
+void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...)
 {
   va_list args;
-  va_start( args, fmt );
+  va_start( args, msg );
   fprintf( stderr, "%s:%d  %s", filename, lineno, msg);
   vfprintf( stderr, fmt, args );
   fprintf( stderr, "\n" );

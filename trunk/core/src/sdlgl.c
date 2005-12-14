@@ -959,7 +959,7 @@ int main( int argc, char* argv[] )
   if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE ) < 0 ) {
 #endif
       /* Failed, exit. */
-      fprintf( stderr, "Video initialization failed: %s\n",
+      clogError( "Video initialization failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }
@@ -998,7 +998,7 @@ setRotParms(1, -1, -1, 1, 1);
 
   if( !info ) {
       /* This should probably never happen. */
-      fprintf( stderr, "Video query failed: %s\n",
+      clogError( "Video query failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }
@@ -1064,7 +1064,7 @@ setRotParms(1, -1, -1, 1, 1);
        * including DISPLAY not being set, the specified
        * resolution not being available, etc.
        */
-      fprintf( stderr, "Video mode set failed: %s\n",
+      clogError( "Video mode set failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }

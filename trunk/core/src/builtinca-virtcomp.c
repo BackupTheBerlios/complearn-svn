@@ -55,7 +55,7 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd)
     vci->cmd = clStrdup(cmd);
   }
   else {
-    fprintf(stderr, "Error, no command specified for virtcomp\n");
+    clogError( "Error, no command specified for virtcomp\n");
     exit(1);
   }
 

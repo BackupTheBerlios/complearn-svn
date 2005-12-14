@@ -22,9 +22,7 @@ struct DataBlock *fileToDataBlockPtr(const char *path)
   struct DataBlock *result;
   FILE *fp = fopen(path, "rb");
   if (fp == NULL) {
-    printf("Converting file to DataBlock: error opening <%s>\n", path);
-    perror("fopen");
-    exit(1);
+    clogError("fopen error reading <%s>", path);
   }
   assert(fp);
   result = filePtrToDataBlockPtr(fp);
