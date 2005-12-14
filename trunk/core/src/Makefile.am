@@ -96,6 +96,7 @@ complearn/treeblaster.h \
 complearn/treemaster.h \
 complearn/treescore.h \
 complearn/treeparser.h \
+complearn/clog.h \
 complearn/clparser.h
 
 libcomplearn_a_SOURCES=\
@@ -156,5 +157,6 @@ treemolder.c \
 treemaster.c \
 treescore.c \
 treeparser.c \
+clog.c \
 clparser.c
 
