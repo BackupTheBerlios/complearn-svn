@@ -52,6 +52,7 @@
 #include <complearn/treemaster.h>
 #include <complearn/treemolder.h>
 #include <complearn/treescore.h>
+#include <complearn/treeparser.h>
 #include <complearn/clparser.h>
 
 #ifdef HAVE_DMALLOC

@@ -138,6 +138,8 @@ src/treemaster.c \
 src/complearn/treemaster.h \
 src/treescore.c \
 src/complearn/treescore.h \
+src/treeparser.c \
+src/complearn/treeparser.h \
 src/clparser.c \
 src/complearn/clparser.h
 
