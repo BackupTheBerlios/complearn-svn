@@ -68,7 +68,7 @@ fi
 if test ${fusrruby} -eq 0; then
   rubypath="ruby"
 else
-  rubypath="$usrruby"
+  rubypath=`which ruby`
 fi
 
 

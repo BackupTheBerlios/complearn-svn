@@ -12,7 +12,7 @@ case $HOST in
    echo "CWI-specific config enabled."
    SOAPREFIX=/opt/soft1/local
    XMLPREFIX=/usr
-   GSLPREFIX=/usr
+   GSLPREFIX=/home/cilibrar/stuff/gsl
    BZ2PREFIX=/usr
    ZLIBPREFIX=/usr
    GDBMPREFIX=/usr
@@ -113,8 +113,8 @@ automake && \
             --with-gtk=$GTKPREFIX \
             --with-sdl=$SDLPREFIX \
             --with-sdl_ttf=$SDLTTFPREFIX \
+            --with-gsl=$GSLPREFIX \
             "${EXTRAOPT}"
 #            --with-zlib=$ZLIBPREFIX \
 #            --with-bzip2=$BZ2PREFIX \
-#            --with-gsl=$GSLPREFIX \
 #            --with-gdbm=$GDBMPREFIX \
