@@ -9,7 +9,7 @@ struct Clog { /* TODO: more */
 void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...)
 {
   va_list args;
-  va_start( args, msg );
+  va_start( args, fmt );
   fprintf( stderr, "%s:%d  %s\n", filename, lineno, msg);
   vfprintf( stderr, fmt, args );
   fprintf( stderr, "\n" );
