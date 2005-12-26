@@ -9,6 +9,7 @@ struct CLDateTime *cldatetimeNow(void);
 double cldatetimeStaticTimer(void);
 void cldatetimeFree(struct CLDateTime *cldt);
 const char *cldatetimeToString(struct CLDateTime *c);
+char *cldatetimePreviousDayString(const char *str);
 const char *cldatetimeToHumString(struct CLDateTime *c);
 unsigned long cldatetimeToInt(struct CLDateTime *c);
 char *cldatetimeToDayString(struct CLDateTime *c);

@@ -140,9 +140,25 @@ char *cldatetimeToDayString(struct CLDateTime *c)
   struct tm gmt;
   static char res[128];
   /* cannot use gmtime because it has memory leaks on many versions libc */
-  gmt.tm_year = c->tv.tv_sec / (3600*24*360);
-  gmt.tm_yday  = (c->tv.tv_sec / (3600*24)) % 360;
+  gmt.tm_year = c->tv.tv_sec / (3600*24*365);
+  gmt.tm_yday  = (c->tv.tv_sec / (3600*24)) % 365;
   sprintf(res, "%04d%d", gmt.tm_year, gmt.tm_yday);
+  return res;
+}
+
+char *cldatetimePreviousDayString(const char *str)
+{
+  static char res[128];
+  char yearstr[16];
+  int y, yd;
+  strcpy(yearstr, str);
+  yearstr[4] = 0;
+  y = atoi(yearstr);
+  yd = atoi(str+4);
+  if (yd)
+    sprintf(res, "%04d%d", y, yd-1);
+  else
+    sprintf(res, "%04d%d", y-1, 364);
   return res;
 }
 

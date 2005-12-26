@@ -89,28 +89,20 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
 {
   static struct GoogleCache *gc;
   double result;
-  int foundit;
-  char *daystr, *odaystr;
-  struct CLDateTime *dt, *odt;
+  char *daystr;
+  struct CLDateTime *dt;
   if (udaystr == NULL) {
     dt = cldatetimeNow();
-    odt = cldatetimeAddDays(dt, -1);
     daystr = clStrdup(cldatetimeToDayString(dt));
-    odaystr = clStrdup(cldatetimeToDayString(odt));
     cldatetimeFree(dt);
-    cldatetimeFree(odt);
   }
   else {
     daystr = clStrdup(udaystr);
-    odaystr = clStrdup(daystr);
   }
   if (gc == NULL)
     gc = newGC();
-  foundit = fetchsample(gc, daystr, terms, &result, gkey);
-  if (!foundit)
-    foundit = fetchsample(gc, odaystr, terms, &result, gkey);
+  fetchsample(gc, daystr, terms, &result, gkey);
   clFreeandclear(daystr);
-  clFreeandclear(odaystr);
   return result;
 }
 /** \brief Fetches a sample from the local count database with the help of the
@@ -147,6 +139,9 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   struct DataBlock *dblastkey;
   struct DataBlock *db;
   struct DataBlock *dbckey;
+  const char *odaystr;
+
+  odaystr = cldatetimePreviousDayString(daystr);
 
   dbroot = stringToDataBlockPtr(ROOTSYM); /* FSA01 */
   normed = stringstackClone(terms);                    /* FSA02 */
@@ -156,6 +151,12 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
 
   dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
   db = cldbfetch(gc->samp, dbckey);
+  if (!db) {
+    datablockFreePtr(dbckey);                /* FSF03:1/2 */
+    ckey = makeCacheKey(odaystr, normed);
+    dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
+    db = cldbfetch(gc->samp, dbckey);
+  }
   if (db) {
     assert(datablockSize(db) == sizeof(struct GCSample));
     *val = convertCacheVal(db);
