@@ -35,11 +35,18 @@ struct GCSample {
 struct GoogleCache *newGC(void)
 {
   struct GoogleCache *gc;
+  int retryNum = 0;
+  int maxTries = 5;
   gc = clCalloc(sizeof(struct GoogleCache), 1);
-  gc->samp = cldbopen("gsamp");
-  if (gc->samp == NULL) {
-    clogError( "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
-    exit(1);
+  for (;;) {
+    gc->samp = cldbopen("gsamp");
+    if (gc->samp != NULL)
+      break;
+    if (retryNum > maxTries) {
+      clogError( "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
+      exit(1);
+    }
+    clSleepMillis(rand() % 1000);
   }
   return gc;
 }
