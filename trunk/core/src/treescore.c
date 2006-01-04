@@ -63,7 +63,13 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
     double mincur=0, maxcur=0;
     for (p = 0; p < 3; p += 1) {
       struct Quartet q = permuteLabelsDirect(i, j, k, m, p);
-      double curcost = gsl_matrix_get(dm, q.q[0], q.q[1]) + gsl_matrix_get(dm, q.q[2], q.q[3]);
+      double c1a = gsl_matrix_get(dm,q.q[0],q.q[1]);
+      double c1b = gsl_matrix_get(dm,q.q[1],q.q[0]);
+      double c2a = gsl_matrix_get(dm,q.q[2],q.q[3]);
+      double c2b = gsl_matrix_get(dm,q.q[3],q.q[2]);
+      double c1 = c1a < c1b ? c1a : c1b;
+      double c2 = c2a < c2b ? c2a : c2b;
+      double curcost = c1 + c2;
       for (x = 0; x < 4; x += 1)
         q.q[x] = labelpermNodeIDForColIndex(lp, q.q[x]);
       if (p == 0 || (curcost < mincur))
