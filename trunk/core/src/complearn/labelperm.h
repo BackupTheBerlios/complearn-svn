@@ -97,4 +97,17 @@ int labelpermIdentical(struct LabelPerm *lpa, struct LabelPerm *lpb);
  */
 void labelpermVerify(struct LabelPerm *lp);
 
+/** \brief Sets a given column index indicator to point at a specific node
+ *
+ * This function simply sets an entry in the label permutation table.
+ * It is the user's responsibility to ensure that the permutation remains
+ * consistent before further use. \sa labelpermVerify
+ *
+ * \param pointer to LabelPerm to adjust
+ * \param col integer index between 0 and columns-1
+ * \param n integer index indicating node in tree
+ *
+ */
+void labelpermSetColumnIndexToNodeNumber(struct LabelPerm *lp, int col, int n);
+
 #endif

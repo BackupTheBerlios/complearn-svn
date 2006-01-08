@@ -141,3 +141,15 @@ void labelpermVerify(struct LabelPerm *lp)
     assert(innc == i);
   }
 }
+
+void labelpermSetColumnIndexToNodeNumber(struct LabelPerm *lp, int col, int n)
+{
+  union PCTypes p1 = zeropct;
+  union PCTypes p2 = zeropct;
+  assert(col >= 0 && col <= doubleaSize(lp->coltonode));
+  assert(n >= 0 && n <= doubleaSize(lp->nodetocol));
+  p1.i = col;
+  p2.i = n;
+  doubleaSetValueAt(lp->coltonode, col, p2);
+  doubleaSetValueAt(lp->nodetocol, n, p1);
+}
