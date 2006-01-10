@@ -117,6 +117,32 @@ be set.  For example, you can try the following before running the
 
 <pre>export LD_LIBRARY_PATH=/usr/local/lib</pre>
 
+<h3>6. How can this demo work with only 1000 queries a day?</h3>
+
+<p>There are two reasons this demo is able to do as much as it does.  One is
+that Google has generously (and free of charge to me) upgraded my Google API
+account key daily search limit.  You might email them to ask yourself if you
+have an interesting Google API based search application of your own.  The
+other reason the demo works is because there is a cache of recent page result
+counts.  You can see this cache by looking in the $HOME/.complearn directory.
+Sometimes larger experiments must be run over the course of two days.
+</p>
+
+<h3>7. How come the counts returned from (any particular) Google API are
+different that the numbers I see when I enter searched by hand?</h3>
+
+<p>I have two possible explanations for this behavior.  One is that it would
+be prohibitively expensive to count the exact total of all pages indexed
+for most common search terms.  Instead they use an estimation heuristic called
+"prefixing" whereby they just use a short sample of webpages as a
+representative set for the web and scale up as appropriate.  I presume this
+and also that when you do a search (either by hand or from the API) you can
+get connected to any one of a number of different search servers, each with
+a slightly different database.  In a rapidly changing large global network
+it is unlikely that there will be an exact match for the counts on any
+particular common term because each server must maintain its own distinct
+"aging snapshot" of the internet.</p>
+
 </div><!-- MAIN END -->
 </div>
 </body>
