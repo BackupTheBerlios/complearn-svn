@@ -2,9 +2,9 @@ GENLDFLAGS=@GENLDFLAGS@
 GENLDADD=libcomplearn.a
 
 if WANT_SDLGLPROG
-bin_PROGRAMS=ncd runtests svdproj maketree clbinfo sdlgl
+bin_PROGRAMS=ncd runtests svdproj maketree improvetree clbinfo sdlgl
 else
-bin_PROGRAMS=ncd runtests svdproj maketree clbinfo
+bin_PROGRAMS=ncd runtests svdproj maketree improvetree clbinfo
 endif
 
 
@@ -23,6 +23,10 @@ svdproj_LDFLAGS=$(GENLDFLAGS)
 maketree_SOURCES=maketree.c
 maketree_LDADD=$(GENLDADD)
 maketree_LDFLAGS=$(GENLDFLAGS)
+
+improvetree_SOURCES=improvetree.c
+improvetree_LDADD=$(GENLDADD)
+improvetree_LDFLAGS=$(GENLDFLAGS)
 
 clbinfo_SOURCES=clbinfo.c
 clbinfo_LDADD=$(GENLDADD)
