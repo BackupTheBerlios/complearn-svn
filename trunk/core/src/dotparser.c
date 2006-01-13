@@ -798,7 +798,8 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
         }
         printf("\n");
       }
-      labels = labelsLoad(matdb, 0);
+      labels = clbLabelsLoad(matdb);
+      assert(labels);
       dpt->labels = labels;
       lp = treeaLabelPerm(yctree->ta);
       for (i = 0; i <= yctree->maxnodenum; i += 1) {
