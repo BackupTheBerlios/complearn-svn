@@ -90,7 +90,7 @@ case "${target}" in
   *-*-linux*)
   echo "Building for Linux"
   CPPFLAGS="$CPPFLAGS -DLINUX"
-  LDFLAGS="-L/lib -L/usr/local/lib -L/usr/lib"
+  LDFLAGS="-L/lib -L/usr/local/lib -L/usr/lib -L/usr/X11R6/lib"
   AC_DEFINE(LINUX, 1, "Linux")
 ;;
 *)
@@ -381,7 +381,7 @@ AC_CHECK_LIB(fltk, main,
 ;;
   *)
 AC_CHECK_LIB(GL, main,
-    [LIBS="$LIBS -lGL" ; fgl_lib=1])
+    [LIBS="$LIBS -lGL -lXxf86vm -lXxf86dga" ; fgl_lib=1])
 esac
 fi
 

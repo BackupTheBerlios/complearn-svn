@@ -111,6 +111,9 @@ struct DataBlock *distmatrixDump(gsl_matrix *m);
  */
 gsl_matrix *clbDistMatrix(char *fname);
 
+gsl_matrix *clbDistMatrixLoad(struct DataBlock *db)
+struct DataBlock *clbDMDataBlock(char *fname);
+
 /** \brief Retrieves gsl_matrix from a ASCII text file
  *
  *  cltxtDistMatrix() is a high level function which reads a text file,

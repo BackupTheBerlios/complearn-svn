@@ -4,6 +4,7 @@ require 'fileutils'
 
 scriptdir = File.dirname(__FILE__)
 filename = scriptdir + "/../configure.ac"
+newname = scriptdir + "/../configure.ac.new"
 backup = scriptdir + "/../configure.ac.bak"
 
 src = IO.readlines(filename)
