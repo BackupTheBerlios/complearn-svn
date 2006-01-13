@@ -791,14 +791,14 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
     doubleaFree(yctree->edgeKeeper);
     yctree->edgeKeeper = NULL;
     if (matdb) {
-      dpt->dm = distmatrixLoad(matdb, 0);
+      dpt->dm = clbDBDistMatrix(matdb);
       for (i = 0; i < dpt->dm->size1; i += 1) {
         for (j = 0; j < dpt->dm->size2; j += 1) {
           printf("%f ", gsl_matrix_get(dpt->dm, i, j));
         }
         printf("\n");
       }
-      labels = clbLabelsLoad(matdb);
+      labels = clbDBLabels(matdb);
       assert(labels);
       dpt->labels = labels;
       lp = treeaLabelPerm(yctree->ta);

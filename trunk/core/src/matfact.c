@@ -122,6 +122,21 @@ void gslmatrixFree(gsl_matrix *m)
   gsl_matrix_free(m);
 }
 
+gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
+{
+  struct DataBlock *dbdm;
+  gsl_matrix *dm;
+  struct DoubleA *dd;
+
+  dd = load_DataBlock_package(db);
+  dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
+  dm = clbDistMatrixLoad(dbdm);
+
+  datablockFreePtr(dbdm);
+  doubleaFree(dd);
+  return dm;
+}
+
 struct DataBlock *clbDMDataBlock(char *fname) {
   struct DataBlock *db, *dbdm;
   struct DoubleA *dd;
@@ -142,6 +157,7 @@ gsl_matrix *clbDistMatrixLoad(struct DataBlock *db)
   return dm;
 }
 
+
 gsl_matrix *clbDistMatrix(char *fname)
 {
   struct DataBlock *db;
@@ -153,6 +169,7 @@ gsl_matrix *clbDistMatrix(char *fname)
   datablockFreePtr(db);
   return result;
 }
+
 
 #define DELIMS " ,\t\r\n"
 #define MAXLINESIZE 1024

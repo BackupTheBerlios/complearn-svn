@@ -107,6 +107,7 @@ struct DataBlock *distmatrixDump(gsl_matrix *m);
  */
 gsl_matrix *clbDistMatrix(char *fname);
 
+gsl_matrix *clbDBDistMatrix(struct DataBlock *db);
 gsl_matrix *clbDistMatrixLoad(struct DataBlock *db);
 struct DataBlock *clbDMDataBlock(char *fname);
 

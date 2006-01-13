@@ -51,6 +51,7 @@ struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe)
 {
   return loadTaggedStringStack(db, fmustbe, "DMLABELS", TAGNUM_DMLABELS);
 }
+
 struct DataBlock *clbLabelsDataBlock(char *fname)
 {
   struct DataBlock *db, *dblabels;
@@ -71,6 +72,22 @@ struct StringStack *clbLabelsLoad(struct DataBlock *db)
   struct StringStack *labels;
   labels = labelsLoad(db, 1);
   return labels;
+}
+
+struct StringStack *clbDBLabels(struct DataBlock *db)
+{
+  struct DataBlock *dblabels;
+  struct DoubleA *dd;
+  struct StringStack *ss;
+
+  dd = load_DataBlock_package(db);
+  dblabels = scanForTag(dd, TAGNUM_DMLABELS);
+
+  ss = clbLabelsLoad(dblabels);
+
+  datablockFreePtr(dblabels);
+  doubleaFree(dd);
+  return ss;
 }
 
 struct StringStack *clbLabels(char *fname)

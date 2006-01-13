@@ -43,6 +43,7 @@ struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe);
  *  \return StringStack of distance matrix labels
  */
 struct StringStack *clbLabels(char *fname);
+struct StringStack *clbDBLabels(struct DataBlock *db);
 
 struct DataBlock *clbLabelsDataBlock(char *fname);
 struct StringStack *clbLabelsLoad(struct DataBlock *db);

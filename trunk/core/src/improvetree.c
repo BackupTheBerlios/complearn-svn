@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     dmfname = "distmatrix.clb";
   fprintf(stderr, "Opening tree %s\n", fname);
   db = fileToDataBlockPtr(fname);
-  matdb = clbDMDataBlock(dmfname);
+  matdb = fileToDataBlockPtr(dmfname);
   dpt = parseDotDB(db, matdb);
   th = treehNew(dpt->dm, dpt->tree);
   ts = initTreeScore(dpt->tree);
