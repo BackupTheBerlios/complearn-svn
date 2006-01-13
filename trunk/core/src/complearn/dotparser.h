@@ -11,9 +11,11 @@
 
 struct DotParseTree {
   struct StringStack *labels;
-  struct TreeAdaptor *ta;
+  struct TreeAdaptor *tree;
+  gsl_matrix *dm;
+  char *parseErrorString;
 };
 
-void doParseTest(struct DataBlock *db);
+struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb);
 
 #endif

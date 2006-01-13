@@ -103,7 +103,6 @@ struct YCTree {
   int isNode;
   int nodenum, maxnodenum;
   struct DoubleA *nodeLabels, *edgeKeeper;
-  gsl_matrix *dm;
   struct TreeAdaptor *ta;
   struct TreeScore *ts;
   struct TreeHolder *th;
@@ -756,8 +755,16 @@ static void showResults(struct YCTree *yctree)
   }
 }
 
-void doParseTest(struct DataBlock *db)
+struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
 {
+  int i, j, leafcount;
+  double score;
+  struct AdjAdaptor *aa;
+  struct DataBlock *dotdb;
+  struct LabelPerm *lp;
+  struct StringStack *labels;
+
+  struct DotParseTree *dpt = clCalloc(sizeof(*dpt), 1);
   struct DotParserInstance *dp = newDotParser(db);
 
   struct YCTree *yctree = ycTreeNew(NULL);
@@ -768,14 +775,6 @@ void doParseTest(struct DataBlock *db)
   struct YCComments *comdetector = ycCommentsNew(downcast(merger));
   struct YCStrings *strdetector = ycStringsNew(downcast(comdetector));
   feedBytes(dp, downcast(strdetector));
-  {
-    int i, j, leafcount;
-    double score;
-    struct AdjAdaptor *aa;
-    struct DataBlock *dotdb;
-    struct GeneralConfig *cur = loadDefaultEnvironment();
-    struct LabelPerm *lp;
-    struct StringStack *labels;
     leafcount = (yctree->maxnodenum+3)/2;
     yctree->ta = treeaNew(0, leafcount);
     aa = treeaAdjAdaptor(yctree->ta);
@@ -791,55 +790,28 @@ void doParseTest(struct DataBlock *db)
     }
     doubleaFree(yctree->edgeKeeper);
     yctree->edgeKeeper = NULL;
-    yctree->dm = clbDistMatrix("distmatrix.clb");
-    for (i = 0; i < yctree->dm->size1; i += 1) {
-      for (j = 0; j < yctree->dm->size2; j += 1) {
-        printf("%f ", gsl_matrix_get(yctree->dm, i, j));
+    if (matdb) {
+      dpt->dm = distmatrixLoad(matdb, 0);
+      for (i = 0; i < dpt->dm->size1; i += 1) {
+        for (j = 0; j < dpt->dm->size2; j += 1) {
+          printf("%f ", gsl_matrix_get(dpt->dm, i, j));
+        }
+        printf("\n");
       }
-      printf("\n");
-    }
-    labels = clbLabels("distmatrix.clb");
-    lp = treeaLabelPerm(yctree->ta);
-    for (i = 0; i <= yctree->maxnodenum; i += 1) {
-      if (treeaIsQuartettable(yctree->ta,i)) {
-        for (j = 0; j < leafcount; j += 1) {
-          if (strcmp(stringstackReadAt(labels, j), doubleaGetValueAt(yctree->nodeLabels, i).ptr) == 0) {
-            labelpermSetColumnIndexToNodeNumber(lp, j, i);
-//            printf("Must set %d to point to %d\n", i, j);
+      labels = labelsLoad(matdb, 0);
+      dpt->labels = labels;
+      lp = treeaLabelPerm(yctree->ta);
+      for (i = 0; i <= yctree->maxnodenum; i += 1) {
+        if (treeaIsQuartettable(yctree->ta,i)) {
+          for (j = 0; j < leafcount; j += 1) {
+            if (strcmp(stringstackReadAt(labels, j), doubleaGetValueAt(yctree->nodeLabels, i).ptr) == 0) {
+              labelpermSetColumnIndexToNodeNumber(lp, j, i);
+  //            printf("Must set %d to point to %d\n", i, j);
+            }
           }
         }
       }
     }
-    yctree->ts = initTreeScore(yctree->ta);
-    score = scoreTree(yctree->ts, yctree->dm);
-    freeTreeScore(yctree->ts);
-    yctree->ts = NULL;
-    printf("The tree score is %lf\n", score);
-    yctree->th = treehNew(yctree->dm, yctree->ta);
-    dotdb = convertTreeToDot(yctree->ta, score, labels, NULL,
-        cur,
-        NULL,
-        yctree->dm
-        );
-    datablockWriteToFile(dotdb, "newtree.dot");;
-    datablockFreePtr(dotdb);
-    dotdb = NULL;
-    for (;;) {
-      treehImprove(yctree->th);
-      if (score < treehScore(yctree->th)) {
-        score = treehScore(yctree->th);
-        printf("Got new tree with score %f\n", score);
-    dotdb = convertTreeToDot(yctree->ta, score, labels, NULL,
-        cur,
-        NULL,
-        yctree->dm
-        );
-    datablockWriteToFile(dotdb, "newtree.dot");;
-    datablockFreePtr(dotdb);
-    dotdb = NULL;
-      }
-    }
+    dpt->tree = yctree->ta;
+    return dpt;
   }
-//  showResults(yctree);
-}
-
