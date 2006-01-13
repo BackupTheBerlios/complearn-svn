@@ -50,6 +50,7 @@
 #include <complearn/treeholder.h>
 #include <complearn/treeblaster.h>
 #include <complearn/treemaster.h>
+#include <complearn/dotparser.h>
 #include <complearn/treemolder.h>
 #include <complearn/treescore.h>
 #include <complearn/treeparser.h>

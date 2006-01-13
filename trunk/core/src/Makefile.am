@@ -67,6 +67,7 @@ complearn/dbe-singleton.h \
 complearn/dbe-stringlist.h \
 complearn/dbe-windowed.h \
 complearn/dlextcomp.h \
+complearn/dotparser.h \
 complearn/doublea.h \
 complearn/environment.h \
 complearn/envmap.h \
@@ -134,6 +135,7 @@ dbe-singleton.c \
 dbe-stringlist.c \
 dbe-windowed.c \
 dlextcomp.c \
+dotparser.c \
 envmap.c \
 environment.c \
 gdbmhelper.c \
