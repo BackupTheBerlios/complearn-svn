@@ -2,11 +2,6 @@
 
 #include <complearn/complearn.h>
 
-#if GSL_RDY
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_linalg.h>
-#endif
-
 struct GSLMHdr {
   int size1, size2;
 };

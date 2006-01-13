@@ -1,8 +1,8 @@
 #ifndef __INCRDM_H
 #define __INCRDM_H
 
-#include <gsl/gsl_matrix.h>
 #include <complearn/complearn.h>
+#include <complearn/cltypes.h>
 
 #define MAXDATABLOCK 256
 

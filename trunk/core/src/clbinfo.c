@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <gsl/gsl_matrix.h>
+
 #include <complearn/complearn.h>
 
 /*! \mainpage CompLearn API Documentation

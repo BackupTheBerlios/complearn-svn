@@ -3,11 +3,7 @@
 
 #include <complearn/uclconfig.h>
 
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_blas.h>
-
 /*! \file matfact.h */
-
 
 /** \brief Tag added to a "dump" of a gsl_matrix.
  *  \struct DAHdr
@@ -111,7 +107,7 @@ struct DataBlock *distmatrixDump(gsl_matrix *m);
  */
 gsl_matrix *clbDistMatrix(char *fname);
 
-gsl_matrix *clbDistMatrixLoad(struct DataBlock *db)
+gsl_matrix *clbDistMatrixLoad(struct DataBlock *db);
 struct DataBlock *clbDMDataBlock(char *fname);
 
 /** \brief Retrieves gsl_matrix from a ASCII text file

@@ -3,7 +3,7 @@
 #include <complearn/complearn.h>
 
 #if GSL_RDY
-#include <gsl/gsl_matrix.h>
+
 #endif
 
 struct TreeScore {

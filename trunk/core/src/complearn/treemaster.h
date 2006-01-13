@@ -3,7 +3,7 @@
 
 #include <complearn/cltypes.h>
 
-#include <gsl/gsl_matrix.h>
+
 #include <gsl/gsl_blas.h>
 
 /*! \file treemaster.h */

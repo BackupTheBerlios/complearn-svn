@@ -1,6 +1,6 @@
 #include <complearn.h>
 
-#include <gsl/gsl_matrix.h>
+
 
 struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca)
 {

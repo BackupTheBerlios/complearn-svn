@@ -1,10 +1,11 @@
 #ifndef __COMPLEARN_H
 #define __COMPLEARN_H
 
-#include <complearn/uclconfig.h>
+#include <assert.h>
 
 #include <complearn/cltypes.h>
-#include <assert.h>
+#include <complearn/uclconfig.h>
+
 #include <complearn/adjadaptor.h>
 #include <complearn/adjlist.h>
 #include <complearn/adjmatrix.h>

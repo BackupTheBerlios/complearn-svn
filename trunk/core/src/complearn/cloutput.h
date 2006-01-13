@@ -7,7 +7,7 @@
 #include <complearn/uclconfig.h>
 
 #if GSL_RDY
-#include <gsl/gsl_matrix.h>
+
 #include <gsl/gsl_blas.h>
 #endif
 

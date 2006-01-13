@@ -4,7 +4,7 @@
 #include <complearn/quartet.h>
 
 #if GSL_RDY
-#include <gsl/gsl_matrix.h>
+
 #endif
 
 /*! \file treescore.h */

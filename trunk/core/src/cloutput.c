@@ -6,7 +6,7 @@
 #include "complearn/ncdapp.h"
 
 #if GSL_RDY
-#include <gsl/gsl_matrix.h>
+
 #include <gsl/gsl_linalg.h>
 #endif
 
