@@ -23,6 +23,7 @@ int main(int argc, char **argv)
   else
     dmfname = "distmatrix.clb";
   fprintf(stderr, "Opening tree %s\n", fname);
+  /* All func */
   db = fileToDataBlockPtr(fname);
   matdb = fileToDataBlockPtr(dmfname);
   dpt = parseDotDB(db, matdb);
