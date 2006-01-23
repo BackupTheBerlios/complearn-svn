@@ -37,6 +37,7 @@ fcsoap_rdy=0;    fcsoap_lib=0;    fcsoap_h=0;
 fnanohttp_rdy=0; fnanohttp_lib=0; fnanohttp_h=0;
 fxml2_rdy=0;     fxml2_lib=0;     fxml2_h=0;
 fgsl_rdy=0;      fgsl_lib=0;      fgsl_h=0;
+fmpi_rdy=0;      fmpi_lib=0;      fmpi_h=0;
 fdlfcn_rdy=0;    fdlfcn_lib=0;    fdlfcn_h=0;
 fgetopt_rdy=0;   fgetopt_lib=0;   fgetopt_h=0;
 fmath_rdy=0;     fmath_lib=0;     fmath_h=0;
@@ -205,6 +206,19 @@ then
   AC_CHECK_LIB(csoap-1.0,soap_client_init_args,
     echo "Enabling csoap support."
     [LIBS="-lcsoap-1.0 $LIBS" ; fcsoap_lib=1])
+fi
+
+
+AC_ARG_ENABLE(mpi,
+  [  --enable-mpi            enable mpi support (yes)], , enable_mpi=yes)
+if test "x$enable_mpi" == "xyes";
+then
+  AC_CHECK_LIB(mpicblas,cblas_srot,
+    [ LIBS="$LIBS -lmpicblas" ;
+    AC_CHECK_LIB(mpi,mpi_eigen_symm_alloc,
+      echo "Enabling MPI support."
+      [ LIBS="$LIBS -lmpi" ; fmpi_lib=1]) ]
+  )
 fi
 
 AC_ARG_ENABLE(gsl,
