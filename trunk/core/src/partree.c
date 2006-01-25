@@ -214,6 +214,7 @@ void doSlaveLoop(void) {
   struct DotParseTree *dpt;
   ss.myLastScore = 0;
   ss.dbdm = NULL;
+  ss.bestdb = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
     switch (tag) {
@@ -236,9 +237,13 @@ void doSlaveLoop(void) {
       case MSG_NEWASSIGNMENT:
         assert(score != ss.myLastScore);
         ss.myLastScore = score;
+        if (ss.bestdb)
+          datablockFreePtr(ss.bestdb);
         ss.bestdb = db;
         dpt = parseDotDB(db, ss.dbdm);
+        stringstackFree(dpt->labels);
         ss.ta = dpt->tree;
+        clFree(dpt);
         printf("SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
         break;
