@@ -1,4 +1,5 @@
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <complearn/complearn.h>
@@ -9,6 +10,10 @@
 #define MSG_NONE 0
 #define MSG_LOADCLB 1
 #define MSG_EXIT 2
+#define MSG_NEWASSIGNMENT 3
+#define MSG_LASTASSIGNMENT 4
+#define MSG_BETTER 5
+#define MSG_NOBETTER 6
 
 struct MasterSlaveModel {
   int isFree;
@@ -18,8 +23,10 @@ struct MasterSlaveModel {
 struct MasterState {
   int nodecount;
   struct MasterSlaveModel *workers;
+  struct GeneralConfig *cfg;
   double bestscore;
   gsl_matrix *dm;
+  struct StringStack *labels;
   struct DataBlock *clbdb;
   struct DataBlock *bestTree;
   struct TreeAdaptor *ta;
@@ -29,12 +36,14 @@ struct MasterState {
 struct SlaveState {
   struct DataBlock *dbdm;
   gsl_matrix *dm;
-  struct DataBlock *best;
+  struct DataBlock *bestdb;
+  struct TreeAdaptor *ta;
+  double myLastScore;
 };
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
-int receiveMessage(struct DataBlock **ptr, double *score);
+int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
 
@@ -53,38 +62,138 @@ void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
   MPI_Send(datablockData(wdb), datablockSize(wdb), MPI_CHAR, dest,
      PROTOTAG, MPI_COMM_WORLD);
 }
+
+int findFree(struct MasterState *ms)
+{
+  int i;
+  for (i = 0; i < ms->nodecount; i += 1)
+    if (ms->workers[i].isFree)
+      return i;
+  return -1;
+}
+
+double tsScore(struct TreeAdaptor *ta, gsl_matrix *gm)
+{
+  struct TreeScore *ts;
+  double s;
+  ts = initTreeScore(ta);
+  s = scoreTree(ts, gm);
+  freeTreeScore(ts);
+  return s;
+}
+
+void writeBestToFile(struct MasterState *ms)
+{
+  const char *outfname = "treefile.dot";
+  struct DataBlock *db;
+  printf("score %f\n", ms->bestscore);
+  db = convertTreeToDot(ms->ta, ms->bestscore, ms->labels, NULL, ms->cfg, NULL, ms->dm);
+  datablockWriteToFile(db, outfname);
+  datablockFreePtr(db);
+}
+
+void sendExitEverywhere(struct MasterState *ms)
+{
+  int dest;
+    for (dest = 1; dest < ms->nodecount ; dest += 1) {
+      printf("sending MSG_EXIT to %d\n", dest);
+      sendBlock(dest, NULL, MSG_EXIT, 3.3333);
+    }
+}
+
 void doMasterLoop(void) {
   struct MasterState ms;
-  int dest;
+  int i, dest;
+  struct DataBlock *db;
+  double score;
   const char *fname = "distmatrix.clb";
   ms.workers = clCalloc(sizeof(struct MasterSlaveModel), p);
+  ms.cfg = loadDefaultEnvironment();
   ms.nodecount = p;
-  ms.bestscore = 0;
-  struct DataBlock *db, *wdb;
+  for (i = 0; i < ms.nodecount; i += 1) {
+    ms.workers[i].isFree = 1;
+    ms.workers[i].lastScore = 0;
+  }
+  ms.workers[0].isFree = 0; // Master is never free
+
   ms.clbdb = fileToDataBlockPtr(fname);
   printf("Read file: %s\n", fname);
   ms.dm = clbDBDistMatrix(ms.clbdb);
+  ms.labels = clbDBLabels(ms.clbdb);
   printf("Loaded distmatrix with %d entries.\n", ms.dm->size1);
   ms.ta = treeaNew(0, ms.dm->size1);
-//  printf("Master: got DataBlockDistMatrix, size %d\n", datablockSize(wdb));
-//  printf("Master: sending...\n");
-  for (dest = 1; dest < p ; dest += 1) {
+  ms.bestscore = tsScore(ms.ta, ms.dm);
+  ms.bestTree = convertTreeToDot(ms.ta, ms.bestscore, ms.labels, NULL, ms.cfg, NULL, ms.dm);
+  writeBestToFile(&ms);
+  for (dest = 1; dest < ms.nodecount ; dest += 1) {
     printf("sending MSG_LOADCLB to %d\n", dest);
     sendBlock(dest, ms.clbdb, MSG_LOADCLB, 3.3333);
   }
-  for (dest = 1; dest < p ; dest += 1) {
-    printf("sending MSG_EXIT to %d\n", dest);
-    sendBlock(dest, NULL, MSG_EXIT, 3.3333);
+  for (;;) {
+      struct DotParseTree *dpt;
+      int freeguy, who;
+      freeguy = findFree(&ms);
+      if (freeguy == -1) { /* no free guys */
+        int tag;
+        tag = receiveMessage(&db, &score, &who);
+        printf("Got message %d from slave %d.\n", tag, who);
+        ms.workers[who].isFree = 1;
+        if (tag == MSG_BETTER && score > ms.bestscore) {
+          dpt = parseDotDB(db, ms.clbdb);
+          ms.bestTree = db;
+          ms.ta = dpt->tree;
+          ms.bestscore = score;
+          writeBestToFile(&ms);
+        }
+      } else {
+        if (ms.workers[freeguy].lastScore != ms.bestscore) {
+          sendBlock(freeguy, ms.bestTree, MSG_NEWASSIGNMENT, ms.bestscore);
+          ms.workers[freeguy].lastScore = ms.bestscore;
+        } else {
+          sendBlock(freeguy, NULL, MSG_LASTASSIGNMENT, ms.bestscore);
+        }
+        ms.workers[freeguy].isFree =  0;
+      }
   }
+  sendExitEverywhere(&ms);
+}
+
+void calculateTree(struct SlaveState *ss)
+{
+  int result;
+  struct TreeHolder *th;
+  int failCount = 0;
+  int MAXTRIES = 10;
+  printf("Would calculate tree starting at score %f\n", ss->myLastScore);
+  assert(ss->dm->size1 >= 4);
+  assert(ss->dm->size2 >= 4);
+  assert(ss->dm->size1 == ss->dm->size2);
+  th = treehNew(ss->dm, ss->ta);
+  result = treehImprove(th);
+  while (failCount < MAXTRIES) {
+    if (result) {
+      struct DataBlock *db;
+      double newScore =  treehScore(th);
+      db = convertTreeToDot(ss->ta, newScore, NULL, NULL, NULL, NULL, NULL);
+      sendBlock(0, db, MSG_BETTER, newScore);
+      datablockFreePtr(db);
+      return;
+    }
+    failCount += 1;
+  }
+  sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 }
 
 void doSlaveLoop(void) {
   struct DataBlock *db;
-  int tag;
+  int tag, dum;
   double score;
   struct SlaveState ss;
+  struct DotParseTree *dpt;
+  ss.myLastScore = 0;
+  ss.dbdm = NULL;
   for (;;) {
-    tag = receiveMessage(&db, &score);
+    tag = receiveMessage(&db, &score, &dum);
 //    printf("Got tag: %d\n", tag);
     switch (tag) {
 
@@ -93,7 +202,26 @@ void doSlaveLoop(void) {
 
       case MSG_LOADCLB:
         ss.dbdm = db;
-//        ss.dm = clbDistMatrixLoad(ss.dbdm);
+        srand(time(NULL) + my_rank * 107);
+        printf("SLAVE: db ptr %p\n",db);
+        printf("SLAVE: db size %d\n",datablockSize(db));
+        ss.dm = clbDBDistMatrix(ss.dbdm);
+        printf("SLAVE:dist matrix size %d\n",ss.dm->size1);
+        break;
+
+      case MSG_NEWASSIGNMENT:
+        assert(score != ss.myLastScore);
+        ss.myLastScore = score;
+        ss.bestdb = db;
+        dpt = parseDotDB(db, ss.dbdm);
+        ss.ta = dpt->tree;
+        printf("SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
+        calculateTree(&ss);
+        break;
+
+      case MSG_LASTASSIGNMENT:
+        assert(ss.ta);
+        calculateTree(&ss);
         break;
 
       default:
@@ -103,8 +231,8 @@ void doSlaveLoop(void) {
   }
 }
 
-int receiveMessage(struct DataBlock **ptr, double *score) {
-  int source = 0;
+int receiveMessage(struct DataBlock **ptr, double *score, int *fromWhom) {
+  int source = MPI_ANY_SOURCE;
   int size;
   char *message;
   int tag;
@@ -118,12 +246,15 @@ int receiveMessage(struct DataBlock **ptr, double *score) {
       break;
     }
   }
+  source = status.MPI_SOURCE;
+  *fromWhom = source;
   MPI_Get_count(&status, MPI_CHAR, &size);
 //  printf("got this length from the probe: %d\n",size);
   message = clCalloc(size,1);
   MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
   rec_db = datablockNewFromBlock(message,size);
   db = unwrapForTag(rec_db, &tag, score);
+  *ptr = db;
 
   //printf("UNWRAPPED got tag: %d, score: %f\n", tag, *score);
 
