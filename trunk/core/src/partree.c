@@ -73,6 +73,7 @@ void setMPIGlobals(void) {
     signal(SIGINT, bailer);
   else
     signal(SIGINT, ignorer);
+  nice(19);
 }
 
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
