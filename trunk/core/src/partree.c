@@ -182,7 +182,7 @@ void doMasterLoop(void) {
       } else {
           
         if (ms.workers[freeguy].lastScore != ms.bestscore) {
-          printf("Sending tree with score %f to worker %d\n", ms.bestscore, freeguy);
+//          printf("Sending tree with score %f to worker %d\n", ms.bestscore, freeguy);
           sendBlock(freeguy, ms.bestTree, MSG_NEWASSIGNMENT, ms.bestscore);
           ms.workers[freeguy].lastScore = ms.bestscore;
         } else {
