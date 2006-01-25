@@ -724,7 +724,11 @@ void freeDotParser(struct DotParserInstance *dp)
     }
     doubleaFree(dp->tokensToFree);
     dp->tokensToFree = NULL;
+    doubleaFree(dp->commentBuf);
+    dp->commentBuf = NULL;
   }
+  datablockFreePtr(dp->db);
+  dp->db = NULL;
   free(dp);
 }
 
