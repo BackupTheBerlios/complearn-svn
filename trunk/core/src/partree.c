@@ -279,6 +279,7 @@ int receiveMessage(struct DataBlock **ptr, double *score, int *fromWhom) {
   rec_db = datablockNewFromBlock(message,size);
   db = unwrapForTag(rec_db, &tag, score);
   *ptr = db;
+  datablockFreePtr(rec_db);
 
   //printf("UNWRAPPED got tag: %d, score: %f\n", tag, *score);
 
