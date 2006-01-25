@@ -38,6 +38,8 @@ struct SlaveState {
   struct DataBlock *dbdm;
   gsl_matrix *dm;
   struct DataBlock *bestdb;
+  struct StringStack *labels;
+  struct GeneralConfig *cfg;
   struct TreeAdaptor *ta;
   double myLastScore;
   double shouldBeScore;
@@ -211,7 +213,7 @@ void calculateTree(struct SlaveState *ss)
       ta = treehTreeAdaptor(th);
       struct DataBlock *db;
       double newScore =  treehScore(th);
-      db = convertTreeToDot(ss->ta, newScore, NULL, NULL, NULL, NULL, NULL);
+      db = convertTreeToDot(ss->ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
       sendBlock(0, db, MSG_BETTER, newScore);
       datablockFreePtr(db);
       treeaFree(ta);
@@ -235,6 +237,7 @@ void doSlaveLoop(void) {
   double score;
   struct SlaveState ss;
   struct DotParseTree *dpt;
+  ss.cfg = loadDefaultEnvironment();
   ss.myLastScore = 0;
   ss.dbdm = NULL;
   ss.bestdb = NULL;
@@ -254,6 +257,7 @@ void doSlaveLoop(void) {
         printf("SLAVE: db ptr %p\n",db);
         printf("SLAVE: db size %d\n",datablockSize(db));
         ss.dm = clbDBDistMatrix(ss.dbdm);
+        ss.labels = clbDBLabels(ss.dbdm);
         printf("SLAVE:dist matrix size %d\n",ss.dm->size1);
         break;
 
@@ -265,7 +269,10 @@ void doSlaveLoop(void) {
           datablockFreePtr(ss.bestdb);
         ss.bestdb = db;
         dpt = parseDotDB(db, ss.dbdm);
-        stringstackFree(dpt->labels);
+        if (dpt->labels) {
+          stringstackFree(dpt->labels);
+          dpt->labels = NULL;
+        }
         ss.ta = dpt->tree;
         clFree(dpt);
         printf("SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
