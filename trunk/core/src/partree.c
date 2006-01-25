@@ -1,5 +1,6 @@
 #include <string.h>
 #include <time.h>
+#include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <complearn/complearn.h>
@@ -43,6 +44,7 @@ struct SlaveState {
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
+void sendExitEveryWhere(void);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
@@ -50,9 +52,27 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
 int my_rank;
 int p;
 
+void ignorer(int lameness)
+{
+  fprintf(stderr, "ignoring signal...\n");
+  signal(SIGINT, ignorer);
+}
+
+void bailer(int lameness)
+{
+  fprintf(stderr, "Closing down all slaves...\n");
+  sendExitEveryWhere();
+  MPI_Finalize();
+  exit(0);
+}
+
 void setMPIGlobals(void) {
   MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
+  if (my_rank == 0)
+    signal(SIGINT, bailer);
+  else
+    signal(SIGINT, ignorer);
 }
 
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
@@ -92,10 +112,10 @@ void writeBestToFile(struct MasterState *ms)
   datablockFreePtr(db);
 }
 
-void sendExitEverywhere(struct MasterState *ms)
+void sendExitEveryWhere(void)
 {
   int dest;
-    for (dest = 1; dest < ms->nodecount ; dest += 1) {
+    for (dest = 1; dest < p; dest += 1) {
       printf("sending MSG_EXIT to %d\n", dest);
       sendBlock(dest, NULL, MSG_EXIT, 3.3333);
     }
@@ -126,7 +146,7 @@ void doMasterLoop(void) {
   ms.bestTree = convertTreeToDot(ms.ta, ms.bestscore, ms.labels, NULL, ms.cfg, NULL, ms.dm);
   writeBestToFile(&ms);
   for (dest = 1; dest < ms.nodecount ; dest += 1) {
-    printf("sending MSG_LOADCLB to %d\n", dest);
+//    printf("sending MSG_LOADCLB to %d\n", dest);
     sendBlock(dest, ms.clbdb, MSG_LOADCLB, 3.3333);
   }
   for (;;) {
@@ -136,7 +156,6 @@ void doMasterLoop(void) {
       if (freeguy == -1) { /* no free guys */
         int tag;
         tag = receiveMessage(&db, &score, &who);
-        printf("Got message %d from slave %d.\n", tag, who);
         ms.workers[who].isFree = 1;
         if (tag == MSG_BETTER && score > ms.bestscore) {
           dpt = parseDotDB(db, ms.clbdb);
@@ -155,7 +174,7 @@ void doMasterLoop(void) {
         ms.workers[freeguy].isFree =  0;
       }
   }
-  sendExitEverywhere(&ms);
+  //sendExitEverywhere(&ms);
 }
 
 void calculateTree(struct SlaveState *ss)
@@ -164,24 +183,27 @@ void calculateTree(struct SlaveState *ss)
   struct TreeHolder *th;
   int failCount = 0;
   int MAXTRIES = 10;
-  printf("Would calculate tree starting at score %f\n", ss->myLastScore);
   assert(ss->dm->size1 >= 4);
   assert(ss->dm->size2 >= 4);
   assert(ss->dm->size1 == ss->dm->size2);
   th = treehNew(ss->dm, ss->ta);
-  result = treehImprove(th);
   while (failCount < MAXTRIES) {
+    result = treehImprove(th);
     if (result) {
+      struct TreeAdaptor *ta = NULL;
+      ta = treehTreeAdaptor(th);
       struct DataBlock *db;
       double newScore =  treehScore(th);
       db = convertTreeToDot(ss->ta, newScore, NULL, NULL, NULL, NULL, NULL);
       sendBlock(0, db, MSG_BETTER, newScore);
       datablockFreePtr(db);
-      return;
+      goto bail;
     }
     failCount += 1;
   }
   sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
+bail:
+  treehFree(th);
 }
 
 void doSlaveLoop(void) {
@@ -194,10 +216,12 @@ void doSlaveLoop(void) {
   ss.dbdm = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
-//    printf("Got tag: %d\n", tag);
     switch (tag) {
 
       case MSG_EXIT:
+        fprintf(stderr, "Slave %d exitting...\n", my_rank);
+        MPI_Finalize();
+        exit(0);
         return;
 
       case MSG_LOADCLB:
@@ -311,6 +335,5 @@ int main(int argc, char **argv)
     doSlaveLoop();
   }
 
-  MPI_Finalize();
   return 0;
 }
