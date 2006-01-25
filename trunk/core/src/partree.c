@@ -81,6 +81,7 @@ void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
   wdb = wrapWithTag(idb, tag, d);
   MPI_Send(datablockData(wdb), datablockSize(wdb), MPI_CHAR, dest,
      PROTOTAG, MPI_COMM_WORLD);
+  datablockFreePtr(wdb);
 }
 
 int findFree(struct MasterState *ms)
@@ -159,6 +160,7 @@ void doMasterLoop(void) {
         ms.workers[who].isFree = 1;
         if (tag == MSG_BETTER && score > ms.bestscore) {
           dpt = parseDotDB(db, ms.clbdb);
+          datablockFreePtr(ms.bestTree);
           ms.bestTree = db;
           if (ms.ta)
             treeaFree(ms.ta);
