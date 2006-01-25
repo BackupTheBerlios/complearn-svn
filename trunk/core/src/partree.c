@@ -158,17 +158,24 @@ void doMasterLoop(void) {
         int tag;
         tag = receiveMessage(&db, &score, &who);
         ms.workers[who].isFree = 1;
-        if (tag == MSG_BETTER && score > ms.bestscore) {
-          dpt = parseDotDB(db, ms.clbdb);
-          datablockFreePtr(ms.bestTree);
-          ms.bestTree = db;
-          if (ms.ta)
-            treeaFree(ms.ta);
-          ms.ta = dpt->tree;
-          ms.bestscore = score;
-          writeBestToFile(&ms);
+        if (tag == MSG_BETTER) {
+          if (score > ms.bestscore) {
+            dpt = parseDotDB(db, ms.clbdb);
+            datablockFreePtr(ms.bestTree);
+            ms.bestTree = db;
+            if (ms.ta)
+              treeaFree(ms.ta);
+            ms.ta = dpt->tree;
+            ms.bestscore = score;
+            writeBestToFile(&ms);
+          } else {
+            assert(db);
+            datablockFreePtr(db);
+            db = NULL;
+          }
         }
       } else {
+          
         if (ms.workers[freeguy].lastScore != ms.bestscore) {
           sendBlock(freeguy, ms.bestTree, MSG_NEWASSIGNMENT, ms.bestscore);
           ms.workers[freeguy].lastScore = ms.bestscore;
