@@ -160,6 +160,8 @@ void doMasterLoop(void) {
         if (tag == MSG_BETTER && score > ms.bestscore) {
           dpt = parseDotDB(db, ms.clbdb);
           ms.bestTree = db;
+          if (ms.ta)
+            treeaFree(ms.ta);
           ms.ta = dpt->tree;
           ms.bestscore = score;
           writeBestToFile(&ms);
@@ -197,6 +199,7 @@ void calculateTree(struct SlaveState *ss)
       db = convertTreeToDot(ss->ta, newScore, NULL, NULL, NULL, NULL, NULL);
       sendBlock(0, db, MSG_BETTER, newScore);
       datablockFreePtr(db);
+      treeaFree(ta);
       goto bail;
     }
     failCount += 1;
