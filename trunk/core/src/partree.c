@@ -10,6 +10,12 @@
 #define MSG_INIT 1
 #define MSG_EXIT 2
 
+void doMasterLoop(void);
+void doSlaveLoop(void);
+int receiveMessage(struct DataBlock **ptr);
+struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
+struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
+
 int my_rank;
 int p;
 
@@ -18,41 +24,50 @@ void setMPIGlobals(void) {
   MPI_Comm_size(MPI_COMM_WORLD, &p);
 }
 
-gsl_matrix *clbDistMatrix(char *fname);
-
-struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
-struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
-
 void doMasterLoop(void) {
-  struct DataBlock *db;
   int dest;
+  struct DataBlock *db, *wdb;
   db = fileToDataBlockPtr("distmatrix.clb");
-  fprintf(stderr,"Master: read file DataBlockDistMatrix, size %d\n", datablockSize(db));
-  fprintf(stderr,"Master: sending...\n");
+  wdb = wrapWithTag(db, 2, 3.3333);
+  printf("Master: got DataBlockDistMatrix, size %d\n", datablockSize(wdb));
+  printf("Master: sending...\n");
   for (dest = 1; dest < p ; dest += 1) {
-    fprintf(stderr,"sending to %d\n", dest);
-    MPI_Send(datablockData(db), datablockSize(db), MPI_CHAR, dest,
+    MPI_Send(datablockData(db), datablockSize(wdb), MPI_CHAR, dest,
        PROTOTAG, MPI_COMM_WORLD);
-    fprintf(stderr,"sent to %d\n", dest);
   }
-  for (;;)
-    ;
 }
+
 void doSlaveLoop(void) {
-  fprintf(stderr,"in slave loop, my_rank=%d\n", my_rank);
+  struct DataBlock *db;
+  int tag;
+  tag = receiveMessage(&db);
+}
+
+int receiveMessage(struct DataBlock **ptr) {
+  int source = 0;
+  int size;
+  char *message;
+  int tag;
+  double score;
+  struct DataBlock *db;
+  MPI_Status status;
   for (;;) {
-    struct DataBlock *db;
-    int tag;
-    tag = receiveMessage(&db);
-    if (tag == MSG_NONE) {
-      fprintf(stderr,"Got no messages...\n");
+    MPI_Probe(source, PROTOTAG, MPI_COMM_WORLD, &status);
+    if (status.MPI_ERROR != MPI_SUCCESS) {
       sleep(1);
     } else {
-      int dbsize;
-      dbsize = db ? datablockSize(db) : 0;
-      fprintf(stderr,"Got tag %d with size %d\n", tag, dbsize);
+      break;
     }
   }
+  MPI_Get_count(&status, MPI_CHAR, &size);
+  printf("got this length from the probe: %d\n",size);
+  message = clCalloc(size,1);
+  MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
+  printf("before unwrapForTag call\n");
+  db = unwrapForTag( (struct DataBlock *)message, &tag, &score);
+  printf("got tag: %d, score: %f\n", tag, score);
+
+  return 0;
 }
 
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
@@ -77,15 +92,20 @@ struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
 {
   struct DataBlock *result = NULL;
-  unsigned int len;
+  int len;
   unsigned char *smallblock = NULL;
 
+  printf("in unwrapForTag point A\n");
   len = datablockSize(dbbig)-4-sizeof(double);
   assert(len >= 0);
+  printf("in unwrapForTag point B; here's len: %d\n", len);
   if (len) {
-    clCalloc(len,1);
+    smallblock = clCalloc(len,1);
+    printf("in unwrapForTag point C\n");
     memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
+    printf("in unwrapForTag point D\n");
     memcpy(tag, datablockData(dbbig), 4);
+    printf("in unwrapForTag point E\n");
     if (score)
       memcpy(score, datablockData(dbbig)+4, sizeof(double));
     result = datablockNewFromBlock(smallblock, len);
@@ -94,46 +114,10 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   return result;
 }
 
-int receiveMessage(struct DataBlock **ptr)
-{
-  int flag=0;
-  int i;
-  unsigned char *message;
-  int tag;
-  MPI_Status status;
-  fprintf(stderr,"About to probe...\n");
-  //MPI_Iprobe(MPI_ANY_SOURCE, PROTOTAG, MPI_COMM_WORLD, &flag, &status);
-  MPI_Probe(0, PROTOTAG, MPI_COMM_WORLD, &status);
-  fprintf(stderr,"done probing with flag %d\n", flag);
-//  if (flag == 0 || status.MPI_ERROR != MPI_SUCCESS) {
-//    *ptr = NULL;
-//    return MSG_NONE;
-//  }
-/*  if (status.MPI_ERROR != MPI_SUCCESS) {
-    sleep(1);
-  } else {
-    break;
-  }
-  */
-  MPI_Get_count(&status, MPI_CHAR, &i);
-  fprintf(stderr,"got this length from the probe: %d\n",i);
-  message = clCalloc(i,1);
-  MPI_Recv(message, i, MPI_CHAR, status.MPI_SOURCE, PROTOTAG, MPI_COMM_WORLD, &status);
-
-  return 0;
-}
-
 int main(int argc, char **argv)
 {
-  int source;
-  int silen = 128;
-  int gherr;
-  char hname[128];
-  char *message;
-  MPI_Status status;
-
   MPI_Init(&argc, &argv);
-  setMPIGlobals();
+    setMPIGlobals();
 
   if (my_rank == 0) {
     doMasterLoop();
