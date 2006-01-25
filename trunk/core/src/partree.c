@@ -7,8 +7,30 @@
 #define PROTOTAG 50
 
 #define MSG_NONE 0
-#define MSG_INIT 1
+#define MSG_LOADCLB 1
 #define MSG_EXIT 2
+
+struct MasterSlaveModel {
+  int isFree;
+  double lastScore;
+};
+
+struct MasterState {
+  int nodecount;
+  struct MasterSlaveModel *workers;
+  double bestscore;
+  gsl_matrix *dm;
+  struct DataBlock *clbdb;
+  struct DataBlock *bestTree;
+  struct TreeAdaptor *ta;
+};
+
+
+struct SlaveState {
+  struct DataBlock *dbdm;
+  gsl_matrix *dm;
+  struct DataBlock *best;
+};
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
@@ -24,16 +46,35 @@ void setMPIGlobals(void) {
   MPI_Comm_size(MPI_COMM_WORLD, &p);
 }
 
+void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
+{
+  struct DataBlock *wdb;
+  wdb = wrapWithTag(idb, tag, d);
+  MPI_Send(datablockData(wdb), datablockSize(wdb), MPI_CHAR, dest,
+     PROTOTAG, MPI_COMM_WORLD);
+}
 void doMasterLoop(void) {
+  struct MasterState ms;
   int dest;
+  const char *fname = "distmatrix.clb";
+  ms.workers = clCalloc(sizeof(struct MasterSlaveModel), p);
+  ms.nodecount = p;
+  ms.bestscore = 0;
   struct DataBlock *db, *wdb;
-  db = fileToDataBlockPtr("distmatrix.clb");
-  wdb = wrapWithTag(db, 2, 3.3333);
-  printf("Master: got DataBlockDistMatrix, size %d\n", datablockSize(wdb));
-  printf("Master: sending...\n");
+  ms.clbdb = fileToDataBlockPtr(fname);
+  printf("Read file: %s\n", fname);
+  ms.dm = clbDBDistMatrix(ms.clbdb);
+  printf("Loaded distmatrix with %d entries.\n", ms.dm->size1);
+  ms.ta = treeaNew(0, ms.dm->size1);
+//  printf("Master: got DataBlockDistMatrix, size %d\n", datablockSize(wdb));
+//  printf("Master: sending...\n");
   for (dest = 1; dest < p ; dest += 1) {
-    MPI_Send(datablockData(wdb), datablockSize(wdb), MPI_CHAR, dest,
-       PROTOTAG, MPI_COMM_WORLD);
+    printf("sending MSG_LOADCLB to %d\n", dest);
+    sendBlock(dest, ms.clbdb, MSG_LOADCLB, 3.3333);
+  }
+  for (dest = 1; dest < p ; dest += 1) {
+    printf("sending MSG_EXIT to %d\n", dest);
+    sendBlock(dest, NULL, MSG_EXIT, 3.3333);
   }
 }
 
@@ -41,7 +82,25 @@ void doSlaveLoop(void) {
   struct DataBlock *db;
   int tag;
   double score;
-  tag = receiveMessage(&db, &score);
+  struct SlaveState ss;
+  for (;;) {
+    tag = receiveMessage(&db, &score);
+//    printf("Got tag: %d\n", tag);
+    switch (tag) {
+
+      case MSG_EXIT:
+        return;
+
+      case MSG_LOADCLB:
+        ss.dbdm = db;
+//        ss.dm = clbDistMatrixLoad(ss.dbdm);
+        break;
+
+      default:
+        fprintf(stderr, "Unknown CL message code: %d\n" , tag);
+        exit(1);
+    }
+  }
 }
 
 int receiveMessage(struct DataBlock **ptr, double *score) {
@@ -60,15 +119,15 @@ int receiveMessage(struct DataBlock **ptr, double *score) {
     }
   }
   MPI_Get_count(&status, MPI_CHAR, &size);
-  printf("got this length from the probe: %d\n",size);
+//  printf("got this length from the probe: %d\n",size);
   message = clCalloc(size,1);
   MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
   rec_db = datablockNewFromBlock(message,size);
   db = unwrapForTag(rec_db, &tag, score);
 
-  printf("UNWRAPPED got tag: %d, score: %f\n", tag, *score);
+  //printf("UNWRAPPED got tag: %d, score: %f\n", tag, *score);
 
-  return 0;
+  return tag;
 }
 
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
@@ -101,12 +160,12 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   if (len) {
     smallblock = clCalloc(len,1);
     memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
-    memcpy(tag, datablockData(dbbig), 4);
-    if (score)
-      memcpy(score, datablockData(dbbig)+4, sizeof(double));
     result = datablockNewFromBlock(smallblock, len);
     clFree(smallblock);
   }
+  memcpy(tag, datablockData(dbbig), 4);
+  if (score)
+    memcpy(score, datablockData(dbbig)+4, sizeof(double));
   return result;
 }
 
