@@ -40,6 +40,7 @@ struct SlaveState {
   struct DataBlock *bestdb;
   struct TreeAdaptor *ta;
   double myLastScore;
+  double shouldBeScore;
 };
 
 void doMasterLoop(void);
@@ -181,6 +182,7 @@ void doMasterLoop(void) {
       } else {
           
         if (ms.workers[freeguy].lastScore != ms.bestscore) {
+          printf("Sending tree with score %f to worker %d\n", ms.bestscore, freeguy);
           sendBlock(freeguy, ms.bestTree, MSG_NEWASSIGNMENT, ms.bestscore);
           ms.workers[freeguy].lastScore = ms.bestscore;
         } else {
@@ -218,6 +220,11 @@ void calculateTree(struct SlaveState *ss)
     failCount += 1;
   }
   sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
+  assert(treehScore(th) == ss->shouldBeScore);
+  if (treehScore(th) != ss->shouldBeScore) {
+    printf("Rogue master...\n");
+    exit(1);
+  }
 bail:
   treehFree(th);
 }
@@ -225,7 +232,7 @@ bail:
 void doSlaveLoop(void) {
   struct DataBlock *db;
   int tag, dum;
-  double score;
+  double score, vscore;
   struct SlaveState ss;
   struct DotParseTree *dpt;
   ss.myLastScore = 0;
@@ -252,6 +259,7 @@ void doSlaveLoop(void) {
 
       case MSG_NEWASSIGNMENT:
         assert(score != ss.myLastScore);
+        ss.shouldBeScore = score;
         ss.myLastScore = score;
         if (ss.bestdb)
           datablockFreePtr(ss.bestdb);
