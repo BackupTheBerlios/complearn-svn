@@ -10,7 +10,6 @@ int main(int argc, char **argv)
   const char *fname, *dmfname;
   struct DotParseTree *dpt;
   struct TreeMolder *tb;
-  struct TreeScore *ts;
   struct DataBlock *db, *matdb, *dotdb;
   struct CLNodeSet *clns = NULL;
   struct GeneralConfig *cur = loadDefaultEnvironment();

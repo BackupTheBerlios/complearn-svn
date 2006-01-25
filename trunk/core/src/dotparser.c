@@ -121,7 +121,7 @@ static void ejectPassClear(struct CLYieldChain *yc, struct CLToken *clt);
 static void ejectGobblePassClear(struct CLYieldChain *yc, struct CLToken *clt);
 static void gobble(struct CLYieldChain *yc, struct CLToken *clt);
 static void clear(struct CLYieldChain *yc);
-static void showResults(struct YCTree *yctree);
+//static void showResults(struct YCTree *yctree);
 static void ejectGobble(struct CLYieldChain *yc, struct CLToken *clt);
 static void transitTo(struct CLYieldChain *yc, int ns);
 static void newToken(struct CLYieldChain *yc, int sym);
@@ -240,7 +240,7 @@ struct YCNames *ycNamesNew(struct CLYieldChain *fm)
 
 static void ycNamesPF(struct CLYieldChain *yc, struct CLToken *clt)
 {
-  upcastTo(YCNames, yc);
+  //upcastTo(YCNames, yc);
   if (clt->tokNum < 256) {
     if (yc->m == NULL) {
       newToken(yc, TOK_WORD);
@@ -389,7 +389,7 @@ static struct YCMerger *ycMergerNew(struct CLYieldChain *fm)
 
 static void ycMergerPF(struct CLYieldChain *yc, struct CLToken *clt)
 {
-  upcastTo(YCMerger, yc);
+  //upcastTo(YCMerger, yc);
   if (clt->tokNum > 255) {
     switch (clt->tokNum) {
       case TOK_STARTCOMMENT:
@@ -591,12 +591,6 @@ static void ycTreePF(struct CLYieldChain *yc, struct CLToken *clt)
         ycs->curword = NULL;
         eject(yc, clt);
       }
-      /*
-      if (clt->tokNum == TOK_EDGEMARKER) {
-        transitTo(yc, STATE_NEEDENDPOINT);
-        //gobbleEject(yc, clt); 
-        /* cilibrar */
-    /*  } */
 
       break;
 
@@ -717,7 +711,7 @@ void freeDotParser(struct DotParserInstance *dp)
   if (currentArena && currentArena == dp) {
     int i;
     currentArena = NULL;
-    for (i = 0; i < datablockSize(dp->tokensToFree); i += 1) {
+    for (i = 0; i < doubleaSize(dp->tokensToFree); i += 1) {
       union PCTypes p;
       p = doubleaGetValueAt(dp->tokensToFree, i);
       freeCLToken((struct CLToken *) p.ptr);
@@ -788,6 +782,7 @@ static void handleTreeName(struct YCTree *tree, struct CLToken *clt)
 //  printf("TREENAME is %s\n", convertNodeToString(clt));
 }
 
+#if 0
 static void showResults(struct YCTree *yctree)
 {
   int i;
@@ -796,13 +791,12 @@ static void showResults(struct YCTree *yctree)
     printf("Node #%d:     (%s)\n", i, treeaIsQuartettable(yctree->ta,i) ? (char *) p.ptr : "(kernel)");
   }
 }
+#endif
 
 struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
 {
   int i, j, leafcount;
-  double score;
   struct AdjAdaptor *aa;
-  struct DataBlock *dotdb;
   struct LabelPerm *lp;
   struct StringStack *labels;
 

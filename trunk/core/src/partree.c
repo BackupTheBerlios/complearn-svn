@@ -220,9 +220,9 @@ void calculateTree(struct SlaveState *ss)
     failCount += 1;
   }
   sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
-  assert(treehScore(th) == ss->shouldBeScore);
+//  assert(treehScore(th) == ss->shouldBeScore);
   if (treehScore(th) != ss->shouldBeScore) {
-    printf("Rogue master...\n");
+    printf("Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
     exit(1);
   }
 bail:
@@ -232,7 +232,7 @@ bail:
 void doSlaveLoop(void) {
   struct DataBlock *db;
   int tag, dum;
-  double score, vscore;
+  double score;
   struct SlaveState ss;
   struct DotParseTree *dpt;
   ss.myLastScore = 0;
@@ -306,6 +306,7 @@ int receiveMessage(struct DataBlock **ptr, double *score, int *fromWhom) {
   message = clCalloc(size,1);
   MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
   rec_db = datablockNewFromBlock(message,size);
+  clFree(message);
   db = unwrapForTag(rec_db, &tag, score);
   *ptr = db;
   datablockFreePtr(rec_db);
