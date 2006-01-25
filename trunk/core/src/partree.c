@@ -15,6 +15,7 @@
 #define MSG_LASTASSIGNMENT 4
 #define MSG_BETTER 5
 #define MSG_NOBETTER 6
+#define MSG_ROGUE 7
 
 struct MasterSlaveModel {
   int isFree;
@@ -162,6 +163,9 @@ void doMasterLoop(void) {
         int tag;
         tag = receiveMessage(&db, &score, &who);
         ms.workers[who].isFree = 1;
+        if (tag == MSG_ROGUE) {
+          ms.workers[who].lastScore = 0.0;
+        }
         if (tag == MSG_BETTER) {
           if (score > ms.bestscore) {
             dpt = parseDotDB(db, ms.clbdb);
@@ -182,7 +186,6 @@ void doMasterLoop(void) {
           }
         }
       } else {
-          
         if (ms.workers[freeguy].lastScore != ms.bestscore) {
 //          printf("Sending tree with score %f to worker %d\n", ms.bestscore, freeguy);
           sendBlock(freeguy, ms.bestTree, MSG_NEWASSIGNMENT, ms.bestscore);
@@ -221,12 +224,13 @@ void calculateTree(struct SlaveState *ss)
     }
     failCount += 1;
   }
-  sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 //  assert(treehScore(th) == ss->shouldBeScore);
   if (treehScore(th) != ss->shouldBeScore) {
     printf("Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
-    exit(1);
+    printf("Resending for new from %d\n", my_rank);
+    sendBlock(0, NULL, MSG_ROGUE, 0);
   }
+  sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 bail:
   treehFree(th);
 }
