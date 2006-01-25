@@ -32,7 +32,7 @@ void doMasterLoop(void) {
   printf("Master: got DataBlockDistMatrix, size %d\n", datablockSize(wdb));
   printf("Master: sending...\n");
   for (dest = 1; dest < p ; dest += 1) {
-    MPI_Send(datablockData(db), datablockSize(wdb), MPI_CHAR, dest,
+    MPI_Send(datablockData(wdb), datablockSize(wdb), MPI_CHAR, dest,
        PROTOTAG, MPI_COMM_WORLD);
   }
 }
@@ -49,7 +49,7 @@ int receiveMessage(struct DataBlock **ptr) {
   char *message;
   int tag;
   double score;
-  struct DataBlock *db;
+  struct DataBlock *rec_db, *db;
   MPI_Status status;
   for (;;) {
     MPI_Probe(source, PROTOTAG, MPI_COMM_WORLD, &status);
@@ -63,9 +63,10 @@ int receiveMessage(struct DataBlock **ptr) {
   printf("got this length from the probe: %d\n",size);
   message = clCalloc(size,1);
   MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
-  printf("before unwrapForTag call\n");
-  db = unwrapForTag( (struct DataBlock *)message, &tag, &score);
-  printf("got tag: %d, score: %f\n", tag, score);
+  rec_db = datablockNewFromBlock(message,size);
+  db = unwrapForTag(rec_db, &tag, &score);
+
+  printf("UNWRAPPED got tag: %d, score: %f\n", tag, score);
 
   return 0;
 }
@@ -95,17 +96,12 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   int len;
   unsigned char *smallblock = NULL;
 
-  printf("in unwrapForTag point A\n");
   len = datablockSize(dbbig)-4-sizeof(double);
   assert(len >= 0);
-  printf("in unwrapForTag point B; here's len: %d\n", len);
   if (len) {
     smallblock = clCalloc(len,1);
-    printf("in unwrapForTag point C\n");
     memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
-    printf("in unwrapForTag point D\n");
     memcpy(tag, datablockData(dbbig), 4);
-    printf("in unwrapForTag point E\n");
     if (score)
       memcpy(score, datablockData(dbbig)+4, sizeof(double));
     result = datablockNewFromBlock(smallblock, len);
@@ -128,5 +124,3 @@ int main(int argc, char **argv)
   MPI_Finalize();
   return 0;
 }
-
-
