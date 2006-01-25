@@ -60,6 +60,8 @@ struct CLYieldChain {
 struct DotParserInstance;
 struct DotParserClass;
 
+static struct DotParserInstance *currentArena = NULL;
+
 typedef void (*tokenFunc)(struct DotParserInstance *dp,
   struct CLToken *cur, void *obj);
 
@@ -67,6 +69,7 @@ struct DotParserInstance {
   struct DotParserClass *dpc;
   struct DataBlock *db;
   struct DoubleA *commentBuf;
+  struct DoubleA *tokensToFree;
 };
 
 struct DotParserClass {
@@ -606,17 +609,34 @@ static void ycTreePF(struct CLYieldChain *yc, struct CLToken *clt)
 struct CLToken *newSemToken(int symval)
 {
   struct CLToken *clt = clCalloc(sizeof(*clt), 1);
+  union PCTypes p;
+  p.ptr = clt;
   assert(symval > 255 && "Invalid semantic token code");
   clt->tokNum = symval;
   clt->d = doubleaNew();
+  if (currentArena)
+    doubleaPush(currentArena->tokensToFree, p);
   return clt;
 }
 
 struct CLToken *newCharToken(unsigned char c)
 {
   struct CLToken *clt = clCalloc(sizeof(*clt), 1);
+  union PCTypes p;
+  p.ptr = clt;
   clt->tokNum = c;
+  if (currentArena)
+    doubleaPush(currentArena->tokensToFree, p);
   return clt;
+}
+
+static void freeCLToken(struct CLToken *c)
+{
+  if (c->d) {
+    doubleaFree(c->d);
+    c->d = NULL;
+  }
+  free(c);
 }
 
 static void ejectPassClear(struct CLYieldChain *yc, struct CLToken *clt)
@@ -692,12 +712,30 @@ void feedBytes(const struct DotParserInstance *dpi, struct CLYieldChain *toWhom)
   }
 }
 
+void freeDotParser(struct DotParserInstance *dp)
+{
+  if (currentArena && currentArena == dp) {
+    int i;
+    currentArena = NULL;
+    for (i = 0; i < datablockSize(dp->tokensToFree); i += 1) {
+      union PCTypes p;
+      p = doubleaGetValueAt(dp->tokensToFree, i);
+      freeCLToken((struct CLToken *) p.ptr);
+    }
+    doubleaFree(dp->tokensToFree);
+    dp->tokensToFree = NULL;
+  }
+  free(dp);
+}
+
 struct DotParserInstance *newDotParser(struct DataBlock *db)
 {
   struct DotParserInstance *dp = clCalloc(sizeof(struct DotParserInstance), 1);
   assert(dp);
   dp->commentBuf = doubleaNew();
+  dp->tokensToFree = doubleaNew();
   dp->db = datablockClonePtr(db);
+  currentArena = dp;
   return dp;
 }
 
@@ -815,6 +853,14 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
         }
       }
     }
-    dpt->tree = yctree->ta;
-    return dpt;
-  }
+  dpt->tree = yctree->ta;
+  freeDotParser(dp);
+  clFree(yctree);
+  clFree(names);
+  clFree(punk);
+  clFree(whitespace);
+  clFree(merger);
+  clFree(comdetector);
+  clFree(strdetector);
+  return dpt;
+}

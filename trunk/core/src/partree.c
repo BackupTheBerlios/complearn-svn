@@ -168,6 +168,7 @@ void doMasterLoop(void) {
             ms.ta = dpt->tree;
             ms.bestscore = score;
             writeBestToFile(&ms);
+            clFree(dpt);
           } else {
             assert(db);
             datablockFreePtr(db);
