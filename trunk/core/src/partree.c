@@ -166,6 +166,8 @@ void doMasterLoop(void) {
             if (ms.ta)
               treeaFree(ms.ta);
             ms.ta = dpt->tree;
+            stringstackFree(dpt->labels);
+            dpt->labels = NULL;
             ms.bestscore = score;
             writeBestToFile(&ms);
             clFree(dpt);
