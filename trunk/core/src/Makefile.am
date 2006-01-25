@@ -1,4 +1,5 @@
 GENLDFLAGS=@GENLDFLAGS@
+CC=@CC@
 GENLDADD=libcomplearn.a
 
 if WANT_SDLGLPROG
@@ -25,7 +26,7 @@ maketree_LDADD=$(GENLDADD)
 maketree_LDFLAGS=$(GENLDFLAGS)
 
 partree_SOURCES=partree.c
-partree_LDADD=$(GENLDADD) -lmpi
+partree_LDADD=$(GENLDADD) -lpthread -lrt -lmpi
 partree_LDFLAGS=$(GENLDFLAGS)
 
 reordertree_SOURCES=reordertree.c
