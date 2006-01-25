@@ -12,7 +12,7 @@
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
-int receiveMessage(struct DataBlock **ptr);
+int receiveMessage(struct DataBlock **ptr, double *score);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
 
@@ -40,15 +40,15 @@ void doMasterLoop(void) {
 void doSlaveLoop(void) {
   struct DataBlock *db;
   int tag;
-  tag = receiveMessage(&db);
+  double score;
+  tag = receiveMessage(&db, &score);
 }
 
-int receiveMessage(struct DataBlock **ptr) {
+int receiveMessage(struct DataBlock **ptr, double *score) {
   int source = 0;
   int size;
   char *message;
   int tag;
-  double score;
   struct DataBlock *rec_db, *db;
   MPI_Status status;
   for (;;) {
@@ -64,9 +64,9 @@ int receiveMessage(struct DataBlock **ptr) {
   message = clCalloc(size,1);
   MPI_Recv(message, size, MPI_CHAR, source, PROTOTAG, MPI_COMM_WORLD, &status);
   rec_db = datablockNewFromBlock(message,size);
-  db = unwrapForTag(rec_db, &tag, &score);
+  db = unwrapForTag(rec_db, &tag, score);
 
-  printf("UNWRAPPED got tag: %d, score: %f\n", tag, score);
+  printf("UNWRAPPED got tag: %d, score: %f\n", tag, *score);
 
   return 0;
 }
