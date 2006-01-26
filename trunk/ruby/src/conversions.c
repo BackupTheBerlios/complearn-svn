@@ -107,7 +107,7 @@ VALUE convertStringStackToRubyArray(struct StringStack *ss)
 
 VALUE convertDataBlockToRubyString(struct DataBlock *db)
 {
-  return rb_str_new(datablockData(db), datablockSize(db));
+  return rb_str_new((char *) datablockData(db), datablockSize(db));
 }
 
 struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
