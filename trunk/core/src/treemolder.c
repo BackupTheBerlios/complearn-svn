@@ -69,6 +69,7 @@ static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struc
     acc += gsl_matrix_get(dm, x, y);
   }
   doubleaFree(pairs);
+  labelpermFree(lph);
   return acc;
 }
 

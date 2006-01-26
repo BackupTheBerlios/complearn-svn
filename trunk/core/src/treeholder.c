@@ -57,6 +57,7 @@ struct TreeHolder *treehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra)
   th->dm = gslmatrixClone(distmat);
   th->bestscore = calculateScore(th, th->best);
   th->treeindex = -1;
+  labelpermFree(lp);
   return th;
 }
 

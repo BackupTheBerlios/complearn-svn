@@ -363,6 +363,8 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   if (cur && params)
     stringstackFree(params);
   doubleaFree(nodes);
+  labelpermFree(labelperm);
+  labelperm = NULL;
   return result;
 }
 

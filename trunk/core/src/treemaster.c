@@ -194,8 +194,15 @@ static int doStep(struct TreeMaster *tm)
 
 static int isIdenticalTreeTRA(struct TreeAdaptor *ta1, struct TreeAdaptor *ta2)
 {
-  return isIdenticalTree(treeaAdjAdaptor(ta1), treeaLabelPerm(ta1),
-                         treeaAdjAdaptor(ta2), treeaLabelPerm(ta2));
+  struct LabelPerm *lab1, *lab2;
+  int result;
+  lab1 = treeaLabelPerm(ta1);
+  lab2 = treeaLabelPerm(ta2);
+  result = isIdenticalTree(treeaAdjAdaptor(ta1), lab1,
+                         treeaAdjAdaptor(ta2), lab2);
+  labelpermFree(lab1);
+  labelpermFree(lab2);
+  return result;
 }
 
 static int checkDone(struct TreeMaster *tm)

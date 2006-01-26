@@ -592,7 +592,7 @@ static void draw_screen(void)
     if (fShowLabels) {
       for (i = 0; i < treeaNodeCount(ta); i += 1) {
         gsl_vector *p = sbsBallPosition(sbs, i);
-        if (treeaIsQuartettable(ta, i)) {
+        if (treeaIsQuartettable(ta, i)) { // TODO: fix memleak with treeaLabelPerm here
           int colind = labelpermColIndexForNodeID(treeaLabelPerm(ta), i);
           static struct CLTexture texLabels[MAXTEX];
           draw_sdltext(stringstackReadAt(labels, colind), &texLabels[colind], p);

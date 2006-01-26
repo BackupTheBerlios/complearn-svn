@@ -93,12 +93,16 @@ double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
   struct AdjAdaptor *ad1, *ad2;
   struct LabelPerm *lab1, *lab2;
   int diff;
+  int lps;
   lab1 = treeaLabelPerm(tra1);
   lab2 = treeaLabelPerm(tra2);
+  lps = labelpermSize(lab1);
   ad1 = treeaAdjAdaptor(tra1);
   ad2 = treeaAdjAdaptor(tra2);
   diff = countTrinaryDifferences(ad1, lab1, ad2, lab2);
-  return nchoosefourScale(labelpermSize(lab1), diff);
+  labelpermFree(lab1);
+  labelpermFree(lab2);
+  return nchoosefourScale(lps, diff);
 }
 
 struct DoubleA *treeaNodes(struct TreeAdaptor *ta)

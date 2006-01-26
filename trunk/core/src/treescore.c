@@ -82,6 +82,7 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
     maxtot += maxcur;
     mintot += mincur;
   }
+  labelpermFree(lp);
   return 1.0 - ((sum - mintot) / (maxtot - mintot));
 }
 #endif
