@@ -309,7 +309,7 @@ AC_CHECK_HEADER([pango/pango.h], [fpango_h=1])
 AC_CHECK_HEADER([atk/atk.h], [fatk_h=1])
 
 CPPFLAGS="$CPPFLAGS -I/usr/local/include"
-CFLAGS="$CFLAGS -I/usr/local/include"
+CFLAGS="$CFLAGS -I/usr/local/include -I/usr/include/mpi"
 LDFLAGS="$LDFLAGS -I/usr/local/lib"
 
 eval "eval TOP_SRC_DIR=${top_srcdir}"
