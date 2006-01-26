@@ -797,7 +797,6 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
 {
   int i, j, leafcount;
   struct AdjAdaptor *aa;
-  struct LabelPerm *lp;
   struct StringStack *labels;
 
   struct DotParseTree *dpt = clCalloc(sizeof(*dpt), 1);
@@ -839,12 +838,11 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
       labels = clbDBLabels(matdb);
       assert(labels);
       dpt->labels = labels;
-      lp = treeaLabelPerm(yctree->ta);
       for (i = 0; i <= yctree->maxnodenum; i += 1) {
         if (treeaIsQuartettable(yctree->ta,i)) {
           for (j = 0; j < leafcount; j += 1) {
             if (strcmp(stringstackReadAt(labels, j), doubleaGetValueAt(yctree->nodeLabels, i).ptr) == 0) {
-              labelpermSetColumnIndexToNodeNumber(lp, j, i);
+              treealabelpermSetColumnIndexToNodeNumber(yctree->ta, j, i);
   //            printf("Must set %d to point to %d\n", i, j);
             }
           }

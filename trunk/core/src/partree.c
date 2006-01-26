@@ -218,8 +218,11 @@ void calculateTree(struct SlaveState *ss)
     sendBlock(0, NULL, MSG_ROGUE, 0);
     goto bail;
   }
-  else
-    fprintf(stderr, "verified for %d at  %9.9f\n", my_rank, ss->shouldBeScore);
+  else {
+
+//    fprintf(stderr, "verified for %d at  %9.9f\n", my_rank, ss->shouldBeScore);
+    ;
+    }
   while (failCount < MAXTRIES) {
     result = treehImprove(th);
     if (result) {
@@ -257,6 +260,7 @@ void doSlaveLoop(void) {
   ss.myLastScore = 0;
   ss.dbdm = NULL;
   ss.bestdb = NULL;
+  ss.ta = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
     switch (tag) {
@@ -270,19 +274,21 @@ void doSlaveLoop(void) {
       case MSG_LOADCLB:
         ss.dbdm = db;
         srand(time(NULL) + my_rank * 107);
-        printf("SLAVE: db ptr %p\n",db);
-        printf("SLAVE: db size %d\n",datablockSize(db));
+//        printf("SLAVE: db ptr %p\n",db);
+//        printf("SLAVE: db size %d\n",datablockSize(db));
         ss.dm = clbDBDistMatrix(ss.dbdm);
         ss.labels = clbDBLabels(ss.dbdm);
-        printf("SLAVE:dist matrix size %d\n",ss.dm->size1);
+//        printf("SLAVE:dist matrix size %d\n",ss.dm->size1);
         break;
 
       case MSG_NEWASSIGNMENT:
         assert(score != ss.myLastScore);
         ss.shouldBeScore = score;
         ss.myLastScore = score;
-        if (ss.bestdb)
+        if (ss.bestdb) {
           datablockFreePtr(ss.bestdb);
+          ss.bestdb = NULL;
+        }
         ss.bestdb = db;
           datablockWriteToFile(ss.bestdb, "/home/cilibrar/tree2.dot");
         dpt = parseDotDB(db, ss.dbdm);
@@ -292,7 +298,7 @@ void doSlaveLoop(void) {
         }
         ss.ta = dpt->tree;
         clFree(dpt);
-        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
+//        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
         break;
 

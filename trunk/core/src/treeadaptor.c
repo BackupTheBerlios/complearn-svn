@@ -1,5 +1,11 @@
 #include <complearn/complearn.h>
 
+void treealabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
+    int colInd, int nodeNum)
+{
+  ta->treelpsetat(ta, colInd, nodeNum);
+}
+
 void treeaMutate(struct TreeAdaptor *tra)
 {
   assert(tra);

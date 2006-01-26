@@ -16,6 +16,11 @@ struct UnrootedBinary {
   struct CLNodeSet *flips;
 };
 
+void unrootedbinaryLabelPermSetter(struct UnrootedBinary *ub, int j, int i)
+{
+  labelpermSetColumnIndexToNodeNumber(ub->labelperm, j, i);
+}
+
 struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub)
 {
   return ub->aa;
@@ -436,6 +441,12 @@ struct TreeAdaptor *treeaLoadUnrooted(int howBig)
   return loadUBTRA(unrootedbinaryNew(howBig));
 }
 
+static void ub_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
+{
+  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  unrootedbinaryLabelPermSetter(ub, j, i);
+}
+
 static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
 {
   struct TreeAdaptor c = {
@@ -449,7 +460,8 @@ static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
     treeisflippable:ub_treeisflippable,
     treeisroot:ub_treeisroot,
     treemutecount:ub_treemutecount,
-    treeperimpairs:ub_treeperimpairs
+    treeperimpairs:ub_treeperimpairs,
+    treelpsetat:ub_treesetlabelperm
   };
 
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);

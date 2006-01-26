@@ -74,6 +74,7 @@ typedef void (*t_treemutate)(struct TreeAdaptor *tra);
 typedef void (*t_treefree)(struct TreeAdaptor *tra);
 typedef struct TreeAdaptor *(*t_treeclone)(struct TreeAdaptor *tra);
 typedef struct LabelPerm *(*t_treegetlabelperm)(struct TreeAdaptor *tra);
+typedef void (*t_treelpsetat)(struct TreeAdaptor *tra, int j, int i);
 typedef struct AdjAdaptor *(*t_treegetadja)(struct TreeAdaptor *tra);
 typedef int (*t_treenodepred)(struct TreeAdaptor *tra, int which);
 typedef int (*t_treemutecount)(struct TreeAdaptor *tra);

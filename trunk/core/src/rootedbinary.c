@@ -228,6 +228,11 @@ void rootedbinaryComplexMutation(struct RootedBinary *rb)
   mutateComplex(rb);
 }
 
+void rootedbinaryLabelPermSetter(struct RootedBinary *rb, int j, int i)
+{
+  labelpermSetColumnIndexToNodeNumber(rb->labelperm, j, i);
+}
+
 struct RootedBinary *rootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
 {
   int i;
@@ -402,6 +407,12 @@ static void rb_treefree(struct TreeAdaptor *ta)
   clFreeandclear(ta);
 }
 
+void rb_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
+{
+  struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
+  rootedbinaryLabelPermSetter(rb, j, i);
+}
+
 static struct LabelPerm *rb_treegetlabelperm(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
@@ -462,7 +473,8 @@ static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)
     treeisflippable:rb_treeisflippable,
     treeisroot:rb_treeisroot,
     treemutecount:rb_treemutecount,
-    treeperimpairs:rb_treeperimpairs
+    treeperimpairs:rb_treeperimpairs,
+    treelpsetat:rb_treesetlabelperm
   };
 
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);

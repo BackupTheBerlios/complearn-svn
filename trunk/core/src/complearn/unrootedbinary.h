@@ -227,6 +227,8 @@ int unrootedbinaryIsConnected(const struct UnrootedBinary *ub, qbase_t a, qbase_
 
 struct LabelPerm *unrootedbinaryLabelPerm(struct UnrootedBinary *ub);
 
+void unrootedbinaryLabelPermSetter(struct UnrootedBinary *ub, int j, int i);
+
 
 struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub);
 

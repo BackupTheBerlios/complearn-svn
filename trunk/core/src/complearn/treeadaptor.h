@@ -31,6 +31,7 @@ struct TreeAdaptor {
   t_treenodepred treeisroot;
   t_treemutecount treemutecount;
   t_treeperimpairs treeperimpairs;
+  t_treelpsetat treelpsetat;
 };
 
 /** \brief mutates a tree using a complex mutation
@@ -199,4 +200,8 @@ double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2);
 struct DoubleA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 
 struct DoubleA *treeaNodes(struct TreeAdaptor *ta);
+
+void treealabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
+    int colInd, int nodeNum);
+
 #endif
