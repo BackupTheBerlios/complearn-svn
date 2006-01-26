@@ -143,6 +143,8 @@ src/clog.c \
 src/complearn/treeparser.h \
 src/complearn/clog.h \
 src/clparser.c \
+src/clwrap.c \
+src/complearn/clwrap.h \
 src/partree.c \
 src/complearn/clparser.h
 

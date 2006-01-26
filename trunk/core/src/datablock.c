@@ -95,13 +95,13 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
 {
 	FILE *fp;
 	int err;
-	fp = clfopen(path,"wb");
+	fp = clFopen(path,"wb");
 	err = fwrite(db->ptr,1,db->size,fp);
 	if (err == 0) {
 		printf("Write error to %s!\n", path);
 		exit(1);
 	}
-  clfclose(fp);
+  clFclose(fp);
 }
 
 struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)

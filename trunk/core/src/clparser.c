@@ -32,9 +32,9 @@ struct StringStack *getDefaultFileList(void)
 int doesFileExist(const char *fname)
 {
   FILE *fp;
-  fp = clfopen(fname, "rb");
+  fp = clFopen(fname, "rb");
   if (fp)
-    clfclose(fp);
+    clFclose(fp);
   return fp ? 1 : 0;
 }
 
@@ -110,11 +110,11 @@ int readSpecificFile(struct EnvMap *dest, const char *fname)
 #define MAXLINESIZE 1024
   char linebuf[MAXLINESIZE];
   FILE *fp;
-  fp = clfopen(fname, "rb");
+  fp = clFopen(fname, "rb");
   assert(fp);
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     handleLine(dest, linebuf);
   }
-  clfclose(fp);
+  clFclose(fp);
   return CL_OK;
 }

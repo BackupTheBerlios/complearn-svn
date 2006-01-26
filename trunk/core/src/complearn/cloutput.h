@@ -51,9 +51,6 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
  */
 struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm);
 
-FILE *clfopen(const char *fname, char *mode);
-void clfclose(FILE *fp);
-
 const char *getUsername(void);
 int getPID(void);
 const char *getHostname(void);

@@ -34,7 +34,7 @@ static struct DataBlockEnumerationIterator *dbe_fl_newenumiter(struct DataBlockE
   struct DBEFileListEnumeration *dbe = (struct DBEFileListEnumeration *) (ptr->eptr);
   struct DBEFileListEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
   assert(dbi);
-  dbi->fp = clfopen(dbe->filename, "rb");
+  dbi->fp = clFopen(dbe->filename, "rb");
   dbe_fl_istep(ptr, (struct DataBlockEnumerationIterator *) dbi);
   return (struct DataBlockEnumerationIterator *) dbi;
 }

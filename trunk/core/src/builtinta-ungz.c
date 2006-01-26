@@ -70,8 +70,7 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
   sprintf(tmpfile, "%s/clgztmp-XXXXXX", pbuf);
   fd = mkstemp(tmpfile);
   close(fd);
- 	fp = clfopen(tmpfile,"wb");
-  assert(fp != NULL && "Error opening tmp file!");
+ 	fp = clFopen(tmpfile,"wb");
 	written = fwrite(datablockData(src),1,datablockSize(src),fp);
 	if (written == 0) {
 		exit(1);

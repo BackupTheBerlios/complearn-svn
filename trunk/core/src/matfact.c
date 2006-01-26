@@ -196,11 +196,11 @@ int cltxtRowSize(char *fname)
   FILE *fp;
   int rows = 0;
   char linebuf[MAXLINESIZE];
-  fp = clfopen(fname, "r");
+  fp = clFopen(fname, "r");
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     rows += 1;
   }
-  clfclose(fp);
+  clFclose(fp);
   return rows;
 }
 
@@ -210,14 +210,14 @@ int cltxtColSize(char *fname)
   int cols = 0;
   char *s, linebuf[MAXLINESIZE];
 
-  fp = clfopen(fname, "r");
+  fp = clFopen(fname, "r");
   fgets(linebuf, MAXLINESIZE, fp);
   if ((s = strtok(linebuf, DELIMS)))
     cols += 1;
   while ((s = strtok(NULL, DELIMS))) {
     cols += 1;
   }
-  clfclose(fp);
+  clFclose(fp);
   return cols;
 }
 
@@ -236,8 +236,7 @@ gsl_matrix *cltxtDistMatrix(char *fname)
 
   if (cols > rows) isLabeled = 1;
   result = gsl_matrix_alloc(rows,rows);
-  fp = clfopen(fname, "r");
-
+  fp = clFopen(fname, "r");
 
   for (i = 0; i < rows ; i += 1) {
     struct DoubleA *rowvals;
@@ -248,7 +247,7 @@ gsl_matrix *cltxtDistMatrix(char *fname)
     }
   }
 
-  clfclose(fp);
+  clFclose(fp);
   return result;
 }
 

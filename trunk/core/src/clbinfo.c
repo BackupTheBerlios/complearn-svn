@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
   }
   finish = cldatetimeStaticTimer();
 
-  fp = clfopen(outfile,"a+");
+  fp = clFopen(outfile,"a+");
   fprintf(fp, "%d %d %f %f %f %f %f\n",
       (int) dm->size1, (int) maxtrials, (double) matched / (double) maxtrials,
       finish - start, (finish - start) / (2.0 * maxtrials), log((finish-start)/(2.0*maxtrials))/log(2.0), log(finish-start)/log(2.0));
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   printf("%.2f%% matching tree pairs for %dx%d matrix\n",
       ( 100.0 * (double) matched / (double) maxtrials), (int) dm->size1, (int) dm->size1);
 
-  clfclose(fp);
+  clFclose(fp);
   gsl_matrix_free(dm);
   datablockFreePtr(db);
   datablockFreePtr(dbdm);

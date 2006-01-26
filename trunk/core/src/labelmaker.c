@@ -115,7 +115,7 @@ struct StringStack *cltxtLabels(char *fname)
     exit(1);
   }
   labels = stringstackNew();
-  fp = clfopen(fname, "r");
+  fp = clFopen(fname, "r");
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     stringstackPush(labels, strtok(linebuf,DELIMS));
   }

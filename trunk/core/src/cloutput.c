@@ -368,42 +368,6 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   return result;
 }
 
-FILE *makeTmpCopyStdin(void)
-{
-  static char tmpfile[128];
-  int fd;
-  FILE *fp;
-  if (tmpfile[0] == 0) {
-    struct DataBlock *db = filePtrToDataBlockPtr(stdin);
-    strcpy(tmpfile, "/tmp/clstdintmp-XXXXXX");
-    fd = mkstemp(tmpfile);
-    close(fd);
-    datablockWriteToFile(db, tmpfile);
-    datablockFreePtr(db);
-  }
-  fp = fopen(tmpfile,"r");
-  return fp;
-}
-
-FILE *clfopen(const char *fname, char *mode)
-{
-  if (strcmp(fname,"-") == 0) {
-    return (mode[0] == 'r' ? makeTmpCopyStdin() : stdout);
-  }
-  else
-    return fopen(fname, mode);
-}
-
-void clfclose(FILE *fp)
-{
-  if ( (fp == stdin) || (fp == stdout) )
-    return;
-  else {
-    fclose(fp);
-    return;
-  }
-}
-
 const char *getUsername(void)
 {
   static char username[128];
