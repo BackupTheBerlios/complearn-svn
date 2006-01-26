@@ -167,12 +167,15 @@ void doMasterLoop(void) {
           ms.workers[who].lastScore = 0.0;
         }
         if (tag == MSG_BETTER) {
+          datablockWriteToFile(db, "/home/cilibrar/treema.dot");
           if (score > ms.bestscore) {
             dpt = parseDotDB(db, ms.clbdb);
             datablockFreePtr(ms.bestTree);
             ms.bestTree = db;
-            if (ms.ta)
+            if (ms.ta) {
               treeaFree(ms.ta);
+              ms.ta = NULL;
+            }
             ms.ta = dpt->tree;
             stringstackFree(dpt->labels);
             dpt->labels = NULL;
@@ -204,11 +207,17 @@ void calculateTree(struct SlaveState *ss)
   int result;
   struct TreeHolder *th;
   int failCount = 0;
-  int MAXTRIES = 10;
+  int MAXTRIES = 100;
   assert(ss->dm->size1 >= 4);
   assert(ss->dm->size2 >= 4);
   assert(ss->dm->size1 == ss->dm->size2);
   th = treehNew(ss->dm, ss->ta);
+  if (treehScore(th) != ss->shouldBeScore) {
+    fprintf(stderr, "Early Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
+    fprintf(stderr, "Resending for new from %d\n", my_rank);
+    sendBlock(0, NULL, MSG_ROGUE, 0);
+    goto bail;
+  }
   while (failCount < MAXTRIES) {
     result = treehImprove(th);
     if (result) {
@@ -226,11 +235,12 @@ void calculateTree(struct SlaveState *ss)
   }
 //  assert(treehScore(th) == ss->shouldBeScore);
   if (treehScore(th) != ss->shouldBeScore) {
-    printf("Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
-    printf("Resending for new from %d\n", my_rank);
+    fprintf(stderr, "Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
+    fprintf(stderr, "Resending for new from %d\n", my_rank);
     sendBlock(0, NULL, MSG_ROGUE, 0);
   }
-  sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
+  else
+    sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 bail:
   treehFree(th);
 }
@@ -272,6 +282,7 @@ void doSlaveLoop(void) {
         if (ss.bestdb)
           datablockFreePtr(ss.bestdb);
         ss.bestdb = db;
+          datablockWriteToFile(ss.bestdb, "/home/cilibrar/tree2.dot");
         dpt = parseDotDB(db, ss.dbdm);
         if (dpt->labels) {
           stringstackFree(dpt->labels);
@@ -279,7 +290,7 @@ void doSlaveLoop(void) {
         }
         ss.ta = dpt->tree;
         clFree(dpt);
-        printf("SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
+        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
         break;
 

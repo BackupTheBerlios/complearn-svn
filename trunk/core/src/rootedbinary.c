@@ -375,7 +375,7 @@ struct DoubleA *rootedbinaryLeafLabels(const struct RootedBinary *rb)
 
 struct LabelPerm *rootedbinaryLabelPerm(struct RootedBinary *rb)
 {
-  return rb->labelperm;
+  return labelpermClone(rb->labelperm);
 }
 
 static struct TreeAdaptor *rb_treeclone(struct TreeAdaptor *ta)

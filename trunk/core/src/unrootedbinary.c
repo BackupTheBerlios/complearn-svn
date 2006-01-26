@@ -363,7 +363,7 @@ struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
 
 struct LabelPerm *unrootedbinaryLabelPerm(struct UnrootedBinary *ub)
 {
-  return ub->labelperm;
+  return labelpermClone(ub->labelperm);
 }
 
 struct TreeAdaptor *ub_treeclone(struct TreeAdaptor *ta)
