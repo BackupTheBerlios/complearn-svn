@@ -173,7 +173,7 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
   int howBig = treeaNodeCount(ta);
   const double posRadius = 3.0;
   struct SBS4 *sbs4 = clCalloc(sizeof(*sbs4), 1);
-  //int pairnum = howBig * (howBig-1);
+  int pairnum = howBig * (howBig-1);
   sbs4->d = 3;
   /* initially, there are no springs */
   sbs4->smoothk = gsl_matrix_calloc(howBig, howBig);
@@ -225,6 +225,7 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
     }
   }
 
+  pairnum += 0;
   assert(doubleaSize(sbs4->subsys) == pairnum);
 
   return sbs4;
