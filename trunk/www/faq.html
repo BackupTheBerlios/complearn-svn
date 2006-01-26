@@ -143,6 +143,20 @@ it is unlikely that there will be an exact match for the counts on any
 particular common term because each server must maintain its own distinct
 "aging snapshot" of the internet.</p>
 
+<h3>8. When I compile csoap, I don't seem to be getting shared libraries.
+Or even though csoap is installed, complearn doesn't seem to be detecting
+the shared library.</h3>
+
+<p>Try compiling csoap from source with the following options:
+<pre>
+   --with-libxml-prefix=/usr --enable-shared --with-pic
+</pre>
+
+Then try reconfiguring and recompiling complearn.
+
+<p>Thanks to Tsu Do Nimh for this tip.</p>
+
+
 </div><!-- MAIN END -->
 </div>
 </body>
