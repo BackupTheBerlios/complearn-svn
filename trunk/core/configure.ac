@@ -1,7 +1,7 @@
 AC_INIT(src/ncd.c)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(libcomplearn , 0.8.20, cilibrar@gmail.com)
+AM_INIT_AUTOMAKE(libcomplearn , 0.8.21, cilibrar@gmail.com)
 AC_PROG_CC
 #AC_PROG_LIBTOOL
 AC_PROG_RANLIB
