@@ -218,6 +218,8 @@ void calculateTree(struct SlaveState *ss)
     sendBlock(0, NULL, MSG_ROGUE, 0);
     goto bail;
   }
+  else
+    fprintf(stderr, "verified for %d at  %9.9f\n", my_rank, ss->shouldBeScore);
   while (failCount < MAXTRIES) {
     result = treehImprove(th);
     if (result) {
@@ -225,7 +227,7 @@ void calculateTree(struct SlaveState *ss)
       ta = treehTreeAdaptor(th);
       struct DataBlock *db;
       double newScore =  treehScore(th);
-      db = convertTreeToDot(ss->ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
+      db = convertTreeToDot(ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
       sendBlock(0, db, MSG_BETTER, newScore);
       datablockFreePtr(db);
       treeaFree(ta);
