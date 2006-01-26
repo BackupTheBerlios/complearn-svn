@@ -594,7 +594,7 @@ void sbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed)
 void printSBS(struct SpringBallSystem *sbs)
 {
   int i;
-  printf("t: %f, %d balls\n", sbs->t, sbs->sbs4->smoothk->size1);
+  printf("t: %f, %d balls\n", (float) sbs->t, (int) sbs->sbs4->smoothk->size1);
   for (i = 0; i < sbs->sbs4->smoothk->size1; i += 1) {
     printf("%d: %f %f %f\n",i, sbs->sbs4->statear[i*6+0], sbs->sbs4->statear[i*6+1], sbs->sbs4->statear[i*6+2]);
   }

@@ -35,7 +35,7 @@ int doesFileExist(const char *fname)
   fp = clfopen(fname, "rb");
   if (fp)
     clfclose(fp);
-  return (int) fp;
+  return fp ? 1 : 0;
 }
 
 int readDefaultConfig(struct EnvMap *dest)

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <dlfcn.h>
 #include <zlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -417,7 +418,7 @@ struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
 	dbuff = (unsigned char*)clMalloc(p);
 	s = compress2(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src),0);
 	if (s == Z_BUF_ERROR) {
-		printf ("destLen not big enough!\n");
+		printf ("destLen not big enoughC!\n");
 		exit(1);
 	}
 	if (s != Z_OK) {

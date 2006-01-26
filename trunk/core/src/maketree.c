@@ -197,7 +197,7 @@ int main(int argc, char **argv)
     clFreeandclear(cmd);
   }
 
-  printf("The matrix is %d by %d\n", dm->size1, dm->size2);
+  printf("The matrix is %d by %d\n", (int) dm->size1, (int) dm->size2);
 
   tm = treemasterNewEx(dm, isRooted, cur->em);
   globtm = tm;

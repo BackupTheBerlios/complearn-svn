@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <complearn/complearn.h>
-#include <mpi/mpi.h>
+#include <mpi.h>
 
 #define PROTOTAG 50
 
@@ -148,7 +148,7 @@ void doMasterLoop(void) {
   printf("Read file: %s\n", fname);
   ms.dm = clbDBDistMatrix(ms.clbdb);
   ms.labels = clbDBLabels(ms.clbdb);
-  printf("Loaded distmatrix with %d entries.\n", ms.dm->size1);
+  printf("Loaded distmatrix with %d entries.\n", (int) ms.dm->size1);
   ms.ta = treeaNew(0, ms.dm->size1);
   ms.bestscore = tsScore(ms.ta, ms.dm);
   ms.bestTree = convertTreeToDot(ms.ta, ms.bestscore, ms.labels, NULL, ms.cfg, NULL, ms.dm);
