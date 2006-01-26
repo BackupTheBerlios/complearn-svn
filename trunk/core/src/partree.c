@@ -42,6 +42,7 @@ struct SlaveState {
   struct StringStack *labels;
   struct GeneralConfig *cfg;
   struct TreeAdaptor *ta;
+  struct TreeHolder *th;
   double myLastScore;
   double shouldBeScore;
 };
@@ -121,10 +122,9 @@ void writeBestToFile(struct MasterState *ms)
 void sendExitEveryWhere(void)
 {
   int dest;
-    for (dest = 1; dest < p; dest += 1) {
-      printf("sending MSG_EXIT to %d\n", dest);
-      sendBlock(dest, NULL, MSG_EXIT, 3.3333);
-    }
+  for (dest = 1; dest < p; dest += 1) {
+    sendBlock(dest, NULL, MSG_EXIT, 3.3333);
+  }
 }
 
 void doMasterLoop(void) {
@@ -202,18 +202,26 @@ void doMasterLoop(void) {
   //sendExitEverywhere(&ms);
 }
 
+int maxTrialFunc(int leaves)
+{
+  int minTrials = 4;
+  int result = (leaves*leaves*leaves*leaves)/2000;
+  if (result < minTrials)
+    result = minTrials;
+  return result;
+}
+
 void calculateTree(struct SlaveState *ss)
 {
   int result;
-  struct TreeHolder *th;
   int failCount = 0;
-  int MAXTRIES = 100;
+  int MAXTRIES;
   assert(ss->dm->size1 >= 4);
   assert(ss->dm->size2 >= 4);
   assert(ss->dm->size1 == ss->dm->size2);
-  th = treehNew(ss->dm, ss->ta);
-  if (treehScore(th) != ss->shouldBeScore) {
-    fprintf(stderr, "Early Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
+  MAXTRIES = maxTrialFunc(ss->dm->size1);
+  if (treehScore(ss->th) != ss->shouldBeScore) {
+    fprintf(stderr, "Early Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(ss->th));
     fprintf(stderr, "Resending for new from %d\n", my_rank);
     sendBlock(0, NULL, MSG_ROGUE, 0);
     goto bail;
@@ -224,12 +232,12 @@ void calculateTree(struct SlaveState *ss)
     ;
     }
   while (failCount < MAXTRIES) {
-    result = treehImprove(th);
+    result = treehImprove(ss->th);
     if (result) {
       struct TreeAdaptor *ta = NULL;
-      ta = treehTreeAdaptor(th);
+      ta = treehTreeAdaptor(ss->th);
       struct DataBlock *db;
-      double newScore =  treehScore(th);
+      double newScore =  treehScore(ss->th);
       db = convertTreeToDot(ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
       sendBlock(0, db, MSG_BETTER, newScore);
       datablockFreePtr(db);
@@ -239,15 +247,15 @@ void calculateTree(struct SlaveState *ss)
     failCount += 1;
   }
 //  assert(treehScore(th) == ss->shouldBeScore);
-  if (treehScore(th) != ss->shouldBeScore) {
-    fprintf(stderr, "Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(th));
+  if (treehScore(ss->th) != ss->shouldBeScore) {
+    fprintf(stderr, "Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(ss->th));
     fprintf(stderr, "Resending for new from %d\n", my_rank);
     sendBlock(0, NULL, MSG_ROGUE, 0);
   }
   else
     sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 bail:
-  treehFree(th);
+  return;
 }
 
 void doSlaveLoop(void) {
@@ -261,6 +269,7 @@ void doSlaveLoop(void) {
   ss.dbdm = NULL;
   ss.bestdb = NULL;
   ss.ta = NULL;
+  ss.th = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
     switch (tag) {
@@ -297,6 +306,11 @@ void doSlaveLoop(void) {
           dpt->labels = NULL;
         }
         ss.ta = dpt->tree;
+        if (ss.th) {
+          treehFree(ss.th);
+          ss.th = NULL;
+        }
+        ss.th = treehNew(ss.dm, ss.ta);
         clFree(dpt);
 //        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
