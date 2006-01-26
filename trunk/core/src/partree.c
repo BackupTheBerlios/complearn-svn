@@ -56,6 +56,8 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
 
 int my_rank;
 int p;
+int mustQuit;
+time_t quitTime;
 
 void ignorer(int lameness)
 {
@@ -161,6 +163,10 @@ void doMasterLoop(void) {
       freeguy = findFree(&ms);
       if (freeguy == -1) { /* no free guys */
         int tag;
+        time_t curt;
+        time(&curt);
+        if (mustQuit && (curt > quitTime))
+          bailer(0);
         tag = receiveMessage(&db, &score, &who);
         ms.workers[who].isFree = 1;
         if (tag == MSG_ROGUE) {
@@ -401,6 +407,14 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
 
 int main(int argc, char **argv)
 {
+  int i;
+
+  for (i = 0; i < argc; i += 1)
+    if (i < argc-1 && strcmp(argv[i], "-t") == 0) {
+      mustQuit = 1;
+      quitTime = time(NULL) + atoi(argv[i+1]);
+      break;
+    }
   MPI_Init(&argc, &argv);
     setMPIGlobals();
 
