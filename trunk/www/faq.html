@@ -156,6 +156,48 @@ Then try reconfiguring and recompiling complearn.
 
 <p>Thanks to Tsu Do Nimh for this tip.</p>
 
+<h3>9. Is it important to adjust or choose a compressor?  How should I do it?</h3>
+
+<p>Yes, it is very important to choose a good compressor for your application.
+The "blocksort" compressor is the current default.  It is a virtual compressor
+using a simple blocksorting algorithm.  It will give results something like
+frequency analysis, spectral analysis, and substring matching combined.  It
+works very well for small strings (or files) of 100 bytes or less.  If you have
+more than about 100 bytes then it is probably better to use one of the other
+three favorite compressors other than the default:
+
+<pre>
+ncd -C zlib
+</pre>
+
+will get you "zlib" style compression which is like gzip and is limitted to
+files of up to 15K in size.
+
+<pre>
+ncd -C bzip
+</pre>
+will get you "bzip2" style compression which is like zlib but allows for files
+up to about 450K in size.
+
+The best accuracy is available using the "real compressor" shell option.
+For this to work you need to use a script like this:
+
+<pre>
+#!/bin/bash
+cd /tmp
+cat &gt;infile
+/ufs/cilibrar/bin/ppmd e infile &gt;/dev/null &lt;/dev/null 2&gt;/dev/null
+cat infile.pmd
+rm infile infile.pmd
+</pre>
+
+If you install that script in <b>$HOME/bin/catppmd</b> and don't forget to
+chmod it executable (using <b> chmod a+rx $HOME/bin/catppmd </b> for instance)
+then you can use it with the following option to ncd:
+
+<pre>
+ncd -r $HOME/bin/catppmd
+</pre>
 
 </div><!-- MAIN END -->
 </div>
