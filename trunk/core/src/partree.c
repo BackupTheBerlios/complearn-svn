@@ -55,6 +55,7 @@ void sendExitEveryWhere(void);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
+void clogSendAlert( const char *fmt, ...);
 
 int my_rank;
 int p;
@@ -75,6 +76,14 @@ void bailer(int lameness)
   exit(0);
 }
 
+static void sendAlertForEmit(char *str)
+{
+  if (my_rank == 0)
+    fprintf(stderr, "%s", str);
+  else
+    clogSendAlert("%s", str);
+}
+
 void setMPIGlobals(void) {
   MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -83,6 +92,7 @@ void setMPIGlobals(void) {
   else
     signal(SIGINT, ignorer);
   nice(19);
+  clogSetEmitFunction(sendAlertForEmit);
 }
 
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d)

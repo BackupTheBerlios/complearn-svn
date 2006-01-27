@@ -31,6 +31,7 @@ struct GeneralConfig;
 
 typedef unsigned int t_tagtype;
 
+typedef void (*t_emitfunc)(char *str);
 typedef struct CompAdaptor *(*t_clnewca)(void);
 typedef double (*t_compfunc)(struct CompAdaptor *ca, struct DataBlock *src);
 typedef void (*t_freecompfunc)(struct CompAdaptor *ca);
