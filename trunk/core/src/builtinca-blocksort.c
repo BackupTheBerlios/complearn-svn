@@ -41,8 +41,8 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   /* Obtain workspace in x and p */
   if (CI->allocated < size+1) {
     CI->allocated = 10 + size * 1.2;
-    CI->x = realloc(CI->x, CI->allocated * sizeof(int));
-    CI->p = realloc(CI->p, CI->allocated * sizeof(int));
+    CI->x = clRealloc(CI->x, CI->allocated * sizeof(int));
+    CI->p = clRealloc(CI->p, CI->allocated * sizeof(int));
     if (CI->x==NULL || CI->p==NULL) { clogError("do_compress"); }
   }
   x = CI->x;

@@ -107,8 +107,33 @@ struct DataBlock *distmatrixDump(gsl_matrix *m);
  */
 gsl_matrix *clbDistMatrix(char *fname);
 
+/** \brief Retrieves a gsl_matrix from a CompLearn DataBlock "package"
+ *
+ *  clbDBDistMatrix() takes as input, a DataBlock "package" as created by
+ *  package_DataBlocks().
+ *  \param pointer to DataBlock "package"
+ *  \param pointer to gsl_matrix
+ */
 gsl_matrix *clbDBDistMatrix(struct DataBlock *db);
+
+/** \brief Retrieves a gsl_matrix from a serialized gsl_matrix
+ *
+ *  clbDBDistMatrix() takes as input a serialized gsl_matrix DataBlock as
+ *  created by gslmatrixDump() and returns a pointer to a gsl_matrix. Same as
+ *  gslmatrixLoad(), but without the mustbe parameter.
+ *  \param pointer to DataBlock
+ *  \return pointer to gsl_matrix
+ */
 gsl_matrix *clbDistMatrixLoad(struct DataBlock *db);
+
+/** \brief Retrieves a "serialized" gsl_matrix
+ *
+ * clbDMDataBlock() takes as input the path of a CompLearn Binary file (.clb)
+ * and returns a serialized gsl_matrix as created by gslmatrixDump(). Use
+ * clbDistMatrixLoad() to retrieve the gsl_matrix.
+ * \param pathname of Complearn Binary file
+ * \return pointer to serialized gsl_matrix DataBlock
+ */
 struct DataBlock *clbDMDataBlock(char *fname);
 
 /** \brief Retrieves gsl_matrix from a ASCII text file

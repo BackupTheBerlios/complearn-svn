@@ -54,6 +54,14 @@ void *clCalloc(size_t nmem, size_t size)
   return ptr;
 }
 
+void *clRealloc(void *ptr, size_t size)
+{
+  void *result = realloc(ptr,size);
+  if (result == NULL)
+    clogError("realloc error\n");
+  return result;
+}
+
 void clFree(void *ptr)
 {
   assert(ptr);

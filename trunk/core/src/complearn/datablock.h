@@ -44,13 +44,13 @@ void datablockPrintPtr(struct DataBlock *db);
 
 /** \brief Takes DataBlock db and returns string, including '\\0'.
  *  \param db pointer to DataBlock
+ *  \return ptr to string
  */
 char *datablockToString(struct DataBlock *db);
 
 /** \brief Writes contents of DataBlock ptr to file path.
  *  \param db DataBlock
  *  \param path path to file
- *  \return ptr to string
  */
 void datablockWriteToFile(struct DataBlock *db, const char *path);
 
@@ -74,7 +74,24 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b);
  */
 struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size);
 
+/** \brief Frees DataBlock from memory
+ *
+ *  \param db pointer to DataBlock
+ */
 void datablockFreePtr(struct DataBlock *db);
+
+
+/** \brief Returns size of data buffer
+ *
+ *  \param pointer to DataBlock
+ *  \return size of data buffer
+ */
 int datablockSize(struct DataBlock *db);
+
+/** \brief Returns pointer of data buffer
+ *
+ *  \param pointer to DataBlock
+ *  \return pointer to data buffer
+ */
 unsigned char *datablockData(struct DataBlock *db);
 #endif

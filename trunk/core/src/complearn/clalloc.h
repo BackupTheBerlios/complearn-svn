@@ -1,6 +1,5 @@
 #ifndef __GALLOC_H
-#define __GALLOC_H
-
+#define __GALLOC_H 
 #include <stdlib.h>
 
 /*! \file clalloc.h */
@@ -19,7 +18,7 @@ void *clMalloc(size_t size);
 void *clCalloc(size_t nmem, size_t size);
 void clFree(void *ptr);
 char *clStrdup(const char *inp);
-
+void *clRealloc(void *ptr, size_t size);
 #endif
 
 #define clFreeandclear(x) do { clFree(x); x = NULL; } while(0)
