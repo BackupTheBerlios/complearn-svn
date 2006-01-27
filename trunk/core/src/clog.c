@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-struct Clog { /* TODO: more */
+struct Clog { /* NL */
   FILE *fp;
 };
 

@@ -2,6 +2,7 @@
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <complearn/complearn.h>
 #include <mpi.h>
@@ -16,6 +17,7 @@
 #define MSG_BETTER 5
 #define MSG_NOBETTER 6
 #define MSG_ROGUE 7
+#define MSG_ALERT 8
 
 struct MasterSlaveModel {
   int isFree;
@@ -101,6 +103,21 @@ int findFree(struct MasterState *ms)
   return -1;
 }
 
+void clogSendAlert( const char *fmt, ...)
+{
+  va_list args;
+  static char buf[16384];
+  struct DataBlock *db;
+  int len;
+  va_start(args, fmt);
+  vsprintf(buf, fmt, args);
+  va_end( args );
+  len = strlen(buf);
+  db = datablockNewFromBlock(buf,len+1);
+  sendBlock(0, db, MSG_ALERT, 0.0);
+  datablockFreePtr(db);
+}
+
 double tsScore(struct TreeAdaptor *ta, gsl_matrix *gm)
 {
   struct TreeScore *ts;
@@ -168,6 +185,11 @@ void doMasterLoop(void) {
         if (mustQuit && (curt > quitTime))
           bailer(0);
         tag = receiveMessage(&db, &score, &who);
+        if (tag == MSG_ALERT) {
+          fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
+          datablockFreePtr(db);
+          continue;
+        }
         ms.workers[who].isFree = 1;
         if (tag == MSG_ROGUE) {
           ms.workers[who].lastScore = 0.0;
@@ -278,6 +300,7 @@ void doSlaveLoop(void) {
   ss.th = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
+    clogSendAlert("got tag %d with db %p\n", tag, db);
     switch (tag) {
 
       case MSG_EXIT:
