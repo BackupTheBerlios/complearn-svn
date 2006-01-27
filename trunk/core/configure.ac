@@ -26,6 +26,47 @@ echo "CompLearn dependency status:" >$DEPSTATUSNAME
 echo "CompLearn steps recommended:" >$RECSTEPNAME
 echo "CompLearn steps required:" >$REQSTEPNAME
 
+
+fgsl_rdy=0;      fgsl_lib=0;      fgsl_h=0;
+AC_ARG_WITH(gsl,[--with-gsl=PREFIX   where gsl is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_ENABLE(gsl,
+  [  --enable-gsl            enable gsl support (yes)], , enable_gsl=yes)
+if test "x$enable_gsl" == "xyes";
+then
+  AC_CHECK_LIB(gslcblas,cblas_srot,
+    [ LIBS="$LIBS -lgslcblas" ;
+    AC_CHECK_LIB(gsl,gsl_eigen_symm_alloc,
+      [ LIBS="$LIBS -lgsl -lgslcblas" ; fgsl_lib=1]) ]
+  )
+fi
+AC_CHECK_HEADER([gsl/gsl_matrix.h], [fgsl_h=1])
+
+if test ${fgsl_lib} -eq 1 -a ${fgsl_h} -eq 1; then
+    fgsl_rdy=1 ; AC_DEFINE(GSL_RDY, 1, has gsl library)
+fi
+
+if test ${fgsl_rdy} -eq 0; then
+  AC_MSG_ERROR([
+
+Can not find Gnu Scientific Library gsl and gslcblas libraries on your system.
+
+CompLearn will not compile. Download from
+
+http://ftp.gnu.org/gnu/gsl             (version 1.6 is tested)
+
+ or
+
+apt-get install libgsl0-dev
+
+Already installed?: specify prefix with ./configure --with-gsl=PREFIX
+])
+fi
+unset fgsl_rdy
+unset fgsl_h
+unset fgsl_lib
+
+
+
 fbzip2_rdy=0;    fbzip2_lib=0;    fbzip2_h=0;
 fsdl_rdy=0;      fsdl_lib=0;      fsdlttf_lib=0;
 fsdl_h=0;        fsdlttf_h=0;     fsdlthread_h=0;
@@ -36,7 +77,6 @@ fgdbm_rdy=0;     fgdbm_lib=0;     fgdbm_h=0;
 fcsoap_rdy=0;    fcsoap_lib=0;    fcsoap_h=0;
 fnanohttp_rdy=0; fnanohttp_lib=0; fnanohttp_h=0;
 fxml2_rdy=0;     fxml2_lib=0;     fxml2_h=0;
-fgsl_rdy=0;      fgsl_lib=0;      fgsl_h=0;
 fmpi_rdy=0;      fmpi_lib=0;      fmpi_h=0;
 fdlfcn_rdy=0;    fdlfcn_lib=0;    fdlfcn_h=0;
 fgetopt_rdy=0;   fgetopt_lib=0;   fgetopt_h=0;
@@ -110,7 +150,6 @@ AC_ARG_WITH(xml2,[--with-xml2=PREFIX   where xml2 is installed], [ CPPFLAGS="$CP
 AC_ARG_WITH(csoap,[--with-csoap=PREFIX   where csoap is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include/nanohttp-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(gtk,[--with-gtk=PREFIX   where gtk+ (version 2.0) is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(nanohttp,[--with-nanohttp=PREFIX   where nanohttp is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/nanohttp-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-AC_ARG_WITH(gsl,[--with-gsl=PREFIX   where gsl is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(gdbm,[--with-gdbm=PREFIX   where gdbm is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(sdl,[--with-sdl=PREFIX   where SDL is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(sdl_ttf,[--with-sdl_ttf=PREFIX   where SDL_ttf is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
@@ -221,18 +260,6 @@ then
   )
 fi
 
-AC_ARG_ENABLE(gsl,
-  [  --enable-gsl            enable gsl support (yes)], , enable_gsl=yes)
-if test "x$enable_gsl" == "xyes";
-then
-  AC_CHECK_LIB(gslcblas,cblas_srot,
-    [ LIBS="$LIBS -lgslcblas" ;
-    AC_CHECK_LIB(gsl,gsl_eigen_symm_alloc,
-      echo "Enabling GSL support."
-      [ LIBS="$LIBS -lgsl -lgslcblas" ; fgsl_lib=1]) ]
-  )
-fi
-
 AC_ARG_ENABLE(bzip2,
   [  --enable-bzip2            enable bzip2 (yes)], , enable_bzip2=yes)
 if test "x$enable_bzip2" == "xyes";
@@ -283,7 +310,6 @@ AC_CHECK_FUNC(gettimeofday,
   [Define if the gettimeofday function is available])])
 AC_CHECK_HEADER([libxml/xpath.h], [fxml2_h=1])
 AC_CHECK_HEADER([gdbm.h], [fgdbm_h=1])
-AC_CHECK_HEADER([gsl/gsl_matrix.h], [fgsl_h=1])
 AC_CHECK_HEADER([dlfcn.h], [fdlfcn_h=1])
 AC_CHECK_HEADER([getopt.h], [fgetopt_h=1])
 AC_CHECK_HEADER([zlib.h], [fzlib_h=1])
@@ -454,14 +480,6 @@ fi
 
 if test ${fzlib_lib} -eq 1 -a ${fzlib_h} -eq 1; then
     fzlib_rdy=1 ; AC_DEFINE(ZLIB_RDY, 1, has zlib library)
-fi
-
-if test ${fgsl_lib} -eq 1 -a ${fgsl_h} -eq 1; then
-    fgsl_rdy=1 ; AC_DEFINE(GSL_RDY, 1, has gsl library)
-fi
-
-if test ${fgsl_rdy} -eq 0; then
-  AC_MSG_ERROR(Can not find gsl and gslcblas libraries on your system. CompLearn will not compile. Download from http://ftp.gnu.org/gnu/gsl/gsl-1.6.tar.gz or apt-get install libgsl0-dev . Already installed?: specify prefix with --with-gsl=PREFIX)
 fi
 
 if test ${fgdbm_lib} -eq 1 -a ${fgdbm_h} -eq 1; then
