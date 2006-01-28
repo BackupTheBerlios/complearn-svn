@@ -14,7 +14,11 @@ struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
   struct StringStack *result = stringstackNew();
   struct DataBlock *cur = NULL;
   struct TagManager *tm;
-  struct TagHdr *h = (struct TagHdr *) datablockData(db);
+  struct TagHdr *h;
+  if (db == NULL) {
+    clogError("NULL ptr in stringstackLoad()\n");
+  }
+  h = (struct TagHdr *) datablockData(db);
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
@@ -46,6 +50,9 @@ struct DataBlock *stringstackDump(const struct StringStack *ss)
   struct DataBlock *result;
   struct DoubleA *parts = doubleaNew();
   int i;
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackDump()\n");
+  }
 
   for ( i = 0; i < stringstackSize(ss); i += 1) {
     union PCTypes p = zeropct;
@@ -61,8 +68,11 @@ struct DataBlock *stringstackDump(const struct StringStack *ss)
 
 struct StringStack *stringstackNewSingle(const char *str)
 {
-	struct StringStack *ss;
+  struct StringStack *ss;
   ss = stringstackNew();
+  if (str == NULL) {
+    clogError("NULL ptr in stringstackNewSingle()\n");
+  }
   stringstackPush(ss, str);
   return ss;
 }
@@ -80,6 +90,9 @@ struct StringStack *stringstackClone(struct StringStack *ss)
 {
   struct StringStack *nss;
   int i, sz;
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackClone()\n");
+  }
   sz = stringstackSize(ss);
   nss = stringstackNew();
   for (i = 0; i < sz; ++i) {
@@ -93,6 +106,9 @@ struct StringStack *stringstackClone(struct StringStack *ss)
 int stringstackFree(struct StringStack *ss)
 {
   int i;
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackFree()\n");
+  }
   for (i = 0; i < doubleaSize(ss->da); i += 1) {
     clFree(doubleaGetValueAt(ss->da, i).str);
   }
@@ -105,6 +121,9 @@ int stringstackFree(struct StringStack *ss)
 int stringstackUnshift(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
+  if (ss == NULL || str == NULL) {
+    clogError("NULL ptr in stringstackUnshift()\n");
+  }
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
@@ -115,6 +134,9 @@ int stringstackUnshift(struct StringStack *ss, const char *str)
 int stringstackPush(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
+  if (ss == NULL || str == NULL) {
+    clogError("NULL ptr in stringstackPush()\n");
+  }
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
@@ -124,11 +146,17 @@ int stringstackPush(struct StringStack *ss, const char *str)
 
 int stringstackIsEmpty(struct StringStack *ss)
 {
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackIsEmpty()\n");
+  }
 	return doubleaSize(ss->da) == 0;
 }
 
 int stringstackSize(const struct StringStack *ss)
 {
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackSize()\n");
+  }
 	return doubleaSize(ss->da);
 }
 
@@ -138,6 +166,9 @@ int stringstackSize(const struct StringStack *ss)
 char *shiftSS(struct StringStack *ss)
 {
   union PCTypes p;
+  if (ss == NULL) {
+    clogError("NULL ptr in shiftSS()\n");
+  }
   assert(stringstackSize(ss) > 0);
   memset(&p, 0, sizeof(p));
 	if (stringstackSize(ss) == 0) return p.str;
@@ -152,6 +183,9 @@ char *stringstackPop(struct StringStack *ss)
 {
   union PCTypes p;
   memset(&p, 0, sizeof(p));
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackPop()\n");
+  }
 	if (stringstackSize(ss) == 0) return p.str;
 	p = doubleaPop(ss->da);
   return p.str;
@@ -159,13 +193,19 @@ char *stringstackPop(struct StringStack *ss)
 
 char *stringstackReadAt(struct StringStack *ss, int i)
 {
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackReadAt()\n");
+  }
 	return doubleaGetValueAt(ss->da, i).str;
 }
 
 int stringstackSort(struct StringStack *ss)
 {
-  int flipped, i;
-  int sz = stringstackSize(ss);
+  int flipped, i, sz;
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackSort()\n");
+  }
+  sz = stringstackSize(ss);
   do {
     flipped = 0;
     for (i = 1; i < sz; ++i) {
@@ -182,6 +222,9 @@ struct StringStack *stringstackMerge(struct StringStack *ssa, struct StringStack
 {
   struct StringStack *result;
   int i;
+  if (ssa == NULL || ssb == NULL) {
+    clogError("NULL ptr in stringstackMerge()\n");
+  }
   result = stringstackClone(ssa);
   for (i = 0; i < stringstackSize(ssb); i += 1)
     stringstackPush(result, stringstackReadAt(ssb, i));
@@ -191,6 +234,9 @@ struct StringStack *stringstackMerge(struct StringStack *ssa, struct StringStack
 void stringstackPrint(struct StringStack *ss)
 {
   int i;
+  if (ss == NULL) {
+    clogError("NULL ptr in stringstackPrint()\n");
+  }
   for (i = 0; i < stringstackSize(ss); i += 1)
     printf("%s\n", stringstackReadAt(ss, i));
 }

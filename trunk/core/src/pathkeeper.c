@@ -35,32 +35,52 @@ static struct AdjImplementation pkimpl = {
 
 int pk_getneighborcount(struct AdjAdaptor *ad, int i)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_getneighborcount()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   return adjaNeighborCount(pk->basis, i);
 }
 
 int pk_getneighbors(struct AdjAdaptor *ad, int i, int *nbuf, int *nsize)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_getneighbors()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   return adjaNeighbors(pk->basis, i, nbuf, nsize);
 }
 
 void pk_print(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_print()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
  // printf("PathKeeper around:\n");
   adjaPrint(pk->basis);
 }
 
 int pk_getconstate(struct AdjAdaptor *ad, int i, int j)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_getconstate()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   return adjaGetConState(pk->basis, i, j);
 }
 
 static void pk_freespmifpresent(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_freespmifpresent()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap) {
     freeSPMMap(pk->spmmap);
     pk->spmmap = NULL;
@@ -69,15 +89,23 @@ static void pk_freespmifpresent(struct AdjAdaptor *ad)
 
 void pk_setconstate(struct AdjAdaptor *ad, int i, int j, int which)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_setconstate()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   adjaSetConState(pk->basis, i, j, which);
   pk_freespmifpresent(ad);
 }
 
 struct AdjAdaptor *pk_clone(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   struct PathKeeper *pkc = clCalloc(sizeof(*pkc), 1);
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_clone()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   pkc->basis = adjaClone(pk->basis);
   pkc->outer = pk->outer;
   pkc->outer.ptr = pkc;
@@ -86,13 +114,21 @@ struct AdjAdaptor *pk_clone(struct AdjAdaptor *ad)
 
 int pk_size(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_size()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   return adjaSize(pk->basis);
 }
 
 static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_spmmap()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap == NULL) {
     pk->spmmap = makeSPMMap(ad);
   }
@@ -101,7 +137,11 @@ static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
 
 void pk_free(struct AdjAdaptor *ad)
 {
-  struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
+  struct PathKeeper *pk;
+  if (ad == NULL) {
+    clogError("NULL ptr in pk_free()\n");
+  }
+  pk = (struct PathKeeper *) ad->ptr;
   pk_freespmifpresent(ad);
   adjaFree(pk->basis);
   memset(pk, 0, sizeof(*pk));
@@ -111,6 +151,9 @@ void pk_free(struct AdjAdaptor *ad)
 struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis)
 {
   struct PathKeeper *pk = clCalloc(sizeof(*pk), 1);
+  if (basis == NULL) {
+    clogError("NULL ptr in newPathKeeper()\n");
+  }
   pk->basis = basis;
   pk->outer.ptr = pk;
   pk->outer.vptr = &pkimpl;
@@ -122,6 +165,9 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
   int pathlen = 0;
   struct DoubleA *spmmap = adjaSPMMap(ad);
   const struct DoubleA *spm = doubleaGetValueAt(spmmap, to).ar;
+  if (ad == NULL) {
+    clogError("NULL ptr in pathFinder()\n");
+  }
   qbase_t cur;
   cur = from;
   //printf("Got path request from %d to %d with bufsize %d:  ", from, to, *bufsize);
@@ -165,6 +211,9 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
 
 void freeSPMMap(struct DoubleA *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in freeSPMMap()\n");
+  }
   doubleaDeepFree(ub, 1);
 }
 
