@@ -8,7 +8,7 @@
 
 const union PCTypes zeropct;
 const union PCTypes onepcti = { .i = 1 };
-static void makeSizeFor(struct DoubleA *da, int where);
+void makeSizeFor(struct DoubleA *da, int where);
 
 struct DoubleA {
   int alloc, size, elemsize;
@@ -27,9 +27,6 @@ struct DAHdr {
 union PCTypes doubleaRandom(const struct DoubleA *da)
 {
   int i;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaRandom()\n");
-  }
   assert(da->size > 0);
   i = rand() % da->size;
   return da->pc[i];
@@ -67,17 +64,11 @@ struct DoubleA *doubleaNew(void)
 
 int doubleaSize(const struct DoubleA *a)
 {
-  if (a == NULL) {
-    clogError("NULL ptr in doubleaSize()\n");
-  }
   return a->size;
 }
 
 double doubleaGetDValueAt(struct DoubleA *da, int where)
 {
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaGetDValueAt()\n");
-  }
   return doubleaGetValueAt(da, where).d;
 }
 
@@ -100,9 +91,6 @@ isBad:
 union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
 {
 #if LOGICWALL
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaGetValueAt()\n");
-  }
   assert(da);
   assert(da->pc && "tried to access freed DoubleA");
   doubleaVerify(da);
@@ -119,9 +107,6 @@ union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
 
 void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p)
 {
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaSetValueAt()\n");
-  }
   assert(da);
   assert(where >= 0);
   makeSizeFor(da, where);
@@ -133,18 +118,12 @@ void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p)
 void doubleaSetDValueAt(struct DoubleA *da, int where, double val)
 {
   union PCTypes pc;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaSetDValueAt()\n");
-  }
   pc.d = val;
   doubleaSetValueAt(da, where, pc);
 }
 
-static void makeSizeFor(struct DoubleA *da, int where)
+void makeSizeFor(struct DoubleA *da, int where)
 {
-  if (da == NULL) {
-    clogError("NULL ptr in makeSizeFor()\n");
-  }
   while (where >= da->alloc) {
     union PCTypes *newBlock;
     int newAlloc = da->alloc * 2;
@@ -159,11 +138,7 @@ static void makeSizeFor(struct DoubleA *da, int where)
 
 union PCTypes doubleaShift(struct DoubleA *da)
 {
-  union PCTypes result;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaShift()\n");
-  }
-  result = da->pc[0];
+  union PCTypes result = da->pc[0];
   assert(da->size > 0);
   memmove(da->pc, da->pc+1, (da->size-1) * sizeof(da->pc[0]));
   da->size -= 1;
@@ -172,11 +147,7 @@ union PCTypes doubleaShift(struct DoubleA *da)
 
 union PCTypes doubleaPop(struct DoubleA *da)
 {
-  union PCTypes result;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaPop()\n");
-  }
-  result  = da->pc[da->size-1];
+  union PCTypes result = da->pc[da->size-1];
   assert(da->size > 0);
   memset(da->pc+(da->size-1), 0, sizeof(da->pc[0]));
   da->size -= 1;
@@ -185,9 +156,6 @@ union PCTypes doubleaPop(struct DoubleA *da)
 
 void doubleaUnshift(struct DoubleA *da, union PCTypes p)
 {
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaUnshift()\n");
-  }
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
@@ -216,9 +184,6 @@ void doubleaUnshift(struct DoubleA *da, union PCTypes p)
 
 void doubleaPush(struct DoubleA *da, union PCTypes p)
 {
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaPush()\n");
-  }
 #if LOGICWALL
   assert(da->size >= 0);
   assert(da->pc);
@@ -230,9 +195,6 @@ void doubleaPush(struct DoubleA *da, union PCTypes p)
 int doubleaSwapAt(struct DoubleA *da, int inda, int indb)
 {
   union PCTypes tmp;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaSwapAt()\n");
-  }
   assert(da);
   assert(inda >= 0);
   assert(indb >= 0);
@@ -246,18 +208,12 @@ int doubleaSwapAt(struct DoubleA *da, int inda, int indb)
 
 struct DoubleA *doubleaClone(const struct DoubleA *ptr)
 {
-  if (ptr == NULL) {
-    clogError("NULL ptr in doubleaClone()\n");
-  }
   assert(ptr);
   return doubleaDeepClone(ptr, 0);
 }
 
 void doubleaDeepFree(struct DoubleA *ptr, int lvl)
 {
-  if (ptr == NULL) {
-    clogError("NULL ptr in doubleaDeepFree()\n");
-  }
   assert(ptr);
   if (lvl) {
     int i;
@@ -271,12 +227,8 @@ void doubleaDeepFree(struct DoubleA *ptr, int lvl)
 struct DoubleA *doubleaDeepClone(const struct DoubleA *ptr, int lvl)
 {
   struct DoubleA *result = doubleaNew();
-  int sz;
+  int sz = doubleaSize(ptr);
   int i;
-  if (ptr == NULL) {
-    clogError("NULL ptr in doubleaDeepClone()\n");
-  }
-  sz = doubleaSize(ptr);
   for (i = 0; i < sz; ++i) {
     union PCTypes p = zeropct;
     if (lvl)
@@ -291,9 +243,6 @@ struct DoubleA *doubleaDeepClone(const struct DoubleA *ptr, int lvl)
 void doubleaPrintIntList(const struct DoubleA *da)
 {
   int i;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaPrintIntList()\n");
-  }
   for (i = 0; i < da->size; ++i)
     printf("%d ", da->pc[i].i);
   printf("\n");
@@ -302,9 +251,6 @@ void doubleaPrintIntList(const struct DoubleA *da)
 void doubleaPrintIntPairList(const struct DoubleA *da)
 {
   int i;
-  if (da == NULL) {
-    clogError("NULL ptr in doubleaPrintIntPairList()\n");
-  }
   for (i = 0; i < da->size; i += 1)
     printf("(%d,%d) ", da->pc[i].ip.x, da->pc[i].ip.y);
   printf("\n");
@@ -317,9 +263,6 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
   struct DAHdr *ddh;
   struct DoubleA *result;
   unsigned char *cur;
-  if (d == NULL) {
-    clogError("NULL ptr in doubleaLoad()\n");
-  }
   cur = datablockData(d) + sizeof(*h) + sizeof(*ddh);
   h = (struct TagHdr *) datablockData(d);
   ddh = (struct DAHdr *) (datablockData(d) + sizeof(*h));
@@ -354,9 +297,6 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
 
 struct DataBlock *doubleaDump(const struct DoubleA *d)
 {
-  if (d == NULL) {
-    clogError("NULL ptr in doubleaDump()\n");
-  }
   return doubleaDeepDump(d, 0);
 }
 
@@ -369,9 +309,6 @@ struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
 
   struct TagHdr h;
   struct DAHdr ddh;
-  if (d == NULL) {
-    clogError("NULL ptr in doubleaDeepDump()\n");
-  }
   dbsize = 0;
 
   ddh.level = level;
@@ -419,10 +356,6 @@ struct DataBlock *stringDump(const char *s)
   struct TagHdr h;
   int dbsize;
 
-  if (s == NULL) {
-    clogError("NULL ptr in stringDump()\n");
-  }
-
   h.tagnum = TAGNUM_STRING;
   h.size = strlen(s);
   dbsize = h.size + sizeof(h);
@@ -439,9 +372,6 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
   char *result;
   struct TagHdr *h = (struct TagHdr *) datablockData(db);
 
-  if (db == NULL) {
-    clogError("NULL ptr in stringLoad()\n");
-  }
   if (h->tagnum != TAGNUM_STRING) {
     if (fmustbe) {
       clogError("Error: expecting STRING tagnum %x, got %x\n",

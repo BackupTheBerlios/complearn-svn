@@ -26,45 +26,70 @@ echo "CompLearn dependency status:" >$DEPSTATUSNAME
 echo "CompLearn steps recommended:" >$RECSTEPNAME
 echo "CompLearn steps required:" >$REQSTEPNAME
 
+dnl GNU scientific libary
 
-fgsl_rdy=0;      fgsl_lib=0;      fgsl_h=0;
-AC_ARG_WITH(gsl,[--with-gsl=PREFIX   where gsl is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-AC_ARG_ENABLE(gsl,
-  [  --enable-gsl            enable gsl support (yes)], , enable_gsl=yes)
-if test "x$enable_gsl" == "xyes";
-then
-  AC_CHECK_LIB(gslcblas,cblas_srot,
-    [ LIBS="$LIBS -lgslcblas" ;
-    AC_CHECK_LIB(gsl,gsl_eigen_symm_alloc,
-      [ LIBS="$LIBS -lgsl -lgslcblas" ; fgsl_lib=1]) ]
-  )
+have_gsl=auto
+GSL_PATH="$PATH"
+GSL_CONFIG=''
+GSL_CFLAGS=''
+GSL_LIBS=''
+AC_ARG_WITH(gsl,
+	AC_HELP_STRING([--with-gsl=DIR],
+		[GNU scientific library is installed in DIR]),
+	have_gsl="$withval")
+case "$have_gsl" in
+yes|no|auto)
+	;;
+*)
+	GSL_PATH="$withval/bin:$PATH"
+	;;
+esac
+if test "x$have_gsl" != xno; then
+	AC_PATH_PROG(GSL_CONFIG,gsl-config,,$GSL_PATH)
+	if test "x$GSL_CONFIG" = x; then
+		if test "x$have_gsl" = xyes; then
+			AC_MSG_ERROR([gsl-config not found; use --with-gsl=<path>])
+		fi
+		have_gsl=no
+	fi
 fi
-AC_CHECK_HEADER([gsl/gsl_matrix.h], [fgsl_h=1])
-
-if test ${fgsl_lib} -eq 1 -a ${fgsl_h} -eq 1; then
-    fgsl_rdy=1 ; AC_DEFINE(GSL_RDY, 1, has gsl library)
+if test "x$have_gsl" != xno; then
+	GSL_CFLAGS="`$GSL_CONFIG --cflags`"
+	GSL_LIBS="`$GSL_CONFIG --libs`"
+	save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS $GSL_CFLAGS"
+	AC_CHECK_HEADER(gsl/gsl_matrix.h, :, [if test "x$have_gsl" != xauto; then AC_MSG_ERROR([gsl/gsl.h not found]); fi; have_gsl=no])
+	CPPFLAGS="$save_CPPFLAGS"
 fi
-
-if test ${fgsl_rdy} -eq 0; then
-  AC_MSG_ERROR([
-
-Can not find Gnu Scientific Library gsl and gslcblas libraries on your system.
-
-CompLearn will not compile. Download from
-
-http://ftp.gnu.org/gnu/gsl             (version 1.6 is tested)
-
- or
-
-apt-get install libgsl0-dev
-
-Already installed?: specify prefix with ./configure --with-gsl=PREFIX
-])
+if test "x$have_gsl" != xno; then
+	save_LIBS="$LIBS"
+    	LIBS="$LIBS $GSL_LIBS"
+    	AC_CHECK_LIB(gsl, gsl_eigen_symm_alloc, :, [if test "x$have_gsl" != xauto; then AC_MSG_ERROR([-lgsl not found]); fi; have_gsl=no])
+    	LIBS="$save_LIBS"
 fi
-unset fgsl_rdy
-unset fgsl_h
-unset fgsl_lib
+if test "x$have_gsl" != xno; then
+	AC_DEFINE(GSL_RDY, 1, [Define if you have the GNU scientific library])
+fi
+AC_SUBST(GSL_CFLAGS)
+AC_SUBST(GSL_LIBS)
 
+dnl
+dnl if test "x$have_gsl" = xno; then 
+dnl  AC_MSG_ERROR([
+dnl
+dnl Can not find Gnu Scientific Library gsl and gslcblas libraries on your system.
+dnl 
+dnl CompLearn will not compile. Download from
+dnl 
+dnl http://ftp.gnu.org/gnu/gsl             (version 1.6 is tested)
+dnl 
+dnl  or
+dnl 
+dnl apt-get install libgsl0-dev
+dnl 
+dnl Already installed?: specify prefix with ./configure --with-gsl=PREFIX
+dnl ])
+dnl fi
 
 
 fbzip2_rdy=0;    fbzip2_lib=0;    fbzip2_h=0;
@@ -248,17 +273,44 @@ then
 fi
 
 
-AC_ARG_ENABLE(mpi,
-  [  --enable-mpi            enable mpi support (yes)], , enable_mpi=yes)
-if test "x$enable_mpi" == "xyes";
-then
-  AC_CHECK_LIB(mpicblas,cblas_srot,
-    [ LIBS="$LIBS -lmpicblas" ;
-    AC_CHECK_LIB(mpi,mpi_eigen_symm_alloc,
-      echo "Enabling MPI support."
-      [ LIBS="$LIBS -lmpi" ; fmpi_lib=1]) ]
-  )
+dnl mpi 
+
+have_mpi=auto
+MPI_PATH="$PATH"
+MPI_CONFIG=''
+MPI_CFLAGS=''
+MPI_LIBS=''
+AC_ARG_WITH(mpi,
+	AC_HELP_STRING([--with-mpi=DIR],
+		[MPI library is installed in DIR]),
+	have_mpi="$withval")
+case "$have_mpi" in
+yes|no|auto)
+	;;
+*)
+	MPI_PATH="$withval/bin:$PATH"
+	MPI_LIBS="-L$withval/lib"
+	MPI_CFLAGS="-I$withval/include"
+	;;
+esac
+if test "x$have_mpi" != xno; then
+	save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS $MPI_CFLAGS"
+	AC_CHECK_HEADER(mpi.h, :, [if test "x$have_mpi" != xauto; then AC_MSG_ERROR([mpi.h not found]); fi; have_mpi=no])
+	CPPFLAGS="$save_CPPFLAGS"
 fi
+if test "x$have_mpi" != xno; then
+	save_LIBS="$LIBS"
+    	LIBS="$LIBS $MPI_LIBS"
+    	AC_CHECK_LIB(mpi, MPI_Comm_rank, :, [if test "x$have_mpi" != xauto; then AC_MSG_ERROR([-lmpi not found]); fi; have_mpi=no])
+    	LIBS="$save_LIBS"
+fi
+if test "x$have_mpi" != xno; then
+	AC_DEFINE(MPI_RDY, 1, [Define if you have a MPI library])
+fi
+AC_SUBST(MPI_CFLAGS)
+AC_SUBST(MPI_LIBS)
+
 
 AC_ARG_ENABLE(bzip2,
   [  --enable-bzip2            enable bzip2 (yes)], , enable_bzip2=yes)
@@ -334,9 +386,9 @@ AC_CHECK_HEADER([glib.h], [fglib_h=1])
 AC_CHECK_HEADER([pango/pango.h], [fpango_h=1])
 AC_CHECK_HEADER([atk/atk.h], [fatk_h=1])
 
-CPPFLAGS="$CPPFLAGS -I/usr/local/include"
-CFLAGS="$CFLAGS -I/usr/local/include -I/usr/include/mpi"
-LDFLAGS="$LDFLAGS -I/usr/local/lib"
+#CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+#CFLAGS="$CFLAGS -I/usr/local/include"
+#LDFLAGS="$LDFLAGS -I/usr/local/lib"
 
 eval "eval TOP_SRC_DIR=${top_srcdir}"
 AC_SUBST(TOP_SRC_DIR)
@@ -431,7 +483,7 @@ AC_CHECK_LIB(opengl32, main,
 AC_CHECK_LIB(GLU, main,
     [LIBS="$LIBS -lGLU" ; fglu_lib=1])
 
-AC_CHECK_LIB(m,main,
+AC_CHECK_LIB(m,sqrt,
     echo "Enabling math library (-lm) support."
     [LIBS="$LIBS -lm" ; fmath_lib=1])
 
@@ -591,7 +643,7 @@ else
   echo "bzip2             YES" >>$DEPSTATUSNAME
 fi
 
-if test ${fgsl_rdy} -eq 0; then
+if test "x${have_gsl}" = xno; then
   echo 'Warning: gsl and gslcblas libraries not found; matrix support
     Download from http://ftp.gnu.org/gnu/gsl/ or
     apt-get install libgsl0-dev

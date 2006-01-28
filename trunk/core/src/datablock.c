@@ -40,10 +40,6 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
   unsigned char *partsbuf;
   struct DataBlock *result;
 
-  if (fp == NULL) {
-    clogError("NULL ptr in filePtrToDataBlockPtr()\n");
-  }
-
   totalbytes = 0;
 	while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
     union PCTypes p;
@@ -89,9 +85,6 @@ void datablockPrintPtr(struct DataBlock *db)
 char *datablockToString(struct DataBlock *db)
 {
   char *s;
-  if (db == NULL) {
-    clogError("NULL ptr in datablockToString()\n");
-  }
   s = clMalloc(db->size+1);
   memcpy(s, db->ptr, db->size);
 	s[db->size] = '\0';
@@ -102,9 +95,6 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
 {
 	FILE *fp;
 	int err;
-  if (db == NULL) {
-    clogError("NULL ptr in datablockWriteToFile()\n");
-  }
 	fp = clFopen(path,"wb");
 	err = fwrite(db->ptr,1,db->size,fp);
 	if (err == 0) {
@@ -117,11 +107,7 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
 struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 {
 	struct DataBlock *d;
-  int sz;
-  if (a == NULL || b == NULL) {
-    clogError("NULL ptr in datablockCatPtr()\n");
-  }
-  sz = a->size + b->size;
+  int sz = a->size + b->size;
   d = clCalloc(sz, 1);
 	d->size = sz;
 	d->ptr = (unsigned char*)clMalloc(d->size);
@@ -132,9 +118,6 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 
 struct DataBlock *datablockClonePtr(struct DataBlock *db)
 {
-  if (db == NULL) {
-    clogError("NULL ptr in datablockCatPtr()\n");
-  }
   return datablockNewFromBlock(datablockData(db),datablockSize(db));
 }
 
@@ -150,16 +133,10 @@ struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
 
 int datablockSize(struct DataBlock *db)
 {
-  if (db == NULL) {
-    clogError("NULL ptr in datablockSize()\n");
-  }
   return db->size;
 }
 
 unsigned char *datablockData(struct DataBlock *db)
 {
-  if (db == NULL) {
-    clogError("NULL ptr in datablockData()\n");
-  }
   return db->ptr;
 }

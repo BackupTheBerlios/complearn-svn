@@ -251,29 +251,6 @@ gsl_matrix *cltxtDistMatrix(char *fname)
   return result;
 }
 
-int cltxtToCLB(char *source, char *dest)
-{
-  struct DataBlock *dmdb, *labelsdb, *clbdb;
-  gsl_matrix *dm;
-  struct StringStack *labels;
-
-  dm = cltxtDistMatrix(source);
-  labels = cltxtLabels(source);
-  dmdb = distmatrixDump(dm);
-  labelsdb = labelsDump(labels);
-
-  clbdb = package_DataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
-  datablockWriteToFile(clbdb, dest);
-
-  datablockFreePtr(clbdb);
-  datablockFreePtr(dmdb);
-  datablockFreePtr(labelsdb);
-  stringstackFree(labels);
-  gsl_matrix_free(dm);
-
-  return 1;
-}
-
 void gslmatrixPrint(gsl_matrix *m, char *delim)
 {
   int i, j;

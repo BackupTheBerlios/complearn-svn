@@ -1,5 +1,6 @@
 GENLDFLAGS=@GENLDFLAGS@
 CC=@CC@
+INCLUDES=${GSL_CFLAGS}
 GENLDADD=libcomplearn.a
 
 if WANT_SDLGLPROG
@@ -10,39 +11,39 @@ endif
 
 
 ncd_SOURCES=ncd.c
-ncd_LDADD=$(GENLDADD)
+ncd_LDADD=$(GENLDADD) ${GSL_LIBS}
 ncd_LDFLAGS=$(GENLDFLAGS)
 
 runtests_SOURCES=runtests.c
-runtests_LDADD=$(GENLDADD)
+runtests_LDADD=$(GENLDADD) ${GSL_LIBS}
 runtests_LDFLAGS=$(GENLDFLAGS)
 
 svdproj_SOURCES=svdproj.c
-svdproj_LDADD=$(GENLDADD)
+svdproj_LDADD=$(GENLDADD) ${GSL_LIBS}
 svdproj_LDFLAGS=$(GENLDFLAGS)
 
 maketree_SOURCES=maketree.c
-maketree_LDADD=$(GENLDADD)
+maketree_LDADD=$(GENLDADD) ${GSL_LIBS}
 maketree_LDFLAGS=$(GENLDFLAGS)
 
 partree_SOURCES=partree.c
-partree_LDADD=$(GENLDADD) -lpthread -lrt -lmpi
+partree_LDADD=$(GENLDADD) ${GSL_LIBS} -lpthread -lrt 
 partree_LDFLAGS=$(GENLDFLAGS)
 
 reordertree_SOURCES=reordertree.c
-reordertree_LDADD=$(GENLDADD)
+reordertree_LDADD=$(GENLDADD) ${GSL_LIBS}
 reordertree_LDFLAGS=$(GENLDFLAGS)
 
 improvetree_SOURCES=improvetree.c
-improvetree_LDADD=$(GENLDADD)
+improvetree_LDADD=$(GENLDADD) ${GSL_LIBS}
 improvetree_LDFLAGS=$(GENLDFLAGS)
 
 clbinfo_SOURCES=clbinfo.c
-clbinfo_LDADD=$(GENLDADD)
+clbinfo_LDADD=$(GENLDADD) ${GSL_LIBS}
 clbinfo_LDFLAGS=$(GENLDFLAGS)
 
 sdlgl_SOURCES=sdlgl.c textsdl.c
-sdlgl_LDADD=$(GENLDADD)
+sdlgl_LDADD=$(GENLDADD) ${GSL_LIBS}
 sdlgl_LDFLAGS=$(GENLDFLAGS)
 #sdlgl_LDADD=-lSDL -L/usr/lib -L/usr/local/lib -lglu32 -lglut32 -lopengl32 libcomplearn.a -lgsl -lgslcblas -lSDL_ttf -lwinmm
 
