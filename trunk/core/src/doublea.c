@@ -390,6 +390,9 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
 int doubleaHasQB(const struct DoubleA *da, qbase_t which)
 {
   int i;
+  if (da == NULL) {
+    clogError("NULL ptr in doubleaHasQB()\n");
+  }
   for (i = 0; i < doubleaSize(da); i += 1)
     if (which == doubleaGetValueAt(da, i).i)
       return 1;
@@ -398,6 +401,9 @@ int doubleaHasQB(const struct DoubleA *da, qbase_t which)
 
 void doubleaAddQBIfNew(struct DoubleA *da, qbase_t which)
 {
+  if (da == NULL) {
+    clogError("NULL ptr in doubleaAddQBIfNew()\n");
+  }
   if (!doubleaHasQB(da, which)) {
     union PCTypes p = zeropct;
     p.i = which;
