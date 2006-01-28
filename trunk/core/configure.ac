@@ -7,6 +7,14 @@ AC_PROG_CC
 AC_PROG_RANLIB
 AC_CHECK_PROG(MKTEMP, mktemp, mktemp, missing)
 #export PATH="$PATH:/sw/bin"
+AC_PATH_PROG(SDLCONFIG, sdl-config, missing, [$PATH:/sw/bin] )
+
+if test "x$SDLCONFIG" = "x" -o "x$SDLCONFIG" = "xmissing"; then
+  echo "No sdl-config found in path"
+else
+  LIBS="$LIBS `$SDLCONFIG --libs`"
+  CFLAGS="$CFLAGS `$SDLCONFIG --cflags`"
+fi
 
 CURTMPDIR=`mktemp -d`
 
@@ -18,73 +26,50 @@ echo "CompLearn dependency status:" >$DEPSTATUSNAME
 echo "CompLearn steps recommended:" >$RECSTEPNAME
 echo "CompLearn steps required:" >$REQSTEPNAME
 
-dnl GNU scientific libary
 
-have_gsl=auto
-GSL_PATH="$PATH"
-GSL_CONFIG=''
-GSL_CFLAGS=''
-GSL_LIBS=''
-AC_ARG_WITH(gsl,
-	AC_HELP_STRING([--with-gsl=DIR],
-		[GNU scientific library is installed in DIR]),
-	have_gsl="$withval")
-case "$have_gsl" in
-yes|no|auto)
-	;;
-*)
-	GSL_PATH="$withval/bin:$PATH"
-	;;
-esac
-if test "x$have_gsl" != xno; then
-	AC_PATH_PROG(GSL_CONFIG,gsl-config,,$GSL_PATH)
-	if test "x$GSL_CONFIG" = x; then
-		if test "x$have_gsl" = xyes; then
-			AC_MSG_ERROR([gsl-config not found; use --with-gsl=<path>])
-		fi
-		have_gsl=no
-	fi
+fgsl_rdy=0;      fgsl_lib=0;      fgsl_h=0;
+AC_ARG_WITH(gsl,[--with-gsl=PREFIX   where gsl is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_ENABLE(gsl,
+  [  --enable-gsl            enable gsl support (yes)], , enable_gsl=yes)
+if test "x$enable_gsl" == "xyes";
+then
+  AC_CHECK_LIB(gslcblas,cblas_srot,
+    [ LIBS="$LIBS -lgslcblas" ;
+    AC_CHECK_LIB(gsl,gsl_eigen_symm_alloc,
+      [ LIBS="$LIBS -lgsl -lgslcblas" ; fgsl_lib=1]) ]
+  )
 fi
-if test "x$have_gsl" != xno; then
-	GSL_CFLAGS="`$GSL_CONFIG --cflags`"
-	GSL_LIBS="`$GSL_CONFIG --libs`"
-	save_CPPFLAGS="$CPPFLAGS"
-	CPPFLAGS="$CPPFLAGS $GSL_CFLAGS"
-	AC_CHECK_HEADER(gsl/gsl_matrix.h, :, [if test "x$have_gsl" != xauto; then AC_MSG_ERROR([gsl/gsl.h not found]); fi; have_gsl=no])
-	CPPFLAGS="$save_CPPFLAGS"
-fi
-if test "x$have_gsl" != xno; then
-	save_LIBS="$LIBS"
-    	LIBS="$LIBS $GSL_LIBS"
-    	AC_CHECK_LIB(gsl, gsl_eigen_symm_alloc, :, [if test "x$have_gsl" != xauto; then AC_MSG_ERROR([-lgsl not found]); fi; have_gsl=no])
-    	LIBS="$save_LIBS"
-fi
-if test "x$have_gsl" != xno; then
-	AC_DEFINE(GSL_RDY, 1, [Define if you have the GNU scientific library])
-fi
-AC_SUBST(GSL_CFLAGS)
-AC_SUBST(GSL_LIBS)
+AC_CHECK_HEADER([gsl/gsl_matrix.h], [fgsl_h=1])
 
-dnl
-dnl if test "x$have_gsl" = xno; then 
-dnl  AC_MSG_ERROR([
-dnl
-dnl Can not find Gnu Scientific Library gsl and gslcblas libraries on your system.
-dnl 
-dnl CompLearn will not compile. Download from
-dnl 
-dnl http://ftp.gnu.org/gnu/gsl             (version 1.6 is tested)
-dnl 
-dnl  or
-dnl 
-dnl apt-get install libgsl0-dev
-dnl 
-dnl Already installed?: specify prefix with ./configure --with-gsl=PREFIX
-dnl ])
-dnl fi
+if test ${fgsl_lib} -eq 1 -a ${fgsl_h} -eq 1; then
+    fgsl_rdy=1 ; AC_DEFINE(GSL_RDY, 1, has gsl library)
+fi
+
+if test ${fgsl_rdy} -eq 0; then
+  AC_MSG_ERROR([
+
+Can not find Gnu Scientific Library gsl and gslcblas libraries on your system.
+
+CompLearn will not compile. Download from
+
+http://ftp.gnu.org/gnu/gsl             (version 1.6 is tested)
+
+ or
+
+apt-get install libgsl0-dev
+
+Already installed?: specify prefix with ./configure --with-gsl=PREFIX
+])
+fi
+unset fgsl_rdy
+unset fgsl_h
+unset fgsl_lib
+
 
 
 fbzip2_rdy=0;    fbzip2_lib=0;    fbzip2_h=0;
+fsdl_rdy=0;      fsdl_lib=0;      fsdlttf_lib=0;
+fsdl_h=0;        fsdlttf_h=0;     fsdlthread_h=0;
 fglu_h=0;        fglut_h=0;       fwantsdlgl_prog=0;
 fgl_rdy=0;       fgl_lib=0;       fgl_h=0;
 fzlib_rdy=0;     fzlib_lib=0;     fzlib_h=0;
@@ -96,7 +81,7 @@ fmpi_rdy=0;      fmpi_lib=0;      fmpi_h=0;
 fdlfcn_rdy=0;    fdlfcn_lib=0;    fdlfcn_h=0;
 fgetopt_rdy=0;   fgetopt_lib=0;   fgetopt_h=0;
 fmath_rdy=0;     fmath_lib=0;     fmath_h=0;
-fpwd_rdy=0;      futs_rdy=0;      
+fpwd_rdy=0;      futs_rdy=0;      fsdlttf_rdy=0;
 fpthread_lib=0;  fglut_lib=0;     fglu_lib=0;
 fgtk_lib=0;      fgdkx11_lib=0;   fgtkx11_lib=0;
 fgtk_h=0;        fgdk_h=0;        fpango_h=0;
@@ -166,62 +151,9 @@ AC_ARG_WITH(csoap,[--with-csoap=PREFIX   where csoap is installed], [ CPPFLAGS="
 AC_ARG_WITH(gtk,[--with-gtk=PREFIX   where gtk+ (version 2.0) is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(nanohttp,[--with-nanohttp=PREFIX   where nanohttp is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/nanohttp-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(gdbm,[--with-gdbm=PREFIX   where gdbm is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-
-have_sdl=auto
-SDL_PATH="$PATH"
-SDL_CONFIG=''
-SDL_CFLAGS=''
-SDL_LIBS=''
-AC_ARG_WITH(sdl,
-	AC_HELP_STRING([--with-sdl=DIR],
-		[GNU scientific library is installed in DIR]),
-	have_sdl="$withval")
-case "$have_sdl" in
-yes|no|auto)
-	;;
-*)
-	SDL_PATH="$withval/bin:$PATH"
-	;;
-esac
-if test "x$have_sdl" != xno; then
-	AC_PATH_PROG(SDL_CONFIG,sdl-config,,$SDL_PATH)
-	if test "x$SDL_CONFIG" = x; then
-		if test "x$have_sdl" = xyes; then
-			AC_MSG_ERROR([sdl-config not found; use --with-sdl=<path>])
-		fi
-		have_sdl=no
-	fi
-fi
-if test "x$have_sdl" != xno; then
-	SDL_CFLAGS="`$SDL_CONFIG --cflags`"
-	SDL_LIBS="`$SDL_CONFIG --libs`"
-	save_CPPFLAGS="$CPPFLAGS"
-	CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
-	AC_CHECK_HEADER(SDL.h, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([sdl/sdl.h not found]); fi; have_sdl=no])
-	CPPFLAGS="$save_CPPFLAGS"
-fi
-if test "x$have_sdl" != xno; then
-	save_LIBS="$LIBS"
-    	LIBS="$LIBS $SDL_LIBS"
-    	AC_CHECK_LIB(SDL, main, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([-lsdl not found]); fi; have_sdl=no])
-    	LIBS="$save_LIBS"
-fi
-if test "x$have_sdl" != xno; then
-	save_LIBS="$LIBS"
-	SDL_LIBS="$SDL_LIBS -lSDL"
-    	LIBS="$LIBS $SDL_LIBS"
-    	AC_CHECK_LIB(SDL_ttf, TTF_Init, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([-lsdl_ttf not found]); fi; have_sdl=no])
-    	LIBS="$save_LIBS"
-fi
-if test "x$have_sdl" != xno; then
-	SDL_LIBS="$SDL_LIBS -lSDL_ttf"
-	AC_DEFINE(SDL_RDY, 1, [sdl ready])
-	AC_DEFINE(SDLTTF_RDY, 1, [sdl_ttf ready])
-fi
-AC_SUBST(SDL_CFLAGS)
-AC_SUBST(SDL_LIBS)
-
-AC_ARG_WITH(glut,[--with-glut=PREFIX   where glut is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_WITH(sdl,[--with-sdl=PREFIX   where SDL is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_WITH(sdl_ttf,[--with-sdl_ttf=PREFIX   where SDL_ttf is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_WITH(glut,[--with-glut=PREFIX   where SDL_ttf is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 
 dnl --enable-nogalloc
 AC_ARG_ENABLE(nogalloc,
@@ -247,6 +179,23 @@ AC_ARG_ENABLE(dmalloc,
     [Enable dmalloc. Diagnostic use only.]),
   [ac_dmalloc=1])
 
+AC_ARG_ENABLE(sdl,
+  [  --enable-sdl            enable SDL support (yes)], , enable_sdl=yes)
+if test "x$enable_sdl" == "xyes";
+then
+  AC_CHECK_LIB(SDL,main,
+    echo "Enabling SDL support."
+    [LIBS="$LIBS -lSDL" ; fsdl_lib=1])
+fi
+
+AC_ARG_ENABLE(sdl_ttf,
+  [  --enable-sdl_ttf            enable SDL_ttf support (yes)], , enable_sdl_ttf=yes)
+if test "x$enable_sdl_ttf" == "xyes";
+then
+  AC_CHECK_LIB(SDL_ttf,TTF_Init,
+    echo "Enabling SDL_ttf support."
+    [LIBS="$LIBS -lSDL_ttf" ; fsdlttf_lib=1])
+fi
 AC_ARG_ENABLE(xml2,
   [  --enable-xml2            enable xml2 support (yes)], , enable_xml2=yes)
 if test "x$enable_xml2" == "xyes";
@@ -298,6 +247,16 @@ then
     [LIBS="-lcsoap-1.0 $LIBS" ; fcsoap_lib=1])
 fi
 
+
+AC_ARG_WITH(mpi,[--with-mpi=PREFIX   where MPI is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_ARG_ENABLE(mpi,
+  [  --enable-mpi            enable mpi support (yes)], , enable_mpi=yes)
+if test "x$enable_mpi" == "xyes";
+then
+    AC_CHECK_LIB(mpi,MPI_Init,
+      echo "Enabling MPI support."
+      [ LIBS="$LIBS -lmpi" ; fmpi_lib=1])
+fi
 
 AC_ARG_ENABLE(bzip2,
   [  --enable-bzip2            enable bzip2 (yes)], , enable_bzip2=yes)
@@ -358,6 +317,9 @@ AC_CHECK_HEADER([libcsoap/soap-client.h], [fcsoap_h=1])
 AC_CHECK_HEADER([math.h], [fmath_h=1])
 AC_CHECK_HEADER([pwd.h], [fpwd_h=1])
 AC_CHECK_HEADER([sys/utsname.h], [futs_h=1])
+AC_CHECK_HEADER([SDL/SDL.h], [fsdl_h=1])
+AC_CHECK_HEADER([SDL/SDL_ttf.h], [fsdlttf_h=1])
+AC_CHECK_HEADER([SDL/SDL_thread.h], [fsdlthread_h=1])
 AC_CHECK_HEADER([GL/gl.h], [fgl_h=1])
 AC_CHECK_HEADER([OpenGL/gl.h], [fgl_h=1])
 AC_CHECK_HEADER([GL/glu.h], [fglu_h=1])
@@ -370,9 +332,9 @@ AC_CHECK_HEADER([glib.h], [fglib_h=1])
 AC_CHECK_HEADER([pango/pango.h], [fpango_h=1])
 AC_CHECK_HEADER([atk/atk.h], [fatk_h=1])
 
-#CPPFLAGS="$CPPFLAGS -I/usr/local/include"
-#CFLAGS="$CFLAGS -I/usr/local/include"
-#LDFLAGS="$LDFLAGS -I/usr/local/lib"
+CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+CFLAGS="$CFLAGS -I/usr/local/include -I/usr/include/mpi"
+LDFLAGS="$LDFLAGS -I/usr/local/lib"
 
 eval "eval TOP_SRC_DIR=${top_srcdir}"
 AC_SUBST(TOP_SRC_DIR)
@@ -467,7 +429,7 @@ AC_CHECK_LIB(opengl32, main,
 AC_CHECK_LIB(GLU, main,
     [LIBS="$LIBS -lGLU" ; fglu_lib=1])
 
-AC_CHECK_LIB(m,sqrt,
+AC_CHECK_LIB(m,main,
     echo "Enabling math library (-lm) support."
     [LIBS="$LIBS -lm" ; fmath_lib=1])
 
@@ -492,7 +454,19 @@ if test ${fgl_rdy} -eq 0 ; then
 fi
 
 
-if test ${have_sdl} -eq 1 -a ${fgl_rdy} -eq 1 ; then
+if test ${fsdlttf_lib} -eq 1 -a ${fsdlttf_h} -eq 1; then
+    fsdlttf_rdy=1 ; AC_DEFINE(SDLTTF_RDY, 1, sdl_ttf ready)
+fi
+
+if test ${fsdl_lib} -eq 1 -a ${fsdlttf_lib} -eq 1 ; then
+  if test ${fsdl_h} -eq 1 -a ${fsdlttf_h} -eq 1 ; then
+    if test ${fsdlthread_h} -eq 1 ; then
+      fsdl_rdy=1; AC_DEFINE(SDL_RDY, 1, SDL ready)
+    fi
+  fi
+fi
+
+if test ${fsdl_rdy} -eq 1 -a ${fgl_rdy} -eq 1 ; then
   fwantsdlgl_prog=1
 fi
 
@@ -615,7 +589,7 @@ else
   echo "bzip2             YES" >>$DEPSTATUSNAME
 fi
 
-if test "x${have_gsl}" = xno; then
+if test ${fgsl_rdy} -eq 0; then
   echo 'Warning: gsl and gslcblas libraries not found; matrix support
     Download from http://ftp.gnu.org/gnu/gsl/ or
     apt-get install libgsl0-dev
@@ -640,7 +614,7 @@ else
   echo "getopt_long       YES" >>$DEPSTATUSNAME
 fi
 
-if test "x${have_sdl}" = no; then
+if test ${fsdl_lib} -eq 0; then
   echo 'Warning: SDL library not found; 3D GUI sdlgl disabled
     Download SDL from http://www.libsdl.org/
     apt-get install libsdl1.2-dev' >> $RECSTEPNAME
@@ -649,7 +623,7 @@ else
   echo "SDL library       YES" >>$DEPSTATUSNAME
 fi
 
-if test "x${have_sdl}" = no; then
+if test ${fsdlttf_rdy} -eq 0; then
   echo 'Warning: SDL_ttf library not found; 3D GUI sdlgl disabled
     Download from http://www.libsdl.org/projects/SDL_ttf/
     apt-get install libsdl-ttf2.0-dev' >> $RECSTEPNAME
