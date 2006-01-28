@@ -7,14 +7,6 @@ AC_PROG_CC
 AC_PROG_RANLIB
 AC_CHECK_PROG(MKTEMP, mktemp, mktemp, missing)
 #export PATH="$PATH:/sw/bin"
-AC_PATH_PROG(SDLCONFIG, sdl-config, missing, [$PATH:/sw/bin] )
-
-if test "x$SDLCONFIG" = "x" -o "x$SDLCONFIG" = "xmissing"; then
-  echo "No sdl-config found in path"
-else
-  LIBS="$LIBS `$SDLCONFIG --libs`"
-  CFLAGS="$CFLAGS `$SDLCONFIG --cflags`"
-fi
 
 CURTMPDIR=`mktemp -d`
 
@@ -93,8 +85,6 @@ dnl fi
 
 
 fbzip2_rdy=0;    fbzip2_lib=0;    fbzip2_h=0;
-fsdl_rdy=0;      fsdl_lib=0;      fsdlttf_lib=0;
-fsdl_h=0;        fsdlttf_h=0;     fsdlthread_h=0;
 fglu_h=0;        fglut_h=0;       fwantsdlgl_prog=0;
 fgl_rdy=0;       fgl_lib=0;       fgl_h=0;
 fzlib_rdy=0;     fzlib_lib=0;     fzlib_h=0;
@@ -106,7 +96,7 @@ fmpi_rdy=0;      fmpi_lib=0;      fmpi_h=0;
 fdlfcn_rdy=0;    fdlfcn_lib=0;    fdlfcn_h=0;
 fgetopt_rdy=0;   fgetopt_lib=0;   fgetopt_h=0;
 fmath_rdy=0;     fmath_lib=0;     fmath_h=0;
-fpwd_rdy=0;      futs_rdy=0;      fsdlttf_rdy=0;
+fpwd_rdy=0;      futs_rdy=0;      
 fpthread_lib=0;  fglut_lib=0;     fglu_lib=0;
 fgtk_lib=0;      fgdkx11_lib=0;   fgtkx11_lib=0;
 fgtk_h=0;        fgdk_h=0;        fpango_h=0;
@@ -176,9 +166,62 @@ AC_ARG_WITH(csoap,[--with-csoap=PREFIX   where csoap is installed], [ CPPFLAGS="
 AC_ARG_WITH(gtk,[--with-gtk=PREFIX   where gtk+ (version 2.0) is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(nanohttp,[--with-nanohttp=PREFIX   where nanohttp is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include/nanohttp-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 AC_ARG_WITH(gdbm,[--with-gdbm=PREFIX   where gdbm is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-AC_ARG_WITH(sdl,[--with-sdl=PREFIX   where SDL is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-AC_ARG_WITH(sdl_ttf,[--with-sdl_ttf=PREFIX   where SDL_ttf is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
-AC_ARG_WITH(glut,[--with-glut=PREFIX   where SDL_ttf is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
+
+have_sdl=auto
+SDL_PATH="$PATH"
+SDL_CONFIG=''
+SDL_CFLAGS=''
+SDL_LIBS=''
+AC_ARG_WITH(sdl,
+	AC_HELP_STRING([--with-sdl=DIR],
+		[GNU scientific library is installed in DIR]),
+	have_sdl="$withval")
+case "$have_sdl" in
+yes|no|auto)
+	;;
+*)
+	SDL_PATH="$withval/bin:$PATH"
+	;;
+esac
+if test "x$have_sdl" != xno; then
+	AC_PATH_PROG(SDL_CONFIG,sdl-config,,$SDL_PATH)
+	if test "x$SDL_CONFIG" = x; then
+		if test "x$have_sdl" = xyes; then
+			AC_MSG_ERROR([sdl-config not found; use --with-sdl=<path>])
+		fi
+		have_sdl=no
+	fi
+fi
+if test "x$have_sdl" != xno; then
+	SDL_CFLAGS="`$SDL_CONFIG --cflags`"
+	SDL_LIBS="`$SDL_CONFIG --libs`"
+	save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
+	AC_CHECK_HEADER(SDL.h, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([sdl/sdl.h not found]); fi; have_sdl=no])
+	CPPFLAGS="$save_CPPFLAGS"
+fi
+if test "x$have_sdl" != xno; then
+	save_LIBS="$LIBS"
+    	LIBS="$LIBS $SDL_LIBS"
+    	AC_CHECK_LIB(SDL, main, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([-lsdl not found]); fi; have_sdl=no])
+    	LIBS="$save_LIBS"
+fi
+if test "x$have_sdl" != xno; then
+	save_LIBS="$LIBS"
+	SDL_LIBS="$SDL_LIBS -lSDL"
+    	LIBS="$LIBS $SDL_LIBS"
+    	AC_CHECK_LIB(SDL_ttf, TTF_Init, :, [if test "x$have_sdl" != xauto; then AC_MSG_ERROR([-lsdl_ttf not found]); fi; have_sdl=no])
+    	LIBS="$save_LIBS"
+fi
+if test "x$have_sdl" != xno; then
+	SDL_LIBS="$SDL_LIBS -lSDL_ttf"
+	AC_DEFINE(SDL_RDY, 1, [sdl ready])
+	AC_DEFINE(SDLTTF_RDY, 1, [sdl_ttf ready])
+fi
+AC_SUBST(SDL_CFLAGS)
+AC_SUBST(SDL_LIBS)
+
+AC_ARG_WITH(glut,[--with-glut=PREFIX   where glut is installed], [ CPPFLAGS="$CPPFLAGS -I$withval/include" ; LDFLAGS="$LDFLAGS -L$withval/lib"])
 
 dnl --enable-nogalloc
 AC_ARG_ENABLE(nogalloc,
@@ -204,23 +247,6 @@ AC_ARG_ENABLE(dmalloc,
     [Enable dmalloc. Diagnostic use only.]),
   [ac_dmalloc=1])
 
-AC_ARG_ENABLE(sdl,
-  [  --enable-sdl            enable SDL support (yes)], , enable_sdl=yes)
-if test "x$enable_sdl" == "xyes";
-then
-  AC_CHECK_LIB(SDL,main,
-    echo "Enabling SDL support."
-    [LIBS="$LIBS -lSDL" ; fsdl_lib=1])
-fi
-
-AC_ARG_ENABLE(sdl_ttf,
-  [  --enable-sdl_ttf            enable SDL_ttf support (yes)], , enable_sdl_ttf=yes)
-if test "x$enable_sdl_ttf" == "xyes";
-then
-  AC_CHECK_LIB(SDL_ttf,TTF_Init,
-    echo "Enabling SDL_ttf support."
-    [LIBS="$LIBS -lSDL_ttf" ; fsdlttf_lib=1])
-fi
 AC_ARG_ENABLE(xml2,
   [  --enable-xml2            enable xml2 support (yes)], , enable_xml2=yes)
 if test "x$enable_xml2" == "xyes";
@@ -271,45 +297,6 @@ then
     echo "Enabling csoap support."
     [LIBS="-lcsoap-1.0 $LIBS" ; fcsoap_lib=1])
 fi
-
-
-dnl mpi 
-
-have_mpi=auto
-MPI_PATH="$PATH"
-MPI_CONFIG=''
-MPI_CFLAGS=''
-MPI_LIBS=''
-AC_ARG_WITH(mpi,
-	AC_HELP_STRING([--with-mpi=DIR],
-		[MPI library is installed in DIR]),
-	have_mpi="$withval")
-case "$have_mpi" in
-yes|no|auto)
-	;;
-*)
-	MPI_PATH="$withval/bin:$PATH"
-	MPI_LIBS="-L$withval/lib"
-	MPI_CFLAGS="-I$withval/include"
-	;;
-esac
-if test "x$have_mpi" != xno; then
-	save_CPPFLAGS="$CPPFLAGS"
-	CPPFLAGS="$CPPFLAGS $MPI_CFLAGS"
-	AC_CHECK_HEADER(mpi.h, :, [if test "x$have_mpi" != xauto; then AC_MSG_ERROR([mpi.h not found]); fi; have_mpi=no])
-	CPPFLAGS="$save_CPPFLAGS"
-fi
-if test "x$have_mpi" != xno; then
-	save_LIBS="$LIBS"
-    	LIBS="$LIBS $MPI_LIBS"
-    	AC_CHECK_LIB(mpi, MPI_Comm_rank, :, [if test "x$have_mpi" != xauto; then AC_MSG_ERROR([-lmpi not found]); fi; have_mpi=no])
-    	LIBS="$save_LIBS"
-fi
-if test "x$have_mpi" != xno; then
-	AC_DEFINE(MPI_RDY, 1, [Define if you have a MPI library])
-fi
-AC_SUBST(MPI_CFLAGS)
-AC_SUBST(MPI_LIBS)
 
 
 AC_ARG_ENABLE(bzip2,
@@ -371,9 +358,6 @@ AC_CHECK_HEADER([libcsoap/soap-client.h], [fcsoap_h=1])
 AC_CHECK_HEADER([math.h], [fmath_h=1])
 AC_CHECK_HEADER([pwd.h], [fpwd_h=1])
 AC_CHECK_HEADER([sys/utsname.h], [futs_h=1])
-AC_CHECK_HEADER([SDL/SDL.h], [fsdl_h=1])
-AC_CHECK_HEADER([SDL/SDL_ttf.h], [fsdlttf_h=1])
-AC_CHECK_HEADER([SDL/SDL_thread.h], [fsdlthread_h=1])
 AC_CHECK_HEADER([GL/gl.h], [fgl_h=1])
 AC_CHECK_HEADER([OpenGL/gl.h], [fgl_h=1])
 AC_CHECK_HEADER([GL/glu.h], [fglu_h=1])
@@ -508,19 +492,7 @@ if test ${fgl_rdy} -eq 0 ; then
 fi
 
 
-if test ${fsdlttf_lib} -eq 1 -a ${fsdlttf_h} -eq 1; then
-    fsdlttf_rdy=1 ; AC_DEFINE(SDLTTF_RDY, 1, sdl_ttf ready)
-fi
-
-if test ${fsdl_lib} -eq 1 -a ${fsdlttf_lib} -eq 1 ; then
-  if test ${fsdl_h} -eq 1 -a ${fsdlttf_h} -eq 1 ; then
-    if test ${fsdlthread_h} -eq 1 ; then
-      fsdl_rdy=1; AC_DEFINE(SDL_RDY, 1, SDL ready)
-    fi
-  fi
-fi
-
-if test ${fsdl_rdy} -eq 1 -a ${fgl_rdy} -eq 1 ; then
+if test ${have_sdl} -eq 1 -a ${fgl_rdy} -eq 1 ; then
   fwantsdlgl_prog=1
 fi
 
@@ -668,7 +640,7 @@ else
   echo "getopt_long       YES" >>$DEPSTATUSNAME
 fi
 
-if test ${fsdl_lib} -eq 0; then
+if test "x${have_sdl}" = no; then
   echo 'Warning: SDL library not found; 3D GUI sdlgl disabled
     Download SDL from http://www.libsdl.org/
     apt-get install libsdl1.2-dev' >> $RECSTEPNAME
@@ -677,7 +649,7 @@ else
   echo "SDL library       YES" >>$DEPSTATUSNAME
 fi
 
-if test ${fsdlttf_rdy} -eq 0; then
+if test "x${have_sdl}" = no; then
   echo 'Warning: SDL_ttf library not found; 3D GUI sdlgl disabled
     Download from http://www.libsdl.org/projects/SDL_ttf/
     apt-get install libsdl-ttf2.0-dev' >> $RECSTEPNAME
