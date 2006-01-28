@@ -3,8 +3,8 @@
 #define TESTPGDIR(x) ((TESTDIR "/" "pg" #x ))
 
 #if CSOAP_RDY
-
 #define SOAPWORKING 1
+#endif
 
 #ifdef PACKAGE_BUGREPORT
 #undef PACKAGE_BUGREPORT
@@ -35,5 +35,3 @@
 #undef PACKAGE_VERSION
 #endif
 #define PACKAGE_VERSION "@VERSION@"
-
-#endif

@@ -1313,6 +1313,10 @@ char *findDir(const char *dir)
   printf("Error finding test directory; runtests Aborted\n");
   exit(1);
 }
+void testCLTextConverter(void)
+{
+  cltxtToCLB("distmatrix.txt","convertedDM.clb");
+}
 
 int main(int argc, char **argv)
 {
@@ -1386,6 +1390,7 @@ int main(int argc, char **argv)
   testLabelPerm();
   testPerimPairs();
   testTreeMolder();
+  //testCLTextConverter();
 #if 0
 #endif
   freeDefaultEnvironment(gconf);

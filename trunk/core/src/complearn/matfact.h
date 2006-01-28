@@ -174,4 +174,10 @@ int cltxtColSize(char *fname);
  */
 void gslmatrixPrint(gsl_matrix *m, char *delim);
 
+/** \brief converts ASCII distance matrix into a CompLearn Binary
+ *
+ *  NOT READY FOR PRIMETIME YET
+ */
+int cltxtToCLB(char *source, char *dest);
+
 #endif

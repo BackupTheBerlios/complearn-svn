@@ -22,6 +22,10 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
   struct TagHdr *h = (struct TagHdr *) datablockData(db);
   int i;
 
+  if (db == NULL) {
+    clogError("NULL ptr in envmapLoad()\n");
+  }
+
   if (h->tagnum != TAGNUM_ENVMAP) {
     if (fmustbe) {
       clogError("Error: expecting ENVMAP tagnum %x, got %x\n",
@@ -64,6 +68,10 @@ struct DataBlock *envmapDump(struct EnvMap *em)
   struct StringStack *valparts = stringstackNew();
   int i;
 
+  if (em == NULL) {
+    clogError("NULL ptr in envmapDump()\n");
+  }
+
   for (i = 0; i < envmapSize(em) ; i += 1) {
     stringstackPush(keyparts, doubleaGetValueAt(em->d,i).sp.key);
     stringstackPush(valparts, doubleaGetValueAt(em->d,i).sp.val);
@@ -90,8 +98,12 @@ struct EnvMap *envmapNew() {
 
 void envmapPrint(struct EnvMap *uem)
 {
-  struct EnvMap *em = envmapClone(uem);
+  struct EnvMap *em;
   int i;
+  if (uem == NULL) {
+    clogError("NULL ptr in envmapPrint()\n");
+  }
+  em = envmapClone(uem);
   printf("ES:\n");
   for (i = 0; i < doubleaSize(em->d); ++i)
     printf("%s->%s\n", doubleaGetValueAt(em->d,i).sp.key, doubleaGetValueAt(em->d,i).sp.val);
@@ -115,7 +127,11 @@ struct EnvMap *envmapClone(struct EnvMap *em)
 {
   struct EnvMap *nem;
   int i;
-  int sz = envmapSize(em);
+  int sz;
+  if (em == NULL) {
+    clogError("NULL ptr in envmapClone()\n");
+  }
+  sz = envmapSize(em);
   nem = clCalloc(sizeof(struct EnvMap), 1);
   nem->d = doubleaNew();
   for (i = 0; i < sz; ++i)
@@ -127,17 +143,26 @@ struct EnvMap *envmapClone(struct EnvMap *em)
 
 int envmapIsEmpty(struct EnvMap *em)
 {
+  if (em == NULL) {
+    clogError("NULL ptr in envmapIsEmpty()\n");
+  }
   return doubleaSize(em->d) == 0;
 }
 
 int envmapSize(struct EnvMap *em)
 {
+  if (em == NULL) {
+    clogError("NULL ptr in envmapSize()\n");
+  }
   return doubleaSize(em->d);
 }
 
 static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
 {
   union PCTypes p;
+  if (em == NULL || key == NULL || val == NULL) {
+    clogError("NULL ptr in envmapSize()\n");
+  }
   p.sp.key = clStrdup(key);
   p.sp.val = clStrdup(val);
   doubleaSetValueAt(em->d, where, p);
@@ -146,12 +171,19 @@ static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
 
 void envmapSetKeyMarked(struct EnvMap *em, const char *key)
 {
+  if (em == NULL || key == NULL) {
+    clogError("NULL ptr in envmapSetKeyMarked()\n");
+  }
   clnodesetAddNode(em->marked, envmapIndexForKey(em, key));
 }
 
 int envmapSetKeyVal(struct EnvMap *em, char *key, char *val)
 {
-  int i = envmapIndexForKey(em,key);
+  int i;
+  if (em == NULL || key == NULL || val == NULL) {
+    clogError("NULL ptr in envmapSetKeyVal()\n");
+  }
+  i = envmapIndexForKey(em,key);
   if (i >= 0)
     setKeyValAt(em, i, key, val);
   else {
@@ -168,9 +200,13 @@ int envmapSetKeyVal(struct EnvMap *em, char *key, char *val)
 
 int envmapFree(struct EnvMap *em)
 {
-  int i;
-  int sz = envmapSize(em);
+  int i, sz;
   static union PCTypes zeroblock;
+
+  if (em == NULL) {
+    clogError("NULL ptr in envmapFree()\n");
+  }
+  sz = envmapSize(em);
 
   for (i = 0; i < sz; ++i) {
     union PCTypes p = doubleaGetValueAt(em->d, i);
@@ -192,6 +228,9 @@ char *envmapValueForKey(struct EnvMap *em, const char *key)
 {
   int i;
   char *val = NULL;
+  if (em == NULL || key == NULL) {
+    clogError("NULL ptr in envmapValueForKey()\n");
+  }
   i = envmapIndexForKey(em,key);
   if (i >= 0) {
     union PCTypes p = envmapKeyValAt(em,envmapIndexForKey(em,key));
@@ -203,6 +242,9 @@ char *envmapValueForKey(struct EnvMap *em, const char *key)
 
 union PCTypes envmapKeyValAt(struct EnvMap *em, int where)
 {
+  if (em == NULL) {
+    clogError("NULL ptr in envmapKeyValAt()\n");
+  }
   assert(where >= 0);
   return doubleaGetValueAt(em->d, where);
 }
@@ -210,6 +252,9 @@ union PCTypes envmapKeyValAt(struct EnvMap *em, int where)
 int envmapIndexForKey(struct EnvMap *em, const char *key)
 {
   int i;
+  if (em == NULL || key == NULL) {
+    clogError("NULL ptr in envmapIndexForKey()\n");
+  }
   for (i = 0; i < envmapSize(em); i += 1) {
     union PCTypes p = envmapKeyValAt(em,i);
     if (strcmp(p.sp.key, key) == 0) {
@@ -221,16 +266,25 @@ int envmapIndexForKey(struct EnvMap *em, const char *key)
 
 void envmapSetKeyPrivate(struct EnvMap *em, const char *key)
 {
+  if (em == NULL || key == NULL) {
+    clogError("NULL ptr in envmapSetKeyPrivate()\n");
+  }
   clnodesetAddNode(em->private, envmapIndexForKey(em,key));
 }
 
 int envmapIsMarkedAt(struct EnvMap *em, int where)
 {
+  if (em == NULL) {
+    clogError("NULL ptr in envmapIsMarkedAt()\n");
+  }
   return clnodesetHasNode(em->marked, where);
 }
 
 int envmapIsPrivateAt(struct EnvMap *em, int where)
 {
+  if (em == NULL) {
+    clogError("NULL ptr in envmapIsPrivateAt()\n");
+  }
   return clnodesetHasNode(em->private, where);
 }
 
@@ -255,6 +309,9 @@ int envmapMerge(struct EnvMap *dest, struct EnvMap *src)
 {
   union PCTypes p;
   int i;
+  if (src == NULL) {
+    clogError("NULL ptr in envmapMerge()\n");
+  }
   for (i = 0; i < envmapSize(src); i += 1) {
     p = envmapKeyValAt(src,i);
     envmapSetKeyVal(dest, p.sp.key, p.sp.val);
