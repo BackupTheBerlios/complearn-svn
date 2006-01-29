@@ -3,12 +3,17 @@
 void treealabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
     int colInd, int nodeNum)
 {
+  if (ta == NULL) {
+    clogError("NULL ptr in treealabelpermSetColumnIndexToNodeNumber()\n");
+  }
   ta->treelpsetat(ta, colInd, nodeNum);
 }
 
 void treeaMutate(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaMutate()\n");
+  }
   tra->treemutate(tra);
 }
 
@@ -22,62 +27,84 @@ struct TreeAdaptor *treeaNew(int isRooted, int howbig)
 
 void treeaFree(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaFree()\n");
+  }
   assert(tra->treefree);
   tra->treefree(tra);
 }
 
 struct TreeAdaptor *treeaClone(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaClone()\n");
+  }
   return tra->treeclone(tra);
 }
 
 struct LabelPerm *treeaLabelPerm(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaLabelPerm()\n");
+  }
   return tra->treegetlabelperm(tra);
 }
 
 struct AdjAdaptor *treeaAdjAdaptor(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaAdjAdaptor()\n");
+  }
   return tra->treegetadja(tra);
 }
 
 int treeaIsQuartettable(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaIsQuartettable()\n");
+  }
   return tra->treeisquartetable(tra, which);
 }
 
 int treeaIsFlippable(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaIsFlippable()\n");
+  }
   return tra->treeisflippable(tra, which);
 }
 int treeaIsRoot(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaIsRoot()\n");
+  }
   return tra->treeisroot(tra, which);
 }
 
 
 int treeaMutationCount(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaMutationCount()\n");
+  }
   return tra->treemutecount(tra);
 }
 
 struct DoubleA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
 {
-  assert(tra);
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaPerimPairs()\n");
+  }
   return tra->treeperimpairs(tra, flips);
 }
 
 int treeaNodeCount(struct TreeAdaptor *tra)
 {
-  struct AdjAdaptor *ad = treeaAdjAdaptor(tra);
+  struct AdjAdaptor *ad;
+  if (tra == NULL) {
+    clogError("NULL ptr in treeaNodeCount()\n");
+  }
+  ad = treeaAdjAdaptor(tra);
   return adjaSize(ad);
 }
 
@@ -94,6 +121,9 @@ double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
   struct LabelPerm *lab1, *lab2;
   int diff;
   int lps;
+  if (tra1 == NULL || tra2 == NULL) {
+    clogError("NULL ptr in treeaDifferenceScore()\n");
+  }
   lab1 = treeaLabelPerm(tra1);
   lab2 = treeaLabelPerm(tra2);
   lps = labelpermSize(lab1);
@@ -110,6 +140,9 @@ struct DoubleA *treeaNodes(struct TreeAdaptor *ta)
   struct DoubleA *n = doubleaNew();
   union PCTypes p = zeropct;
   int i;
+  if (ta == NULL) {
+    clogError("NULL ptr in treeaNodes()\n");
+  }
   for (i = 0; i < treeaNodeCount(ta) ;  i += 1) {
     p.i = i;
     doubleaPush(n,p);

@@ -19,6 +19,9 @@ struct TreeBlaster {
 static void setBestPtr(struct TreeBlaster *tm)
 {
   int i;
+  if (tm == NULL) {
+    clogError("NULL ptr in setBestPtr()\n");
+  }
   for (i = 0; i < tm->k; i += 1)
     if (i == 0 || treemolderScoreScaled(tm->best) < treemolderScoreScaled(tm->tm[i]))
       tm->best = tm->tm[i];
@@ -33,7 +36,9 @@ struct TreeBlaster *treebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
 {
   int i, howbig;
   struct TreeBlaster *tm = clCalloc(sizeof(struct TreeBlaster), 1);
-  assert(gsl);
+  if (gsl == NULL || ta == NULL) {
+    clogError("NULL ptr in treebNew()\n");
+  }
   assert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
   tm->ta = ta;
@@ -61,6 +66,9 @@ static int doStep(struct TreeBlaster *tm)
   //int whoseTurn = rand() % 2;
   int choseTree;
   int result;
+  if (tm == NULL) {
+    clogError("NULL ptr in doStep()\n");
+  }
   choseTree = rand() % tm->k;
 //  printf("Trying tree %d\n", choseTree);
   result = treemolderImprove(tm->tm[choseTree]);
@@ -77,6 +85,9 @@ static int doStep(struct TreeBlaster *tm)
 static int checkDone(struct TreeBlaster *tm)
 {
   int i;
+  if (tm == NULL) {
+    clogError("NULL ptr in checkDone()\n");
+  }
   if (tm->failcount > MAXFAILS)
     return 1;
   for (i = 1; i < tm->k; ++i) {
@@ -89,6 +100,9 @@ static int checkDone(struct TreeBlaster *tm)
 struct CLNodeSet *treebFindTreeOrder(struct TreeBlaster *tm, double *s)
 {
   int retval;
+  if (tm == NULL) {
+    clogError("NULL ptr in treebFindTreeOrder()\n");
+  }
   if (tm->tob && tm->tob->treeordersearchstarted)
     tm->tob->treeordersearchstarted(tm->tob);
   while (!checkDone(tm)) {
@@ -104,6 +118,9 @@ struct CLNodeSet *treebFindTreeOrder(struct TreeBlaster *tm, double *s)
 void treebFree(struct TreeBlaster *tm)
 {
   int i;
+  if (tm == NULL) {
+    clogError("NULL ptr in treebFree()\n");
+  }
   gsl_matrix_free(tm->dm);
   tm->dm = NULL;
   for (i = 0; i < tm->k; i += 1) {
@@ -114,25 +131,35 @@ void treebFree(struct TreeBlaster *tm)
 
 void treebSetTreeOrderObserver(struct TreeBlaster *tm, struct TreeOrderObserver *tob)
 {
+  if (tm == NULL) {
+    clogError("NULL ptr in treebSetTreeOrderObserver()\n");
+  }
   tm->tob = tob;
 }
 
 int treebK(struct TreeBlaster *tbl)
 {
-  assert(tbl);
+  if (tbl == NULL) {
+    clogError("NULL ptr in treebK()\n");
+  }
   return tbl->k;
 }
 
 int getNodeCountTB(struct TreeBlaster *tbl)
 {
-  assert(tbl);
-  struct TreeMolder *tmo = tbl->best;
+  struct TreeMolder *tmo;
+  if (tbl == NULL) {
+    clogError("NULL ptr in getNodeCountTB()\n");
+  }
+  tmo = tbl->best;
   return treemolderNodeCount(tmo);
 }
 
 int treebLabelCount(struct TreeBlaster *tbl)
 {
-  assert(tbl);
+  if (tbl == NULL) {
+    clogError("NULL ptr in treebLabelCount()\n");
+  }
   return tbl->dm->size1;
 }
 
