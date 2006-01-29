@@ -38,6 +38,10 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   int statetrans[MAXSTATES][MAXSTATES], ntrans[MAXSTATES];
   double cl = 0;
 
+  if (CI == NULL) {
+    clogError("NULL ptr in bs_compress()\n");
+  }
+
   /* Obtain workspace in x and p */
   if (CI->allocated < size+1) {
     CI->allocated = 10 + size * 1.2;
@@ -176,8 +180,11 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 }
 
 void bs_freecompfunc(struct CompAdaptor *ca) {
-  struct BlockSortCompInstance *bsci =
-    (struct BlockSortCompInstance *)ca->cptr;
+  struct BlockSortCompInstance *bsci;
+  if (ca == NULL) {
+    clogError("NULL ptr in bs_freecompfunc()\n");
+  }
+  bsci = (struct BlockSortCompInstance *)ca->cptr;
   if (bsci->allocated > 0) {
     free(bsci->x);
     free(bsci->p);
@@ -187,8 +194,11 @@ void bs_freecompfunc(struct CompAdaptor *ca) {
 }
 
 static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock *src) {
-  struct BlockSortCompInstance *bsci =
-    (struct BlockSortCompInstance *)ca->cptr;
+  struct BlockSortCompInstance *bsci;
+  if (ca == NULL || src == NULL) {
+    clogError("NULL ptr in bs_compfunc()\n");
+  }
+  bsci = (struct BlockSortCompInstance *)ca->cptr;
   return bs_compress(bsci, datablockData(src), datablockSize(src));
 }
 

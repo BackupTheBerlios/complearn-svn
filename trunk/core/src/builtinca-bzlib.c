@@ -85,28 +85,31 @@ struct CompAdaptor *builtin_BZIP(void)
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 #if BZIP2_RDY
-	struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
-	int s;
-
+  struct BZ2CompInstance *bzci;
+  int s, p;
   unsigned char *dbuff;
-	int p;
 
-	p = datablockSize(src)*1.02+600;
-	dbuff = (unsigned char*)clMalloc(p);
-	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
-			bzci->blocksize, bzci->verbosity, bzci->workfactor);
-	if (s == BZ_OUTBUFF_FULL) {
-		printf ("destLen not big enough!\n");
-		exit(1);
-	}
-	if (s != BZ_OK) {
-		printf ("Unknown error: bzBuff returned %d\n",s);
-		exit(1);
-	}
-	free(dbuff);
-	return (double) p*8.0;
+  if (ca == NULL || src == NULL) {
+    clogError("NULL ptr in bz2a_compfunc()\n");
+  }
+
+  bzci = (struct BZ2CompInstance *) ca->cptr;
+  p = datablockSize(src)*1.02+600;
+  dbuff = (unsigned char*)clMalloc(p);
+  s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
+    bzci->blocksize, bzci->verbosity, bzci->workfactor);
+  if (s == BZ_OUTBUFF_FULL) {
+    printf ("destLen not big enough!\n");
+    exit(1);
+  }
+  if (s != BZ_OK) {
+    printf ("Unknown error: bzBuff returned %d\n",s);
+    exit(1);
+  }
+  free(dbuff);
+  return (double) p*8.0;
 #else
-	return -1.0;
+  return -1.0;
 #endif
 }
 

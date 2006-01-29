@@ -17,7 +17,11 @@
 static struct GeneralConfig *cur;
 
 static void ncd_freeappconfig(struct GeneralConfig *cur) {
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
+  struct NCDConfig *ncdcfg;
+  if (cur == NULL) {
+    clogError("NULL ptr in ncd_freeappconfig()\n");
+  }
+  ncdcfg = (struct NCDConfig *) cur->ptr;
   clFreeifpresent(ncdcfg->output_distmat_fname);
   clFreeandclear(ncdcfg);
 }
@@ -49,7 +53,11 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 
 void loadCompressor(struct GeneralConfig *cur)
 {
-  struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
+  struct NCDConfig *ncdcfg;
+  if (cur == NULL) {
+    clogError("NULL ptr in loadCompressor()\n");
+  }
+  ncdcfg = (struct NCDConfig *) cur->ptr;
   if (cur->ca == NULL) {
     if (cur->fVerbose)
       printf("About to load %s..\n", cur->compressor_name);
@@ -80,6 +88,9 @@ void printCounts(struct DataBlockEnumeration *a)
   struct DataBlockEnumerationIterator *ia;
   struct DataBlock *dba;
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
+  if (a == NULL) {
+    clogError("NULL ptr in printCounts()\n");
+  }
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
     double pg;
     if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && datablockSize(dba) == 1 && (datablockData(dba)[0] == 'm' || datablockData(dba)[0] == 'M')) {
