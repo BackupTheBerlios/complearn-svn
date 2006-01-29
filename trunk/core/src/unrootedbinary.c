@@ -18,16 +18,25 @@ struct UnrootedBinary {
 
 void unrootedbinaryLabelPermSetter(struct UnrootedBinary *ub, int j, int i)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryLabelPermSetter()\n");
+  }
   labelpermSetColumnIndexToNodeNumber(ub->labelperm, j, i);
 }
 
 struct AdjAdaptor *getAdjAdaptorForUB(struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in getAdjAdaptorForUB()\n");
+  }
   return ub->aa;
 }
 
 static qbase_t randomTreeNode(struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in randomTreeNode()\n");
+  }
   return rand() % ub->nodecount;
 }
 
@@ -35,6 +44,9 @@ static qbase_t randomKernelNode(struct UnrootedBinary *ub)
 {
   qbase_t result;
   int nsize;
+  if (ub == NULL) {
+    clogError("NULL ptr in randomKernelNode()\n");
+  }
   do {
     result = randomTreeNode(ub);
     nsize = adjaNeighborCount(ub->aa, result);
@@ -45,6 +57,9 @@ static qbase_t randomKernelNode(struct UnrootedBinary *ub)
 static struct DoubleA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
 {
   struct DoubleA *da = doubleaNew();
+  if (ub == NULL) {
+    clogError("NULL ptr in randomKernelNodes()\n");
+  }
   do {
     qbase_t cur = randomKernelNode(ub);
     doubleaAddQBIfNew(da, cur);
@@ -54,6 +69,9 @@ static struct DoubleA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
 
 static int randomNeighbor(struct UnrootedBinary *ub, qbase_t who)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in randomNeighbor()\n");
+  }
   for (;;) {
     qbase_t result = randomTreeNode(ub);
     if (adjaGetConState(ub->aa, who, result))
@@ -65,7 +83,11 @@ static int verifyTree(struct UnrootedBinary *ub)
 {
   int i, j;
   int nc;
-  struct DoubleA *result = unrootedbinaryNodes(ub, NULL);
+  struct DoubleA *result;
+  if (ub == NULL) {
+    clogError("NULL ptr in verifyTree()\n");
+  }
+  result = unrootedbinaryNodes(ub, NULL);
   if (doubleaSize(result) != ub->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
       doubleaSize(result), ub->nodecount);
@@ -103,6 +125,9 @@ static void mutateSubtreeTransfer(struct UnrootedBinary *ub)
   static int pbuf[MAXPATHNODES];
   int pathlen, retval;
   int nbufms[MAXNEIGHBORS], nsizems;
+  if (ub == NULL) {
+    clogError("NULL ptr in mutateSubtreeTransfer()\n");
+  }
   do {
     do {
     k1 = randomTreeNode(ub);
@@ -155,6 +180,9 @@ static void mutateSubtreeInterchange(struct UnrootedBinary *ub)
   int pathbuf[MAXPATHNODES];
   int pathlen;
   int retval;
+  if (ub == NULL) {
+    clogError("NULL ptr in mutateSubtreeInterchange()\n");
+  }
   do {
     struct DoubleA *swappers = randomKernelNodes(ub, 2);
     i1 = doubleaGetValueAt(swappers, 0).i;
@@ -179,6 +207,9 @@ static void mutateSimple(struct UnrootedBinary *ub)
   int c;
 #if LOGICWALL
   int wasGood;
+  if (ub == NULL) {
+    clogError("NULL ptr in mutateSimple()\n");
+  }
 
   wasGood = verifyTree(ub);
   assert(wasGood);
@@ -214,6 +245,9 @@ static void mutateComplex(struct UnrootedBinary *ub)
 {
   int mutnum;
   /* TODO: add test for same treeness */
+  if (ub == NULL) {
+    clogError("NULL ptr in mutateComplex()\n");
+  }
   ub->mc = 0;
   mutnum = howManyMutations();
   while (mutnum > 0) {
@@ -225,11 +259,17 @@ static void mutateComplex(struct UnrootedBinary *ub)
 
 int unrootedbinaryLastMutationCount(const struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryLastMutationCount()\n");
+  }
   return ub->mc;
 }
 
 void unrootedbinaryDoComplexMutation(struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryDoComplexMutation()\n");
+  }
   mutateComplex(ub);
 }
 
@@ -262,6 +302,9 @@ struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 struct UnrootedBinary *unrootedbinaryClone(const struct UnrootedBinary *ub)
 {
   struct UnrootedBinary *cp;
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryClone()\n");
+  }
   cp = clCalloc(sizeof(*cp), 1);
   cp->nodecount = ub->nodecount;
   cp->startNode = ub->startNode;
@@ -274,16 +317,25 @@ struct UnrootedBinary *unrootedbinaryClone(const struct UnrootedBinary *ub)
 
 int unrootedbinaryIsQuartetableNode(const struct UnrootedBinary *ub, qbase_t which)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryisQuartetableNode()\n");
+  }
   return adjaNeighborCount(ub->aa, which) < 3;
 }
 
 int isFlippableNode(struct UnrootedBinary *ub, qbase_t which)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in isFlippableNode()\n");
+  }
   return adjaNeighborCount(ub->aa, which) == 3;
 }
 
 qbase_t unrootedbinaryStartingNode(const struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryStartingNode()\n");
+  }
   return 0;
 }
 
@@ -292,7 +344,11 @@ struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNo
   union PCTypes p = zeropct;
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
-  struct CLNodeSet *done = clnodesetNew(ub->nodecount);
+  struct CLNodeSet *done;
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryNodes()\n");
+  }
+  done = clnodesetNew(ub->nodecount);
   doubleaPush(border, p);
   walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
   doubleaFree(border);
@@ -302,12 +358,16 @@ struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNo
 
 struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
-  struct DoubleA *nodes = unrootedbinaryNodes(ub, flips);
+  struct DoubleA *nodes;
   struct DoubleA *pairs = doubleaNew();
   union PCTypes p;
   int i;
   int lastval = -1;
   int firstnode = -1;
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryPerimPairs()\n");
+  }
+  nodes = unrootedbinaryNodes(ub, flips);
   for (i = 0;i < doubleaSize(nodes); i += 1) {
     int curnode = doubleaGetValueAt(nodes, i).i;
     if (unrootedbinaryIsQuartetableNode(ub, curnode)) {
@@ -331,6 +391,9 @@ struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct
 
 void unrootedbinaryFree(struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryFree()\n");
+  }
   if (ub->labelperm)
     labelpermFree(ub->labelperm);
   ub->labelperm = NULL;
@@ -344,6 +407,9 @@ static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
 {
   int i;
   struct DoubleA *result = doubleaNew();
+  if (ub == NULL) {
+    clogError("NULL ptr in getLabellableNodes()\n");
+  }
   for (i = 0; i < ub->nodecount; i += 1) {
     if (unrootedbinaryIsQuartetableNode(ub, i) == 1) {
       union PCTypes p = zeropct;
@@ -358,6 +424,9 @@ struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
 {
   struct DoubleA *result = doubleaNew();
   int i;
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryLeafLabels()\n");
+  }
   for (i = 0; i < labelpermSize(ub->labelperm); i += 1) {
     union PCTypes p = zeropct;
     p.i = labelpermNodeIDForColIndex(ub->labelperm, i);
@@ -368,13 +437,20 @@ struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
 
 struct LabelPerm *unrootedbinaryLabelPerm(struct UnrootedBinary *ub)
 {
+  if (ub == NULL) {
+    clogError("NULL ptr in unrootedbinaryLabelPerm()\n");
+  }
   return labelpermClone(ub->labelperm);
 }
 
 struct TreeAdaptor *ub_treeclone(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeclone()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   *result = *ta;
   result->ptr = unrootedbinaryClone(ub);
   return result;
@@ -382,13 +458,21 @@ struct TreeAdaptor *ub_treeclone(struct TreeAdaptor *ta)
 
 void ub_treemutate(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeclone()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   mutateComplex(ub);
 }
 
 void ub_treefree(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treefree()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   unrootedbinaryFree(ub);
   ub = NULL;
   memset(ta, 0, sizeof(*ta));
@@ -397,42 +481,69 @@ void ub_treefree(struct TreeAdaptor *ta)
 
 struct LabelPerm *ub_treegetlabelperm(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treegetlabelperm()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return unrootedbinaryLabelPerm(ub);
 }
 
 struct AdjAdaptor *ub_treegetadja(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treegetadja()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return getAdjAdaptorForUB(ub);
 }
 
 int ub_treeisquartetable(struct TreeAdaptor *ta, int which)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeisquartetable()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return unrootedbinaryIsQuartetableNode(ub, which);
 }
 
 static int ub_treeisroot(struct TreeAdaptor *ta, int which)
 {
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeisroot()\n");
+  }
   return 0;
 }
 
 int ub_treeisflippable(struct TreeAdaptor *ta, int which)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeisflippable()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return isFlippableNode(ub, which);
 }
 
 struct DoubleA *ub_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treeperimpairs()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return unrootedbinaryPerimPairs(ub, flips);
 }
 
 int ub_treemutecount(struct TreeAdaptor *ta)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treemutatecount()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   return unrootedbinaryLastMutationCount(ub);
 }
 
@@ -443,7 +554,11 @@ struct TreeAdaptor *treeaLoadUnrooted(int howBig)
 
 static void ub_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
 {
-  struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
+  struct UnrootedBinary *ub;
+  if (ta == NULL) {
+    clogError("NULL ptr in ub_treesetlabelperm()\n");
+  }
+  ub = (struct UnrootedBinary *) ta->ptr;
   unrootedbinaryLabelPermSetter(ub, j, i);
 }
 
@@ -463,6 +578,10 @@ static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub)
     treeperimpairs:ub_treeperimpairs,
     treelpsetat:ub_treesetlabelperm
   };
+
+  if (ub == NULL) {
+    clogError("NULL ptr in loadUBTRA()\n");
+  }
 
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
   *result = c;
