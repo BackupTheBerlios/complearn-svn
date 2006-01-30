@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlextcomp.h>
+#include <complearn/complearn.h>
 
 #if DLFCN_RDY
 

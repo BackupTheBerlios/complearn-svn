@@ -1,4 +1,4 @@
-#include <complearn.h>
+#include <complearn/complearn.h>
 
 void adjaPrint(struct AdjAdaptor *aa)
 {
