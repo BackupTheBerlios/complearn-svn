@@ -19,7 +19,6 @@
 #define MSG_ROGUE 7
 #define MSG_ALERT 8
 
-int silent=0;
 struct MasterSlaveModel {
   int isFree;
   double lastScore;
@@ -79,14 +78,10 @@ void bailer(int lameness)
 
 static void sendAlertForEmit(char *str)
 {
-	silent=1;
   if (my_rank == 0)
     fprintf(stderr, "%s", str);
-  else {
+  else
     clogSendAlert("%s", str);
-	usleep(100000);
-	}
-	silent=0;
 }
 
 void setMPIGlobals(void) {
@@ -201,7 +196,7 @@ void doMasterLoop(void) {
           bailer(0);
         tag = receiveMessage(&db, &score, &who);
         if (tag == MSG_ALERT) {
-          fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
+        //fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
           datablockFreePtr(db);
           continue;
         }
@@ -210,7 +205,6 @@ void doMasterLoop(void) {
           ms.workers[who].lastScore = 0.0;
         }
         if (tag == MSG_BETTER) {
-//          datablockWriteToFile(db, "/home/cilibrar/treema.dot");
           if (score > ms.bestscore) {
             dpt = parseDotDB(db, ms.clbdb);
             datablockFreePtr(ms.bestTree);
@@ -261,7 +255,6 @@ void calculateTree(struct SlaveState *ss)
   int MAXTRIES;
   assert(ss->dm->size1 >= 4);
   assert(ss->dm->size2 >= 4);
-  assert(ss->dm->size2 >= 4);
   assert(ss->dm->size1 == ss->dm->size2);
   MAXTRIES = maxTrialFunc(ss->dm->size1);
   if (treehScore(ss->th) != ss->shouldBeScore) {
@@ -271,6 +264,8 @@ void calculateTree(struct SlaveState *ss)
     goto bail;
   }
   else {
+
+//    fprintf(stderr, "verified for %d at  %9.9f\n", my_rank, ss->shouldBeScore);
     ;
     }
   while (failCount < MAXTRIES) {
@@ -282,22 +277,20 @@ void calculateTree(struct SlaveState *ss)
       double newScore =  treehScore(ss->th);
       db = convertTreeToDot(ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
       sendBlock(0, db, MSG_BETTER, newScore);
-//      datablockFreePtr(db);
+      datablockFreePtr(db);
       treeaFree(ta);
       goto bail;
     }
     failCount += 1;
   }
 //  assert(treehScore(th) == ss->shouldBeScore);
-/*
   if (treehScore(ss->th) != ss->shouldBeScore) {
     fprintf(stderr, "Rogue master... should be %9.9f but got %9.9f\n", ss->shouldBeScore, treehScore(ss->th));
     fprintf(stderr, "Resending for new from %d\n", my_rank);
     sendBlock(0, NULL, MSG_ROGUE, 0);
-*/
-/*  } */
-/*  else
-    sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore); */
+  }
+  else
+    sendBlock(0, NULL, MSG_NOBETTER, ss->myLastScore);
 bail:
   return;
 }
@@ -316,7 +309,7 @@ void doSlaveLoop(void) {
   ss.th = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
-//    clogSendAlert("got tag %d with db %p\n", tag, db);
+    clogSendAlert("got tag %d with db %p\n", tag, db);
     switch (tag) {
 
       case MSG_EXIT:
@@ -336,7 +329,7 @@ void doSlaveLoop(void) {
         break;
 
       case MSG_NEWASSIGNMENT:
-        //assert(score != ss.myLastScore);
+        assert(score != ss.myLastScore);
         ss.shouldBeScore = score;
         ss.myLastScore = score;
         if (ss.bestdb) {
@@ -344,8 +337,6 @@ void doSlaveLoop(void) {
           ss.bestdb = NULL;
         }
         ss.bestdb = db;
-          ss.bestdb = NULL;
-    //      datablockWriteToFile(ss.bestdb, "/home/cilibrar/tree2.dot");
         dpt = parseDotDB(db, ss.dbdm);
         if (dpt->labels) {
           stringstackFree(dpt->labels);
@@ -358,6 +349,7 @@ void doSlaveLoop(void) {
         }
         ss.th = treehNew(ss.dm, ss.ta);
         clFree(dpt);
+//        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
         break;
 
@@ -413,12 +405,12 @@ struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
   unsigned char *bigblock;
   if (dbinp)
     dbsize = datablockSize(dbinp);
-  len = dbsize+sizeof(int)+sizeof(double);
+  len = dbsize+4+sizeof(double);
   bigblock = clCalloc(len,1);
-  memcpy(bigblock, &tag, sizeof(int));
-  memcpy(bigblock+sizeof(int), &score, sizeof(double));
+  memcpy(bigblock, &tag, 4);
+  memcpy(bigblock+4, &score, sizeof(double));
   if (dbsize)
-    memcpy(bigblock+sizeof(int)+sizeof(double), datablockData(dbinp), dbsize);
+    memcpy(bigblock+4+sizeof(double), datablockData(dbinp), dbsize);
   result = datablockNewFromBlock(bigblock, len);
   clFree(bigblock);
   return result;
@@ -430,17 +422,17 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   int len;
   unsigned char *smallblock = NULL;
 
-  len = datablockSize(dbbig)-sizeof(int)-sizeof(double);
+  len = datablockSize(dbbig)-4-sizeof(double);
   assert(len >= 0);
   if (len) {
     smallblock = clCalloc(len,1);
-    memcpy(smallblock, ((char *)datablockData(dbbig))+sizeof(int)+sizeof(double), len);
+    memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
     result = datablockNewFromBlock(smallblock, len);
     clFree(smallblock);
   }
-  memcpy(tag, datablockData(dbbig), sizeof(int));
+  memcpy(tag, datablockData(dbbig), 4);
   if (score)
-    memcpy(score, datablockData(dbbig)+sizeof(int), sizeof(double));
+    memcpy(score, datablockData(dbbig)+4, sizeof(double));
   return result;
 }
 
