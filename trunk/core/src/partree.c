@@ -210,7 +210,6 @@ void doMasterLoop(void) {
           ms.workers[who].lastScore = 0.0;
         }
         if (tag == MSG_BETTER) {
-          datablockWriteToFile(db, "/home/cilibrar/treema.dot");
           if (score > ms.bestscore) {
             dpt = parseDotDB(db, ms.clbdb);
             datablockFreePtr(ms.bestTree);
@@ -343,7 +342,6 @@ void doSlaveLoop(void) {
           ss.bestdb = NULL;
         }
         ss.bestdb = db;
-          datablockWriteToFile(ss.bestdb, "/home/cilibrar/tree2.dot");
         dpt = parseDotDB(db, ss.dbdm);
         if (dpt->labels) {
           stringstackFree(dpt->labels);

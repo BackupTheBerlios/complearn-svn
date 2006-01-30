@@ -1,6 +1,7 @@
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo
 MPIPROGRAMS = partree
-GRAPHICSPROGRAMS = clfun
+#GRAPHICSPROGRAMS = clfun
+EXTRA_PROGRAMS = clfun
 
 GENCPPFLAGS = -I complearn
 CLLDFLAGS = libcomplearn.a
@@ -17,9 +18,12 @@ if AMCGFX
 #LEV3PROGRAMS = $(LEV2PROGRAMS) $(GRAPHICSPROGRAMS)
 # TODO: finish me
 LEV3PROGRAMS = $(LEV2PROGRAMS)
+clfun_SOURCES = clfun.c
+clfun_LDADD = $(GFXLIBS)
 else
 LEV3PROGRAMS = $(LEV2PROGRAMS)
 endif
+
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
 
@@ -43,9 +47,6 @@ reordertree_LDADD = $(CLLDFLAGS)
 
 partree_SOURCES = partree.c
 partree_LDADD = $(CLLDFLAGS)
-
-clfun_SOURCES = clfun.c
-clfun_LDADD = $(GFXLIBS)
 
 #include target.mk
 
