@@ -23,7 +23,7 @@ fi
 
 AC_PROG_CC
 AC_CHECK_LIB(SDL_ttf,TTF_Init,
-    [echo "Enabling SDL_ttf support." ; GFXLIBS="$LIBS -lSDL_ttf" ; 
+    [echo "Enabling SDL_ttf support." ; GFXLIBS="$GFXLIBS -lSDL_ttf" ; 
       fsdlttf_lib=true],
     [ fsdlttf_lib=false ]
 )
