@@ -405,12 +405,12 @@ struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
   unsigned char *bigblock;
   if (dbinp)
     dbsize = datablockSize(dbinp);
-  len = dbsize+4+sizeof(double);
+  len = dbsize+sizeof(int)+sizeof(double);
   bigblock = clCalloc(len,1);
-  memcpy(bigblock, &tag, 4);
-  memcpy(bigblock+4, &score, sizeof(double));
+  memcpy(bigblock, &tag, sizeof(int));
+  memcpy(bigblock+sizeof(int), &score, sizeof(double));
   if (dbsize)
-    memcpy(bigblock+4+sizeof(double), datablockData(dbinp), dbsize);
+    memcpy(bigblock+sizeof(int)+sizeof(double), datablockData(dbinp), dbsize);
   result = datablockNewFromBlock(bigblock, len);
   clFree(bigblock);
   return result;
@@ -422,17 +422,17 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   int len;
   unsigned char *smallblock = NULL;
 
-  len = datablockSize(dbbig)-4-sizeof(double);
+  len = datablockSize(dbbig)-sizeof(int)-sizeof(double);
   assert(len >= 0);
   if (len) {
     smallblock = clCalloc(len,1);
-    memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
+    memcpy(smallblock, ((char *)datablockData(dbbig))+sizeof(int)+sizeof(double), len);
     result = datablockNewFromBlock(smallblock, len);
     clFree(smallblock);
   }
-  memcpy(tag, datablockData(dbbig), 4);
+  memcpy(tag, datablockData(dbbig), sizeof(int));
   if (score)
-    memcpy(score, datablockData(dbbig)+4, sizeof(double));
+    memcpy(score, datablockData(dbbig)+sizeof(int), sizeof(double));
   return result;
 }
 
