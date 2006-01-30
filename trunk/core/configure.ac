@@ -3,6 +3,7 @@ AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
+AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AC_ARG_ENABLE(mpi,
 [  --enable-mpi  Enable MPI compilation using mpicc
