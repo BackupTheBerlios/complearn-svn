@@ -170,17 +170,11 @@ static int punkMap(unsigned char c)
 
 static void transitTo(struct CLYieldChain *yc, int ns)
 {
-  if (yc == NULL) {
-    clogError("NULL ptr in TransitTo()\n");
-  }
   yc->state = ns;
 }
 
 static void newToken(struct CLYieldChain *yc, int sym)
 {
-  if (yc == NULL) {
-    clogError("NULL ptr in newToken()\n");
-  }
   assert(yc->m == NULL && "Uncleared symbol");
   yc->m = newSemToken(sym);
   assert(yc->m->tokNum == sym);
@@ -189,9 +183,6 @@ static void newToken(struct CLYieldChain *yc, int sym)
 
 void ycStringsPF(struct CLYieldChain *yc, struct CLToken *clt)
 {
-  if (yc == NULL || clt == NULL) {
-    clogError("NULL ptr in ycStringsPF()\n");
-  }
   upcastTo(YCStrings, yc);
   //struct YCStrings *ycs = (struct YCStrings *) yc;
   switch(getState(ycs))
@@ -226,9 +217,6 @@ void ycStringsPF(struct CLYieldChain *yc, struct CLToken *clt)
 struct YCStrings *ycStringsNew(struct CLYieldChain *fm)
 {
   struct YCStrings *ycs = clCalloc(sizeof(*ycs), 1);
-  if (fm == NULL) {
-    clogError("NULL ptr in ycStringsNew()\n");
-  }
   ycs->yc.next = fm;
   ycs->yc.process = ycStringsPF;
   return ycs;
@@ -237,9 +225,6 @@ struct YCStrings *ycStringsNew(struct CLYieldChain *fm)
 struct YCComments *ycCommentsNew(struct CLYieldChain *fm)
 {
   struct YCComments *ycs = clCalloc(sizeof(*ycs), 1);
-  if (fm == NULL) {
-    clogError("NULL ptr in ycCommentsNew()\n");
-  }
   ycs->yc.next = fm;
   ycs->yc.process = ycCommentsPF;
   return ycs;
@@ -248,9 +233,6 @@ struct YCComments *ycCommentsNew(struct CLYieldChain *fm)
 struct YCNames *ycNamesNew(struct CLYieldChain *fm)
 {
   struct YCNames *ycs = clCalloc(sizeof(*ycs), 1);
-  if (fm == NULL) {
-    clogError("NULL ptr in ycNamesNew()\n");
-  }
   ycs->yc.next = fm;
   ycs->yc.process = ycNamesPF;
   return ycs;

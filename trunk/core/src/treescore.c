@@ -1,10 +1,7 @@
 #include <assert.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <complearn/complearn.h>
 
-#if GSL_RDY
-
-#endif
 
 struct TreeScore {
   struct TreeAdaptor *ta;
@@ -50,7 +47,6 @@ int isConsistent(struct AdjAdaptor *ad, struct Quartet q)
   return !pathsIntersect(nbuf1, p1length, nbuf2, p2length);
 }
 
-#if GSL_RDY
 double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
 {
   int i, j, k, m, p, x;
@@ -85,7 +81,6 @@ double scoreTree(struct TreeScore *ts, gsl_matrix *dm)
   labelpermFree(lp);
   return 1.0 - ((sum - mintot) / (maxtot - mintot));
 }
-#endif
 
 void freeTreeScore(struct TreeScore *ts)
 {

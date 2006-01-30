@@ -3,12 +3,9 @@
 #include <unistd.h>
 #include <assert.h>
 #include <string.h>
-#include "complearn/ncdapp.h"
-
-#if GSL_RDY
+#include "ncdapp.h"
 
 #include <gsl/gsl_linalg.h>
-#endif
 
 #if PWD_RDY
 #include <pwd.h>
@@ -28,7 +25,6 @@ double xpremap(double inp, struct GeneralConfig *cur)
     return inp;
 }
 
-#if GSL_RDY
 gsl_matrix *svdProject(gsl_matrix *a)
 {
   int retval;
@@ -44,7 +40,6 @@ gsl_matrix *svdProject(gsl_matrix *a)
   gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, a, u, 0.0, res);
   return res;
 }
-#endif
 
 void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
 {
@@ -66,7 +61,6 @@ struct DataBlock *createCloneWithNLFree(struct DataBlock *db)
   return result;
 }
 
-#if GSL_RDY
 gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
 {
   gsl_matrix *gres;
@@ -114,12 +108,10 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
   doubleaFree(da);
   return gres;
 }
-#endif
 
 /* TODO: NCD only function; move to a better location */
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur)
 {
-#if GSL_RDY
   int n1c, n2c;
   struct DataBlockEnumerationIterator *dei = a->newenumiter(a);
   struct StringStack *labels = stringstackNew();
@@ -175,10 +167,6 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   }
   gsl_matrix_free(gres);
 	stringstackFree(labels);
-#else
-	assert ( 0 && "GSL not supported");
-	exit(1);
-#endif
 }
 
 #define PARAMLINESIZE 1024

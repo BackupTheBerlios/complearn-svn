@@ -1,5 +1,5 @@
 #include <complearn/complearn.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <assert.h>
 
 struct CLNodeSet

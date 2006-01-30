@@ -15,9 +15,6 @@ double mndf (double ca, double cb, double cab, double cba) {
 double ncdfunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur)
 {
   double result;
-  if (a == NULL || b == NULL || cur == NULL) {
-    clogError("NULL ptr in ncdfunc()\n");
-  }
   if (cur->fJustSize) {
     struct DataBlock *c;
     c = datablockCatPtr(a, b);

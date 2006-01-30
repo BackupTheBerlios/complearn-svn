@@ -1,53 +1,37 @@
-GENLDFLAGS=@GENLDFLAGS@
-CC=@CC@
-INCLUDES=${GSL_CFLAGS}
-GENLDADD=libcomplearn.a
+BASICPROGRAMS = ncd
+MPIPROGRAMS = partree
+GRAPHICSPROGRAMS = clfun
 
-if WANT_SDLGLPROG
-bin_PROGRAMS=ncd runtests svdproj maketree improvetree reordertree partree clbinfo sdlgl
+GENCPPFLAGS = -I complearn
+CLLDFLAGS = libcomplearn.a
+
+AM_CPPFLAGS = $(GENCPPFLAGS)
+
+if AMCMPI
+LEV2PROGRAMS = $(BASICPROGRAMS) $(MPIPROGRAMS)
 else
-bin_PROGRAMS=ncd runtests svdproj maketree improvetree reordertree partree clbinfo
+LEV2PROGRAMS = $(BASICPROGRAMS)
 endif
 
+if AMCGFX
+#LEV3PROGRAMS = $(LEV2PROGRAMS) $(GRAPHICSPROGRAMS)
+# TODO: finish me
+LEV3PROGRAMS = $(LEV2PROGRAMS)
+else
+LEV3PROGRAMS = $(LEV2PROGRAMS)
+endif
 
-ncd_SOURCES=ncd.c
-ncd_LDADD=$(GENLDADD) ${GSL_LIBS}
-ncd_LDFLAGS=$(GENLDFLAGS)
+bin_PROGRAMS = $(LEV3PROGRAMS)
 
-runtests_SOURCES=runtests.c
-runtests_LDADD=$(GENLDADD) ${GSL_LIBS}
-runtests_LDFLAGS=$(GENLDFLAGS)
+ncd_SOURCES = ncd.c
+ncd_LDADD = $(CLLDFLAGS)
 
-svdproj_SOURCES=svdproj.c
-svdproj_LDADD=$(GENLDADD) ${GSL_LIBS}
-svdproj_LDFLAGS=$(GENLDFLAGS)
+partree_SOURCES = partree.c
 
-maketree_SOURCES=maketree.c
-maketree_LDADD=$(GENLDADD) ${GSL_LIBS}
-maketree_LDFLAGS=$(GENLDFLAGS)
+clfun_SOURCES = clfun.c
+clfun_LDADD = $(GFXLIBS)
 
-partree_SOURCES=partree.c
-partree_LDADD=$(GENLDADD) ${GSL_LIBS} -lpthread -lrt 
-partree_LDFLAGS=$(GENLDFLAGS)
-
-reordertree_SOURCES=reordertree.c
-reordertree_LDADD=$(GENLDADD) ${GSL_LIBS}
-reordertree_LDFLAGS=$(GENLDFLAGS)
-
-improvetree_SOURCES=improvetree.c
-improvetree_LDADD=$(GENLDADD) ${GSL_LIBS}
-improvetree_LDFLAGS=$(GENLDFLAGS)
-
-clbinfo_SOURCES=clbinfo.c
-clbinfo_LDADD=$(GENLDADD) ${GSL_LIBS}
-clbinfo_LDFLAGS=$(GENLDFLAGS)
-
-sdlgl_SOURCES=sdlgl.c textsdl.c
-sdlgl_LDADD=$(GENLDADD) ${GSL_LIBS}
-sdlgl_LDFLAGS=$(GENLDFLAGS)
-#sdlgl_LDADD=-lSDL -L/usr/lib -L/usr/local/lib -lglu32 -lglut32 -lopengl32 libcomplearn.a -lgsl -lgslcblas -lSDL_ttf -lwinmm
-
-# 87  gcc sdlgl.c -g -Wall -o sdlgl.exe textsdl.c -lSDL -I/usr/include -I/usr/local/include/SDL -L/usr/lib -L/usr/local/lib -lglu32 -lglut32 -lopengl32 -I.. ./libcomplearn.a -lgsl -lgslcblas -lSDL_ttf -lwinmm -I.
+#include target.mk
 
 lib_LIBRARIES=libcomplearn.a
 lib_includedir=$(includedir)/complearn-1.0/complearn

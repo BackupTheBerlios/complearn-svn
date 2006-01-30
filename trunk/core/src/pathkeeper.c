@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <complearn/complearn.h>
 #include <complearn/adjadaptor.h>
 
@@ -172,9 +172,6 @@ struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
 {
   int i;
   struct DoubleA *result = doubleaNew();
-  if (aa == NULL) {
-    clogError("NULL ptr in makeSPMMap()\n");
-  }
   for (i = 0; i < adjaSize(aa); ++i) {
     union PCTypes p = zeropct;
     p.ar = makeSPMFor(aa, i);
@@ -196,9 +193,6 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   int nsize = MAXNEIGHBORS;
   /* assert(root >= 0); */
 //  printf("Making SPM for tree %p and node %d\n", ub, root);
-  if (aa == NULL) {
-    clogError("NULL ptr in makeSPMFor()\n");
-  }
   assert(root < adjaSize(aa));
   path = clCalloc(adjaSize(aa), sizeof(*path));
   length = clCalloc(adjaSize(aa), sizeof(*length));
@@ -272,11 +266,7 @@ struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   union PCTypes p = zeropct;
   struct DoubleA *result = doubleaNew();
   struct DoubleA *border = doubleaNew();
-  struct CLNodeSet *done;
-  if (ta == NULL) {
-    clogError("NULL ptr in simpleWalkTree()\n");
-  }
-  done  = clnodesetNew(treeaNodeCount(ta));
+  struct CLNodeSet *done = clnodesetNew(treeaNodeCount(ta));
   doubleaPush(border, p);
   walkTree(treeaAdjAdaptor(ta), result, border, done, 0, flips);
   doubleaFree(border);

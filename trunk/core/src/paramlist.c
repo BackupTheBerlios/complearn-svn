@@ -13,9 +13,6 @@ struct ParamList *paramlistNew()
 char *paramlistValForKey(struct ParamList *pl, const char *key)
 {
   int i;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistValForKey()\n");
-  }
   for ( i = 0; i < pl->size; i += 1) {
     if (strcmp(pl->fields[i]->key, key) == 0)
       return clStrdup(pl->fields[i]->value);
@@ -26,9 +23,6 @@ char *paramlistValForKey(struct ParamList *pl, const char *key)
 int paramlistParamType(struct ParamList *pl, const char *key)
 {
   int i;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistParamType()\n");
-  }
   for ( i = 0; i < pl->size; i += 1) {
     if (strcmp(pl->fields[i]->key, key) == 0)
       return pl->fields[i]->type;
@@ -38,18 +32,12 @@ int paramlistParamType(struct ParamList *pl, const char *key)
 
 char *paramlistGetString(struct ParamList *pl, const char *key)
 {
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistGetString()\n");
-  }
   return paramlistValForKey(pl, key);
 }
 
 int paramlistGetInt(struct ParamList *pl, const char *key)
 {
   char *result;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistGetInt()\n");
-  }
   if ((result = paramlistValForKey(pl, key)))
       return atoi(result);
   return -1;
@@ -58,9 +46,6 @@ int paramlistGetInt(struct ParamList *pl, const char *key)
 double paramlistGetDouble(struct ParamList *pl, const char *key)
 {
   char *result;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistGetDouble()\n");
-  }
   if ((result = paramlistValForKey(pl, key)))
       return atof(result);
   return -1;
@@ -68,9 +53,6 @@ double paramlistGetDouble(struct ParamList *pl, const char *key)
 
 int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type)
 {
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistGetValue()\n");
-  }
   switch (type) {
     case PARAMSTRING:
       *((char **) dest) = paramlistGetString(pl, key);
@@ -91,9 +73,6 @@ char *paramlistToString(struct ParamList *pl)
   int incr = 0;
   int i;
   char *result;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistToString()\n");
-  }
   for ( i = 0; i < pl->size ; i += 1)
     incr+=sprintf(buff+incr,"%s: %s; ",pl->fields[i]->key,pl->fields[i]->value);
   result = clCalloc(incr, 1);
@@ -106,9 +85,6 @@ struct FieldDesc *fielddescNew(const char *key, const char *value, int type)
 {
   struct FieldDesc *fd;
   fd = clCalloc(sizeof(struct FieldDesc), 1);
-  if (key == NULL || value == NULL) {
-    clogError("NULL ptr in fielddescNew()\n");
-  }
   fd->key = clStrdup(key);
   fd->value = clStrdup(value);
   fd->type = type;
@@ -117,17 +93,11 @@ struct FieldDesc *fielddescNew(const char *key, const char *value, int type)
 
 struct FieldDesc *fielddescClone(struct FieldDesc *fd)
 {
-  if (fd == NULL) {
-    clogError("NULL ptr in fielddescClone()\n");
-  }
   return fielddescNew(fd->key, fd->value, fd->type);
 }
 
 void fielddescFree(struct FieldDesc *fd)
 {
-  if (fd == NULL) {
-    clogError("NULL ptr in fielddescFree()\n");
-  }
   assert(fd);
   clFreeandclear(fd->key);
   clFreeandclear(fd->value);
@@ -135,25 +105,19 @@ void fielddescFree(struct FieldDesc *fd)
 }
 struct ParamList *paramlistClone(struct ParamList *pl)
 {
-  struct ParamList *result;
-  int i;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistClone()\n");
-  }
-  result = clCalloc(sizeof(struct ParamList), 1);
-  result->em = pl->em;
-  result->size = pl->size;
-  for ( i = 0 ; i < pl->size ; i += 1)
-    result->fields[i] = fielddescClone(pl->fields[i]);
-  return result;
+   struct ParamList *result;
+   int i;
+   result = clCalloc(sizeof(struct ParamList), 1);
+   result->em = pl->em;
+   result->size = pl->size;
+   for ( i = 0 ; i < pl->size ; i += 1)
+     result->fields[i] = fielddescClone(pl->fields[i]);
+   return result;
 }
 
 void paramlistFree(struct ParamList *pl)
 {
   int i;
-  if (pl == NULL) {
-    clogError("NULL ptr in paramlistFree()\n");
-  }
   for (i = 0; i < pl->size ; i += 1)
     fielddescFree(pl->fields[i]);
   clFreeandclear(pl);

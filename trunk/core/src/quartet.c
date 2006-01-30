@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <sys/time.h>
 
 #include <complearn/complearn.h>
@@ -12,9 +12,6 @@
 void normalizeQuartet(struct Quartet *q)
 {
   qbase_t tmp;
-  if (q == NULL) {
-    clogError("NULL ptr in normalizeQuartet()\n");
-  }
   if (q->q[0] > q->q[1]) {
     tmp = q->q[0];
     q->q[0] = q->q[1];
@@ -46,11 +43,7 @@ struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, i
 void freeSPMSingle(struct DoubleA *d)
 {
   int i;
-  int n;
-  if (d == NULL) {
-    clogError("NULL ptr in freeSPMSingle()\n");
-  }
-  n = doubleaSize(d);
+  int n = doubleaSize(d);
   for (i = 0; i < n; ++i)
     doubleaFree(doubleaGetValueAt(d, i).ar);
   doubleaFree(d);
@@ -59,11 +52,7 @@ void freeSPMSingle(struct DoubleA *d)
 void freeSPMSet(struct DoubleA *d)
 {
   int i;
-  int n;
-  if (d == NULL) {
-    clogError("NULL ptr in freeSPMSet()\n");
-  }
-  n = doubleaSize(d);
+  int n = doubleaSize(d);
   for (i = 0; i < n; ++i)
     freeSPMSingle(doubleaGetValueAt(d, i).ar);
 }
@@ -79,9 +68,6 @@ static void mustBeSorted(qbase_t labels[4])
 int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4])
 {
   int i, z;
-  if (ad == NULL) {
-    clogError("NULL ptr in findConsistentIndex()\n");
-  }
   mustBeSorted(labels);
   for (i = 0; i < 3; ++i) {
     struct Quartet q = permuteLabels(labels, i);

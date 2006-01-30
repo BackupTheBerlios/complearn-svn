@@ -8,7 +8,7 @@
 
 #include <complearn/gdbmhelper.h>
 #include <stdlib.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 
 #include <gdbm.h>
 
@@ -27,9 +27,6 @@ const char *getHomeDir(void)
 datum convertDataBlockToDatum(struct DataBlock *d)
 {
   datum gd;
-  if (d == NULL) {
-    clogError("NULL ptr in convertDataBlockToDatum()\n");
-  }
   gd.dptr = (char *) datablockData(d);
   gd.dsize = datablockSize(d);
   return gd;

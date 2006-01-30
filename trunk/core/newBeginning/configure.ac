@@ -1,7 +1,9 @@
 AC_INIT(rtest,1.0,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
+AC_PROG_RANLIB
 AC_CANONICAL_HOST
+AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AC_ARG_ENABLE(mpi,
 [  --enable-mpi  Enable MPI compilation using mpicc
 ],
@@ -22,6 +24,20 @@ if test x$ua_mpi = xtrue ; then
 fi
 
 AC_PROG_CC
+
+fgsl_lib=false
+AC_CHECK_LIB(gslcblas,cblas_sdot,
+  [LIBS="$LIBS -lgslcblas"
+
+AC_CHECK_LIB(gsl,gsl_hypot,
+    [ LIBS="$LIBS -lgsl" ; fgsl_lib=true])
+])
+
+if test $fgsl_lib = false ; then
+  echo "Sorry, GSL is required to compile $PACKAGE"
+  exit 1
+fi
+
 AC_CHECK_LIB(SDL_ttf,TTF_Init,
     [echo "Enabling SDL_ttf support." ; GFXLIBS="$GFXLIBS -lSDL_ttf" ; 
       fsdlttf_lib=true],

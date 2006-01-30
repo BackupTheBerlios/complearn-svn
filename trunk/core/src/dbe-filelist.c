@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <stdio.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 
 #include <complearn/complearn.h>
 

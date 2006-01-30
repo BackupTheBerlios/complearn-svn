@@ -1,7 +1,7 @@
 #include <complearn/complearn.h>
 #if ZLIB_RDY
 #include <zlib.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <string.h>
 
 #include <complearn/transadaptor.h>

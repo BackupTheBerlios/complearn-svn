@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 
 static const double refFactor = 2.0;
 

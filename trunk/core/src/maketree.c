@@ -119,7 +119,6 @@ int main(int argc, char **argv)
       { "outfile", 1, NULL, 'o' },
       { NULL, 0, NULL, 0 },
   };
-#if GSL_RDY
   double score;
   struct DoubleA *res;
   struct TreeBlaster *tb;
@@ -245,9 +244,4 @@ int main(int argc, char **argv)
     stringstackFree(labels);
   }
   return 0;
-#else
-	printf("no gsl support; maketree impossible\n");
-	exit(1);
-	return 1;
-#endif
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <complearn/complearn.h>
 #include <complearn/adjadaptor.h>
 

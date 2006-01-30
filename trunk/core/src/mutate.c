@@ -1,9 +1,7 @@
 #include <complearn/complearn.h>
 #include <math.h>
 
-#if GSL_RDY
 #include <gsl/gsl_randist.h>
-#endif
 
 
 void flipCrosswise(struct AdjAdaptor *aa,
@@ -32,7 +30,6 @@ double tryNumAdjustment(struct TreeHolder *th)
 #define MAXMUT 1000
 int howManyMutationsWeirdLogFormula(void)
 {
-#if GSL_RDY
   static gsl_ran_discrete_t *d;
   static gsl_rng *r;
   if (d == NULL) {
@@ -51,11 +48,6 @@ int howManyMutationsWeirdLogFormula(void)
   }
   return gsl_ran_discrete(r, d) + 2;
  // + tryNumAdjustment();
-#else
-	assert (0 && "gsl not supported");
-	exit(1);
-	return -1;
-#endif
 }
 
 int howManyMutationsTwoMinusExp(void)

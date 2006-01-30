@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <string.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <stdlib.h>
 #include <complearn/complearn.h>
 

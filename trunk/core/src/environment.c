@@ -1,4 +1,4 @@
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <getopt.h>
 #include <assert.h>
 #include <string.h>

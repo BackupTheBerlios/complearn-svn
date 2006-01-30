@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "clmalloc.h"
+#include "clalloc.h"
 #include <string.h>
 #include <stdio.h>
 #include <complearn/complearn.h>
@@ -18,18 +18,12 @@ struct DBEFactory *dbefactoryNew(void)
 
 void dbefactoryFree(struct DBEFactory *dbf)
 {
-  if (dbf == NULL) {
-    clogError("NULL ptr in dbefactoryFree()\n");
-  }
   dbf->mode = 0;
   clFreeandclear(dbf);
 }
 
 int dbefactorySetMode(struct DBEFactory *dbf, int newMode)
 {
-  if (dbf == NULL) {
-    clogError("NULL ptr in dbefactorySetMode()\n");
-  }
   assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
@@ -37,17 +31,11 @@ int dbefactorySetMode(struct DBEFactory *dbf, int newMode)
 
 int dbefactoryGetMode(struct DBEFactory *dbf)
 {
-  if (dbf == NULL) {
-    clogError("NULL ptr in dbefactoryGetMode()\n");
-  }
   return dbf->mode;
 }
 
 const char *dbefactoryModeString(struct DBEFactory *dbf)
 {
-  if (dbf == NULL) {
-    clogError("NULL ptr in dbefactoryModeString()\n");
-  }
   switch (dbf->mode) {
     case DBF_MODE_QUOTED: return "quoted";
     case DBF_MODE_FILE: return "file";
@@ -70,9 +58,6 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
   int lastpos = 0;
   char *cstr, *cur;
   struct DataBlock *db;
-  if (dbf == NULL) {
-    clogError("NULL ptr in dbef_handleWindowedDBE()\n");
-  }
   db = clCalloc(sizeof(struct DataBlock *), 1);
 #define WINDELIMS ","
   cstr = clStrdup(str);
@@ -104,9 +89,6 @@ struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char
  *str)
 {
   struct DataBlock *db;
-  if (dbf == NULL || str == NULL) {
-    clogError("NULL ptr in dbefactoryNewDBE()\n");
-  }
   switch (dbf->mode) {
     case DBF_MODE_QUOTED:
       db = stringToDataBlockPtr(str);

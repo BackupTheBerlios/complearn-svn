@@ -692,7 +692,6 @@ void testDateTime(void)
   cldatetimeFree(td);
 }
 
-#if GSL_RDY
 void testMarshalling(void)
 {
   gsl_matrix *gm, *ngm;
@@ -733,7 +732,6 @@ void testMarshalling(void)
   assert(strcmp(envmapValueForKey(em,"key4"), envmapValueForKey(resem,"key4")) == 0);
   envmapFree(em); envmapFree(resem);
 }
-#endif
 
 void testDoubleDoubler(void)
 {
@@ -780,7 +778,6 @@ void testDoubleDoubler(void)
   datablockFreePtr(dumptest);
 }
 
-#if GSL_RDY
 void testQuartet(void)
 {
 #define LABELCOUNT 15
@@ -815,7 +812,6 @@ void testQuartet(void)
     score = scoreTree(ts, dm);
 //    printf("Got score: %f\n", score);
     assert(score >= 0.0 && score <= 1.0);
-#if 1
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
@@ -830,24 +826,8 @@ void testQuartet(void)
 //      printf("Got TH score: %f\n", score);
       treehImprove(th);
     }
-#if 0
-    tb = treebNew(dm, treehTreeAdaptor(th));
-    printf("tb is %p\n", tb);
-    struct CLNodeSet *clns;
-    treebSetTreeOrderObserver(tb, &too);
-    clns = treebFindTreeOrder(tb, &score);
-    printf("Got score %f\n", score);
-    printf("And flipped node set:\n ");
-    clnodesetPrint(clns);
-    printf("Done.\n");
-
-//    printf("score is %f\n", getScoreTB(tb));
-    treehFree(th);
-    treebFree(tb);
-#endif
     th = NULL;
   }
-#endif
     doubleaFree(n);
     freeTreeScore(ts);
 //    unrootedbinaryFree(ct);
@@ -860,7 +840,6 @@ void testQuartet(void)
   gconf->ca = NULL;
   bz = NULL;
 }
-#endif
 
 void testCLTree(void)
 {
@@ -1024,16 +1003,13 @@ void testAdjMatrix(void)
 }
 #endif
 
-#if GSL_RDY
 void doSBS3Test(void);
 
 void testSpringBall(void)
 {
   doSBS3Test();
 }
-#endif
 
-#if GSL_RDY
 void testALTagFile(void)
 {
   char *s = "hello world";
@@ -1137,7 +1113,6 @@ void testALTagFile(void)
   gsl_matrix_free(gm);
   datablockFreePtr(dbpkg_read);
 }
-#endif
 
 #define ARRAYSIZE 10
 
@@ -1313,6 +1288,10 @@ char *findDir(const char *dir)
   printf("Error finding test directory; runtests Aborted\n");
   exit(1);
 }
+void testCLTextConverter(void)
+{
+  cltxtToCLB("distmatrix.txt","convertedDM.clb");
+}
 
 int main(int argc, char **argv)
 {
@@ -1363,7 +1342,6 @@ int main(int argc, char **argv)
   testArrayDBE();
   testDirectoryDBE();
 //  testParamList();
-#if GSL_RDY
   testMarshalling();
   testSpringBall();
   testCLTree();
@@ -1371,7 +1349,6 @@ int main(int argc, char **argv)
   testALTagFile();
   testSmoothing();
 //  testReadTextDM();
-#endif
   testSingletonDBE();
   testWindowedDBE();
 /*  testFileListDBE(); */
@@ -1386,6 +1363,7 @@ int main(int argc, char **argv)
   testLabelPerm();
   testPerimPairs();
   testTreeMolder();
+  //testCLTextConverter();
 #if 0
 #endif
   freeDefaultEnvironment(gconf);

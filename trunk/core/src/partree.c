@@ -196,7 +196,7 @@ void doMasterLoop(void) {
           bailer(0);
         tag = receiveMessage(&db, &score, &who);
         if (tag == MSG_ALERT) {
-        //fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
+          fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
           datablockFreePtr(db);
           continue;
         }
@@ -205,6 +205,7 @@ void doMasterLoop(void) {
           ms.workers[who].lastScore = 0.0;
         }
         if (tag == MSG_BETTER) {
+          datablockWriteToFile(db, "/home/cilibrar/treema.dot");
           if (score > ms.bestscore) {
             dpt = parseDotDB(db, ms.clbdb);
             datablockFreePtr(ms.bestTree);
@@ -337,6 +338,7 @@ void doSlaveLoop(void) {
           ss.bestdb = NULL;
         }
         ss.bestdb = db;
+          datablockWriteToFile(ss.bestdb, "/home/cilibrar/tree2.dot");
         dpt = parseDotDB(db, ss.dbdm);
         if (dpt->labels) {
           stringstackFree(dpt->labels);
@@ -405,12 +407,12 @@ struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score)
   unsigned char *bigblock;
   if (dbinp)
     dbsize = datablockSize(dbinp);
-  len = dbsize+sizeof(int)+sizeof(double);
+  len = dbsize+4+sizeof(double);
   bigblock = clCalloc(len,1);
-  memcpy(bigblock, &tag, sizeof(int));
-  memcpy(bigblock+sizeof(int), &score, sizeof(double));
+  memcpy(bigblock, &tag, 4);
+  memcpy(bigblock+4, &score, sizeof(double));
   if (dbsize)
-    memcpy(bigblock+sizeof(int)+sizeof(double), datablockData(dbinp), dbsize);
+    memcpy(bigblock+4+sizeof(double), datablockData(dbinp), dbsize);
   result = datablockNewFromBlock(bigblock, len);
   clFree(bigblock);
   return result;
@@ -422,17 +424,17 @@ struct DataBlock *unwrapForTag(struct DataBlock *dbbig, int *tag, double *score)
   int len;
   unsigned char *smallblock = NULL;
 
-  len = datablockSize(dbbig)-sizeof(int)-sizeof(double);
+  len = datablockSize(dbbig)-4-sizeof(double);
   assert(len >= 0);
   if (len) {
     smallblock = clCalloc(len,1);
-    memcpy(smallblock, ((char *)datablockData(dbbig))+sizeof(int)+sizeof(double), len);
+    memcpy(smallblock, ((char *)datablockData(dbbig))+4+sizeof(double), len);
     result = datablockNewFromBlock(smallblock, len);
     clFree(smallblock);
   }
-  memcpy(tag, datablockData(dbbig), sizeof(int));
+  memcpy(tag, datablockData(dbbig), 4);
   if (score)
-    memcpy(score, datablockData(dbbig)+sizeof(int), sizeof(double));
+    memcpy(score, datablockData(dbbig)+4, sizeof(double));
   return result;
 }
 

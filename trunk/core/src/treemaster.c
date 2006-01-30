@@ -2,8 +2,6 @@
 #include <string.h>
 #include <assert.h>
 
-#if GSL_RDY
-
 struct TreeMasterConfig {
   int fSelfAgreementTermination;
   int fIsRooted;
@@ -30,6 +28,7 @@ int treemasterK(struct TreeMaster *tm)
   if (tm == NULL) {
     clogError("NULL ptr in treemasterK()\n");
   }
+  assert(tm);
   return tm->k;
 }
 
@@ -73,7 +72,7 @@ static struct TreeMasterConfig getTreeMasterDefaultConfig(void)
 
 static void tm_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int *placeToSet) {
   char *val;
-  if (srcenv == NULL) {
+  if (srcenv == NULL || keyname == NULL) {
     clogError("NULL ptr in tm_setIntValueMaybe()\n");
   }
   val = envmapValueForKey(srcenv,keyname);
@@ -108,6 +107,7 @@ struct TreeMaster *treemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMap 
   if (em == NULL || gsl == NULL) {
     clogError("NULL ptr in treemasterNewEx()\n");
   }
+  assert(em);
 
   validateMatrixForTree(gsl);
   tmc.fIsRooted = isRooted;
@@ -144,6 +144,7 @@ struct TreeMaster *treemasterNew(gsl_matrix *gsl, int isRooted)
   if (gsl == NULL) {
     clogError("NULL ptr in treemasterNew()\n");
   }
+  assert(gsl);
   assert(gsl->size1 == gsl->size2);
   assert(gsl->size1 > 3);
   howbig = gsl->size1;
@@ -332,7 +333,7 @@ struct TreeObserver *treemasterGetTreeObserver(struct TreeMaster *tm)
 
 void treemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
 {
-  if (tm == NULL) {
+  if (tm == NULL || tob == NULL) {
     clogError("NULL ptr in treemasterSetTreeObserver()\n");
   }
   if (tm->tob) {
@@ -368,7 +369,7 @@ void treemasterAbortSearch(struct TreeMaster *tm)
 
 struct TreeHolder *treemasterStarterTree(struct TreeMaster *tm)
 {
-  if (tm == NULL) {
+  if (tm == NULL || tm->th[0] == NULL) {
     clogError("NULL ptr in treemasterStarterTree()\n");
   }
   assert(tm->th[0]);
@@ -393,8 +394,3 @@ int treemasterLabelCount(struct TreeMaster *tm)
   return tm->dm->size1;
 }
 
-#else
-
-#error "GSL not installed. Download from http://ftp.gnu.org/gnu/gsl/gsl-1.6.tar.gz or apt-get install libgsl0-dev . Already installed?: specify prefix with --with-gsl=PREFIX"
-
-#endif

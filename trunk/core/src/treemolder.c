@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#if GSL_RDY
-
 struct TreeMolder {
   int nodecount;
   double score, minscore, maxscore;
@@ -140,5 +138,4 @@ int treemolderNodeCount(const struct TreeMolder *tmo)
 {
   return tmo->nodecount;
 }
-#endif
 

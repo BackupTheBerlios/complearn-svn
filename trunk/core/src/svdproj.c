@@ -2,7 +2,6 @@
 
 int main(int argc, char **argv)
 {
-#if GSL_RDY
   struct DataBlock *db, *dbdm;
   struct DoubleA *dd;
   gsl_matrix *dm, *sdm;
@@ -20,9 +19,4 @@ int main(int argc, char **argv)
   sdm = svdProject(dm);
   gslmatrixFree(dm);
   return 0;
-#else
-	printf("no gsl support; svd projection impossible\n");
-	exit(1);
-	return 1;
-#endif
 }
