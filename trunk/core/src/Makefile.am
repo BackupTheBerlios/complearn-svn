@@ -1,4 +1,4 @@
-BASICPROGRAMS = ncd
+BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo
 MPIPROGRAMS = partree
 GRAPHICSPROGRAMS = clfun
 
@@ -23,10 +23,26 @@ endif
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
 
+maketree_SOURCES = ncd.c
+maketree_LDADD = $(CLLDFLAGS)
+
+improvetree_SOURCES = ncd.c
+improvetree_LDADD = $(CLLDFLAGS)
+
+svdproj_SOURCES = ncd.c
+svdproj_LDADD = $(CLLDFLAGS)
+
+clbinfo_SOURCES = ncd.c
+clbinfo_LDADD = $(CLLDFLAGS)
+
 ncd_SOURCES = ncd.c
 ncd_LDADD = $(CLLDFLAGS)
 
+reordertree_SOURCES = reordertree.c
+reordertree_LDADD = $(CLLDFLAGS)
+
 partree_SOURCES = partree.c
+partree_LDADD = $(CLLDFLAGS)
 
 clfun_SOURCES = clfun.c
 clfun_LDADD = $(GFXLIBS)
