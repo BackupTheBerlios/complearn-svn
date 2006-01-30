@@ -3,10 +3,7 @@
 
 #include <complearn/cltypes.h>
 
-#if GSL_RDY
-
 #include <gsl/gsl_blas.h>
-#endif
 
 /*! \file treeblaster.h */
 

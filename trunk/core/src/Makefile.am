@@ -23,16 +23,16 @@ endif
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
 
-maketree_SOURCES = ncd.c
+maketree_SOURCES = maketree.c
 maketree_LDADD = $(CLLDFLAGS)
 
-improvetree_SOURCES = ncd.c
+improvetree_SOURCES = improvetree.c
 improvetree_LDADD = $(CLLDFLAGS)
 
-svdproj_SOURCES = ncd.c
+svdproj_SOURCES = svdproj.c
 svdproj_LDADD = $(CLLDFLAGS)
 
-clbinfo_SOURCES = ncd.c
+clbinfo_SOURCES = clbinfo.c
 clbinfo_LDADD = $(CLLDFLAGS)
 
 ncd_SOURCES = ncd.c

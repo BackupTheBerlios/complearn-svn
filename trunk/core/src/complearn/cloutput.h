@@ -6,10 +6,7 @@
 #include <complearn/datablockenum.h>
 #include <complearn/uclconfig.h>
 
-#if GSL_RDY
-
 #include <gsl/gsl_blas.h>
-#endif
 
 /*! \file cloutput.h */
 

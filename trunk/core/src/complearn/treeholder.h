@@ -26,7 +26,6 @@ struct TreeHolder;
 
 struct TreeAdaptor;
 
-#if GSL_RDY
 /** \brief allocates a new TreeHolder given a gsl_matrix distmat and TreeAdaptor
  *
  * This is the basic constructor for the TreeHolder struct.  After calling
@@ -174,7 +173,5 @@ int treehGetTreeIndex(struct TreeHolder *th);
  * \param th pointer to the TreeHolder to be freed
  */
 void treehFree(struct TreeHolder *th);
-
-#endif
 
 #endif
