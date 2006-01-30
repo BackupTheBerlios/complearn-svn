@@ -196,7 +196,12 @@ void doMasterLoop(void) {
           bailer(0);
         tag = receiveMessage(&db, &score, &who);
         if (tag == MSG_ALERT) {
-          fprintf(stderr, "ALERT %03d: %s\n", who, (char *) datablockData(db));
+          char *alc = NULL;
+          if (db)
+            alc = (char *) datablockData(db);
+          if (!alc)
+            alc = "NULL";
+          fprintf(stderr, "ALERT %03d: %s\n", who, alc);
           datablockFreePtr(db);
           continue;
         }
@@ -310,7 +315,7 @@ void doSlaveLoop(void) {
   ss.th = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
-    clogSendAlert("got tag %d with db %p\n", tag, db);
+    clogSendAlert("got tag %d with db %08x", tag, (unsigned int) db);
     switch (tag) {
 
       case MSG_EXIT:
@@ -330,7 +335,7 @@ void doSlaveLoop(void) {
         break;
 
       case MSG_NEWASSIGNMENT:
-        assert(score != ss.myLastScore);
+//        assert(score != ss.myLastScore);
         ss.shouldBeScore = score;
         ss.myLastScore = score;
         if (ss.bestdb) {
