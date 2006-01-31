@@ -142,7 +142,7 @@ int adjaNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
 /** \brief Returns the SPM Map for a given AdjAdaptor with a PathKeeper on top
  *  \param aa pointer to the AdjAdaptor
  */
-struct DoubleA *adjaSPMMap(struct AdjAdaptor *aa);
+struct DRA *adjaSPMMap(struct AdjAdaptor *aa);
 
 
 #define SPMMAPFOR(adjaptr) (adjaptr->adjaspmmap(adjaptr))

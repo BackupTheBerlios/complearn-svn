@@ -53,22 +53,22 @@ struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...)
 {
   va_list ap;
   struct DataBlock *db, *result;
-  struct DoubleA *parts = doubleaNew();
+  struct DRA *parts = draNew();
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
     union PCTypes p = zeropct;
     p.dbp = db;
-    doubleaPush(parts, p);
+    draPush(parts, p);
   }
   va_end(ap);
 
   result = package_dd_DataBlocks(overalltag,parts);
 
-  doubleaFree(parts);
+  draFree(parts);
   return result;
 }
 
-struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
+struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
 {
   struct DataBlock *result;
   struct TagHdr h;
@@ -77,15 +77,15 @@ struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
   int dbsize = 0;
   unsigned char *dbptr, *resptr;
 
-  for ( i = 0; i < doubleaSize(parts); i += 1) {
-    dbsize += datablockSize(doubleaGetValueAt(parts,i).dbp);
+  for ( i = 0; i < draSize(parts); i += 1) {
+    dbsize += datablockSize(draGetValueAt(parts,i).dbp);
   }
   dbptr = clCalloc(dbsize,1);
   ptr = dbptr;
 
-  for ( i = 0; i < doubleaSize(parts); i += 1) {
-    memcpy(ptr, datablockData(doubleaGetValueAt(parts,i).dbp), datablockSize(doubleaGetValueAt(parts,i).dbp));
-    ptr += datablockSize(doubleaGetValueAt(parts,i).dbp);
+  for ( i = 0; i < draSize(parts); i += 1) {
+    memcpy(ptr, datablockData(draGetValueAt(parts,i).dbp), datablockSize(draGetValueAt(parts,i).dbp));
+    ptr += datablockSize(draGetValueAt(parts,i).dbp);
   }
 
   h.tagnum = tnum;
@@ -104,17 +104,17 @@ struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts)
 
 }
 
-void free_DataBlock_package ( struct DoubleA *da, void *udata)
+void free_DataBlock_package ( struct DRA *da, void *udata)
 {
   int i;
-  for ( i = 0; i < doubleaSize(da) ; i += 1) {
-    datablockFreePtr(doubleaGetValueAt(da,i).idbp.db);
+  for ( i = 0; i < draSize(da) ; i += 1) {
+    datablockFreePtr(draGetValueAt(da,i).idbp.db);
   }
 }
 
-struct DoubleA *load_DataBlock_package(struct DataBlock *db)
+struct DRA *load_DataBlock_package(struct DataBlock *db)
 {
-  struct DoubleA *result = doubleaNew();
+  struct DRA *result = draNew();
   struct TagManager *tm;
   struct DataBlock *cur = NULL;
 
@@ -124,7 +124,7 @@ struct DoubleA *load_DataBlock_package(struct DataBlock *db)
     union PCTypes p = zeropct;
     p.idbp.tnum = getCurTagNum(tm);
     p.idbp.db = datablockClonePtr(cur);
-    doubleaPush(result, p);
+    draPush(result, p);
     stepNextDataBlock(tm);
     datablockFreePtr(cur);
   }
@@ -133,15 +133,15 @@ struct DoubleA *load_DataBlock_package(struct DataBlock *db)
   return result;
 }
 
-struct DataBlock *scanForTag(struct DoubleA *dd, int tnum)
+struct DataBlock *scanForTag(struct DRA *dd, int tnum)
 {
   int i;
   struct DataBlock *db;
   t_tagtype curtnum;
-  for (i = 0; i < doubleaSize(dd); i += 1) {
-    curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
+  for (i = 0; i < draSize(dd); i += 1) {
+    curtnum = draGetValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
-      db = doubleaGetValueAt(dd,i).idbp.db;
+      db = draGetValueAt(dd,i).idbp.db;
       return datablockClonePtr(db);
     }
   }

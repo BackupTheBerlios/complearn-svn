@@ -7,7 +7,7 @@
 #define MAXINDECES 10
 
 struct EnvMap {
-  struct DoubleA *d;
+  struct DRA *d;
   struct CLNodeSet *marked;
   struct CLNodeSet *private;
 };
@@ -52,7 +52,7 @@ struct EnvMap *envmapLoad(struct DataBlock *db, int fmustbe)
   for (i = 0; i < stringstackSize(keyparts) ; i += 1)
     envmapSetKeyVal(result, stringstackReadAt(keyparts,i), stringstackReadAt(valparts,i));
 
-  for (i = 0; i < doubleaSize(result->d); i += 1)
+  for (i = 0; i < draSize(result->d); i += 1)
     clnodesetAddNode(result->marked, i);
 
   freeTagManager(tm);
@@ -73,8 +73,8 @@ struct DataBlock *envmapDump(struct EnvMap *em)
   }
 
   for (i = 0; i < envmapSize(em) ; i += 1) {
-    stringstackPush(keyparts, doubleaGetValueAt(em->d,i).sp.key);
-    stringstackPush(valparts, doubleaGetValueAt(em->d,i).sp.val);
+    stringstackPush(keyparts, draGetValueAt(em->d,i).sp.key);
+    stringstackPush(valparts, draGetValueAt(em->d,i).sp.val);
   }
   keys = stringstackDump(keyparts);
   vals = stringstackDump(valparts);
@@ -90,7 +90,7 @@ struct DataBlock *envmapDump(struct EnvMap *em)
 struct EnvMap *envmapNew() {
   struct EnvMap *em;
   em = clCalloc(sizeof(struct EnvMap), 1);
-  em->d = doubleaNew();
+  em->d = draNew();
   em->marked = clnodesetNew(MAXINDECES);
   em->private = clnodesetNew(MAXINDECES);
   return em;
@@ -105,8 +105,8 @@ void envmapPrint(struct EnvMap *uem)
   }
   em = envmapClone(uem);
   printf("ES:\n");
-  for (i = 0; i < doubleaSize(em->d); ++i)
-    printf("%s->%s\n", doubleaGetValueAt(em->d,i).sp.key, doubleaGetValueAt(em->d,i).sp.val);
+  for (i = 0; i < draSize(em->d); ++i)
+    printf("%s->%s\n", draGetValueAt(em->d,i).sp.key, draGetValueAt(em->d,i).sp.val);
   printf("Marked: ");
   clnodesetPrint(em->marked);
   printf("Private: ");
@@ -133,9 +133,9 @@ struct EnvMap *envmapClone(struct EnvMap *em)
   }
   sz = envmapSize(em);
   nem = clCalloc(sizeof(struct EnvMap), 1);
-  nem->d = doubleaNew();
+  nem->d = draNew();
   for (i = 0; i < sz; ++i)
-    doubleaSetValueAt(nem->d, i, cloneStringPair(doubleaGetValueAt(em->d, i).sp));
+    draSetValueAt(nem->d, i, cloneStringPair(draGetValueAt(em->d, i).sp));
   nem->marked = clnodesetClone(em->marked);
   nem->private = clnodesetClone(em->private);
   return nem;
@@ -146,7 +146,7 @@ int envmapIsEmpty(struct EnvMap *em)
   if (em == NULL) {
     clogError("NULL ptr in envmapIsEmpty()\n");
   }
-  return doubleaSize(em->d) == 0;
+  return draSize(em->d) == 0;
 }
 
 int envmapSize(struct EnvMap *em)
@@ -154,7 +154,7 @@ int envmapSize(struct EnvMap *em)
   if (em == NULL) {
     clogError("NULL ptr in envmapSize()\n");
   }
-  return doubleaSize(em->d);
+  return draSize(em->d);
 }
 
 static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
@@ -165,7 +165,7 @@ static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
   }
   p.sp.key = clStrdup(key);
   p.sp.val = clStrdup(val);
-  doubleaSetValueAt(em->d, where, p);
+  draSetValueAt(em->d, where, p);
   return CL_OK;
 }
 
@@ -190,7 +190,7 @@ int envmapSetKeyVal(struct EnvMap *em, char *key, char *val)
     union PCTypes p;
     p.sp.key = clStrdup(key);
     p.sp.val = clStrdup(val);
-    doubleaPush(em->d, p);
+    draPush(em->d, p);
   }
   /* to ensure NodeSets are big enough */
   clnodesetRemoveNode(em->marked, envmapSize(em)+1);
@@ -209,12 +209,12 @@ int envmapFree(struct EnvMap *em)
   sz = envmapSize(em);
 
   for (i = 0; i < sz; ++i) {
-    union PCTypes p = doubleaGetValueAt(em->d, i);
+    union PCTypes p = draGetValueAt(em->d, i);
     clFreeandclear(p.sp.key);
     clFreeandclear(p.sp.val);
-    doubleaSetValueAt(em->d, i, zeroblock);
+    draSetValueAt(em->d, i, zeroblock);
   }
-  doubleaFree(em->d);
+  draFree(em->d);
   em->d = NULL;
   clnodesetFree(em->marked);
   em->marked = NULL;
@@ -246,7 +246,7 @@ union PCTypes envmapKeyValAt(struct EnvMap *em, int where)
     clogError("NULL ptr in envmapKeyValAt()\n");
   }
   assert(where >= 0);
-  return doubleaGetValueAt(em->d, where);
+  return draGetValueAt(em->d, where);
 }
 
 int envmapIndexForKey(struct EnvMap *em, const char *key)
@@ -291,7 +291,7 @@ int envmapIsPrivateAt(struct EnvMap *em, int where)
 struct EnvMap *clbEnvMap(char *fname)
 {
   struct DataBlock *db, *dbem;
-  struct DoubleA *dd;
+  struct DRA *dd;
   struct EnvMap *result = NULL;
 
   db = fileToDataBlockPtr(fname);
@@ -301,7 +301,7 @@ struct EnvMap *clbEnvMap(char *fname)
   datablockFreePtr(dbem);
 
   datablockFreePtr(db);
-  doubleaFree(dd);
+  draFree(dd);
   return result;
 }
 

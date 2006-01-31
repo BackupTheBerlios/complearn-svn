@@ -30,7 +30,7 @@
 #include <complearn/dbe-stringlist.h>
 #include <complearn/dbe-windowed.h>
 #include <complearn/dlextcomp.h>
-#include <complearn/doublea.h>
+#include <complearn/dra.h>
 #include <complearn/environment.h>
 #include <complearn/clalloc.h>
 #include <complearn/gdbmhelper.h>

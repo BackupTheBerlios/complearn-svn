@@ -42,7 +42,7 @@
 
 struct CLToken {
   int tokNum;
-  struct DoubleA *d; /* Array of CLToken * */
+  struct DRA *d; /* Array of CLToken * */
 };
 
 struct CLYieldChain;
@@ -68,8 +68,8 @@ typedef void (*tokenFunc)(struct DotParserInstance *dp,
 struct DotParserInstance {
   struct DotParserClass *dpc;
   struct DataBlock *db;
-  struct DoubleA *commentBuf;
-  struct DoubleA *tokensToFree;
+  struct DRA *commentBuf;
+  struct DRA *tokensToFree;
 };
 
 struct DotParserClass {
@@ -105,7 +105,7 @@ struct YCTree {
   int oldstate;
   int isNode;
   int nodenum, maxnodenum;
-  struct DoubleA *nodeLabels, *edgeKeeper;
+  struct DRA *nodeLabels, *edgeKeeper;
   struct TreeAdaptor *ta;
   struct TreeScore *ts;
   struct TreeHolder *th;
@@ -273,7 +273,7 @@ void ycCommentsPF(struct CLYieldChain *yc, struct CLToken *clt)
         ejectGobblePassClear(yc, clt);
       } else {
         transitTo(yc, STATE_NORMAL);
-        pass(yc, doubleaGetValueAt(yc->m->d, 0).ptr);
+        pass(yc, draGetValueAt(yc->m->d, 0).ptr);
         clear(yc);
       }
       break;
@@ -293,7 +293,7 @@ void ycCommentsPF(struct CLYieldChain *yc, struct CLToken *clt)
         ejectGobbleAndPass(yc, clt);
       } else {
         transitTo(yc, STATE_INCOMMENT);
-        pass(yc, doubleaGetValueAt(yc->m->d, 0).ptr);
+        pass(yc, draGetValueAt(yc->m->d, 0).ptr);
       }
       clear(yc);
       break;
@@ -338,7 +338,7 @@ static void ycPunkPF(struct CLYieldChain *yc, struct CLToken *clt)
       if (clt->tokNum == '-')
         ejectGobblePassClear(yc, clt);
       else {
-        pass(yc, doubleaGetValueAt(yc->m->d, 0).ptr);
+        pass(yc, draGetValueAt(yc->m->d, 0).ptr);
         clear(yc);
       }
       transitTo(yc, STATE_NORMAL);
@@ -372,7 +372,7 @@ static void ycWhiteSpacePF(struct CLYieldChain *yc, struct CLToken *clt)
     if (isWS) {
       gobble(yc, clt);
     } else {
-      if (doubleaSize(yc->m->d) > 0)
+      if (draSize(yc->m->d) > 0)
         pass(yc, yc->m);
       clear(yc);
     }
@@ -420,22 +420,22 @@ static struct YCTree *ycTreeNew(struct CLYieldChain *fm)
   struct YCTree *ycs = clCalloc(sizeof(*ycs), 1);
   ycs->yc.next = fm;
   ycs->yc.process = ycTreePF;
-  ycs->nodeLabels = doubleaNew();
-  ycs->edgeKeeper = doubleaNew(); /* uses .ip.x and .ip.y */
+  ycs->nodeLabels = draNew();
+  ycs->edgeKeeper = draNew(); /* uses .ip.x and .ip.y */
   return ycs;
 }
 
-void convertNodeToStringRecursive(struct CLToken *t, struct DoubleA *da)
+void convertNodeToStringRecursive(struct CLToken *t, struct DRA *da)
 {
   int i;
   if (t->tokNum < 255) {
       union PCTypes p = zeropct;
       p.i = t->tokNum;
-      doubleaPush(da, p);
+      draPush(da, p);
       return;
   }
-  for (i = 0; i < doubleaSize(t->d); i += 1) {
-    struct CLToken *c = (struct CLToken *) doubleaGetValueAt(t->d, i).ptr;
+  for (i = 0; i < draSize(t->d); i += 1) {
+    struct CLToken *c = (struct CLToken *) draGetValueAt(t->d, i).ptr;
     convertNodeToStringRecursive(c, da);
   }
 }
@@ -444,18 +444,18 @@ static char *convertNodeToString(struct CLToken *t)
 {
   static char *retval;
   int i;
-  struct DoubleA *da = doubleaNew();
+  struct DRA *da = draNew();
   assert(t->tokNum > 255 && "Invalid CharToken for convert to String");
   convertNodeToStringRecursive(t, da);
   if (retval)
     free(retval);
-  retval = clCalloc(doubleaSize(da)+1,1);
+  retval = clCalloc(draSize(da)+1,1);
 
-  for (i = 0; i < doubleaSize(da); i += 1)
-    retval[i] = doubleaGetValueAt(da, i).i;
+  for (i = 0; i < draSize(da); i += 1)
+    retval[i] = draGetValueAt(da, i).i;
 
-//  printf("Returning <%s> from cnts for %p with dasize %d:%p\n", retval, t, doubleaSize(da));
-  doubleaFree(da);
+//  printf("Returning <%s> from cnts for %p with dasize %d:%p\n", retval, t, draSize(da));
+  draFree(da);
   return retval;
 }
 
@@ -607,9 +607,9 @@ struct CLToken *newSemToken(int symval)
   p.ptr = clt;
   assert(symval > 255 && "Invalid semantic token code");
   clt->tokNum = symval;
-  clt->d = doubleaNew();
+  clt->d = draNew();
   if (currentArena)
-    doubleaPush(currentArena->tokensToFree, p);
+    draPush(currentArena->tokensToFree, p);
   return clt;
 }
 
@@ -620,14 +620,14 @@ struct CLToken *newCharToken(unsigned char c)
   p.ptr = clt;
   clt->tokNum = c;
   if (currentArena)
-    doubleaPush(currentArena->tokensToFree, p);
+    draPush(currentArena->tokensToFree, p);
   return clt;
 }
 
 static void freeCLToken(struct CLToken *c)
 {
   if (c->d) {
-    doubleaFree(c->d);
+    draFree(c->d);
     c->d = NULL;
   }
   free(c);
@@ -663,8 +663,8 @@ void gobble(struct CLYieldChain *yc, struct CLToken *clt)
   union PCTypes p = zeropct;
   p.ptr = clt;
   assert(yc->m && "No token set");
-  assert(yc->m->d && "No doublea set!");
-  doubleaPush(yc->m->d, p);
+  assert(yc->m->d && "No dra set!");
+  draPush(yc->m->d, p);
 }
 
 void ejectGobble(struct CLYieldChain *yc, struct CLToken *clt)
@@ -711,14 +711,14 @@ void freeDotParser(struct DotParserInstance *dp)
   if (currentArena && currentArena == dp) {
     int i;
     currentArena = NULL;
-    for (i = 0; i < doubleaSize(dp->tokensToFree); i += 1) {
+    for (i = 0; i < draSize(dp->tokensToFree); i += 1) {
       union PCTypes p;
-      p = doubleaGetValueAt(dp->tokensToFree, i);
+      p = draGetValueAt(dp->tokensToFree, i);
       freeCLToken((struct CLToken *) p.ptr);
     }
-    doubleaFree(dp->tokensToFree);
+    draFree(dp->tokensToFree);
     dp->tokensToFree = NULL;
-    doubleaFree(dp->commentBuf);
+    draFree(dp->commentBuf);
     dp->commentBuf = NULL;
   }
   datablockFreePtr(dp->db);
@@ -730,8 +730,8 @@ struct DotParserInstance *newDotParser(struct DataBlock *db)
 {
   struct DotParserInstance *dp = clCalloc(sizeof(struct DotParserInstance), 1);
   assert(dp);
-  dp->commentBuf = doubleaNew();
-  dp->tokensToFree = doubleaNew();
+  dp->commentBuf = draNew();
+  dp->tokensToFree = draNew();
   dp->db = datablockClonePtr(db);
   currentArena = dp;
   return dp;
@@ -742,7 +742,7 @@ static void handleSetProp(struct YCTree *tree, const char *leftstr, const char *
   if (tree->isNode) {
     union PCTypes p = zeropct;
     p.ptr = clStrdup(rightstr);
-    doubleaSetValueAt(tree->nodeLabels, tree->nodenum, p);
+    draSetValueAt(tree->nodeLabels, tree->nodenum, p);
   }
 }
 static void handleNewEdge(struct YCTree *tree, const char *leftstr, const char *rightstr) {
@@ -756,7 +756,7 @@ static void handleNewEdge(struct YCTree *tree, const char *leftstr, const char *
   union PCTypes p = zeropct;
   p.ip.x = leftnum;
   p.ip.y = rightnum;
-  doubleaPush(tree->edgeKeeper, p);
+  draPush(tree->edgeKeeper, p);
 //  printf("EDGE    for (%d) -- (%d)\n", leftnum, rightnum);
 }
 
@@ -769,7 +769,7 @@ static void handleNewNode(struct YCTree *yctree, const char *str)
   yctree->isNode = 1;
   if (yctree->nodenum > yctree->maxnodenum)
     yctree->maxnodenum = yctree->nodenum;
-  doubleaSetValueAt(yctree->nodeLabels, yctree->nodenum, zeropct);
+  draSetValueAt(yctree->nodeLabels, yctree->nodenum, zeropct);
 }
 
 static void handleComment(struct YCTree *tree, struct CLToken *clt)
@@ -787,7 +787,7 @@ static void showResults(struct YCTree *yctree)
 {
   int i;
   for (i = 0; i <= yctree->maxnodenum; i += 1) {
-    union PCTypes p = doubleaGetValueAt(yctree->nodeLabels, i);
+    union PCTypes p = draGetValueAt(yctree->nodeLabels, i);
     printf("Node #%d:     (%s)\n", i, treeaIsQuartettable(yctree->ta,i) ? (char *) p.ptr : "(kernel)");
   }
 }
@@ -818,12 +818,12 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
         adjaSetConState(aa, i, j, 0);
       }
     }
-    for (i = 0; i < doubleaSize(yctree->edgeKeeper); i += 1) {
+    for (i = 0; i < draSize(yctree->edgeKeeper); i += 1) {
       union PCTypes p;
-      p = doubleaGetValueAt(yctree->edgeKeeper, i);
+      p = draGetValueAt(yctree->edgeKeeper, i);
       adjaSetConState(aa, p.ip.x, p.ip.y, 1);
     }
-    doubleaFree(yctree->edgeKeeper);
+    draFree(yctree->edgeKeeper);
     yctree->edgeKeeper = NULL;
     if (matdb) {
       dpt->dm = clbDBDistMatrix(matdb);
@@ -841,7 +841,7 @@ struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb)
       for (i = 0; i <= yctree->maxnodenum; i += 1) {
         if (treeaIsQuartettable(yctree->ta,i)) {
           for (j = 0; j < leafcount; j += 1) {
-            if (strcmp(stringstackReadAt(labels, j), doubleaGetValueAt(yctree->nodeLabels, i).ptr) == 0) {
+            if (strcmp(stringstackReadAt(labels, j), draGetValueAt(yctree->nodeLabels, i).ptr) == 0) {
               treealabelpermSetColumnIndexToNodeNumber(yctree->ta, j, i);
   //            printf("Must set %d to point to %d\n", i, j);
             }

@@ -29,8 +29,8 @@ void clnodesetRemoveNode(struct CLNodeSet *cl, qbase_t which);
 void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
 int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which);
 void clnodesetPrint(struct CLNodeSet *cl);
-struct DoubleA *clnodesetToDoubleA(const struct CLNodeSet *cl);
-struct CLNodeSet *doubleaToCLNodeSet(const struct DoubleA *da);
+struct DRA *clnodesetToDRA(const struct CLNodeSet *cl);
+struct CLNodeSet *draToCLNodeSet(const struct DRA *da);
 int clnodesetSize(const struct CLNodeSet *cl);
 
 #endif

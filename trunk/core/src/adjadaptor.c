@@ -32,7 +32,7 @@ int adjaNeighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize)
 {
   return aa->vptr->adjagetneighbors(aa, i, nbuf, nsize);
 }
-struct DoubleA *adjaSPMMap(struct AdjAdaptor *aa)
+struct DRA *adjaSPMMap(struct AdjAdaptor *aa)
 {
   return aa->vptr->adjaspmmap(aa);
 }

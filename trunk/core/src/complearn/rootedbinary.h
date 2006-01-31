@@ -105,7 +105,7 @@ int rootedbinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
  */
 qbase_t rootedbinaryStartingNode(const struct RootedBinary *ub);
 
-/** \brief Returns a DoubleA contained an ordered traversal of all
+/** \brief Returns a DRA contained an ordered traversal of all
  * the nodes in the tree.
  *
  * This function allows the user to get a dynamically-allocated list of
@@ -114,17 +114,17 @@ qbase_t rootedbinaryStartingNode(const struct RootedBinary *ub);
  * parameter; thus the order returned by unrootedbinaryNodes will be affected
  * by the node child order flip bits.
  *
- * The DoubleA returned by this function use the .i field of PCTypes:
+ * The DRA returned by this function use the .i field of PCTypes:
  *
- * struct DoubleA *da = unrootedbinaryNodes(ub);
+ * struct DRA *da = unrootedbinaryNodes(ub);
  * int i;
- * for (i = 0; i < doubleaSize(da); i += 1)
- *   printf("Got node %d\n", doubleaGetValueAt(da, i).i);
+ * for (i = 0; i < draSize(da); i += 1)
+ *   printf("Got node %d\n", draGetValueAt(da, i).i);
  *
  * \param ub pointer to the RootedBinary that must be reordered
- * \return pointer to a DoubleA holding the list of all tree nodes
+ * \return pointer to a DRA holding the list of all tree nodes
  */
-struct DoubleA *rootedbinaryNodes(const struct RootedBinary *ub);
+struct DRA *rootedbinaryNodes(const struct RootedBinary *ub);
 
 
 /** \brief Returns a list of all adjacent border-pair node identifiers
@@ -141,17 +141,17 @@ struct DoubleA *rootedbinaryNodes(const struct RootedBinary *ub);
  * The node identifiers are accessed using the .ip.x and .ip.y members of
  * PCTypes.  For example:
  *
- * struct DoubleA *da = unrootedbinaryPerimPairs(ub);
+ * struct DRA *da = unrootedbinaryPerimPairs(ub);
  * int i;
- * for (i = 0; i < doubleaSize(da); i += 1) {
- *   union PCTypes pct = doubleaGetValueAt(da, i);
+ * for (i = 0; i < draSize(da); i += 1) {
+ *   union PCTypes pct = draGetValueAt(da, i);
  *   printf("perimeter pair: node %d and node %d\n", pct.ip.x, pct.ip.y);
  * }
  *
  * \param ub pointer to the RootedBinary that must be reordered
- * \return pointer to a DoubleA holding the list of all perimeter pairs
+ * \return pointer to a DRA holding the list of all perimeter pairs
  */
-struct DoubleA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips);
+struct DRA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips);
 
 /** \brief tests to determine if two trees are identical
  *
@@ -185,14 +185,14 @@ void rootedbinaryFree(struct RootedBinary *ub);
  * When mapping a set of leaf-labels to a graph or tree, there is always
  * the possibility to permute the leaf labels.  This is handled with a
  * permutation array.  The entry at
- * doubleaGetValueAt(leaflabels, r).i
+ * draGetValueAt(leaflabels, r).i
  * indicates the node-identifier of the leaf where datamatrix column index
  * indicator r should be placed.
  *
  * \param ub pointer to the RootedBinary to be examined
- * \return pointer to a DoubleA containing leaf label positions
+ * \return pointer to a DRA containing leaf label positions
  */
-struct DoubleA *rootedbinaryLeafLabels(const struct RootedBinary *ub);
+struct DRA *rootedbinaryLeafLabels(const struct RootedBinary *ub);
 
 /** \brief This function returns the number of simple mutations used in
  * the most recent complex mutation step taken with unrootedbinaryDoComplexMutation

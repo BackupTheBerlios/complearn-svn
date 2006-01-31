@@ -120,7 +120,7 @@ int main(int argc, char **argv)
       { NULL, 0, NULL, 0 },
   };
   double score;
-  struct DoubleA *res;
+  struct DRA *res;
   struct TreeBlaster *tb;
   struct TreeHolder *th;
   struct TreeMaster *tm;
@@ -218,17 +218,17 @@ int main(int argc, char **argv)
   }
   printf("\nNode ordering:\n");
   res = simpleWalkTree(ub, clns);
-  doubleaPrintIntList(res);
+  draPrintIntList(res);
   printf("\nLeaf ordering:\n");
-  for (j = 0; j < doubleaSize(res); j += 1) {
-    int nodenum = doubleaGetValueAt(res, j).i;
+  for (j = 0; j < draSize(res); j += 1) {
+    int nodenum = draGetValueAt(res, j).i;
     if (treeaIsQuartettable(ub, nodenum))
       printf("%d ", nodenum);
   }
   printf("\nLeaf labels, in %s order:\n", isOrdered ? "best" : "arbitrary");
   struct LabelPerm *lph = treeaLabelPerm(ub);
-  for (j = 0; j < doubleaSize(res); j += 1) {
-    int nodenum = doubleaGetValueAt(res, j).i;
+  for (j = 0; j < draSize(res); j += 1) {
+    int nodenum = draGetValueAt(res, j).i;
     if (!treeaIsQuartettable(ub, nodenum))
       continue;
     int indnum = labelpermColIndexForNodeID(lph, nodenum);
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
   }
   labelpermFree(lph);
   printf("Done.\n");
-  doubleaFree(res);
+  draFree(res);
   freedotth(dotth);
   treemasterFree(tm);
   gslmatrixFree(dm);

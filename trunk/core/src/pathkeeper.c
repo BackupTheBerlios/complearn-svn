@@ -8,7 +8,7 @@
 struct PathKeeper {
   struct AdjAdaptor outer;
   struct AdjAdaptor *basis;
-  struct DoubleA *spmmap;
+  struct DRA *spmmap;
 };
 
 static void pk_free(struct AdjAdaptor *aa);
@@ -19,7 +19,7 @@ static int pk_getconstate(struct AdjAdaptor *aa, int i, int j);
 static void pk_setconstate(struct AdjAdaptor *aa, int i, int j, int which);
 static int pk_getneighborcount(struct AdjAdaptor *aa, int i);
 static int pk_getneighbors(struct AdjAdaptor *aa, int i, int *nbuf, int *nsize);
-static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad);
+static struct DRA *pk_spmmap(struct AdjAdaptor *ad);
 
 static struct AdjImplementation pkimpl = {
   adjafree : pk_free,
@@ -90,7 +90,7 @@ int pk_size(struct AdjAdaptor *ad)
   return adjaSize(pk->basis);
 }
 
-static struct DoubleA *pk_spmmap(struct AdjAdaptor *ad)
+static struct DRA *pk_spmmap(struct AdjAdaptor *ad)
 {
   struct PathKeeper *pk = (struct PathKeeper *) ad->ptr;
   if (pk->spmmap == NULL) {
@@ -120,8 +120,8 @@ struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis)
 int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, int *bufsize)
 {
   int pathlen = 0;
-  struct DoubleA *spmmap = adjaSPMMap(ad);
-  const struct DoubleA *spm = doubleaGetValueAt(spmmap, to).ar;
+  struct DRA *spmmap = adjaSPMMap(ad);
+  const struct DRA *spm = draGetValueAt(spmmap, to).ar;
   qbase_t cur;
   cur = from;
   //printf("Got path request from %d to %d with bufsize %d:  ", from, to, *bufsize);
@@ -142,7 +142,7 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
       return CL_ERRFULL;
     pathbuf[pathlen] = cur;
     pathlen += 1;
-    cur = doubleaGetValueAt(spm, cur).i;
+    cur = draGetValueAt(spm, cur).i;
     if (cur >= adjaSize(ad)) {
       printf("Problem with cur for %d\n", pathbuf[pathlen-1]);
     }
@@ -154,38 +154,38 @@ int pathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, in
     return CL_ERRFULL;
   pathbuf[pathlen] = to;
   pathlen += 1;
-//    doubleaPush(result, p);
+//    draPush(result, p);
 #if LOGICWALL
-//  assert(doubleaGetValueAt(result, 0).i == from);
-//  assert(doubleaGetValueAt(result, doubleaSize(result)-1).i == to);
+//  assert(draGetValueAt(result, 0).i == from);
+//  assert(draGetValueAt(result, draSize(result)-1).i == to);
 #endif
   *bufsize = pathlen;
   return CL_OK;
 }
 
-void freeSPMMap(struct DoubleA *ub)
+void freeSPMMap(struct DRA *ub)
 {
-  doubleaDeepFree(ub, 1);
+  draDeepFree(ub, 1);
 }
 
-struct DoubleA *makeSPMMap(struct AdjAdaptor *aa)
+struct DRA *makeSPMMap(struct AdjAdaptor *aa)
 {
   int i;
-  struct DoubleA *result = doubleaNew();
+  struct DRA *result = draNew();
   for (i = 0; i < adjaSize(aa); ++i) {
     union PCTypes p = zeropct;
     p.ar = makeSPMFor(aa, i);
-    doubleaPush(result, p);
+    draPush(result, p);
   }
   return result;
 }
 
 #define PATH_DASH (-1)
 #define LENGTH_INIT (9999999)
-struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
+struct DRA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
 {
   int *path, *length;
-  struct DoubleA *todo, *result;
+  struct DRA *todo, *result;
   int i, cur;
   union PCTypes p;
   int retval;
@@ -196,9 +196,9 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   assert(root < adjaSize(aa));
   path = clCalloc(adjaSize(aa), sizeof(*path));
   length = clCalloc(adjaSize(aa), sizeof(*length));
-  result = doubleaNew();
-  todo = doubleaNew();
-  assert(doubleaSize(todo) < 100);
+  result = draNew();
+  todo = draNew();
+  assert(draSize(todo) < 100);
   for (i = 0; i < adjaSize(aa); i += 1) {
     path[i] = PATH_DASH;
     length[i] = LENGTH_INIT;
@@ -215,13 +215,13 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
     p = zeropct;
     p.i = neighbor;
 //    printf("Pushing value %d on todo at %p\n", p.i, todo);
-    doubleaPush(todo, p);
+    draPush(todo, p);
     path[neighbor] = root;
     length[neighbor] = 1;
   }
-  while (doubleaSize(todo)) {
+  while (draSize(todo)) {
     nsize = MAXNEIGHBORS;
-    cur = doubleaShift(todo).i;
+    cur = draShift(todo).i;
     retval = adjaNeighbors(aa, cur, nbuf, &nsize);
     assert(retval == CL_OK);
     for (i = 0; i < nsize; i += 1) {
@@ -231,22 +231,22 @@ struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t root)
         length[neighbor] = length[cur] + 1;
         p = zeropct;
         p.i = neighbor;
-        doubleaPush(todo, p);
+        draPush(todo, p);
       }
     }
   }
   for (i = 0; i < adjaSize(aa); i += 1) {
     p = zeropct;
     p.i = path[i];
-    doubleaPush(result, p);
+    draPush(result, p);
   }
   free(path);
   free(length);
-  doubleaFree(todo);
+  draFree(todo);
 
-  assert(doubleaSize(result) == adjaSize(aa));
+  assert(draSize(result) == adjaSize(aa));
   for (i = 0; i < adjaSize(aa); i += 1) {
-    cur = doubleaGetValueAt(result, i).i;
+    cur = draGetValueAt(result, i).i;
 //    printf("Got value %d at position %d\n", cur, i);
     assert(cur >= 0 && cur < adjaSize(aa));
   }
@@ -261,43 +261,43 @@ static int intcomper(const void *ui1, const void *ui2)
   return (*i1) - (*i2);
 }
 
-struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
+struct DRA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   union PCTypes p = zeropct;
-  struct DoubleA *result = doubleaNew();
-  struct DoubleA *border = doubleaNew();
+  struct DRA *result = draNew();
+  struct DRA *border = draNew();
   struct CLNodeSet *done = clnodesetNew(treeaNodeCount(ta));
-  doubleaPush(border, p);
+  draPush(border, p);
   walkTree(treeaAdjAdaptor(ta), result, border, done, 0, flips);
-  doubleaFree(border);
+  draFree(border);
   clnodesetFree(done);
   return result;
 
 }
 
 void walkTree(struct AdjAdaptor *aa,
-    struct DoubleA *result, struct DoubleA *border, struct CLNodeSet *done,
+    struct DRA *result, struct DRA *border, struct CLNodeSet *done,
     int breadthFirst,
     struct CLNodeSet *flipped)
 {
   qbase_t cur;
-  while (doubleaSize(border) > 0) {
+  while (draSize(border) > 0) {
     if (breadthFirst)
-      cur = doubleaPop(border).i;
+      cur = draPop(border).i;
     else
-      cur = doubleaShift(border).i;
+      cur = draShift(border).i;
 /*    assert(cur >= 0); */
     assert(cur < adjaSize(aa));
     if (!clnodesetHasNode(done, cur)) {
       union PCTypes p = zeropct;
       int i;
       int retval;
-      struct DoubleA *nb = doubleaNew();
+      struct DRA *nb = draNew();
       int nbuf[MAXNEIGHBORS];
       int nsize = MAXNEIGHBORS;
       clnodesetAddNode(done, cur);
       p.i = cur;
-      doubleaPush(result, p);
+      draPush(result, p);
       retval = adjaNeighbors(aa, cur, nbuf, &nsize);
       assert(retval == CL_OK);
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
@@ -306,18 +306,18 @@ void walkTree(struct AdjAdaptor *aa,
         union PCTypes p = zeropct;
         p.i = nbuf[i];
         if (!clnodesetHasNode(done, p.i))
-          doubleaPush(nb, p);
+          draPush(nb, p);
       }
       if (flipped && clnodesetHasNode(flipped, cur)) {
         if (nsize < 2) {
           //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {
-          doubleaSwapAt(nb, 0, 1);
+          draSwapAt(nb, 0, 1);
         }
       }
-      for (i = 0; i < doubleaSize(nb); ++i)
-        doubleaUnshift(border, doubleaGetValueAt(nb, i));
-      doubleaFree(nb);
+      for (i = 0; i < draSize(nb); ++i)
+        draUnshift(border, draGetValueAt(nb, i));
+      draFree(nb);
     }
   }
 }

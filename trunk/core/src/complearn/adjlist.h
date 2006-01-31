@@ -19,7 +19,7 @@
  */
 struct AdjList;
 struct AdjAdaptor;
-struct DoubleA;
+struct DRA;
 
 /** \brief Create a new AdjList with a given size
  *

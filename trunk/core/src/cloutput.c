@@ -67,7 +67,7 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
 //  const char *fmtString = "%03.3f ";
   int n1Counter = 0, n1Set = 0;
   int n2Counter = 0, n2Set = 0;
-  struct DoubleA *da = doubleaNew();
+  struct DRA *da = draNew();
   struct DataBlockEnumerationIterator *ia, *ib;
   struct DataBlock *dba, *dbb;
 
@@ -91,7 +91,7 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
       ncd = ncdfunc(dba, dbb, cur);
       outnum = xpremap(ncd, cur);
 //      printf(fmtString, outnum);
-      doubleaSetDValueAt(da, doubleaSize(da), outnum);
+      draSetDValueAt(da, draSize(da), outnum);
       if (madeNewOne)
         datablockFreePtr(dbb);
     }
@@ -107,10 +107,10 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
     int x1, x2, i = 0;
     for (x1 = 0; x1 < n1Counter; x1++)
       for (x2 = 0; x2 < n2Counter; x2++) {
-        gsl_matrix_set(gres, x1, x2, doubleaGetDValueAt(da, i++)); /**  ^-^ **/
+        gsl_matrix_set(gres, x1, x2, draGetDValueAt(da, i++)); /**  ^-^ **/
       }
   }
-  doubleaFree(da);
+  draFree(da);
   return gres;
 }
 
@@ -200,7 +200,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   int i, j;
   struct LabelPerm *labelperm = treeaLabelPerm(ta);
   struct AdjAdaptor *ad = treeaAdjAdaptor(ta);
-  struct DoubleA *nodes;
+  struct DRA *nodes;
   static char labbuf[128];
   static char lab[1024];
   struct DataBlock *result;
@@ -215,7 +215,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   nodes = simpleWalkTree(ta, flips);
   dasize = adjaSize(ad);
   assert(dasize > 0);
-  assert(doubleaSize(nodes) == dasize);
+  assert(draSize(nodes) == dasize);
   dotacc = stringstackNew();
   assert(dotacc);
   assert(labelperm);
@@ -284,7 +284,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
 
   int rootnode = -1;
   for (i = 0; i < dasize; i += 1) {
-    int nodenum = doubleaGetValueAt(nodes, i).i;
+    int nodenum = draGetValueAt(nodes, i).i;
     assert(nodenum >= 0 && nodenum <= 3 * dasize);
     char *str;
     char *extrastr = "";
@@ -302,11 +302,11 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
     stringstackPush(dotacc, lab);
   }
   for (i = 0; i < dasize; i += 1) {
-    int n1 = doubleaGetValueAt(nodes, i).i;
+    int n1 = draGetValueAt(nodes, i).i;
     assert(n1 >= 0 && n1 <= 3 * dasize);
     sprintf(con1, "%d", n1);
     for (j = 0; j < dasize; j += 1) {
-      int n2 = doubleaGetValueAt(nodes, j).i;
+      int n2 = draGetValueAt(nodes, j).i;
 //      printf("For %d, got %d on labelperm %p\n", j, n2, labelperm);
       assert(n2 >= 0 && n2 <= 3 * dasize);
       char con2[1024];
@@ -328,20 +328,20 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   if (flips)
   {
     int i;
-    struct DoubleA *dapairs;
+    struct DRA *dapairs;
     dapairs = treeaPerimPairs(ta, flips);
-    for (i = 0; i < doubleaSize(dapairs); i += 1) {
-      int dmx = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.x);
-      int dmy = labelpermColIndexForNodeID(labelperm,doubleaGetValueAt(dapairs,i).ip.y);
+    for (i = 0; i < draSize(dapairs); i += 1) {
+      int dmx = labelpermColIndexForNodeID(labelperm,draGetValueAt(dapairs,i).ip.x);
+      int dmy = labelpermColIndexForNodeID(labelperm,draGetValueAt(dapairs,i).ip.y);
       double disthere = gsl_matrix_get(dm, dmx, dmy);
       sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
       stringstackPush(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.x);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, draGetValueAt(dapairs, i).ip.x);
       stringstackPush(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, doubleaGetValueAt(dapairs, i).ip.y);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, draGetValueAt(dapairs, i).ip.y);
       stringstackPush(dotacc, lab);
     }
-    doubleaFree(dapairs);
+    draFree(dapairs);
   }
   stringstackPush(dotacc, "}");
   tmpsize = 0;
@@ -355,7 +355,7 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   stringstackFree(dotacc);
   if (cur && params)
     stringstackFree(params);
-  doubleaFree(nodes);
+  draFree(nodes);
   labelpermFree(labelperm);
   labelperm = NULL;
   return result;

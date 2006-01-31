@@ -6,7 +6,7 @@
 #include <complearn/complearn.h>
 
 struct StringStack {
-  struct DoubleA *da;
+  struct DRA *da;
 };
 
 struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
@@ -44,18 +44,18 @@ struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
 struct DataBlock *stringstackDump(const struct StringStack *ss)
 {
   struct DataBlock *result;
-  struct DoubleA *parts = doubleaNew();
+  struct DRA *parts = draNew();
   int i;
 
   for ( i = 0; i < stringstackSize(ss); i += 1) {
     union PCTypes p = zeropct;
-    char *s = doubleaGetValueAt(ss->da,i).str;
+    char *s = draGetValueAt(ss->da,i).str;
     p.dbp = stringDump(s); // TODO: fix mem leak here
-    doubleaPush(parts,p);
+    draPush(parts,p);
   }
 
   result = package_dd_DataBlocks(TAGNUM_STRINGSTACK, parts);
-  doubleaFree(parts);
+  draFree(parts);
   return result;
 }
 
@@ -71,7 +71,7 @@ struct StringStack *stringstackNew()
 {
 	struct StringStack *ss;
 	ss = (struct StringStack*)clCalloc(sizeof(struct StringStack), 1);
-  ss->da = doubleaNew();
+  ss->da = draNew();
 	// ss->size = 0;
 	return ss;
 }
@@ -84,8 +84,8 @@ struct StringStack *stringstackClone(struct StringStack *ss)
   nss = stringstackNew();
   for (i = 0; i < sz; ++i) {
     union PCTypes p;
-    p.str = clStrdup(doubleaGetValueAt(ss->da, i).str);
-    doubleaSetValueAt(nss->da, i, p);
+    p.str = clStrdup(draGetValueAt(ss->da, i).str);
+    draSetValueAt(nss->da, i, p);
   }
   return nss;
 }
@@ -93,10 +93,10 @@ struct StringStack *stringstackClone(struct StringStack *ss)
 int stringstackFree(struct StringStack *ss)
 {
   int i;
-  for (i = 0; i < doubleaSize(ss->da); i += 1) {
-    clFree(doubleaGetValueAt(ss->da, i).str);
+  for (i = 0; i < draSize(ss->da); i += 1) {
+    clFree(draGetValueAt(ss->da, i).str);
   }
-  doubleaFree(ss->da);
+  draFree(ss->da);
   ss->da = NULL;
 	clFreeandclear(ss);
 	return CL_OK;
@@ -108,7 +108,7 @@ int stringstackUnshift(struct StringStack *ss, const char *str)
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
-  doubleaUnshift(ss->da, p);
+  draUnshift(ss->da, p);
   return CL_OK;
 }
 
@@ -118,18 +118,18 @@ int stringstackPush(struct StringStack *ss, const char *str)
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
-  doubleaPush(ss->da, p);
+  draPush(ss->da, p);
   return CL_OK;
 }
 
 int stringstackIsEmpty(struct StringStack *ss)
 {
-	return doubleaSize(ss->da) == 0;
+	return draSize(ss->da) == 0;
 }
 
 int stringstackSize(const struct StringStack *ss)
 {
-	return doubleaSize(ss->da);
+	return draSize(ss->da);
 }
 
 /* After calling shiftSS, it is the responsibility of the programmer to free
@@ -141,7 +141,7 @@ char *shiftSS(struct StringStack *ss)
   assert(stringstackSize(ss) > 0);
   memset(&p, 0, sizeof(p));
 	if (stringstackSize(ss) == 0) return p.str;
-	p = doubleaShift(ss->da);
+	p = draShift(ss->da);
   return p.str;
 }
 
@@ -153,13 +153,13 @@ char *stringstackPop(struct StringStack *ss)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (stringstackSize(ss) == 0) return p.str;
-	p = doubleaPop(ss->da);
+	p = draPop(ss->da);
   return p.str;
 }
 
 char *stringstackReadAt(struct StringStack *ss, int i)
 {
-	return doubleaGetValueAt(ss->da, i).str;
+	return draGetValueAt(ss->da, i).str;
 }
 
 int stringstackSort(struct StringStack *ss)
@@ -169,8 +169,8 @@ int stringstackSort(struct StringStack *ss)
   do {
     flipped = 0;
     for (i = 1; i < sz; ++i) {
-      if (strcmp(doubleaGetValueAt(ss->da, i-1).str, doubleaGetValueAt(ss->da, i).str) > 0) {
-        doubleaSwapAt(ss->da, i-1, i);
+      if (strcmp(draGetValueAt(ss->da, i-1).str, draGetValueAt(ss->da, i).str) > 0) {
+        draSwapAt(ss->da, i-1, i);
         flipped = 1;
       }
     }

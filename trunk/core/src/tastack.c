@@ -17,20 +17,20 @@ struct TransformAdaptorStack {
 #endif
 
 struct TransformAdaptorStack {
-  struct DoubleA *da;
+  struct DRA *da;
 };
 
 struct TransformAdaptorStack *newTAStack()
 {
 	struct TransformAdaptorStack *ts;
 	ts = (struct TransformAdaptorStack*)clCalloc(sizeof(struct TransformAdaptorStack), 1);
-  ts->da = doubleaNew();
+  ts->da = draNew();
 	return ts;
 }
 
 int freeTS(struct TransformAdaptorStack *ts)
 {
-	doubleaFree(ts->da);
+	draFree(ts->da);
 	ts->da = NULL;
 	free(ts);
 	return CL_OK;
@@ -41,7 +41,7 @@ int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta)
   union PCTypes p;
 
   p.ta = ta;
-  doubleaPush(ts->da, p);
+  draPush(ts->da, p);
   return CL_OK;
 }
 
@@ -50,7 +50,7 @@ struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
-	p = doubleaShift(ts->da);
+	p = draShift(ts->da);
   return p.ta;
 }
 
@@ -59,18 +59,18 @@ struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts)
   union PCTypes p;
   memset(&p, 0, sizeof(p));
 	if (sizeTS(ts) == 0) return p.ta;
-	p = doubleaPop(ts->da);
+	p = draPop(ts->da);
   return p.ta;
 }
 
 int isEmptyTS(struct TransformAdaptorStack *ts)
 {
-	return doubleaSize(ts->da) == 0;
+	return draSize(ts->da) == 0;
 }
 
 int sizeTS(struct TransformAdaptorStack *ts)
 {
-	return doubleaSize(ts->da);
+	return draSize(ts->da);
 }
 
 struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc)

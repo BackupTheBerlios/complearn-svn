@@ -27,7 +27,7 @@ struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, con
 {
   struct StringStack *ss;
   struct DataBlock *dbss;
-  struct DoubleA *results;
+  struct DRA *results;
   struct TagHdr *h = (struct TagHdr *) datablockData(db);
 
   if (h->tagnum != tagnum) {
@@ -43,7 +43,7 @@ struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, con
   dbss = scanForTag(results, TAGNUM_STRINGSTACK);
   ss = stringstackLoad(dbss, 1);
   datablockFreePtr(dbss);
-  doubleaFree(results);
+  draFree(results);
   return ss;
 }
 
@@ -55,14 +55,14 @@ struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe)
 struct DataBlock *clbLabelsDataBlock(char *fname)
 {
   struct DataBlock *db, *dblabels;
-  struct DoubleA *dd;
+  struct DRA *dd;
 
   db = fileToDataBlockPtr(fname);
   dd = load_DataBlock_package(db);
   dblabels = scanForTag(dd, TAGNUM_DMLABELS);
 
   datablockFreePtr(db);
-  doubleaFree(dd);
+  draFree(dd);
 
   return dblabels;
 }
@@ -77,7 +77,7 @@ struct StringStack *clbLabelsLoad(struct DataBlock *db)
 struct StringStack *clbDBLabels(struct DataBlock *db)
 {
   struct DataBlock *dblabels;
-  struct DoubleA *dd;
+  struct DRA *dd;
   struct StringStack *ss;
 
   dd = load_DataBlock_package(db);
@@ -86,7 +86,7 @@ struct StringStack *clbDBLabels(struct DataBlock *db)
   ss = clbLabelsLoad(dblabels);
 
   datablockFreePtr(dblabels);
-  doubleaFree(dd);
+  draFree(dd);
   return ss;
 }
 
@@ -126,7 +126,7 @@ struct StringStack *cltxtLabels(char *fname)
 struct StringStack *clbCommands(char *fname)
 {
   struct DataBlock *db, *dbem;
-  struct DoubleA *dd;
+  struct DRA *dd;
   struct StringStack *result;
 
   db = fileToDataBlockPtr(fname);
@@ -136,6 +136,6 @@ struct StringStack *clbCommands(char *fname)
 
   datablockFreePtr(db);
   datablockFreePtr(dbem);
-  doubleaFree(dd);
+  draFree(dd);
   return result;
 }

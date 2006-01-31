@@ -56,17 +56,17 @@ struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struct CLNodeSet *flips)
 {
   double acc = 0.0;
-  struct DoubleA *pairs = treeaPerimPairs(ts, flips);
+  struct DRA *pairs = treeaPerimPairs(ts, flips);
   int i;
   struct LabelPerm *lph = treeaLabelPerm(ts);
-  for (i = 0; i < doubleaSize(pairs); i += 1) {
-    union PCTypes p = doubleaGetValueAt(pairs, i);
+  for (i = 0; i < draSize(pairs); i += 1) {
+    union PCTypes p = draGetValueAt(pairs, i);
     double x, y;
     x = labelpermColIndexForNodeID(lph, p.ip.x);
     y = labelpermColIndexForNodeID(lph, p.ip.y);
     acc += gsl_matrix_get(dm, x, y);
   }
-  doubleaFree(pairs);
+  draFree(pairs);
   labelpermFree(lph);
   return acc;
 }

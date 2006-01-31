@@ -40,21 +40,21 @@ struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, i
   return permuteLabels(d, which);
 }
 
-void freeSPMSingle(struct DoubleA *d)
+void freeSPMSingle(struct DRA *d)
 {
   int i;
-  int n = doubleaSize(d);
+  int n = draSize(d);
   for (i = 0; i < n; ++i)
-    doubleaFree(doubleaGetValueAt(d, i).ar);
-  doubleaFree(d);
+    draFree(draGetValueAt(d, i).ar);
+  draFree(d);
 }
 
-void freeSPMSet(struct DoubleA *d)
+void freeSPMSet(struct DRA *d)
 {
   int i;
-  int n = doubleaSize(d);
+  int n = draSize(d);
   for (i = 0; i < n; ++i)
-    freeSPMSingle(doubleaGetValueAt(d, i).ar);
+    freeSPMSingle(draGetValueAt(d, i).ar);
 }
 
 static void mustBeSorted(qbase_t labels[4])

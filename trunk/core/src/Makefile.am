@@ -79,7 +79,7 @@ complearn/dbe-stringlist.h \
 complearn/dbe-windowed.h \
 complearn/dlextcomp.h \
 complearn/dotparser.h \
-complearn/doublea.h \
+complearn/dra.h \
 complearn/environment.h \
 complearn/envmap.h \
 complearn/clalloc.h \
@@ -138,7 +138,7 @@ compadaptor.c \
 unrootedbinary.c \
 datablock.c \
 datetime.c \
-doublea.c \
+dra.c \
 dbe-array.c \
 dbe-dir.c \
 dbe-factory.c \

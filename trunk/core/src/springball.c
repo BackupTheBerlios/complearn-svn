@@ -82,7 +82,7 @@ struct SBS3 {
  * \sa springball.h
  */
 struct SBS4 {
-  struct DoubleA *subsys;
+  struct DRA *subsys;
   int d;
   int twodforce;
   gsl_matrix *smoothk, *targetk; /* ballnum size squares */
@@ -189,7 +189,7 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
   sbs4->foball = clCalloc(sizeof(double), 2*sbs4->d*howBig);
   sbs4->foballbase = clCalloc(sizeof(double), 2*sbs4->d*howBig);
 
-  sbs4->subsys = doubleaNew();
+  sbs4->subsys = draNew();
 
   for (i = 0; i < howBig; i += 1) {
 
@@ -221,12 +221,12 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
 
       sbs3->kmat = gsl_matrix_submatrix(sbs4->smoothk, i, j, 1, 1);
 
-      doubleaPush(sbs4->subsys, p);
+      draPush(sbs4->subsys, p);
     }
   }
 
   pairnum += 0;
-  assert(doubleaSize(sbs4->subsys) == pairnum);
+  assert(draSize(sbs4->subsys) == pairnum);
 
   return sbs4;
 }
@@ -497,8 +497,8 @@ int jac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
       gsl_matrix_set((gsl_matrix *) &bigjac, i, j, 0);
     }
   }
-  for (i = 0; i < doubleaSize(sbs4->subsys); i += 1) {
-    struct SBS3 *sbs3 = doubleaGetValueAt(sbs4->subsys, i).ptr;
+  for (i = 0; i < draSize(sbs4->subsys); i += 1) {
+    struct SBS3 *sbs3 = draGetValueAt(sbs4->subsys, i).ptr;
     calculateJacobian(sbs3, (gsl_matrix *) &bigjac); /* TODO: ad sbs4, fix me */
   }
   memcpy(sbs4->statear, sbs4->statebackj, (sizeof(double)*2*sbs4->d*ballnum));
@@ -547,8 +547,8 @@ int func(double t, const double uy[], double f[], void *params)
     for (j = 0; j < 3; j += 1)
       f[6*i+j] = uy[6*i+3+j];
   //calculateForceOnBall1(sbs3, 1, f+3);
-  for (i = 0; i < doubleaSize(sbs4->subsys); i += 1) {
-    struct SBS3 *sbs3 = doubleaGetValueAt(sbs4->subsys, i).ptr;
+  for (i = 0; i < draSize(sbs4->subsys); i += 1) {
+    struct SBS3 *sbs3 = draGetValueAt(sbs4->subsys, i).ptr;
     int objball = sbs3->i;
     double *forcetarget = f + (6*objball + 3);
     gsl_vector_view gv = gsl_vector_view_array(forcetarget, 3);

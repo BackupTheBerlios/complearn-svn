@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 {
   int i, matched, maxtrials;
   struct DataBlock *db, *dbdm;
-  struct DoubleA *dd;
+  struct DRA *dd;
   FILE *fp;
   char *outfile = "treestats.txt";
   double start, finish;
@@ -106,6 +106,6 @@ int main(int argc, char *argv[])
   gsl_matrix_free(dm);
   datablockFreePtr(db);
   datablockFreePtr(dbdm);
-  doubleaFree(dd);
+  draFree(dd);
   exit(0);
 }

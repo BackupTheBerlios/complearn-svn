@@ -3,7 +3,7 @@
 int main(int argc, char **argv)
 {
   struct DataBlock *db, *dbdm;
-  struct DoubleA *dd;
+  struct DRA *dd;
   gsl_matrix *dm, *sdm;
   if (argc != 2) {
     printf("Usage: %s <distmatrix.cld>\n", argv[0]);

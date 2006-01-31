@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <complearn/doublea.h>
+#include <complearn/dra.h>
 #include <complearn/complearn.h>
 
 const union PCTypes zeropct;
 const union PCTypes onepcti = { .i = 1 };
-static void makeSizeFor(struct DoubleA *da, int where);
+static void makeSizeFor(struct DRA *da, int where);
 
-struct DoubleA {
+struct DRA {
   int alloc, size, elemsize;
   t_doublefreefunc func;
   void *udata;
@@ -24,18 +24,18 @@ struct DAHdr {
   int size;
 };
 
-union PCTypes doubleaRandom(const struct DoubleA *da)
+union PCTypes draRandom(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaRandom()\n");
+    clogError("NULL ptr in draRandom()\n");
   }
   assert(da->size > 0);
   i = rand() % da->size;
   return da->pc[i];
 }
 
-static void callUserFunc(struct DoubleA *ptr)
+static void callUserFunc(struct DRA *ptr)
 {
   if (!ptr->func)
     return;
@@ -44,7 +44,7 @@ static void callUserFunc(struct DoubleA *ptr)
   ptr->udata = NULL;
 }
 
-void doubleaFree(struct DoubleA *ptr)
+void draFree(struct DRA *ptr)
 {
   assert(ptr);
   callUserFunc(ptr);
@@ -55,9 +55,9 @@ void doubleaFree(struct DoubleA *ptr)
   clFreeandclear(ptr);
 }
 
-struct DoubleA *doubleaNew(void)
+struct DRA *draNew(void)
 {
-  struct DoubleA *da = clCalloc(sizeof(struct DoubleA), 1);
+  struct DRA *da = clCalloc(sizeof(struct DRA), 1);
   da->alloc = 10;
   da->func = NULL;
   da->elemsize = sizeof(union PCTypes);
@@ -65,23 +65,23 @@ struct DoubleA *doubleaNew(void)
   return da;
 }
 
-int doubleaSize(const struct DoubleA *a)
+int draSize(const struct DRA *a)
 {
   if (a == NULL) {
-    clogError("NULL ptr in doubleaSize()\n");
+    clogError("NULL ptr in draSize()\n");
   }
   return a->size;
 }
 
-double doubleaGetDValueAt(struct DoubleA *da, int where)
+double draGetDValueAt(struct DRA *da, int where)
 {
   if (da == NULL) {
-    clogError("NULL ptr in doubleaGetDValueAt()\n");
+    clogError("NULL ptr in draGetDValueAt()\n");
   }
-  return doubleaGetValueAt(da, where).d;
+  return draGetValueAt(da, where).d;
 }
 
-void doubleaVerify(const struct DoubleA *da)
+void draVerify(const struct DRA *da)
 {
   if (!(da) )
     goto isBad;
@@ -97,15 +97,15 @@ isBad:
   exit(1);
 }
 
-union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
+union PCTypes draGetValueAt(const struct DRA *da, int where)
 {
 #if LOGICWALL
   if (da == NULL) {
-    clogError("NULL ptr in doubleaGetValueAt()\n");
+    clogError("NULL ptr in draGetValueAt()\n");
   }
   assert(da);
-  assert(da->pc && "tried to access freed DoubleA");
-  doubleaVerify(da);
+  assert(da->pc && "tried to access freed DRA");
+  draVerify(da);
   assert(where >= 0);
   assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
@@ -117,10 +117,10 @@ union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where)
   return da->pc[where];
 }
 
-void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p)
+void draSetValueAt(struct DRA *da, int where, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in doubleaSetValueAt()\n");
+    clogError("NULL ptr in draSetValueAt()\n");
   }
   assert(da);
   assert(where >= 0);
@@ -130,17 +130,17 @@ void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p)
     da->size = where + 1;
 }
 
-void doubleaSetDValueAt(struct DoubleA *da, int where, double val)
+void draSetDValueAt(struct DRA *da, int where, double val)
 {
   union PCTypes pc;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaSetDValueAt()\n");
+    clogError("NULL ptr in draSetDValueAt()\n");
   }
   pc.d = val;
-  doubleaSetValueAt(da, where, pc);
+  draSetValueAt(da, where, pc);
 }
 
-static void makeSizeFor(struct DoubleA *da, int where)
+static void makeSizeFor(struct DRA *da, int where)
 {
   if (da == NULL) {
     clogError("NULL ptr in makeSizeFor()\n");
@@ -157,11 +157,11 @@ static void makeSizeFor(struct DoubleA *da, int where)
   }
 }
 
-union PCTypes doubleaShift(struct DoubleA *da)
+union PCTypes draShift(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaShift()\n");
+    clogError("NULL ptr in draShift()\n");
   }
   result = da->pc[0];
   assert(da->size > 0);
@@ -170,11 +170,11 @@ union PCTypes doubleaShift(struct DoubleA *da)
   return result;
 }
 
-union PCTypes doubleaPop(struct DoubleA *da)
+union PCTypes draPop(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaPop()\n");
+    clogError("NULL ptr in draPop()\n");
   }
   result  = da->pc[da->size-1];
   assert(da->size > 0);
@@ -183,23 +183,23 @@ union PCTypes doubleaPop(struct DoubleA *da)
   return result;
 }
 
-void doubleaUnshift(struct DoubleA *da, union PCTypes p)
+void draUnshift(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in doubleaUnshift()\n");
+    clogError("NULL ptr in draUnshift()\n");
   }
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  makeSizeFor(da, doubleaSize(da));
+  makeSizeFor(da, draSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * doubleaSize(da));
+  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * draSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
@@ -214,24 +214,24 @@ void doubleaUnshift(struct DoubleA *da, union PCTypes p)
   da->size += 1;
 }
 
-void doubleaPush(struct DoubleA *da, union PCTypes p)
+void draPush(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in doubleaPush()\n");
+    clogError("NULL ptr in draPush()\n");
   }
 #if LOGICWALL
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->size < 10000);
 #endif
-  doubleaSetValueAt(da, da->size, p);
+  draSetValueAt(da, da->size, p);
 }
 
-int doubleaSwapAt(struct DoubleA *da, int inda, int indb)
+int draSwapAt(struct DRA *da, int inda, int indb)
 {
   union PCTypes tmp;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaSwapAt()\n");
+    clogError("NULL ptr in draSwapAt()\n");
   }
   assert(da);
   assert(inda >= 0);
@@ -244,81 +244,81 @@ int doubleaSwapAt(struct DoubleA *da, int inda, int indb)
   return CL_OK;
 }
 
-struct DoubleA *doubleaClone(const struct DoubleA *ptr)
+struct DRA *draClone(const struct DRA *ptr)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in doubleaClone()\n");
+    clogError("NULL ptr in draClone()\n");
   }
   assert(ptr);
-  return doubleaDeepClone(ptr, 0);
+  return draDeepClone(ptr, 0);
 }
 
-void doubleaDeepFree(struct DoubleA *ptr, int lvl)
+void draDeepFree(struct DRA *ptr, int lvl)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in doubleaDeepFree()\n");
+    clogError("NULL ptr in draDeepFree()\n");
   }
   assert(ptr);
   if (lvl) {
     int i;
-    int sz = doubleaSize(ptr);
+    int sz = draSize(ptr);
     for (i = 0; i < sz; ++i)
-      doubleaDeepFree(doubleaGetValueAt(ptr, i).ar, lvl-1);
+      draDeepFree(draGetValueAt(ptr, i).ar, lvl-1);
   }
-  doubleaFree(ptr);
+  draFree(ptr);
 }
 
-struct DoubleA *doubleaDeepClone(const struct DoubleA *ptr, int lvl)
+struct DRA *draDeepClone(const struct DRA *ptr, int lvl)
 {
-  struct DoubleA *result = doubleaNew();
+  struct DRA *result = draNew();
   int sz;
   int i;
   if (ptr == NULL) {
-    clogError("NULL ptr in doubleaDeepClone()\n");
+    clogError("NULL ptr in draDeepClone()\n");
   }
-  sz = doubleaSize(ptr);
+  sz = draSize(ptr);
   for (i = 0; i < sz; ++i) {
     union PCTypes p = zeropct;
     if (lvl)
-      p.ar = doubleaDeepClone(doubleaGetValueAt(ptr, i).ar, lvl-1);
+      p.ar = draDeepClone(draGetValueAt(ptr, i).ar, lvl-1);
     else
-      p = doubleaGetValueAt(ptr, i);
-    doubleaSetValueAt(result, i, p);
+      p = draGetValueAt(ptr, i);
+    draSetValueAt(result, i, p);
   }
   return result;
 }
 
-void doubleaPrintIntList(const struct DoubleA *da)
+void draPrintIntList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaPrintIntList()\n");
+    clogError("NULL ptr in draPrintIntList()\n");
   }
   for (i = 0; i < da->size; ++i)
     printf("%d ", da->pc[i].i);
   printf("\n");
 }
 
-void doubleaPrintIntPairList(const struct DoubleA *da)
+void draPrintIntPairList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in doubleaPrintIntPairList()\n");
+    clogError("NULL ptr in draPrintIntPairList()\n");
   }
   for (i = 0; i < da->size; i += 1)
     printf("(%d,%d) ", da->pc[i].ip.x, da->pc[i].ip.y);
   printf("\n");
 }
 
-struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
+struct DRA *draLoad(struct DataBlock *d, int fmustbe)
 {
   int i;
   struct TagHdr *h;
   struct DAHdr *ddh;
-  struct DoubleA *result;
+  struct DRA *result;
   unsigned char *cur;
   if (d == NULL) {
-    clogError("NULL ptr in doubleaLoad()\n");
+    clogError("NULL ptr in draLoad()\n");
   }
   cur = datablockData(d) + sizeof(*h) + sizeof(*ddh);
   h = (struct TagHdr *) datablockData(d);
@@ -329,13 +329,13 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
     exit(1);
   }
   if (ddh->level) {
-    result = doubleaNew();
+    result = draNew();
     for (i = 0; i < ddh->size; ++i) {
       union PCTypes p = zeropct;
       struct DataBlock *dbcur;
       dbcur = datablockNewFromBlock(cur,cur+datablockSize(d)-datablockData(d));
-      p.ar = doubleaLoad(dbcur, 1);
-      doubleaPush(result, p);
+      p.ar = draLoad(dbcur, 1);
+      draPush(result, p);
       datablockFreePtr(dbcur);
     }
   }
@@ -347,22 +347,22 @@ struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe)
     result->pc = clCalloc(sizeof(result->pc[0]), result->alloc);
     result->size = ddh->size;
     memcpy(result->pc, cur, sizeof(result->pc[0]) * result->size);
-    doubleaVerify(result);
+    draVerify(result);
   }
   return result;
 }
 
-struct DataBlock *doubleaDump(const struct DoubleA *d)
+struct DataBlock *draDump(const struct DRA *d)
 {
   if (d == NULL) {
-    clogError("NULL ptr in doubleaDump()\n");
+    clogError("NULL ptr in draDump()\n");
   }
-  return doubleaDeepDump(d, 0);
+  return draDeepDump(d, 0);
 }
 
-struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
+struct DataBlock *draDeepDump(const struct DRA *d, int level)
 {
-  struct DoubleA *bufs = doubleaNew();
+  struct DRA *bufs = draNew();
   unsigned char *ptr;
   int dbsize;
   struct DataBlock *result;
@@ -370,7 +370,7 @@ struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
   struct TagHdr h;
   struct DAHdr ddh;
   if (d == NULL) {
-    clogError("NULL ptr in doubleaDeepDump()\n");
+    clogError("NULL ptr in draDeepDump()\n");
   }
   dbsize = 0;
 
@@ -382,8 +382,8 @@ struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
     int i;
     for (i = 0; i < d->size; i += 1) {
       union PCTypes p;
-      p.dbp = doubleaDeepDump(doubleaGetValueAt(d, i).ar, level-1);
-      doubleaPush(bufs, p);
+      p.dbp = draDeepDump(draGetValueAt(d, i).ar, level-1);
+      draPush(bufs, p);
       dbsize += datablockSize(p.dbp);
     }
     ptr = clCalloc(dbsize + sizeof(h) + sizeof(ddh), 1);
@@ -392,7 +392,7 @@ struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level)
     memcpy(ptr + sizeof(h), &ddh, sizeof(ddh));
     dbsize = sizeof(h) + sizeof(ddh);
     for (i = 0; i < bufs->size; i += 1) {
-      struct DataBlock *cur = doubleaGetValueAt(bufs, i).dbp;
+      struct DataBlock *cur = draGetValueAt(bufs, i).dbp;
       memcpy(ptr + dbsize, datablockData(cur), datablockSize(cur));
       dbsize += datablockSize(cur);
       datablockFreePtr(cur);
@@ -457,21 +457,21 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
   return result;
 }
 
-int doubleaHasQB(const struct DoubleA *da, qbase_t which)
+int draHasQB(const struct DRA *da, qbase_t which)
 {
   int i;
-  for (i = 0; i < doubleaSize(da); i += 1)
-    if (which == doubleaGetValueAt(da, i).i)
+  for (i = 0; i < draSize(da); i += 1)
+    if (which == draGetValueAt(da, i).i)
       return 1;
   return 0;
 }
 
-void doubleaAddQBIfNew(struct DoubleA *da, qbase_t which)
+void draAddQBIfNew(struct DRA *da, qbase_t which)
 {
-  if (!doubleaHasQB(da, which)) {
+  if (!draHasQB(da, which)) {
     union PCTypes p = zeropct;
     p.i = which;
-    doubleaPush(da, p);
+    draPush(da, p);
   }
 }
 

@@ -130,7 +130,7 @@ void unrootedbinaryRandomFlipNodeLayout(struct UnrootedBinary *ub);
  */
 qbase_t unrootedbinaryStartingNode(const struct UnrootedBinary *ub);
 
-/** \brief Returns a DoubleA contained an ordered traversal of all
+/** \brief Returns a DRA contained an ordered traversal of all
  * the nodes in the tree.
  *
  * This function allows the user to get a dynamically-allocated list of
@@ -139,17 +139,17 @@ qbase_t unrootedbinaryStartingNode(const struct UnrootedBinary *ub);
  * parameter; thus the order returned by unrootedbinaryNodes will be affected
  * by the node child order flip bits.
  *
- * The DoubleA returned by this function use the .i field of PCTypes:
+ * The DRA returned by this function use the .i field of PCTypes:
  *
- * struct DoubleA *da = unrootedbinaryNodes(ub, NULL);
+ * struct DRA *da = unrootedbinaryNodes(ub, NULL);
  * int i;
- * for (i = 0; i < doubleaSize(da); i += 1)
- *   printf("Got node %d\n", doubleaGetValueAt(da, i).i);
+ * for (i = 0; i < draSize(da); i += 1)
+ *   printf("Got node %d\n", draGetValueAt(da, i).i);
  *
  * \param ub pointer to the UnrootedBinary that must be reordered
- * \return pointer to a DoubleA holding the list of all tree nodes
+ * \return pointer to a DRA holding the list of all tree nodes
  */
-struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips);
+struct DRA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips);
 
 
 /** \brief Returns a list of all adjacent border-pair node identifiers
@@ -166,17 +166,17 @@ struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNo
  * The node identifiers are accessed using the .ip.x and .ip.y members of
  * PCTypes.  For example:
  *
- * struct DoubleA *da = unrootedbinaryPerimPairs(ub, NULL);
+ * struct DRA *da = unrootedbinaryPerimPairs(ub, NULL);
  * int i;
- * for (i = 0; i < doubleaSize(da); i += 1) {
- *   union PCTypes pct = doubleaGetValueAt(da, i);
+ * for (i = 0; i < draSize(da); i += 1) {
+ *   union PCTypes pct = draGetValueAt(da, i);
  *   printf("perimeter pair: node %d and node %d\n", pct.ip.x, pct.ip.y);
  * }
  *
  * \param ub pointer to the UnrootedBinary that must be reordered
- * \return pointer to a DoubleA holding the list of all perimeter pairs
+ * \return pointer to a DRA holding the list of all perimeter pairs
  */
-struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips);
+struct DRA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips);
 
 /** \brief Frees the memory associated with an UnrootedBinary
  *
@@ -196,14 +196,14 @@ void unrootedbinaryFree(struct UnrootedBinary *ub);
  * When mapping a set of leaf-labels to a graph or tree, there is always
  * the possibility to permute the leaf labels.  This is handled with a
  * permutation array.  The entry at
- * doubleaGetValueAt(leaflabels, r).i
+ * draGetValueAt(leaflabels, r).i
  * indicates the node-identifier of the leaf where datamatrix column index
  * indicator r should be placed.
  *
  * \param ub pointer to the UnrootedBinary to be examined
- * \return pointer to a DoubleA containing leaf label positions
+ * \return pointer to a DRA containing leaf label positions
  */
-struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub);
+struct DRA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub);
 
 /** \brief This function returns the number of simple mutations used in
  * the most recent complex mutation step taken with unrootedbinaryDoComplexMutation

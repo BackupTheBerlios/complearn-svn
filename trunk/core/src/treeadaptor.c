@@ -69,7 +69,7 @@ int treeaMutationCount(struct TreeAdaptor *tra)
   return tra->treemutecount(tra);
 }
 
-struct DoubleA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
+struct DRA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
 {
   assert(tra);
   return tra->treeperimpairs(tra, flips);
@@ -105,14 +105,14 @@ double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
   return nchoosefourScale(lps, diff);
 }
 
-struct DoubleA *treeaNodes(struct TreeAdaptor *ta)
+struct DRA *treeaNodes(struct TreeAdaptor *ta)
 {
-  struct DoubleA *n = doubleaNew();
+  struct DRA *n = draNew();
   union PCTypes p = zeropct;
   int i;
   for (i = 0; i < treeaNodeCount(ta) ;  i += 1) {
     p.i = i;
-    doubleaPush(n,p);
+    draPush(n,p);
   }
   return n;
 }

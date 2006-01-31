@@ -92,41 +92,41 @@ void freeTagManager(struct TagManager *tm);
  */
 struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...);
 
-/** \brief Serializes a DoubleA of dumped DataBlocks into a singe DataBlock
+/** \brief Serializes a DRA of dumped DataBlocks into a singe DataBlock
  *
  *  package_dd_DataBlocks() is essentially the same as package_DataBlocks() but
- *  taking as an argument a DoubleA of pointers to dumped DataBlocks, rather
+ *  taking as an argument a DRA of pointers to dumped DataBlocks, rather
  *  than a varionic args list.
  *  \param overalltag describing the set of DataBlocks
- *  \param parts DoubleA of pointers to dumped DataBlocks
+ *  \param parts DRA of pointers to dumped DataBlocks
  *  \return serialized DataBlock encompassing a series of DataBlocks
  */
-struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DoubleA *parts);
+struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts);
 
-/** \brief Given a DataBlock package, returns a DoubleA of tagnums & DataBlocks
+/** \brief Given a DataBlock package, returns a DRA of tagnums & DataBlocks
  *
  *  load_DataBlock_package() is a high level function which will take a
  *  DataBlock "package," sequentially retrieve each dumped DataBlock in the
- *  package, and return a DoubleA of IntDBPair objects which hold the \a tagnum
+ *  package, and return a DRA of IntDBPair objects which hold the \a tagnum
  *  of each DataBlock and a pointer to the dumped DataBlock.
  *  \param db DataBlock "package" as created by package_DataBlocks()
- *  \return DoubleA of IntDBPair objects
+ *  \return DRA of IntDBPair objects
  */
-struct DoubleA *load_DataBlock_package(struct DataBlock *db);
+struct DRA *load_DataBlock_package(struct DataBlock *db);
 
-/** \brief Retrieves DataBlock from DoubleA of IntDBPairs
+/** \brief Retrieves DataBlock from DRA of IntDBPairs
  *
  *  Another high level function, scanForTag() will, given a tagnum as defined
- *  in tagtypes.h, scan a DoubleA of IntDBPairs as produced by
+ *  in tagtypes.h, scan a DRA of IntDBPairs as produced by
  *  load_DataBlock_package(). This retrieved DataBlock is an independent copy
  *  any must be freed using datablockFree().
  *
  *  TODO: when switching db to db pointer, NULL should be returned if tagnum in
  *  question is not found.  Currently, a DataBlock is returned regardless, only
  *  a DataBlock size of 0 signifying a failure in finding the tagnum.
- *  \param dd DoubleA of IntDBPair objects
+ *  \param dd DRA of IntDBPair objects
  *  \param tnum tagnum of DataBlock in question
  *  \return DataBlock
  */
-struct DataBlock *scanForTag(struct DoubleA *dd, int tnum);
+struct DataBlock *scanForTag(struct DRA *dd, int tnum);
 #endif

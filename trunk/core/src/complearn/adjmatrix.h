@@ -19,7 +19,7 @@
  */
 struct AdjMatrix;
 struct AdjAdaptor;
-struct DoubleA;
+struct DRA;
 
 /** \brief Create a new AdjMatrix with a given size
  *

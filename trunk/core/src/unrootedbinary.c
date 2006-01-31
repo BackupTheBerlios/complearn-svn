@@ -5,7 +5,7 @@
 #include <assert.h>
 
 static struct TreeAdaptor *loadUBTRA(struct UnrootedBinary *ub);
-static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub);
+static struct DRA *getLabellableNodes(const struct UnrootedBinary *ub);
 
 struct UnrootedBinary {
   int nodecount;
@@ -42,13 +42,13 @@ static qbase_t randomKernelNode(struct UnrootedBinary *ub)
   return result;
 }
 
-static struct DoubleA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
+static struct DRA *randomKernelNodes(struct UnrootedBinary *ub, int howMany)
 {
-  struct DoubleA *da = doubleaNew();
+  struct DRA *da = draNew();
   do {
     qbase_t cur = randomKernelNode(ub);
-    doubleaAddQBIfNew(da, cur);
-  } while (doubleaSize(da) < howMany);
+    draAddQBIfNew(da, cur);
+  } while (draSize(da) < howMany);
   return da;
 }
 
@@ -65,10 +65,10 @@ static int verifyTree(struct UnrootedBinary *ub)
 {
   int i, j;
   int nc;
-  struct DoubleA *result = unrootedbinaryNodes(ub, NULL);
-  if (doubleaSize(result) != ub->nodecount) {
+  struct DRA *result = unrootedbinaryNodes(ub, NULL);
+  if (draSize(result) != ub->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
-      doubleaSize(result), ub->nodecount);
+      draSize(result), ub->nodecount);
     adjaPrint(ub->aa);
     for (i = 0; i < ub->nodecount; ++i) {
       for (j = 0; j < i; ++j)
@@ -92,7 +92,7 @@ static int verifyTree(struct UnrootedBinary *ub)
       return 0;
     }
   }
-  doubleaFree(result);
+  draFree(result);
   return 1;
 }
 
@@ -156,13 +156,13 @@ static void mutateSubtreeInterchange(struct UnrootedBinary *ub)
   int pathlen;
   int retval;
   do {
-    struct DoubleA *swappers = randomKernelNodes(ub, 2);
-    i1 = doubleaGetValueAt(swappers, 0).i;
-    i2 = doubleaGetValueAt(swappers, 1).i;
+    struct DRA *swappers = randomKernelNodes(ub, 2);
+    i1 = draGetValueAt(swappers, 0).i;
+    i2 = draGetValueAt(swappers, 1).i;
     assert(i1 != i2);
     assert(adjaNeighborCount(ub->aa, i1) == 3);
     assert(adjaNeighborCount(ub->aa, i2) == 3);
-    doubleaFree(swappers);
+    draFree(swappers);
     pathlen = MAXPATHNODES;
     retval = pathFinder(ub->aa, i1, i2, pathbuf, &pathlen);
     assert(retval == CL_OK);
@@ -236,7 +236,7 @@ void unrootedbinaryDoComplexMutation(struct UnrootedBinary *ub)
 struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 {
   int i;
-  struct DoubleA *leaves;
+  struct DRA *leaves;
   struct UnrootedBinary *ub = clCalloc(sizeof(struct UnrootedBinary), 1);
   assert(howManyLeaves > 3);
   ub->nodecount = 2*howManyLeaves-2;
@@ -249,11 +249,11 @@ struct UnrootedBinary *unrootedbinaryNew(int howManyLeaves)
 
   leaves = getLabellableNodes(ub);
   assert(leaves);
-  assert(doubleaSize(leaves) == howManyLeaves);
+  assert(draSize(leaves) == howManyLeaves);
   ub->labelperm = labelpermNew(leaves);
   assert(ub->labelperm);
 
-  doubleaFree(leaves);
+  draFree(leaves);
 
   verifyTree(ub);
   return ub;
@@ -287,29 +287,29 @@ qbase_t unrootedbinaryStartingNode(const struct UnrootedBinary *ub)
   return 0;
 }
 
-struct DoubleA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
+struct DRA *unrootedbinaryNodes(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
   union PCTypes p = zeropct;
-  struct DoubleA *result = doubleaNew();
-  struct DoubleA *border = doubleaNew();
+  struct DRA *result = draNew();
+  struct DRA *border = draNew();
   struct CLNodeSet *done = clnodesetNew(ub->nodecount);
-  doubleaPush(border, p);
+  draPush(border, p);
   walkTree(getAdjAdaptorForUB((struct UnrootedBinary *) ub), result, border, done, 0, flips);
-  doubleaFree(border);
+  draFree(border);
   clnodesetFree(done);
   return result;
 }
 
-struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
+struct DRA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct CLNodeSet *flips)
 {
-  struct DoubleA *nodes = unrootedbinaryNodes(ub, flips);
-  struct DoubleA *pairs = doubleaNew();
+  struct DRA *nodes = unrootedbinaryNodes(ub, flips);
+  struct DRA *pairs = draNew();
   union PCTypes p;
   int i;
   int lastval = -1;
   int firstnode = -1;
-  for (i = 0;i < doubleaSize(nodes); i += 1) {
-    int curnode = doubleaGetValueAt(nodes, i).i;
+  for (i = 0;i < draSize(nodes); i += 1) {
+    int curnode = draGetValueAt(nodes, i).i;
     if (unrootedbinaryIsQuartetableNode(ub, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
@@ -317,15 +317,15 @@ struct DoubleA *unrootedbinaryPerimPairs(const struct UnrootedBinary *ub, struct
         p = zeropct;
         p.ip.x = lastval;
         p.ip.y = curnode;
-        doubleaPush(pairs, p);
+        draPush(pairs, p);
       }
       lastval = curnode;
     }
   }
   p.ip.x = lastval;
   p.ip.y = firstnode;
-  doubleaPush(pairs, p);
-  doubleaFree(nodes);
+  draPush(pairs, p);
+  draFree(nodes);
   return pairs;
 }
 
@@ -340,28 +340,28 @@ void unrootedbinaryFree(struct UnrootedBinary *ub)
   clFreeandclear(ub);
 }
 
-static struct DoubleA *getLabellableNodes(const struct UnrootedBinary *ub)
+static struct DRA *getLabellableNodes(const struct UnrootedBinary *ub)
 {
   int i;
-  struct DoubleA *result = doubleaNew();
+  struct DRA *result = draNew();
   for (i = 0; i < ub->nodecount; i += 1) {
     if (unrootedbinaryIsQuartetableNode(ub, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
-      doubleaPush(result, p);
+      draPush(result, p);
     }
   }
   return result;
 }
 
-struct DoubleA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
+struct DRA *unrootedbinaryLeafLabels(const struct UnrootedBinary *ub)
 {
-  struct DoubleA *result = doubleaNew();
+  struct DRA *result = draNew();
   int i;
   for (i = 0; i < labelpermSize(ub->labelperm); i += 1) {
     union PCTypes p = zeropct;
     p.i = labelpermNodeIDForColIndex(ub->labelperm, i);
-    doubleaPush(result, p);
+    draPush(result, p);
   }
   return result;
 }
@@ -424,7 +424,7 @@ int ub_treeisflippable(struct TreeAdaptor *ta, int which)
   return isFlippableNode(ub, which);
 }
 
-struct DoubleA *ub_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
+struct DRA *ub_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   struct UnrootedBinary *ub = (struct UnrootedBinary *) ta->ptr;
   return unrootedbinaryPerimPairs(ub, flips);

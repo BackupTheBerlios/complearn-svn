@@ -737,46 +737,46 @@ void testMarshalling(void)
 
 void testDoubleDoubler(void)
 {
-  struct DoubleA *dd, *ee, *sm;
+  struct DRA *dd, *ee, *sm;
   struct DataBlock *dumptest;
   union PCTypes p = zeropct;
-  dd = doubleaNew();
+  dd = draNew();
   assert(dd);
-  assert(doubleaSize(dd) == 0);
-  doubleaSetDValueAt(dd, 0, 2.0);
-  assert(doubleaSize(dd) == 1);
-  doubleaSetDValueAt(dd, 999, 123.0);
-  assert(doubleaSize(dd) == 1000);
-  assert(doubleaGetDValueAt(dd, 0) == 2.0);
-  assert(doubleaGetDValueAt(dd, 999) == 123.0);
-  dumptest = doubleaDump(dd);
-  ee = doubleaLoad(dumptest, 1);
+  assert(draSize(dd) == 0);
+  draSetDValueAt(dd, 0, 2.0);
+  assert(draSize(dd) == 1);
+  draSetDValueAt(dd, 999, 123.0);
+  assert(draSize(dd) == 1000);
+  assert(draGetDValueAt(dd, 0) == 2.0);
+  assert(draGetDValueAt(dd, 999) == 123.0);
+  dumptest = draDump(dd);
+  ee = draLoad(dumptest, 1);
   assert(dd != ee);
-  assert(doubleaSize(ee) == doubleaSize(dd));
-  assert(doubleaGetDValueAt(dd, 0) == doubleaGetDValueAt(ee, 0));
-  assert(doubleaGetDValueAt(dd, 999) == doubleaGetDValueAt(ee, 999));
-  doubleaFree(dd);
-  doubleaFree(ee);
+  assert(draSize(ee) == draSize(dd));
+  assert(draGetDValueAt(dd, 0) == draGetDValueAt(ee, 0));
+  assert(draGetDValueAt(dd, 999) == draGetDValueAt(ee, 999));
+  draFree(dd);
+  draFree(ee);
   datablockFreePtr(dumptest);
-  sm = doubleaNew();
-  doubleaSetDValueAt(sm, 0, 7.0);
-  doubleaSetDValueAt(sm, 1, 3.0);
-  doubleaSetDValueAt(sm, 2, 13.0);
-  dd = doubleaNew();
+  sm = draNew();
+  draSetDValueAt(sm, 0, 7.0);
+  draSetDValueAt(sm, 1, 3.0);
+  draSetDValueAt(sm, 2, 13.0);
+  dd = draNew();
   p.ar = sm;
-  doubleaPush(dd, p);
-  dumptest = doubleaDeepDump(dd, 1);
-  ee = doubleaLoad(dumptest, 1);
+  draPush(dd, p);
+  dumptest = draDeepDump(dd, 1);
+  ee = draLoad(dumptest, 1);
   assert(dd != ee);
-  assert(doubleaGetValueAt(dd, 0).ar != doubleaGetValueAt(ee, 0).ar);
-  assert(doubleaGetValueAt(doubleaGetValueAt(dd, 0).ar, 0).d == doubleaGetValueAt(sm, 0).d);
-  assert(doubleaGetValueAt(doubleaGetValueAt(dd, 0).ar, 1).d == doubleaGetValueAt(sm, 1).d);
-  assert(doubleaGetValueAt(doubleaGetValueAt(dd, 0).ar, 2).d == doubleaGetValueAt(sm, 2).d);
-  assert(doubleaGetValueAt(doubleaGetValueAt(ee, 0).ar, 0).d == doubleaGetValueAt(sm, 0).d);
-  assert(doubleaGetValueAt(doubleaGetValueAt(ee, 0).ar, 1).d == doubleaGetValueAt(sm, 1).d);
-  assert(doubleaGetValueAt(doubleaGetValueAt(ee, 0).ar, 2).d == doubleaGetValueAt(sm, 2).d);
-  doubleaDeepFree(ee, 1);
-  doubleaDeepFree(dd, 1);
+  assert(draGetValueAt(dd, 0).ar != draGetValueAt(ee, 0).ar);
+  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 0).d == draGetValueAt(sm, 0).d);
+  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 1).d == draGetValueAt(sm, 1).d);
+  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 2).d == draGetValueAt(sm, 2).d);
+  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 0).d == draGetValueAt(sm, 0).d);
+  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 1).d == draGetValueAt(sm, 1).d);
+  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 2).d == draGetValueAt(sm, 2).d);
+  draDeepFree(ee, 1);
+  draDeepFree(dd, 1);
   datablockFreePtr(dumptest);
 }
 
@@ -795,7 +795,7 @@ void testQuartet(void)
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
     struct TreeAdaptor *ta = treeaLoadUnrooted(labelcount);
-    struct DoubleA *n = treeaNodes(ta);
+    struct DRA *n = treeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -809,8 +809,8 @@ void testQuartet(void)
     dm = getNCDMatrix(dbe, dbe, gconf);
 //    printf("Got NCD matrix... %dx%d\n", dm->size1, dm->size2);
     assert(n);
-    assert(doubleaSize(n) == 2*dm->size1 - 2);
-    assert(doubleaSize(n) == 2*dm->size2 - 2);
+    assert(draSize(n) == 2*dm->size1 - 2);
+    assert(draSize(n) == 2*dm->size2 - 2);
     ts = initTreeScore(ta);
     score = scoreTree(ts, dm);
 //    printf("Got score: %f\n", score);
@@ -831,7 +831,7 @@ void testQuartet(void)
     }
     th = NULL;
   }
-    doubleaFree(n);
+    draFree(n);
     freeTreeScore(ts);
 //    unrootedbinaryFree(ct);
     treeaFree(ta);
@@ -852,8 +852,8 @@ void testCLTree(void)
 #define MAXPATHTESTS 128
 #define MAXPATHLEN 16
   struct UnrootedBinary *ct = unrootedbinaryNew(TREELEAFSIZE);
-  struct DoubleA *n = unrootedbinaryNodes(ct, NULL);
-  struct DoubleA *spm, *spmmap, *pp;
+  struct DRA *n = unrootedbinaryNodes(ct, NULL);
+  struct DRA *spm, *spmmap, *pp;
   union PCTypes a, b;
   int retval;
   int psize;
@@ -862,15 +862,15 @@ void testCLTree(void)
 	int plen = MAXPATHLEN;
 	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
-  assert(doubleaSize(n) == TREENODEWANTED);
+  assert(draSize(n) == TREENODEWANTED);
   pp = unrootedbinaryPerimPairs(ct, NULL);
-  assert(doubleaSize(pp) == TREELEAFSIZE);
-  doubleaFree(pp);
+  assert(draSize(pp) == TREELEAFSIZE);
+  draFree(pp);
   spmmap = makeSPMMap(getAdjAdaptorForUB(ct));
   for (i = 0; i < RETRIES; ++i) {
-    a = doubleaRandom(n);
+    a = draRandom(n);
     assert(a.i >= 0 && a.i < 100);
-    b = doubleaRandom(n);
+    b = draRandom(n);
 
     assert(b.i >= 0 && b.i < 100);
     spm = makeSPMFor(getAdjAdaptorForUB(ct), b.i);
@@ -881,7 +881,7 @@ void testCLTree(void)
       assert(cur < TREENODEWANTED * 2 - 2);
       psize += 1;
 //      printf("%d ", cur);
-      cur = doubleaGetValueAt(spm, cur).i;
+      cur = draGetValueAt(spm, cur).i;
     }
 //    printf("\n");
 //
@@ -894,12 +894,12 @@ void testCLTree(void)
         clogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
     assert(plen == psize);
-    doubleaFree(spm);
+    draFree(spm);
     spm = NULL;
   }
   freeSPMMap(spmmap);
   spmmap = NULL;
-  doubleaFree(n);
+  draFree(n);
   n = NULL;
 //  dotdb = convertTreeToDot(ct, NULL, unrootedbinaryLabelPerm(ct));
 //  datablockWriteToFile(dotdb, "treefile.dot");
@@ -1020,7 +1020,7 @@ void testALTagFile(void)
   char *result;
   struct StringStack *ss, *nes, *nlabels;
   struct DataBlock *dbstr, *dbss, *dbgslm, *dbdm, *dblabels, *dbpkg, *dbpkg_read;
-  struct DoubleA *dd;
+  struct DRA *dd;
   int i;
   t_tagtype curtnum;
 
@@ -1079,18 +1079,18 @@ void testALTagFile(void)
   dbpkg_read = fileToDataBlockPtr(TAGFILENAME);
   unlink(TAGFILENAME);
   dd = load_DataBlock_package(dbpkg_read);
-  for (i = 0; i < doubleaSize(dd); i += 1) {
+  for (i = 0; i < draSize(dd); i += 1) {
     struct DataBlock *dblame;
-    curtnum = doubleaGetValueAt(dd,i).idbp.tnum;
+    curtnum = draGetValueAt(dd,i).idbp.tnum;
     switch (curtnum) {
       case TAGNUM_STRING:
-        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        dblame = draGetValueAt(dd,i).idbp.db;
         result = stringLoad(dblame, 1);
         assert(strcmp(s,result) == 0);
         clFreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
-        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        dblame = draGetValueAt(dd,i).idbp.db;
         ngm = gslmatrixLoad(dblame, 1);
         assert(gm != ngm);
         assert(gm->size1 == ngm->size1);
@@ -1100,7 +1100,7 @@ void testALTagFile(void)
         gsl_matrix_free(ngm);
         break;
       case TAGNUM_STRINGSTACK:
-        dblame = doubleaGetValueAt(dd,i).idbp.db;
+        dblame = draGetValueAt(dd,i).idbp.db;
         nes = stringstackLoad(dblame, 1);
         assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
         assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
@@ -1111,7 +1111,7 @@ void testALTagFile(void)
         break;
     }
   }
-  doubleaFree(dd);
+  draFree(dd);
   stringstackFree(ss);
   gsl_matrix_free(gm);
   datablockFreePtr(dbpkg_read);
@@ -1122,12 +1122,12 @@ void testALTagFile(void)
 void testLabelPerm(void)
 {
   struct LabelPerm *lpa, *lpb, *lpc;
-  struct DoubleA *nodes = doubleaNew();
+  struct DRA *nodes = draNew();
   int i;
   for (i = 0; i < 10; i += 1) {
     union PCTypes p = zeropct;
     p.i = i + 23;
-    doubleaSetValueAt(nodes, i, p);
+    draSetValueAt(nodes, i, p);
   }
   lpa = labelpermNew(nodes);
   lpb = labelpermClone(lpa);
@@ -1141,19 +1141,19 @@ void testLabelPerm(void)
   labelpermFree(lpa);
   labelpermFree(lpb);
   labelpermFree(lpc);
-  doubleaFree(nodes);
+  draFree(nodes);
 }
 
 void testPerimPairs()
 {
   struct TreeAdaptor *tra = treeaLoadRootedBinary(6);
-  struct DoubleA *da;
+  struct DRA *da;
   struct CLNodeSet *clns = clnodesetNew(9);
   clnodesetAddNode(clns, 2);
   da = treeaPerimPairs(tra, NULL);
-  doubleaFree(da);
+  draFree(da);
   da = treeaPerimPairs(tra, clns);
-  doubleaFree(da);
+  draFree(da);
 }
 
 void testTreeMolder()
@@ -1168,7 +1168,7 @@ void testTreeMolder()
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
     struct TreeAdaptor *ta = treeaLoadRootedBinary(labelcount);
-    struct DoubleA *n = treeaNodes(ta);
+    struct DRA *n = treeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -1196,7 +1196,7 @@ void testTreeMolder()
       treemolderFree(tmolder);
       tmolder = NULL;
     }
-    doubleaFree(n);
+    draFree(n);
     freeTreeScore(ts);
 //    unrootedbinaryFree(ct);
     treeaFree(ta);

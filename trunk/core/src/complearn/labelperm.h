@@ -22,14 +22,14 @@ struct LabelPerm;
 /** \brief create a new LabelPerm
  *
  * the labelpermNew function creates a new LabelPerm object given a list of
- * labelled nodes as DoubleA of integers (.i) .  These integers are supposed
+ * labelled nodes as DRA of integers (.i) .  These integers are supposed
  * to represent node numbers as used in the TreeAdaptor.  The initial
  * permutation will map the column indexes in order to these integers in order.
  *
- * \param labelledNodes pointer to DoubleA containing integers (.i) for nodes
+ * \param labelledNodes pointer to DRA containing integers (.i) for nodes
  * \return pointer to a new LabelPerm
  */
-struct LabelPerm *labelpermNew(struct DoubleA *labelledNodes);
+struct LabelPerm *labelpermNew(struct DRA *labelledNodes);
 
 /** \brief deallocate memory associated with a LabelPerm
  *

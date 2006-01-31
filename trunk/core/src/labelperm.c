@@ -3,36 +3,36 @@
 struct LabelPerm
 {
   int size;
-  struct DoubleA *coltonode;
-  struct DoubleA *nodetocol;
+  struct DRA *coltonode;
+  struct DRA *nodetocol;
 };
 
 
-struct LabelPerm *labelpermNew(struct DoubleA *labelledNodes)
+struct LabelPerm *labelpermNew(struct DRA *labelledNodes)
 {
   struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
   int i;
   assert(labelledNodes);
-  assert(doubleaSize(labelledNodes) > 0);
-  lp->size = doubleaSize(labelledNodes);
-  lp->coltonode = doubleaClone(labelledNodes);
+  assert(draSize(labelledNodes) > 0);
+  lp->size = draSize(labelledNodes);
+  lp->coltonode = draClone(labelledNodes);
   assert(lp->coltonode);
-  assert(doubleaSize(lp->coltonode) == doubleaSize(labelledNodes));
-  lp->nodetocol = doubleaNew();
+  assert(draSize(lp->coltonode) == draSize(labelledNodes));
+  lp->nodetocol = draNew();
   for (i = 0; i < lp->size; i += 1) {
-    union PCTypes p = doubleaGetValueAt(labelledNodes, i);
+    union PCTypes p = draGetValueAt(labelledNodes, i);
     union PCTypes g = zeropct;
     g.i = i;
-    doubleaSetValueAt(lp->nodetocol, p.i, g);
+    draSetValueAt(lp->nodetocol, p.i, g);
   }
   return lp;
 }
 
 void labelpermFree(struct LabelPerm *lph)
 {
-  doubleaFree(lph->coltonode);
+  draFree(lph->coltonode);
   lph->coltonode = NULL;
-  doubleaFree(lph->nodetocol);
+  draFree(lph->nodetocol);
   lph->nodetocol = NULL;
   lph->size = 0;
   clFreeandclear(lph);
@@ -42,13 +42,13 @@ static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes 
 {
   /* TODO: fix this to do 1/2 as many writes and be better */
   assert(where.i >= 0);
-  assert(where.i < doubleaSize(lph->nodetocol));
+  assert(where.i < draSize(lph->nodetocol));
   assert(which >= 0);
-  assert(which < doubleaSize(lph->nodetocol));
+  assert(which < draSize(lph->nodetocol));
   union PCTypes okey = zeropct;
   okey.i = which;
-  doubleaSetValueAt(lph->coltonode, which, where);
-  doubleaSetValueAt(lph->nodetocol, where.i, okey);
+  draSetValueAt(lph->coltonode, which, where);
+  draSetValueAt(lph->nodetocol, where.i, okey);
 }
 
 void labelpermMutate(struct LabelPerm *lph)
@@ -61,8 +61,8 @@ void labelpermMutate(struct LabelPerm *lph)
     j = rand() % lph->size;
   } while (j == i);
 
-  pi = doubleaGetValueAt(lph->coltonode, i);
-  pj = doubleaGetValueAt(lph->coltonode, j);
+  pi = draGetValueAt(lph->coltonode, i);
+  pj = draGetValueAt(lph->coltonode, j);
 
   setColToNodeAndMore(lph, i, pj);
   setColToNodeAndMore(lph, j, pi);
@@ -74,9 +74,9 @@ struct LabelPerm *labelpermClone(struct LabelPerm *lph)
   struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
   assert(lph);
   assert(lph->nodetocol);
-  lp->nodetocol = doubleaClone(lph->nodetocol);
+  lp->nodetocol = draClone(lph->nodetocol);
   assert(lph->coltonode);
-  lp->coltonode = doubleaClone(lph->coltonode);
+  lp->coltonode = draClone(lph->coltonode);
   lp->size = lph->size;
   return lp;
 }
@@ -88,12 +88,12 @@ int labelpermSize(struct LabelPerm *lph)
 
 int labelpermNodeIDForColIndex(struct LabelPerm *lph, int which)
 {
-  return doubleaGetValueAt(lph->coltonode, which).i;
+  return draGetValueAt(lph->coltonode, which).i;
 }
 
 int labelpermColIndexForNodeID(struct LabelPerm *lph, int which)
 {
-  return doubleaGetValueAt(lph->nodetocol, which).i;
+  return draGetValueAt(lph->nodetocol, which).i;
 }
 
 int labelpermIdentical(struct LabelPerm *lpa, struct LabelPerm *lpb)
@@ -114,8 +114,8 @@ static void printLabelPerm(struct LabelPerm *lp)
   printf("LABELPERM: %d (%p)\n", lp->size, lp);
   int i;
   for (i = 0; i < lp->size; i += 1) {
-    int incn = doubleaGetValueAt(lp->coltonode, i).i;
-    int innc = doubleaGetValueAt(lp->nodetocol, incn).i;
+    int incn = draGetValueAt(lp->coltonode, i).i;
+    int innc = draGetValueAt(lp->nodetocol, incn).i;
     printf("%d: incn:%d   innc: (nodetocol[%d]) %d\n", i, incn, incn, innc);
   }
 }
@@ -127,14 +127,14 @@ void labelpermVerify(struct LabelPerm *lp)
   assert(lp);
   assert(lp->nodetocol);
   assert(lp->coltonode);
-  assert(lp->size == doubleaSize(lp->coltonode));
-  assert(doubleaSize(lp->coltonode) > 0);
+  assert(lp->size == draSize(lp->coltonode));
+  assert(draSize(lp->coltonode) > 0);
   for (i = 0; i < lp->size; i += 1) {
-    int incn = doubleaGetValueAt(lp->coltonode, i).i;
-    if (incn < 0 || incn >= doubleaSize(lp->nodetocol)) {
+    int incn = draGetValueAt(lp->coltonode, i).i;
+    if (incn < 0 || incn >= draSize(lp->nodetocol)) {
       printf("Bad entry in coltonode at position %d: %d\n", i, incn);
     }
-    int innc = doubleaGetValueAt(lp->nodetocol, incn).i;
+    int innc = draGetValueAt(lp->nodetocol, incn).i;
     if (innc != i) {
       printf("Disagreement at position %d: nodetocol says %d but coltonode[%d] is %d\n", i, innc, i, incn);
     }
@@ -146,10 +146,10 @@ void labelpermSetColumnIndexToNodeNumber(struct LabelPerm *lp, int col, int n)
 {
   union PCTypes p1 = zeropct;
   union PCTypes p2 = zeropct;
-  assert(col >= 0 && col <= doubleaSize(lp->coltonode));
-  assert(n >= 0 && n <= doubleaSize(lp->nodetocol));
+  assert(col >= 0 && col <= draSize(lp->coltonode));
+  assert(n >= 0 && n <= draSize(lp->nodetocol));
   p1.i = col;
   p2.i = n;
-  doubleaSetValueAt(lp->coltonode, col, p2);
-  doubleaSetValueAt(lp->nodetocol, n, p1);
+  draSetValueAt(lp->coltonode, col, p2);
+  draSetValueAt(lp->nodetocol, n, p1);
 }

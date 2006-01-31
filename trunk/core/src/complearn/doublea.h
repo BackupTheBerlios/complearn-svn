@@ -5,32 +5,32 @@
 #include <complearn/datablock.h>
 #include <complearn/cltypes.h>
 
-/*! \file doublea.h */
+/*! \file dra.h */
 
 /** \brief a dynamically resizing, doubling polymorphic array
- * \struct DoubleA
+ * \struct DRA
  *
  * This structure represents the primary mode of dynamic allocation in
  * the CompLearn system.  It keeps track of its highest-referenced
  * element index, and returns one more than this value for its size.
- * The DoubleA automatically doubles its sizes and reallocates with a
+ * The DRA automatically doubles its sizes and reallocates with a
  * (flat, shallow) copy of all the old information whenever it is
- * necessary.  The DoubleA supports a variety of different types, of
+ * necessary.  The DRA supports a variety of different types, of
  * sizes up to 8 bytes.  The union PCTypes contains all possible
  * value types that may be used within this dynamic container class.
  *
- * \sa doublea.h
+ * \sa dra.h
  */
-struct DoubleA;
+struct DRA;
 
-/** \brief Tag added to a "dump" of a DoubleA.
+/** \brief Tag added to a "dump" of a DRA.
  *  \struct DAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
- *  functions doubleaDump() and doubleaDeepDump(), both of which
- *  are used to write a DoubleA to file. DAHdr contains information necessary
- *  for the conversion of a "dumped" DataBlock, using doubleaLoad(),
- *  back into a DoubleA.
+ *  functions draDump() and draDeepDump(), both of which
+ *  are used to write a DRA to file. DAHdr contains information necessary
+ *  for the conversion of a "dumped" DataBlock, using draLoad(),
+ *  back into a DRA.
  */
 struct DAHdr;
 
@@ -52,14 +52,14 @@ struct IntPair { int x; int y; };
  */
 struct IntDBPair { int tnum ; struct DataBlock *db; };
 
-/** \brief the basic polymorphic types supported by DoubleA
+/** \brief the basic polymorphic types supported by DRA
  * \union PCTypes
  *
- * a DoubleA can hold any number of different objects.  The choices include
+ * a DRA can hold any number of different objects.  The choices include
  * a double <b>d</b> <br>
  * an integer <b>i</b> <br>
  * a character pointer or string <b>str</b> <br>
- * a pointer to a nested DoubleA as <b>ar</b> <br>
+ * a pointer to a nested DRA as <b>ar</b> <br>
  * a StringPair <b>sp</b> containing <b>sp.key</b> and <b>sp.val</b> <br>
  * a IntPair <b>ip</b> containing <b>x</b> and <b>y</b> <br>
  * a IntDBPair <b>idbp</b> containing <b>tnum</b> and <b>*db</b> <br>
@@ -75,7 +75,7 @@ union PCTypes {
   double d;
   int i;
   char *str;
-  struct DoubleA *ar;
+  struct DRA *ar;
   struct StringPair sp;
   struct IntPair ip;
   struct IntDBPair idbp;
@@ -92,177 +92,177 @@ union PCTypes {
  */
 const extern union PCTypes zeropct, onepcti;
 
-/** \brief Creates a new DoubleA
+/** \brief Creates a new DRA
  *
- *  Allocates memory and returns a pointer to for a new DoubleA.  Free memory
- *  allocated by a DoubleA using doubleaFree().
- *  \return pointer to DoubleA
+ *  Allocates memory and returns a pointer to for a new DRA.  Free memory
+ *  allocated by a DRA using draFree().
+ *  \return pointer to DRA
  */
-struct DoubleA *doubleaNew(void);
+struct DRA *draNew(void);
 
-/** \brief Frees a DoubleA from memory.
- *  \param ptr pointer to DoubleA
+/** \brief Frees a DRA from memory.
+ *  \param ptr pointer to DRA
  */
-void doubleaFree(struct DoubleA *ptr);
+void draFree(struct DRA *ptr);
 
-/** \brief Converts a "dumped" DoubleA DataBlock back into a DoubleA
+/** \brief Converts a "dumped" DRA DataBlock back into a DRA
  *
- *  doubleaLoad() will take as an argument a DataBlock, which was created
- *  by the doubleaDump() or the doubleaDeepDump() function, and
- *  convert the DataBlock into a DoubleA, even if originally a multi-level
- *  DoubleA. A pointer to the DoubleA is returned.
+ *  draLoad() will take as an argument a DataBlock, which was created
+ *  by the draDump() or the draDeepDump() function, and
+ *  convert the DataBlock into a DRA, even if originally a multi-level
+ *  DRA. A pointer to the DRA is returned.
  *
- *  An option to doubleaLoad() is the fmustbe flag, which, if set to 1,
- *  forces the function to exit when check for the special DoubleA tag created
- *  by doubleaDump() or doubleaDeepDump() fails.  If the tag is not
+ *  An option to draLoad() is the fmustbe flag, which, if set to 1,
+ *  forces the function to exit when check for the special DRA tag created
+ *  by draDump() or draDeepDump() fails.  If the tag is not
  *  found, an error message is printed to stdout.  Set fmustbe to 0 to return
  *  NULL instead.
  *
  *  \param db pointer to DataBlock
- *  \param fmustbe 1 if the DataBlock must contain the identifying DoubleA flag;
+ *  \param fmustbe 1 if the DataBlock must contain the identifying DRA flag;
  *  0 if not
- *  \return pointer to new DoubleA
+ *  \return pointer to new DRA
  */
-struct DoubleA *doubleaLoad(struct DataBlock *d, int fmustbe);
+struct DRA *draLoad(struct DataBlock *d, int fmustbe);
 
-/** \brief Serializes a single-level DoubleA into a DataBlock
+/** \brief Serializes a single-level DRA into a DataBlock
  *
- *  doubleaDump() returns a DataBlock which then can be
+ *  draDump() returns a DataBlock which then can be
  *  written to a file using the function datablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
- *  To convert the resulting DataBlock back into a DoubleA, use
- *  doubleaLoad() function.
+ *  To convert the resulting DataBlock back into a DRA, use
+ *  draLoad() function.
  *
- *  Same as using doubleaDeepDump(da,0).
- *  \param d pointer to DoubleA
+ *  Same as using draDeepDump(da,0).
+ *  \param d pointer to DRA
  *  \return a DataBlock which can be written to file
  */
-struct DataBlock *doubleaDump(const struct DoubleA *d);
+struct DataBlock *draDump(const struct DRA *d);
 
-/** \brief Serializes a multi-level DoubleA into a DataBlock
+/** \brief Serializes a multi-level DRA into a DataBlock
  *
- *  doubleaDeepDump() returns a DataBlock which then can be
+ *  draDeepDump() returns a DataBlock which then can be
  *  written to a file using the function datablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
  *  package_DataBlocks().
  *
- *  To convert the resulting DataBlock back into a DoubleA, use
- *  doubleaLoad() function.
- *  \param em pointer to DoubleA
+ *  To convert the resulting DataBlock back into a DRA, use
+ *  draLoad() function.
+ *  \param em pointer to DRA
  *  \param level number of levels starting at 0; 0 indicates a single level, 1
  *  indicates a 2-level and so on
  *  \return a DataBlock which can be written to file
  *
  */
-struct DataBlock *doubleaDeepDump(const struct DoubleA *d, int level);
+struct DataBlock *draDeepDump(const struct DRA *d, int level);
 
-/** \brief Frees a multi-level DoubleA from memory
- *  \param ptr pointer to DoubleA
+/** \brief Frees a multi-level DRA from memory
+ *  \param ptr pointer to DRA
  *  \param lvl number of levels starting at 0; 0 indicates a single level, 1
  *  indidicates a 2-level, and so on
  */
-void doubleaDeepFree(struct DoubleA *ptr, int lvl);
+void draDeepFree(struct DRA *ptr, int lvl);
 
-/** \brief Returns a double, for a DoubleA of doubles, at a given index
+/** \brief Returns a double, for a DRA of doubles, at a given index
  *
- *  This function is a shortcut used for a DoubleA of doubles.  Same as
- *  using doubleaGetValueAt(da, where).d
- *  \param da pointer to DoubleA
+ *  This function is a shortcut used for a DRA of doubles.  Same as
+ *  using draGetValueAt(da, where).d
+ *  \param da pointer to DRA
  *  \param where index
  */
-double doubleaGetDValueAt(struct DoubleA *da, int where);
+double draGetDValueAt(struct DRA *da, int where);
 
-/** \brief Sets a double, for a DoubleA of doubles, at a given index
- *  \param a pointer to DoubleA
+/** \brief Sets a double, for a DRA of doubles, at a given index
+ *  \param a pointer to DRA
  *  \param where index
  *  \param val double to set
  */
-void doubleaSetDValueAt(struct DoubleA *a, int where, double val);
+void draSetDValueAt(struct DRA *a, int where, double val);
 
-/** \brief Returns number of elements in DoubleA.
- *  \param a pointer to DoubleA
+/** \brief Returns number of elements in DRA.
+ *  \param a pointer to DRA
  *  \return size
  */
-int doubleaSize(const struct DoubleA *a);
+int draSize(const struct DRA *a);
 
-/** \brief Creates a copy of a multi-level DoubleA
- *  \param ptr pointer to DoubleA to be copied
+/** \brief Creates a copy of a multi-level DRA
+ *  \param ptr pointer to DRA to be copied
  *  \param level number of levels starting at 0
- *  \return pointer to new DoubleA
+ *  \return pointer to new DRA
  */
-struct DoubleA *doubleaDeepClone(const struct DoubleA *ptr, int lvl);
+struct DRA *draDeepClone(const struct DRA *ptr, int lvl);
 
-/** \brief Creates a copy of a single-level DoubleA
+/** \brief Creates a copy of a single-level DRA
  *
- *  Same as using doubleaDeepClone(da,0)
- *  \param ptr pointer to DoubleA to be copied
- *  \return pointer to new DoubleA
+ *  Same as using draDeepClone(da,0)
+ *  \param ptr pointer to DRA to be copied
+ *  \return pointer to new DRA
  */
-struct DoubleA *doubleaClone(const struct DoubleA *ptr);
+struct DRA *draClone(const struct DRA *ptr);
 
 /** \brief Returns element at given index
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \param where index
  *  \return pctype instance
  */
-union PCTypes doubleaGetValueAt(const struct DoubleA *da, int where);
+union PCTypes draGetValueAt(const struct DRA *da, int where);
 
 /** \brief Sets a PCTypes instance at a given index
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \param where index
  *  \param val PCTypes instance to set
  */
-void doubleaSetValueAt(struct DoubleA *da, int where, union PCTypes p);
+void draSetValueAt(struct DRA *da, int where, union PCTypes p);
 
 /** \brief Adds a PCTypes instance to bottom of array (at index 0)
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \param p PCTypes instance to set
  */
-void doubleaUnshift(struct DoubleA *da, union PCTypes p);
+void draUnshift(struct DRA *da, union PCTypes p);
 
 /** \brief Adds a PCTypes instance to top of array (at index size)
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \param p PCTypes instance to set
  */
-void doubleaPush(struct DoubleA *da, union PCTypes p);
+void draPush(struct DRA *da, union PCTypes p);
 
 /** \brief Removes PCTypes instance from bottom of array (at index 0)
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \return PCTypes instance from bottom of array
  */
-union PCTypes doubleaShift(struct DoubleA *da);
+union PCTypes draShift(struct DRA *da);
 
 /** \brief Removes PCTypes instance from top of array (at index size)
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \return PCTypes instance from top of array
  */
-union PCTypes doubleaPop(struct DoubleA *da);
+union PCTypes draPop(struct DRA *da);
 
 /** \brief Returns random PCTypes instance from array
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \return PCTypes instance randomly chosen from array
  */
-union PCTypes doubleaRandom(const struct DoubleA *da);
+union PCTypes draRandom(const struct DRA *da);
 
 /** \brief Swaps values at given two indeces
  *
- *  doubleaSwapAt() will take two indeces of an array and swap their contents.
+ *  draSwapAt() will take two indeces of an array and swap their contents.
  *  Returns CL_OK upon success.
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  *  \param inda first index
  *  \param indb second index
  *  \return CL_OK
  */
-int doubleaSwapAt(struct DoubleA *da, int inda, int indb);
+int draSwapAt(struct DRA *da, int inda, int indb);
 
-/** \brief Prints to stdout list of integers stored in DoubleA
+/** \brief Prints to stdout list of integers stored in DRA
  *
- *  doubleaPrintIntList() only works if the DoubleA consists of integers
- *  \param da pointer to DoubleA
+ *  draPrintIntList() only works if the DRA consists of integers
+ *  \param da pointer to DRA
  */
-void doubleaPrintIntList(const struct DoubleA *da);
+void draPrintIntList(const struct DRA *da);
 
 /* TODO: following 2 functions, stringDump() and stringLoad() obviously belong
  * somewhere else.
@@ -295,40 +295,40 @@ struct DataBlock *stringDump(const char *s);
  *  is printed to stdout.  Set fmustbe to 0 to return NULL instead.
  *
  *  \param db pointer to DataBlock
- *  \param fmustbe 1 if the DataBlock must contain the identifying DoubleA flag;
+ *  \param fmustbe 1 if the DataBlock must contain the identifying DRA flag;
  *  0 if not
- *  \return pointer to new DoubleA
+ *  \return pointer to new DRA
  */
 char *stringLoad(struct DataBlock *d, int fmustbe);
 
-/** \brief Consistency function, to ensure a DoubleA is memory safe
+/** \brief Consistency function, to ensure a DRA is memory safe
  *
- *  If input DoubleA is memory corrupt in any way, program will exit and an
+ *  If input DRA is memory corrupt in any way, program will exit and an
  *  error message will be printed to stdout.
- *  \param da pointer to DoubleA
+ *  \param da pointer to DRA
  */
-void doubleaVerify(const struct DoubleA *da);
+void draVerify(const struct DRA *da);
 
-/** \brief Checks if a qbase_t node label is in DoubleA
+/** \brief Checks if a qbase_t node label is in DRA
  *
- *  If qbase_t node label is found in DoubleA, returns 1. If not, returns 0.
- *  \param da pointer to DoubleA
+ *  If qbase_t node label is found in DRA, returns 1. If not, returns 0.
+ *  \param da pointer to DRA
  *  \param which node label in question
- *  \returns 1 if node label is stored in DoubleA, 0 if not
+ *  \returns 1 if node label is stored in DRA, 0 if not
  */
-int doubleaHasQB(const struct DoubleA *da, qbase_t which);
+int draHasQB(const struct DRA *da, qbase_t which);
 
-/** \brief Prints to stdout a DoubleA of IntPairs separated by spaces
+/** \brief Prints to stdout a DRA of IntPairs separated by spaces
  *
- *  printInPairList() will only work with a DoubleA of IntPair objects.
- *  \param da pointer to DoubleA
+ *  printInPairList() will only work with a DRA of IntPair objects.
+ *  \param da pointer to DRA
  */
-void doubleaPrintIntPairList(const struct DoubleA *da);
+void draPrintIntPairList(const struct DRA *da);
 
-/** \brief Adds node label to DoubleA if not already there
+/** \brief Adds node label to DRA if not already there
  *  \param which node label to be added
  */
-void doubleaAddQBIfNew(struct DoubleA *da, qbase_t which);
+void draAddQBIfNew(struct DRA *da, qbase_t which);
 
 #define ALLNODES(sz, i) \
   for (i = 0; i < sz; i += 1)

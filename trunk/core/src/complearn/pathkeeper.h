@@ -8,7 +8,7 @@ struct CLNodeSet;
 
 /** \brief finds a path between any two nodes in the tree
  *
- * This function uses an SPMMap DoubleA to find the path quickly between
+ * This function uses an SPMMap DRA to find the path quickly between
  * two nodes in a tree.
  *
  * To use this function, you must first have an array of integers
@@ -76,49 +76,49 @@ struct AdjAdaptor *newPathKeeper(struct AdjAdaptor *basis);
  * node and on a given tree.  A Shortest Path Tree is a set of paths
  * going to the given node, termed "from".  These paths are calculated
  * using the Dijktra-Prim shortest path tree algorithm.  The results are
- * stored in a DoubleA using the .i field of PCTypes.  In the result,
- * doubleaGetValueAt(result, n).i
+ * stored in a DRA using the .i field of PCTypes.  In the result,
+ * draGetValueAt(result, n).i
  * holds the node-identifier that one must move starting at node n in
  * order to get to the specified node "from".  For all node identifiers in
- * the tree i, doubleaGetValueAt(result, i) will be defined.  Thus, this allows for
+ * the tree i, draGetValueAt(result, i) will be defined.  Thus, this allows for
  * rapid path calculations during quartet scoring later.  This function is
  * used by pathFinder.
  *
  * \param ub pointer to the UnrootedBinary to be path mapped
  * \param from qbase_t node identifier indicating the destination node
- * \return pointer to a DoubleA holding an SPM for the node "from"
+ * \return pointer to a DRA holding an SPM for the node "from"
  */
-struct DoubleA *makeSPMFor(struct AdjAdaptor *aa, qbase_t from);
+struct DRA *makeSPMFor(struct AdjAdaptor *aa, qbase_t from);
 
 /** \brief Calculates an All Points Shortest Path Map for the given binary tree
  *
  * This function computes an SPM using makeSPMFor for each node in this
- * tree.  The SPM for node i is stored in doubleaGetValueAt(result, i).ar
+ * tree.  The SPM for node i is stored in draGetValueAt(result, i).ar
  *
- * This function uses the .ar field in the PCTypes DoubleA to store a
+ * This function uses the .ar field in the PCTypes DRA to store a
  * nested set of SPM's, one for each node.  This is used in the pathFinder.
  *
  * \param ub pointer to the UnrootedBinary to be path mapped
- * \return pointer to a level-1 nested DoubleA containing SPM's
+ * \return pointer to a level-1 nested DRA containing SPM's
  */
-struct DoubleA *makeSPMMap(struct AdjAdaptor *aa);
+struct DRA *makeSPMMap(struct AdjAdaptor *aa);
 
 /** \brief Frees the memory associated with a full set of SPM Maps
  *
  * This function is useful in conjunction with makeSPMMap.
  *
- * \param spmmap pointer to the DoubleA containing nested DoubleA
+ * \param spmmap pointer to the DRA containing nested DRA
  * \return nothing
  */
-void freeSPMMap(struct DoubleA *spmmap);
+void freeSPMMap(struct DRA *spmmap);
 
 void walkTree(struct AdjAdaptor *ad,
-    struct DoubleA *result, struct DoubleA *border, struct CLNodeSet *done,
+    struct DRA *result, struct DRA *border, struct CLNodeSet *done,
     int breadthFirst,
     struct CLNodeSet *flipped);
 int countTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *ad2, struct LabelPerm *lab2);
 int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4]);
 
-struct DoubleA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips);
+struct DRA *simpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips);
 
 #endif

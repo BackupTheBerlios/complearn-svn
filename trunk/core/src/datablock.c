@@ -35,7 +35,7 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
   int toread = 812;
 	int incrbytes,totalbytes, i;
   char *dbuf[toread];
-  struct DoubleA *parts = doubleaNew();
+  struct DRA *parts = draNew();
   unsigned char *ptr;
   unsigned char *partsbuf;
   struct DataBlock *result;
@@ -49,18 +49,18 @@ struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
     union PCTypes p;
     totalbytes += incrbytes;
     p.dbp = datablockNewFromBlock(dbuf,incrbytes);
-    doubleaPush(parts,p);
+    draPush(parts,p);
   }
 
   partsbuf = clCalloc(totalbytes,1);
   ptr = partsbuf;
 
-  for ( i = 0; i < doubleaSize(parts); i += 1) {
-    memcpy(ptr, datablockData(doubleaGetValueAt(parts,i).dbp), datablockSize(doubleaGetValueAt(parts,i).dbp));
-    ptr += datablockSize(doubleaGetValueAt(parts,i).dbp);
+  for ( i = 0; i < draSize(parts); i += 1) {
+    memcpy(ptr, datablockData(draGetValueAt(parts,i).dbp), datablockSize(draGetValueAt(parts,i).dbp));
+    ptr += datablockSize(draGetValueAt(parts,i).dbp);
   }
 
-  doubleaFree(parts);
+  draFree(parts);
 
   result = datablockNewFromBlock(partsbuf,totalbytes);
   clFree(partsbuf);

@@ -16,7 +16,7 @@ gsl_matrix *gslmatrixClone(const gsl_matrix *a)
 struct DataBlock *gslmatrixDump(const gsl_matrix *a)
 {
   struct DataBlock *result, *dubs;
-  struct DoubleA *dac = doubleaNew();
+  struct DRA *dac = draNew();
   struct TagHdr h;
   struct GSLMHdr m;
   unsigned char *dbptr;
@@ -26,13 +26,13 @@ struct DataBlock *gslmatrixDump(const gsl_matrix *a)
     for (y = 0; y < a->size2; ++y) {
       union PCTypes p = zeropct;
       p.d = gsl_matrix_get(a, x, y);
-      doubleaPush(dac, p);
+      draPush(dac, p);
     }
   }
   h.tagnum = TAGNUM_GSLMATRIX;
   m.size1 = a->size1;
   m.size2 = a->size2;
-  dubs = doubleaDump(dac);
+  dubs = draDump(dac);
   h.size = datablockSize(dubs) + sizeof(m);
 
   dbsize = datablockSize(dubs) + sizeof(h) + sizeof(m);
@@ -43,7 +43,7 @@ struct DataBlock *gslmatrixDump(const gsl_matrix *a)
   result = datablockNewFromBlock(dbptr, dbsize);
   datablockFreePtr(dubs);
   clFree(dbptr);
-  doubleaFree(dac);
+  draFree(dac);
   return result;
 }
 
@@ -53,7 +53,7 @@ gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
   struct TagHdr *h;
   struct GSLMHdr *m;
   struct DataBlock *db, *d;
-  struct DoubleA *da;
+  struct DRA *da;
   int x, y, i = 0;
   d = ptrd;
   assert(sizeof(*m)+sizeof(*h) <= datablockSize(d));
@@ -71,13 +71,13 @@ gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
   assert(m->size1 > 0 && m->size2 > 0);
   db = datablockNewFromBlock( datablockData(d) + sizeof(*h) + sizeof(*m), datablockSize(d) - (sizeof(*h) + sizeof(*m)));
 
-  da = doubleaLoad(db, 1);
+  da = draLoad(db, 1);
 
   result = gsl_matrix_alloc(m->size1, m->size2);
   for (x = 0; x < m->size1; x += 1)
     for (y = 0; y < m->size2; y += 1)
-      gsl_matrix_set(result, x, y, doubleaGetDValueAt(da, i++));
-  doubleaFree(da);
+      gsl_matrix_set(result, x, y, draGetDValueAt(da, i++));
+  draFree(da);
   datablockFreePtr(db);
   return result;
 }
@@ -93,7 +93,7 @@ struct DataBlock *distmatrixDump(gsl_matrix *m)
 gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
 {
   gsl_matrix *m;
-  struct DoubleA *dd;
+  struct DRA *dd;
   struct TagHdr *h = (struct TagHdr *) datablockData(ptrdb);
   struct DataBlock *dbdm;
 
@@ -110,7 +110,7 @@ gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
   dd = load_DataBlock_package(ptrdb);
   dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
   m = gslmatrixLoad(dbdm, 1);
-  doubleaFree(dd);
+  draFree(dd);
   datablockFreePtr(dbdm);
 
   return m;
@@ -125,27 +125,27 @@ gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
 {
   struct DataBlock *dbdm;
   gsl_matrix *dm;
-  struct DoubleA *dd;
+  struct DRA *dd;
 
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clbDistMatrixLoad(dbdm);
 
   datablockFreePtr(dbdm);
-  doubleaFree(dd);
+  draFree(dd);
   return dm;
 }
 
 struct DataBlock *clbDMDataBlock(char *fname) {
   struct DataBlock *db, *dbdm;
-  struct DoubleA *dd;
+  struct DRA *dd;
 
   db = fileToDataBlockPtr(fname);
   dd = load_DataBlock_package(db);
   dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
 
   datablockFreePtr(db);
-  doubleaFree(dd);
+  draFree(dd);
   return dbdm;
 }
 
@@ -173,19 +173,19 @@ gsl_matrix *clbDistMatrix(char *fname)
 #define DELIMS " ,\t\r\n"
 #define MAXLINESIZE 1024
 
-static struct DoubleA *get_dm_row_from_txt(char *linebuf, int isLabeled)
+static struct DRA *get_dm_row_from_txt(char *linebuf, int isLabeled)
 {
-  struct DoubleA *row = doubleaNew();
+  struct DRA *row = draNew();
   char *s;
   union PCTypes p = zeropct;
   s = strtok(linebuf, DELIMS);
   if (!isLabeled) {
     p.d = atof(s);
-    doubleaPush(row,p);
+    draPush(row,p);
   }
   while((s = strtok(NULL, DELIMS))) {
     p.d = atof(s);
-    doubleaPush(row,p);
+    draPush(row,p);
   }
   return row;
 }
@@ -238,11 +238,11 @@ gsl_matrix *cltxtDistMatrix(char *fname)
   fp = clFopen(fname, "r");
 
   for (i = 0; i < rows ; i += 1) {
-    struct DoubleA *rowvals;
+    struct DRA *rowvals;
     fgets(linebuf, MAXLINESIZE, fp);
     rowvals = get_dm_row_from_txt(linebuf, isLabeled);
-    for (j = 0; j < doubleaSize(rowvals); j +=1) {
-      gsl_matrix_set(result, i, j, doubleaGetValueAt(rowvals, j).d);
+    for (j = 0; j < draSize(rowvals); j +=1) {
+      gsl_matrix_set(result, i, j, draGetValueAt(rowvals, j).d);
     }
   }
 

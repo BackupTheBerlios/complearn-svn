@@ -26,7 +26,7 @@ struct TreeMolder;
 struct LabelPerm;
 struct DataBlockEnumeration;
 struct DataBlockEnumerationIterator;
-struct DoubleA;
+struct DRA;
 struct GeneralConfig;
 
 typedef unsigned int t_tagtype;
@@ -41,7 +41,7 @@ typedef char *(*t_compparam)(struct CompAdaptor *ca);
 typedef int (*t_apiver)(void);
 typedef struct ParamList *(*t_getparams)(void);
 
-typedef void (*t_doublefreefunc)(struct DoubleA *da, void *udata);
+typedef void (*t_doublefreefunc)(struct DRA *da, void *udata);
 
 typedef int (*t_predicate)(struct DataBlock *db);
 typedef void (*t_transfree)(struct TransformAdaptor *ta);
@@ -69,7 +69,7 @@ typedef int (*t_adjagetconstate)(struct AdjAdaptor *a, int i, int j);
 typedef void (*t_adjasetconstate)(struct AdjAdaptor *a, int i, int j, int which);
 typedef int (*t_adjagetneighborcount)(struct AdjAdaptor *a, int i);
 typedef int (*t_adjagetneighbors)(struct AdjAdaptor *a, int i, int *nbuf, int *nsize);
-typedef struct DoubleA *(*t_adjaspmmap)(struct AdjAdaptor *a);
+typedef struct DRA *(*t_adjaspmmap)(struct AdjAdaptor *a);
 
 typedef void (*t_treemutate)(struct TreeAdaptor *tra);
 typedef void (*t_treefree)(struct TreeAdaptor *tra);
@@ -79,7 +79,7 @@ typedef void (*t_treelpsetat)(struct TreeAdaptor *tra, int j, int i);
 typedef struct AdjAdaptor *(*t_treegetadja)(struct TreeAdaptor *tra);
 typedef int (*t_treenodepred)(struct TreeAdaptor *tra, int which);
 typedef int (*t_treemutecount)(struct TreeAdaptor *tra);
-typedef struct DoubleA *(*t_treeperimpairs)(struct TreeAdaptor *tra, struct CLNodeSet *flips);
+typedef struct DRA *(*t_treeperimpairs)(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 
 typedef void (*t_treesearchstarted)(struct TreeObserver *tob);
 typedef void (*t_treeimproved)(struct TreeObserver *tob, struct TreeHolder *th);

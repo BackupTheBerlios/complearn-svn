@@ -6,7 +6,7 @@
 /*! \file quartet.h */
 
 struct UnrootedBinary;
-struct DoubleA;
+struct DRA;
 
 #include <sys/types.h>
 /**
@@ -66,8 +66,8 @@ struct TreeScore;
 struct Quartet permuteLabels(qbase_t lab[4], int which); /* between 0, 1, 2 */
 struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which);
 void normalizeQuartet(struct Quartet *q);
-void freeSPMSingle(struct DoubleA *d);
-void freeSPMSet(struct DoubleA *d);
+void freeSPMSingle(struct DRA *d);
+void freeSPMSet(struct DRA *d);
 
 #endif
 

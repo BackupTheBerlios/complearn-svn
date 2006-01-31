@@ -190,16 +190,16 @@ double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2);
  * obtaining the set of tree perimeter pair nodes going all the way around.
  * It will not provide you with kernel nodes.
  *
- * The returned DoubleA will contain IntPair entries where x and y
+ * The returned DRA will contain IntPair entries where x and y
  * are consecutive labelled node numbers in the ordered traversal of the tree.
  *
  * \param tra pointer to the TreeAdaptor to be traversed
  * \param flips pointer to CLNodeSet controlling traversal or NULL for default
- * \return DoubleA containing IntPair with adjacent node numbers in order
+ * \return DRA containing IntPair with adjacent node numbers in order
  */
-struct DoubleA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips);
+struct DRA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 
-struct DoubleA *treeaNodes(struct TreeAdaptor *ta);
+struct DRA *treeaNodes(struct TreeAdaptor *ta);
 
 void treealabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
     int colInd, int nodeNum);
