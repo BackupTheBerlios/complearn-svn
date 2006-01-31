@@ -29,6 +29,7 @@ fi
 AC_CHECK_HEADERS([])
 
 # partree dependencies
+
 AC_ARG_ENABLE(mpi,
 [  --enable-mpi  Enable MPI compilation using mpicc
 ],
@@ -39,16 +40,22 @@ AC_ARG_ENABLE(mpi,
 esac], [ua_mpi=false])
 
 if test x$ua_mpi = xtrue ; then
-  AC_CHECK_PROGS(MPICC, mpicc)
-  if test x$MPICC = x ; then
-    echo 1>2 "Error, cannot find mpicc"
-    exit 1
+  if test x$CC = x ; then
+    AC_CHECK_PROGS(MPICC, mpicc)
+    if test x$MPICC = x ; then
+      echo 1>2 "Error, cannot find mpicc"
+      exit 1
+    else
+      CC=$MPICC
+    fi
   else
-    CC=$MPICC
+    MPICC=$CC
   fi
+else
+   AC_PROG_CC
 fi
 
-AC_PROG_CC
+AC_CHECK_HEADER([gsl/gsl_matrix.h])
 
 AC_CHECK_LIB(SDL_ttf,TTF_Init,
     [echo "Enabling SDL_ttf support." ; GFXLIBS="$GFXLIBS -lSDL_ttf" ;
