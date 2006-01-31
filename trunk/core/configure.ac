@@ -24,6 +24,11 @@ fi
 
 # base dependencies
 echo "Checking BASE DEPENDENCIES"
+AC_ARG_WITH(gsl,
+  [  --with-gsl=PREFIX      where gsl is installed (required for NGD)],
+  [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
+    LDFLAGS="$LDFLAGS -L$withval/lib"]
+)
 AC_CHECK_HEADERS([gsl/gsl_matrix.h math.h])
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 
@@ -168,6 +173,7 @@ AM_CONDITIONAL(AMCGFX, [test x$fsdlttf_lib = xtrue])
 AC_SUBST(NGDLIBS)
 AC_SUBST(GFXLIBS)
 
+echo "fgsl_lib      is $fgsl_lib"
 echo "fbz2_lib      is $fbz2_lib"
 echo "fzlib_lib     is $fzlib_lib"
 echo "fxml2_lib     is $fxml2_lib"
