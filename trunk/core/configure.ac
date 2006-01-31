@@ -39,6 +39,8 @@ AC_ARG_ENABLE(mpi,
     *) AC_MSG_ERROR(bad value "${enableval}" for --enable-mpi) ;;
 esac], [ua_mpi=false])
 
+# pec: CC can be set explicitly, or left unset for mpicc scan
+
 if test x$ua_mpi = xtrue ; then
   if test x$CC = x ; then
     AC_CHECK_PROGS(MPICC, mpicc)
@@ -52,8 +54,10 @@ if test x$ua_mpi = xtrue ; then
     MPICC=$CC
   fi
 else
-   AC_PROG_CC
+  AC_PROG_CC
 fi
+
+# poc: if up_mpi, then CC = MPICC
 
 AC_CHECK_HEADER([gsl/gsl_matrix.h])
 
