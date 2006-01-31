@@ -1,16 +1,72 @@
 #include <stdlib.h>
 #include <string.h>
-#include "clalloc.h"
 #include <complearn/complearn.h>
 
-#if BZIP2_RDY
+#ifdef HAVE_DLFCN_H
+#include <dlfcn.h>
+#endif
+
+#ifdef HAVE_BZLIB_H
 #include <bzlib.h>
+#endif
+
+/* NOTE:
+ *
+ * A library is not linkable with C unless it has a header, so we may
+ * use #ifdef *_H instead of _RDY everywhere to avoid the new flag.
+ *
+ * If a user has headers installed but no library, we can rely on a linker
+ * to tell them an error message.
+ */
 
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void bz2a_freecompfunc(struct CompAdaptor *ca);
 static char *bz2a_shortname(void);
 static char *bz2a_longname(void);
 static int bz2a_apiver(void);
+
+/***** Dynamic Adaptor module to support dual-mode static / dynamic loading
+ *
+ * This system is intended to simplify installation by allowing users to
+ * install a dynamic-loading bz2 library after static compiletime config
+ * without reconfiguring.  This is done through a two-step strategy on
+ * compressor module startup:
+ *
+ * First, if a static symbol has been compiled, link with it and use it.
+ * If it hasn't, search using dlopen for the bz2 library and load the
+ * necessary symbols (compression and decompression) into an adaptor.
+ * Expose this adaptor to the rest of the system via a Singleton Facade.
+ */
+
+#if HAVE_BZLIB_H
+static struct BZ2DynamicAdaptor bz2sda = {
+  BZ2_bzBuffToBuffCompress,
+  BZ2_bzBuffToBuffDecompress
+};
+#else
+static struct BZ2DynamicAdaptor bz2sda;
+#endif
+
+static struct BZ2DynamicAdaptor bz2dda;
+static int haveTriedDL; /* Singleton */
+
+struct BZ2DynamicAdaptor *grabBZ2DA(void) {
+  if (bz2sda.buftobufcompress)
+    return &bz2sda;
+  if (!haveTriedDL) {
+    void *lib_handle;
+    haveTriedDL = 1;
+#ifdef HAVE_DLFCN_H
+    lib_handle = dlopen("libbz2.so", RTLD_LAZY);
+    if (lib_handle) {
+      bz2dda.buftobufcompress= dlsym(lib_handle,"BZ2_bzBuffToBuffCompress");
+      bz2dda.buftobufdecompress= dlsym(lib_handle,"BZ2_bzBuffToBuffDecompress");
+//      dlclose(lib_handle);
+    }
+#endif
+  }
+  return bz2dda.buftobufcompress ? &bz2dda : NULL;
+}
 
 /* bzip2 compression interface */
 
@@ -84,30 +140,26 @@ struct CompAdaptor *builtin_BZIP(void)
 
 static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
-#if BZIP2_RDY
+  struct BZ2DynamicAdaptor *bzlib = grabBZ2DA();
 	struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
 	int s;
 
   unsigned char *dbuff;
 	int p;
 
+  if (bzlib == NULL) {
+    clogError("Cannot do bzip2 compression: no bzip2 library available.");
+  }
 	p = datablockSize(src)*1.02+600;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = BZ2_bzBuffToBuffCompress((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
+	s = (bzlib->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
-	if (s == BZ_OUTBUFF_FULL) {
-		printf ("destLen not big enough!\n");
-		exit(1);
-	}
-	if (s != BZ_OK) {
-		printf ("Unknown error: bzBuff returned %d\n",s);
+	if (s != 0) {
+		printf ("error code %d\n", s);
 		exit(1);
 	}
 	free(dbuff);
 	return (double) p*8.0;
-#else
-	return -1.0;
-#endif
 }
 
 static void bz2a_freecompfunc(struct CompAdaptor *ca)
@@ -131,11 +183,3 @@ static int bz2a_apiver(void)
 	return APIVER_V1;
 }
 
-#else
-
-struct CompAdaptor *builtin_BZIP(void)
-{
-  return NULL;
-}
-
-#endif

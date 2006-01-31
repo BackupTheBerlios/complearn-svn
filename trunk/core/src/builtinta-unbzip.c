@@ -1,11 +1,6 @@
 #include <string.h>
-#include "clalloc.h"
 #include <complearn/complearn.h>
-
 #include <complearn/transadaptor.h>
-
-#if BZIP2_RDY
-#include <bzlib.h>
 
 static char *unbz2a_shortname(void);
 static void unbz2a_transfree(struct TransformAdaptor *ta);
@@ -14,6 +9,7 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNBZIP(void)
 {
+  struct BZ2DynamicAdaptor *bzlib = grabBZ2DA();
   struct TransformAdaptor *ptr;
   struct TransformAdaptor t =
   {
@@ -23,6 +19,8 @@ struct TransformAdaptor *builtin_UNBZIP(void)
     tf:    unbz2a_transform,
     tptr:  NULL,
   };
+  if (!bzlib)
+    return NULL;
   ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
   return ptr;
@@ -45,8 +43,9 @@ static int unbz2a_predicate(struct DataBlock *db)
 
 static struct DataBlock *unbz2a_transform(struct DataBlock *src)
 {
-  struct DataBlock *result;
-#if BZIP2_RDY
+  struct BZ2DynamicAdaptor *bzlib = grabBZ2DA();
+  struct DataBlock *result = NULL;
+  if (bzlib) {
   int i;
   unsigned char *dbuff = NULL;
   int p;
@@ -57,23 +56,14 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src)
     dbuff = (unsigned char*)clMalloc(p);
     i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) datablockData(src),datablockSize(src), 0, 0);
     p = 2*p;
-  } while (i == BZ_OUTBUFF_FULL);
+  } while (i != 0);
   result = datablockNewFromBlock(dbuff,p);
   clFreeandclear(dbuff);
   // datablockFree(src); /* TODO: document this */
-# else
+   } else {
 	assert ( 0 && "bzip not supported");
 	exit(1);
-	result.ptr = NULL;
-	result.size = 0;
-#endif
+   }
   return result;
 }
-#else
 
-struct TransformAdaptor *builtin_UNBZIP(void)
-{
-  return NULL;
-}
-
-#endif

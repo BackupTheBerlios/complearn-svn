@@ -1,23 +1,6 @@
 #include <stdio.h>
 #include <complearn/complearn.h>
 
-#if 0
-
-#include "builtinca-realcomp.c"
-#include "builtinca-virtcomp.c"
-
-#if CSOAP_RDY
-#include "builtinca-soap.c"
-#include "builtinca-google.c"
-#endif
-
-#if BZIP2_RDY
-#include "builtinca-bzlib.c"
-#include "builtinta-unbzip.c"
-#endif
-
-#endif
-
 struct CompAdaptor *builtin_BZIP(void);
 struct CompAdaptor *builtin_GOOG(void);
 struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *method);
@@ -47,11 +30,7 @@ struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn)
 
 struct CompAdaptor *compaLoadBzip2(void)
 {
-#if BZIP2_RDY
   return builtin_BZIP();
-#else
-  return NULL;
-#endif
 }
 
 struct CompAdaptor *compaLoadBlockSort(void)
@@ -88,10 +67,8 @@ struct CompAdaptor *compaLoadBuiltin(const char *name)
   if (strcmp(name, "zlib") == 0)
     result = compaLoadZlib();
 #endif
-#if BZIP2_RDY
-  if (strcmp(name, "bzip") == 0)
+  if (strncmp(name, "bz",2) == 0)
     result = compaLoadBzip2();
-#endif
 #if CSOAP_RDY
   if (strcmp(name, "google") == 0)
     result = compaLoadGoogle();

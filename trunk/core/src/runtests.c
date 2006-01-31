@@ -630,11 +630,11 @@ void testTAStack()
 	struct TransformAdaptor *taarray[TEST_TS_SIZE];
   ts = newTAStack();
 	assert(ts != NULL);
-#ifdef BZIP2_RDY
 	taa = (struct TransformAdaptor *)builtin_UNBZIP();
-	assert(strcmp(taa->sn(),"unbzip") == 0);
-  pushTS(ts, taa);
-#endif
+  if (taa) {
+    assert(strcmp(taa->sn(),"unbzip") == 0);
+    pushTS(ts, taa);
+  }
 #ifdef ZLIB_RDY
 	tab = (struct TransformAdaptor *)builtin_UNGZ();
 	assert(strcmp(tab->sn(),"ungz") == 0);
@@ -644,10 +644,12 @@ void testTAStack()
   pushTS(ts, tac);
 #endif
 
-#ifdef BZIP2_RDY
 	tmp = (struct TransformAdaptor *)shiftTS(ts);
-	assert(strcmp(tmp->sn(),"unbzip") == 0);
-#endif
+  if (taa) {
+    if (tmp) {
+    assert(strcmp(tmp->sn(),"unbzip") == 0);
+    }
+  }
 #ifdef ZLIB_RDY
 	cur = (struct TransformAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
 	assert(cur);

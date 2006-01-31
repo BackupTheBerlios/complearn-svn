@@ -102,4 +102,14 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd);
  */
 struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn);
 
+/** Dynamic Adaptors to support dual-mode loading */
+struct BZ2DynamicAdaptor {
+  int (*buftobufcompress)(char *dbuff,unsigned int *p,
+    char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
+  int (*buftobufdecompress)(char *dbuff,unsigned int *p,
+    char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
+};
+
+struct BZ2DynamicAdaptor *grabBZ2DA(void);
+
 #endif

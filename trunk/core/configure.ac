@@ -8,7 +8,17 @@ AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 # base dependencies
 echo "Checking BASE DEPENDENCIES"
 AC_CHECK_HEADERS([gsl/gsl_matrix.h math.h])
+AC_CHECK_HEADERS([dlfcn.h])
+AC_CHECK_HEADERS([bzlib.h], [
+  AC_CHECK_LIB(bz2, BZ2_blockSort, [LIBS="$LIBS -lbz2"],
+                     [ AC_ERROR([bzlib.h header found but no bz2 library]) ])
+]
+)
+
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
+
+fdl_lib=false
+AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
 
 fgsl_lib=false
 AC_CHECK_LIB(gslcblas,cblas_sdot,
