@@ -4,6 +4,7 @@ AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
+AM_CONFIG_HEADER(src/complearn/clconfig.h)
 
 AC_ARG_ENABLE(optimize,
 [  --enable-optimize  Enable performance optimizations
