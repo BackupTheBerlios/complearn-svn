@@ -40,7 +40,7 @@ clbinfo_SOURCES = clbinfo.c
 clbinfo_LDADD = $(CLLDFLAGS)
 
 ncd_SOURCES = ncd.c
-ncd_LDADD = $(CLLDFLAGS)
+ncd_LDADD = $(CLLDFLAGS) $(NGDLIBS)
 
 reordertree_SOURCES = reordertree.c
 reordertree_LDADD = $(CLLDFLAGS)

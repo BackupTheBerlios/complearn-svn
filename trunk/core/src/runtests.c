@@ -1332,7 +1332,7 @@ int main(int argc, char **argv)
 //  testTransformZLIB(); //TODO: investigate memory leaks
 //  testTransformGZ();   //TODO: investigate memory leaks
 #endif
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
 //  testSOAPComp();      //TODO: investigate massive memory leaks here
   testGoogle();        //TODO: more memory leaks left here
 #endif

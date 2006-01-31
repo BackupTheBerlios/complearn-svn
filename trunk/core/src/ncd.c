@@ -133,7 +133,7 @@ int main(int argc, char **argv)
   };
   cur = loadNCDEnvironment();
   ncdcfg = (struct NCDConfig *) cur->ptr;
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
 //  testGSoapReq();
 #endif
   whichLongOpt = 1;

@@ -12,7 +12,7 @@ struct CompAdaptor *builtin_VirtComp(const char *cmd);
 
 struct CompAdaptor *compaLoadGoogle(void)
 {
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
   return builtin_GOOG();
 #else
   return NULL;
@@ -21,7 +21,7 @@ struct CompAdaptor *compaLoadGoogle(void)
 
 struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn)
 {
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
   return builtin_SC(url, urn, "compfunc");
 #else
   return NULL;
@@ -69,7 +69,7 @@ struct CompAdaptor *compaLoadBuiltin(const char *name)
 #endif
   if (strncmp(name, "bz",2) == 0)
     result = compaLoadBzip2();
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
   if (strcmp(name, "google") == 0)
     result = compaLoadGoogle();
 #endif

@@ -5,7 +5,7 @@
 
 #include <unistd.h>
 
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
 
 #include <libcsoap/soap-client.h>
 #include <stdlib.h>

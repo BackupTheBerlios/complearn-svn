@@ -1,6 +1,6 @@
 #include <complearn/complearn.h>
 
-#if CSOAP_RDY
+#if HAVE_LIBCSOAP_SOAP_CLIENT_H
 #include <libcsoap/soap-client.h>
 #include <zlib.h>
 #include <string.h>
