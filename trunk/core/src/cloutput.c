@@ -69,26 +69,31 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
   int n2Counter = 0, n2Set = 0;
   struct DoubleA *da = doubleaNew();
   struct DataBlockEnumerationIterator *ia, *ib;
-  struct DataBlock *dba;
+  struct DataBlock *dba, *dbb;
+
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
     struct DataBlock *obj;
     n1Counter += 1;
     if (cur->fAddNLAtString)
       dba = createCloneWithNLFree(dba);
     for ( ib = b->newenumiter(b); ( obj = b->istar(b,ib) ) ; b->istep(b,ib) ) {
-      struct DataBlock *dbb = obj;
+      int madeNewOne = 0;
       double ncd;
       double outnum;
+      dbb = obj;
       if (!n2Set) {
         n2Counter += 1;
       }
-      if (cur->fAddNLAtString)
+      if (cur->fAddNLAtString) {
         dbb = createCloneWithNLFree(dbb);
+        madeNewOne = 1;
+      }
       ncd = ncdfunc(dba, dbb, cur);
       outnum = xpremap(ncd, cur);
 //      printf(fmtString, outnum);
       doubleaSetDValueAt(da, doubleaSize(da), outnum);
-      datablockFreePtr(dbb);
+      if (madeNewOne)
+        datablockFreePtr(dbb);
     }
     n2Set = 1;
     b->ifree(ib);

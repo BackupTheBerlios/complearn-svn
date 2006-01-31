@@ -790,6 +790,7 @@ void testQuartet(void)
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
+  loadNCDEnvironment();
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);

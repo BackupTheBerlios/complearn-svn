@@ -12,10 +12,10 @@ AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 
 fgsl_lib=false
 AC_CHECK_LIB(gslcblas,cblas_sdot,
-  [LIBS="$LIBS -lgslcblas"
+  [LIBS="-lgslcblas $LIBS"
 
 AC_CHECK_LIB(gsl,gsl_hypot,
-    [ LIBS="$LIBS -lgsl" ; fgsl_lib=true])
+    [ LIBS="-lgsl $LIBS" ; fgsl_lib=true])
 ])
 
 if test $fgsl_lib = false ; then
