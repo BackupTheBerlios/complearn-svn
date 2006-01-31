@@ -1,7 +1,5 @@
 #include <complearn/complearn.h>
-#if HAVE_ZLIB_H
 #include <zlib.h>
-#include "clalloc.h"
 #include <string.h>
 
 #include <complearn/transadaptor.h>
@@ -13,6 +11,8 @@ static struct DataBlock *unzlib_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNZLIB(void)
 {
+  struct ZlibDynamicAdaptor *zlib = grabZlibDA();
+  struct TransformAdaptor *ptr;
 	struct TransformAdaptor t =
 	{
     sn:    unzlib_shortname,
@@ -21,7 +21,8 @@ struct TransformAdaptor *builtin_UNZLIB(void)
     tf:    unzlib_transform,
     tptr:  NULL,
   };
-  struct TransformAdaptor *ptr;
+  if (!zlib)
+    return NULL;
   ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
 	return ptr;
@@ -44,28 +45,28 @@ static int unzlib_predicate(struct DataBlock *db)
 
 static struct DataBlock *unzlib_transform(struct DataBlock *src)
 {
+  struct ZlibDynamicAdaptor *zlib = grabZlibDA();
 	struct DataBlock *result;
+  if (zlib) {
 	int i;
 	unsigned char *dbuff = NULL;
 	int triedp;
 	triedp = datablockSize(src) * 3.0 + 1;
 	do {
-    int p;
+    unsigned long p;
 		if (dbuff != NULL)
 			free(dbuff);
 		dbuff = (unsigned char*)clMalloc(p);
     p = triedp;
-		i = uncompress(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src));
+		i = uncompress(dbuff, &p,datablockData(src),datablockSize(src));
 		triedp = 2*triedp;
 	} while (i == Z_BUF_ERROR);
   result = datablockNewFromBlock(dbuff, triedp);
 	free(dbuff);
 //	datablockFree(src); /* TODO: document this new non-free behavior */
+   } else {
+     assert ( 0 && "zlib not supported");
+     exit(1);
+   }
 	return result;
 }
-#else
-struct TransformAdaptor *builtin_UNZLIB(void)
-{
-  return NULL;
-}
-#endif

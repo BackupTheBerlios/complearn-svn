@@ -1,6 +1,5 @@
 #include <string.h>
 #include <complearn/complearn.h>
-#include <complearn/transadaptor.h>
 
 static char *unbz2a_shortname(void);
 static void unbz2a_transfree(struct TransformAdaptor *ta);
@@ -54,7 +53,7 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src)
     if (dbuff != NULL)
       clFreeandclear(dbuff);
     dbuff = (unsigned char*)clMalloc(p);
-    i = BZ2_bzBuffToBuffDecompress((char *) dbuff,(unsigned int *) &p, (char *) datablockData(src),datablockSize(src), 0, 0);
+    i = (bzlib->buftobufdecompress)((char *) dbuff,(unsigned int *) &p, (char *) datablockData(src),datablockSize(src), 0, 0);
     p = 2*p;
   } while (i != 0);
   result = datablockNewFromBlock(dbuff,p);

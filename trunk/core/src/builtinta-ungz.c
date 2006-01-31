@@ -1,13 +1,9 @@
 #include <complearn/complearn.h>
 #include <sys/stat.h>
+#include <string.h>
 
 #if HAVE_ZLIB_H
-
 #include <zlib.h>
-#include <string.h>
-#include "clalloc.h"
-
-#include <complearn/transadaptor.h>
 
 #define MAX_BYTES_READ 1000
 
@@ -18,23 +14,23 @@ static struct DataBlock *ungz_transform(struct DataBlock *src);
 
 struct TransformAdaptor *builtin_UNGZ(void)
 {
-	struct TransformAdaptor t =
-	{
+  struct TransformAdaptor *ptr;
+  struct TransformAdaptor t =
+  {
     sn:    ungz_shortname,
     tfree: ungz_transfree,
     pf:    ungz_predicate,
     tf:    ungz_transform,
     tptr:  NULL,
   };
-  struct TransformAdaptor *ptr;
   ptr = (struct TransformAdaptor*)clCalloc(sizeof(*ptr), 1);
   *ptr = t;
-	return ptr;
+  return ptr;
 }
 
 static char *ungz_shortname(void)
 {
-	return "ungz";
+  return "ungz";
 }
 
 static void ungz_transfree(struct TransformAdaptor *ta)

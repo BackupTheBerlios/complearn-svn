@@ -39,8 +39,6 @@ struct CompAdaptor *compaLoadBlockSort(void)
 }
 
 #if HAVE_ZLIB_H
-#include "builtinca-zlib.c"
-#include "builtinta-unzlib.c"
 #include "builtinta-ungz.c"
 #endif
 

@@ -107,7 +107,7 @@ struct BZ2DynamicAdaptor {
   int (*buftobufcompress)(char *dbuff,unsigned int *p,
     char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
   int (*buftobufdecompress)(char *dbuff,unsigned int *p,
-    char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
+    char *src, unsigned int sz, int small, int verblevel);
 };
 
 struct BZ2DynamicAdaptor *grabBZ2DA(void);
