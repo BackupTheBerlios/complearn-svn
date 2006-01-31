@@ -1,22 +1,5 @@
-August 26, 2005
-name changes:
-bs_compressor_instance to BlockSortCompInstance
-AdjA to AdjAdaptor
-bz2aCompInstance to BA2CompInstance
-ddHdr to DAHdr
-googCompInstance to GoogleCompInstance
-gslmHdr to GSLMHdr
-intdbpair to IntDBPair
-intpair to IntPair
-pctypes to PCTypes
-rcCompInstance to RealCompInstance
-scaCompInstance to SOAPCompInstance
-strpair to StringPair
-tagHdr to TagHdr
-TransAdaptor to TransformAdaptor
-TAstack to TransformAdaptorStack
-vcCompInstance to VirtualCompInstance
-zlibCompInstance ZlibCompInstance
+2006-01-31  Rudi Cilibrasi <cilibrar@cilibrar.com>
 
+	* Finally fixed broken packaging system, now to version 0.9.1
+	*         added dual-mode dynamic adaptor singleton facade compressor loader
 
-version 0.8.15 - now printing parameters to resulting treefile.dot file
