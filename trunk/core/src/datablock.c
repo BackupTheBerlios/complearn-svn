@@ -106,6 +106,9 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
     clogError("NULL ptr in datablockWriteToFile()\n");
   }
 	fp = clFopen(path,"wb");
+  if (fp == NULL) {
+    clogError("fopen error in datablockWriteToFile()\n");
+  }
 	err = fwrite(db->ptr,1,db->size,fp);
 	if (err == 0) {
 		printf("Write error to %s!\n", path);
