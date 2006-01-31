@@ -199,6 +199,32 @@ then you can use it with the following option to ncd:
 ncd -r $HOME/bin/catppmd
 </pre>
 
+<h3>10. Running ./configure gives me the following error: cannot find input file: src/complearn/aclconfig.h.in. Where can I find this file?</h3>
+
+<p>You will need to generate this header input file by running the autoheader
+command.  autoheader is packaged with autoconf.
+
+<pre>
+autoheader
+</pre>
+
+<h3>11. I get the configure error: Can't locate object method "path" via
+package "Request" at /usr/share/autoconf/Autom4te/C4che.pm line 69, <GEN1> line
+111.  make[1]: *** [configure] Error 1. Is there an easy way to fix this?</h3>
+
+<p>In the top directory of the CompLearn distribution, run the following
+commands:</p>
+
+<pre>
+rm -rf autom4te.cache
+</pre>
+
+<p>or</p>
+
+<pre>
+make maintainer-clean
+</pre>
+
 </div><!-- MAIN END -->
 </div>
 </body>
