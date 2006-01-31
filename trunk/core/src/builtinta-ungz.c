@@ -1,7 +1,7 @@
 #include <complearn/complearn.h>
 #include <sys/stat.h>
 
-#if ZLIB_RDY
+#if HAVE_ZLIB_H
 
 #include <zlib.h>
 #include <string.h>

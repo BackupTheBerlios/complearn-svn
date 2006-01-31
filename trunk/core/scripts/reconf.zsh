@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # switch case which sets the path where the soap library are installed
-EXTRAOPT=$*
+EXTRAOPT=($*)
 BIGOPT=""
 if test ! -f ./configure && test -f ../configure ; then
   cd ..
@@ -119,7 +119,7 @@ automake && \
             --with-sdl=$SDLPREFIX \
             --with-sdl_ttf=$SDLTTFPREFIX \
             --with-gsl=$GSLPREFIX "${BIGOPT}" \
-            "${EXTRAOPT}"
+            ${EXTRAOPT}
 #            --with-zlib=$ZLIBPREFIX \
 #            --with-bzip2=$BZ2PREFIX \
 #            --with-gdbm=$GDBMPREFIX \

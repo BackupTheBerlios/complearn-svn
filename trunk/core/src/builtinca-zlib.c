@@ -1,16 +1,70 @@
+#include <stdlib.h>
 #include <complearn/complearn.h>
 
-#if ZLIB_RDY
-#include <zlib.h>
+#ifdef HAVE_DLFCN_H
+#include <dlfcn.h>
+#endif
 
-#include <stdlib.h>
-#include "clalloc.h"
+#if HAVE_ZLIB_H
+#include <zlib.h>
+#endif
+
+/* NOTE:
+ *
+ * A library is not linkable with C unless it has a header, so we may
+ * use #ifdef *_H instead of _RDY everywhere to avoid the new flag.
+ *
+ * If a user has headers installed but no library, we can rely on a linker
+ * to tell them an error message.
+ */
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void zlib_freecompfunc(struct CompAdaptor *ca);
 static char *zlib_shortname(void);
 static char *zlib_longname(void);
 static int zlib_apiver(void);
+
+/***** Dynamic Adaptor module to support dual-mode static / dynamic loading
+ *
+ * This system is intended to simplify installation by allowing users to
+ * install a dynamic-loading zlib library after static compiletime config
+ * without reconfiguring.  This is done through a two-step strategy on
+ * compressor module startup:
+ *
+ * First, if a static symbol has been compiled, link with it and use it.
+ * If it hasn't, search using dlopen for the zlib library and load the
+ * necessary symbols (compression and decompression) into an adaptor.
+ * Expose this adaptor to the rest of the system via a Singleton Facade.
+ */
+
+#if HAVE_ZLIB_H
+static struct ZlibDynamicAdaptor zlibsda = {
+  (int (*)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz, int level) ) compress2,
+  (int (*)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz) ) uncompress
+};
+#else
+static struct ZlibDynamicAdaptor zlibsda;
+#endif
+
+static struct ZlibDynamicAdaptor zlibdda;
+static int haveTriedDL; /* Singleton */
+
+struct ZlibDynamicAdaptor *grabZlibDA(void) {
+  if (zlibsda.compress2)
+    return &zlibsda;
+  if (!haveTriedDL) {
+    void *lib_handle;
+    haveTriedDL = 1;
+#ifdef HAVE_DLFCN_H
+    lib_handle = dlopen("libz.so", RTLD_LAZY);
+    if (lib_handle) {
+      zlibdda.compress2= dlsym(lib_handle,"compress2");
+      zlibdda.uncompress= dlsym(lib_handle,"uncompress");
+    }
+#endif
+  }
+  return zlibdda.compress2 ? &zlibdda : NULL;
+}
 
 /** \brief zlib compression state information
  * \struct ZlibCompInstance
@@ -20,7 +74,7 @@ static int zlib_apiver(void);
  * is defaulted to the maximum level of 9.
  */
 struct ZlibCompInstance {
-	int level; // 0 - 9
+  int level; // 0 - 9
 };
 
 /** \brief Initializes a ZLIB CompAdaptor instance
@@ -68,21 +122,26 @@ struct CompAdaptor *builtin_ZLIB(void)
 
 static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
+  struct ZlibDynamicAdaptor *zlib = grabZlibDA();
 	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
 	int s;
 
   unsigned char *dbuff;
-	int p;
+	unsigned long p;
+
+  if (zlib == NULL) {
+    clogError("Cannot do zlib compression: no zlib library available.");
+  }
 
 	p = datablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = compress2(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src),ci->level);
+	s = (zlib->compress2)(dbuff,&p,datablockData(src),datablockSize(src),ci->level);
 
-	if (s == Z_BUF_ERROR) {
+	if (s == -5 ) {  /* Z_BUF_ERROR */
 		printf ("destLen not big enough!\n");
 		exit(1);
 	}
-	if (s != Z_OK) {
+	if (s != 0) {    /* Z_OK */
 		printf ("Unknown error: zlibBuff returned %d\n",s);
 		exit(1);
 	}
@@ -110,10 +169,3 @@ static int zlib_apiver(void)
 {
 	return APIVER_V1;
 }
-
-#else
-struct CompAdaptor *builtin_ZLIB(void)
-{
-  return NULL;
-}
-#endif

@@ -112,4 +112,12 @@ struct BZ2DynamicAdaptor {
 
 struct BZ2DynamicAdaptor *grabBZ2DA(void);
 
+struct ZlibDynamicAdaptor {
+  int (*compress2)(unsigned char *dbuff,unsigned long *p,
+    unsigned char *src, unsigned long sz, int level);
+  int (*uncompress)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz);
+};
+
+struct ZlibDynamicAdaptor *grabZlibDA(void);
+
 #endif

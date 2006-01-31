@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <complearn/complearn.h>
 
-#if GDBM_RDY
+#if HAVE_GDBM_H
 
 #include <complearn/gdbmhelper.h>
 #include <stdlib.h>

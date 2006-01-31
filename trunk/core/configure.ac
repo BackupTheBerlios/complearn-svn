@@ -1,9 +1,26 @@
-AC_INIT(complearn,0.8.21,cilibrar@cilibrar.com)
+AC_INIT(complearn,0.9.1,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
+
+AC_ARG_ENABLE(optimize,
+[  --enable-optimize  Enable performance optimizations
+],
+[case "${enableval}" in
+   yes) ua_optimize=true ;;
+   no)  ua_optimize=false ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-mpi) ;;
+esac], [ua_optimize=false])
+
+if test x$ua_optimize = xtrue ; then
+  CPPFLAGS="$CPPFLAGS -DNDEBUG"
+  CFLAGS="$CFLAGS -O3"
+  echo "Enabling performance optimizations."
+else
+  CFLAGS="$CFLAGS -g"
+fi
 
 # base dependencies
 echo "Checking BASE DEPENDENCIES"
@@ -160,6 +177,7 @@ echo "fgdbm_lib     is $fgdbm_lib"
 echo "fngd          is $fngd_possible"
 echo "fdl_lib       is $fdl_lib"
 echo "fsdlttf_lib   is $fsdlttf_lib"
+echo "ua_optimize   is $ua_optimize"
 echo "ua_mpi        is $ua_mpi"
 echo "host          is $host"
 echo "target        is $target"

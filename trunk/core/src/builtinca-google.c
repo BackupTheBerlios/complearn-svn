@@ -2,11 +2,9 @@
 
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
 #include <libcsoap/soap-client.h>
-#include <zlib.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "clalloc.h"
 
 static const double refFactor = 2.0;
 

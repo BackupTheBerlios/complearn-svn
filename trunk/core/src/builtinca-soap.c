@@ -10,11 +10,8 @@ struct SOAPCompInstance;
 
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
 #include <libcsoap/soap-client.h>
-#include <zlib.h>
 #include <stdlib.h>
 #include <string.h>
-#include "clalloc.h"
-
 
 static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
 static void sca_freecompfunc(struct CompAdaptor *ca);

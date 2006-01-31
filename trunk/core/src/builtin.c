@@ -38,8 +38,7 @@ struct CompAdaptor *compaLoadBlockSort(void)
   return builtin_blocksort();
 }
 
-
-#if ZLIB_RDY
+#if HAVE_ZLIB_H
 #include "builtinca-zlib.c"
 #include "builtinta-unzlib.c"
 #include "builtinta-ungz.c"
@@ -47,11 +46,7 @@ struct CompAdaptor *compaLoadBlockSort(void)
 
 struct CompAdaptor *compaLoadZlib(void)
 {
-#if ZLIB_RDY
   return builtin_ZLIB();
-#else
-  return NULL;
-#endif
 }
 
 struct CompAdaptor *compaLoadReal(const char *cmd)
@@ -63,10 +58,8 @@ struct CompAdaptor *compaLoadReal(const char *cmd)
 struct CompAdaptor *compaLoadBuiltin(const char *name)
 {
   struct CompAdaptor *result = NULL;
-#if ZLIB_RDY
   if (strcmp(name, "zlib") == 0)
     result = compaLoadZlib();
-#endif
   if (strncmp(name, "bz",2) == 0)
     result = compaLoadBzip2();
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H

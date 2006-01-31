@@ -1,5 +1,5 @@
 #include <complearn/complearn.h>
-#if ZLIB_RDY
+#if HAVE_ZLIB_H
 #include <zlib.h>
 #include "clalloc.h"
 #include <string.h>

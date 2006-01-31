@@ -635,7 +635,7 @@ void testTAStack()
     assert(strcmp(taa->sn(),"unbzip") == 0);
     pushTS(ts, taa);
   }
-#ifdef ZLIB_RDY
+#ifdef HAVE_ZLIB_H
 	tab = (struct TransformAdaptor *)builtin_UNGZ();
 	assert(strcmp(tab->sn(),"ungz") == 0);
   pushTS(ts, tab);
@@ -650,7 +650,7 @@ void testTAStack()
     assert(strcmp(tmp->sn(),"unbzip") == 0);
     }
   }
-#ifdef ZLIB_RDY
+#ifdef HAVE_ZLIB_H
 	cur = (struct TransformAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
 	assert(cur);
 	assert(strcmp(cur->sn(),"unzlib") == 0);
@@ -1328,7 +1328,7 @@ int main(int argc, char **argv)
   testBZipCA();
 //  testTransformBZ(); //FIXME: creating memory leak seemingly caused by bzip
 #endif
-#if ZLIB_RDY
+#if HAVE_ZLIB_H
   testZlibCA();
 //  testTransformZLIB(); //TODO: investigate memory leaks
 //  testTransformGZ();   //TODO: investigate memory leaks
