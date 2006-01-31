@@ -183,4 +183,4 @@ echo "host          is $host"
 echo "target        is $target"
 echo "build         is $build"
 
-AC_OUTPUT([Makefile src/Makefile])
+AC_OUTPUT([Doxyfile Makefile src/Makefile])
