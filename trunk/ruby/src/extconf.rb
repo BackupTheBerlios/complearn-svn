@@ -16,7 +16,7 @@ have_library('xml2', 'xmlXIncludeProcess') || find_library('xml2', 'xmlXIncludeP
 have_library('nanohttp-1.0', 'log_error') || find_library('nanohttp-1.0', 'log_error', '/lib' , '/usr/lib', '/usr/local/lib')
 have_library('csoap-1.0', 'soap_client_init_args') || find_library('csoap-1.0', 'soap_client_init_args', '/lib' , '/usr/lib', '/usr/local/lib')
 have_library('gdbm', 'gdbm_open') || find_library('gdbm', 'gdbm_open', '/lib' , '/usr/lib', '/usr/local/lib')
-have_library('complearn', 'doubleaSize') || find_library('complearn', 'doubleaSize', '.', './src', '../src', '..', '../../src', '../../..', ENV['HOME']+'/tmp/complearntest/lib')
+have_library('complearn', 'draSize') || find_library('complearn', 'draSize', '.', './src', '../src', '..', '../../src', '../../..', ENV['HOME']+'/tmp/complearntest/lib')
 have_header('complearn/complearn.h')
 
 create_makefile 'complearn4r'

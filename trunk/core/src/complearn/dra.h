@@ -24,15 +24,15 @@
 struct DRA;
 
 /** \brief Tag added to a "dump" of a DRA.
- *  \struct DAHdr
+ *  \struct DRAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
  *  functions draDump() and draDeepDump(), both of which
- *  are used to write a DRA to file. DAHdr contains information necessary
+ *  are used to write a DRA to file. DRAHdr contains information necessary
  *  for the conversion of a "dumped" DataBlock, using draLoad(),
  *  back into a DRA.
  */
-struct DAHdr;
+struct DRAHdr;
 
 /** \brief a basic key, value pair
  * \struct StringPair

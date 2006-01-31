@@ -39,7 +39,7 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
   volatile VALUE result = Qnil;
   struct TreeAdaptor *ta;
   struct CLNodeSet *clns;
-  struct DoubleA *pairs;
+  struct DRA *pairs;
   int i;
   clns = convertFromRubyArray(flips, 1024);
   Data_Get_Struct(self, struct TreeAdaptor, ta);
@@ -49,18 +49,18 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
 
   if (pairs) {
     result = rb_ary_new();
-    for (i = 0; i < doubleaSize(pairs); i += 1) {
+    for (i = 0; i < draSize(pairs); i += 1) {
 
       volatile VALUE gi = rb_ary_new();
 
-      union PCTypes p = doubleaGetValueAt(pairs, i);
+      union PCTypes p = draGetValueAt(pairs, i);
 
       rb_ary_push(gi, INT2NUM(p.ip.x));
       rb_ary_push(gi, INT2NUM(p.ip.y));
 
       rb_ary_push(result, gi);
     }
-  doubleaFree(pairs);
+  draFree(pairs);
   pairs = NULL;
   }
   clnodesetFree(clns);

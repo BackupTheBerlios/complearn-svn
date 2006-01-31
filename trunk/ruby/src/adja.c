@@ -73,12 +73,12 @@ static VALUE
 rbadja_spmmap(VALUE self)
 {
   struct AdjAdaptor *adja;
-  struct DoubleA *da = NULL;
+  struct DRA *da = NULL;
   volatile VALUE result;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   da = adjaSPMMap(adja);
   if (da) {
-    result = DoubleAOfIntsToRubyArray(da, 1);
+    result = DRAOfIntsToRubyArray(da, 1);
   } else {
     result = Qnil;
   }

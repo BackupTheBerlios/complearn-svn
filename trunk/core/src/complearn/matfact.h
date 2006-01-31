@@ -6,7 +6,7 @@
 /*! \file matfact.h */
 
 /** \brief Tag added to a "dump" of a gsl_matrix.
- *  \struct DAHdr
+ *  \struct DRAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
  *  function dumpDLDistMatrix(), which is used to serial a gsl_matrix so that

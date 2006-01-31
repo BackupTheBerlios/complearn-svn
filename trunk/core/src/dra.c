@@ -19,7 +19,7 @@ struct DRA {
 
 /* The basic file header */
 
-struct DAHdr {
+struct DRAHdr {
   int level;
   int size;
 };
@@ -314,7 +314,7 @@ struct DRA *draLoad(struct DataBlock *d, int fmustbe)
 {
   int i;
   struct TagHdr *h;
-  struct DAHdr *ddh;
+  struct DRAHdr *ddh;
   struct DRA *result;
   unsigned char *cur;
   if (d == NULL) {
@@ -322,7 +322,7 @@ struct DRA *draLoad(struct DataBlock *d, int fmustbe)
   }
   cur = datablockData(d) + sizeof(*h) + sizeof(*ddh);
   h = (struct TagHdr *) datablockData(d);
-  ddh = (struct DAHdr *) (datablockData(d) + sizeof(*h));
+  ddh = (struct DRAHdr *) (datablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_DOUBLEDOUBLER) {
     clogError("Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
         TAGNUM_DOUBLEDOUBLER, h->tagnum);
@@ -368,7 +368,7 @@ struct DataBlock *draDeepDump(const struct DRA *d, int level)
   struct DataBlock *result;
 
   struct TagHdr h;
-  struct DAHdr ddh;
+  struct DRAHdr ddh;
   if (d == NULL) {
     clogError("NULL ptr in draDeepDump()\n");
   }
