@@ -105,11 +105,9 @@ fi
 # located.
 
 aclocal && autoconf && \
-
 if test ! -f ./src/complearn/aclconfig.h.in ; then
   autoheader
 fi && \
-
 automake && \
 ./configure --prefix=$HOME/tmp/complearntest \
             --with-csoap=$SOAPREFIX \
