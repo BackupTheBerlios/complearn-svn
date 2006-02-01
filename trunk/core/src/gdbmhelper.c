@@ -13,7 +13,7 @@
 #include <gdbm.h>
 
 struct GDBMHelper {
-  GDBM_FILE db;
+//  GDBM_FILE db;
   char *filename;
 };
 
@@ -67,11 +67,11 @@ struct GDBMHelper *cldbopen(const char *userfilename)
     db = gdbm_open(gh->filename, 0, GDBM_WRCREAT, 0664, printfunc);
     gdbm_close(db);
   }
-  gh->db = gdbm_open(gh->filename, 0, GDBM_READER | GDBM_SYNC, 0664, printfunc);
-  if (gh->db)
-    return gh;
-  clFree(gh);
-  return NULL;
+//  gh->db = gdbm_open(gh->filename, 0, GDBM_READER | GDBM_SYNC, 0664, printfunc);
+//  if (gh->db)
+  return gh;
+//  clFree(gh);
+//  return NULL;
 }
 
 /* Allocates a new DataBlock and returns pointer to new DataBlock
@@ -82,12 +82,12 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
   datum result;
   result.dptr = NULL;
   assert(gh);
-  assert(gh->db);
-//  db = gdbm_open(gh->filename, 0, GDBM_READER, 0664, printfunc);
+//  assert(gh->db);
+  db = gdbm_open(gh->filename, 0, GDBM_READER, 0664, printfunc);
   assert(db);
-  result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));
+  result = gdbm_fetch(db, convertDataBlockToDatum(key));
 //  clogWarning("KEY<%s:%d>FETCH to %p:%d\n", datablockToString(key), datablockSize(key),  result.dptr, result.dsize);
-//  gdbm_close(db);
+  gdbm_close(db);
   if (result.dptr)
     return datablockNewFromBlock(result.dptr, result.dsize);
   return NULL;
@@ -97,7 +97,7 @@ void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
 {
   GDBM_FILE db;
   assert(gh);
-  assert(gh->db);
+  //assert(gh->db);
 // clogWarning("KEY<%s:%d>STORE value size <%d>\n", datablockToString(key), datablockSize(key), datablockSize(val));
   while(1) {
     db = gdbm_open(gh->filename, 0, GDBM_WRCREAT | GDBM_SYNC, 0664, printfunc);
@@ -115,9 +115,9 @@ void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
 int cldbclose(struct GDBMHelper *gh)
 {
   assert(gh);
-  assert(gh->db);
-  gdbm_close(gh->db);
-  gh->db = NULL;
+  //assert(gh->db);
+  //gdbm_close(gh->db);
+  //gh->db = NULL;
   clFree(gh->filename);
   clFreeandclear(gh);
   return 0;
