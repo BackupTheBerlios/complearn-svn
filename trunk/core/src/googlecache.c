@@ -141,7 +141,7 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
 int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
 {
   struct StringStack *normed;
-  const char *daystrcachekey;
+  char *daystrcachekey;
   struct DataBlock *dblastkey, *lastdbval;
   struct DataBlock *db, *oldlast;
   struct DataBlock *dbdaystrkey;

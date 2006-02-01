@@ -115,6 +115,7 @@ static void goog_clsetenv(struct CompAdaptor *ca)
   }
   ci->gkey = clStrdup(userKey);
   ci->m = calculateM(NULL, ci->gkey);
+  clogLog("M=%f\n", ci->m);
 }
 
 static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src)

@@ -16,7 +16,7 @@ t_emitfunc clogSetEmitFunction(t_emitfunc newfunc)
   return oldFunc;
 }
 
-void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...)
+void clogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const char *msg, const char *fmt, ...)
 {
   static char buf[16384], *ptr;
   va_list args;
@@ -29,6 +29,6 @@ void clogGenericPrint( const char *filename, int lineno, const char *msg, const 
   if (emitFunc)
     emitFunc(buf);
   else
-    fprintf(stderr, buf);
+    fprintf(outfp, buf);
 }
 
