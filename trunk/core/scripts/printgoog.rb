@@ -10,7 +10,8 @@ k.each { |i|
   sz = gdbm[i].size
   desc = gdbm[i].to_s
   if sz == 204
-    desc = "full sample"
+    ary = desc.unpack('DIZ32Z32Z128')
+    desc = ary.join(',')
   end
   puts "#{i}: #{gdbm[i].size} #{desc}"
 }
