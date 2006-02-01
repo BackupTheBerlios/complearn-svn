@@ -2,7 +2,7 @@
 #define __TEXTSDL_H
 
 #include <complearn/complearn.h>
-#if SDL_RDY
+#if HAVE_SDL_SDL_TTF_H
 
 #include <gsl/gsl_vector.h>
 #include <SDL/SDL.h>
@@ -21,7 +21,7 @@
 struct CLTexture {
   SDL_Surface *initial;
   SDL_Surface *intermediary;
-  int texName;
+  unsigned int texName;
   int w;
   int h;
 };

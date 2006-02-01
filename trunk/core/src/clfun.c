@@ -6,6 +6,8 @@
 
 /*! \file sdlgl.c */
 
+#include <complearn/complearn.h>
+#include <complearn/springball.h>
 #include <assert.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
@@ -24,8 +26,6 @@
 #include <GL/glut.h>
 #endif
 
-#include <complearn/complearn.h>
-#include <complearn/springball.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,14 +33,12 @@
 
 #define MIDIBONUS 0
 
-#define SDL_TTF 1
-
 #if !LINUX
 #ifndef __APPLE__
 #include <windows.h>
 #endif
 #else
-#if GTK_RDY
+#if HAVE_GTK_GTK_H
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -60,7 +58,7 @@
 #define HMIDIOUT int
 #endif
 
-#if SDL_TTF
+#if HAVE_SDL_SDL_TTF_H
 #include <complearn/textsdl.h>
 #endif
 
@@ -588,7 +586,7 @@ static void draw_screen(void)
     }
     glDisable(GL_COLOR_MATERIAL);
 //    glColor3f(1.0,1.0,1.0);
-  #if SDL_TTF
+  #if HAVE_SDL_SDL_TTF_H
     if (fShowLabels) {
       for (i = 0; i < treeaNodeCount(ta); i += 1) {
         gsl_vector *p = sbsBallPosition(sbs, i);
@@ -1079,7 +1077,7 @@ setRotParms(1, -1, -1, 1, 1);
   setup_opengl( width, height );
 
 
-#if SDL_TTF
+#if HAVE_SDL_SDL_TTF_H
   init_sdltext();
 #endif
 

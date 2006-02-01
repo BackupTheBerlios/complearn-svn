@@ -78,7 +78,7 @@ void init_sdltext()
 #ifdef __APPLE__
   strcpy(fontpath, "/Library/Fonts/Arial.ttf");
 #else
-  strcpy(fontpath, "/mnt/dosc/winnt/Fonts/arial.ttf");
+  strcpy(fontpath, "/home/alcruz/tmp/Arial.ttf");
 #endif
 #endif
   if(!(font = TTF_OpenFont(fontpath, 14))) {

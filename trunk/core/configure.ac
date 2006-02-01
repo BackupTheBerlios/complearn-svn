@@ -6,6 +6,18 @@ AC_CANONICAL_HOST
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
 
+case "${host}" in
+  *-*-linux*)
+  echo "Building for Linux"
+  CPPFLAGS="$CPPFLAGS -DLINUX -I/usr -I/usr/local"
+  LDFLAGS="-L/lib -L/usr/local/lib -L/usr/lib -L/usr/X11R6/lib"
+  AC_DEFINE(LINUX, 1, "Linux")
+;;
+  *)
+  echo "Building for target: ${host}"
+esac
+
+
 AC_ARG_ENABLE(optimize,
 [  --enable-optimize  Enable performance optimizations
 ],
@@ -162,14 +174,131 @@ fi
 # poc: if up_mpi, then CC = MPICC
 
 # 3d demo dependencies
-AC_CHECK_LIB(SDL_ttf,TTF_Init,
-    [echo "Enabling SDL_ttf support." ; GFXLIBS="$GFXLIBS -lSDL_ttf" ;
-      fsdlttf_lib=true],
-    [ fsdlttf_lib=false ]
-)
+AC_ARG_ENABLE(gfx,
+[  --enable-gfx      Build CompLearn 3D demo
+],
+[case "${enableval}" in
+   yes) ua_gfx=true ;;
+   no)  ua_gfx=false ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
+esac], [ua_gfx=false])
+
+if test x$ua_gfx = xtrue ; then
+
+  AC_ARG_WITH(gtk,
+    [  --with-gtk=PREFIX       where gtk+ (version 2.0) is installed],
+    [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"]
+  )
+
+  fgfx_possible=true;
+
+  OLDLIBS=$LIBS
+  LIBS=""
+
+  if test x$fgfx_possible = xtrue ; then
+    fsdl_lib=false
+    AC_CHECK_HEADERS([SDL/SDL.h], [
+      AC_CHECK_LIB(SDL,SDL_Init, [LIBS="-lSDL $LIBS"; fsdl_lib=true]
+       ) ])
+    if test x$fsdl_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+  if test x$fgfx_possible = xtrue ; then
+    fsdlttf_lib=false
+    AC_CHECK_HEADERS([SDL/SDL_ttf.h], [
+      AC_CHECK_LIB(SDL_ttf,TTF_Init, [LIBS="-lSDL_ttf $LIBS";
+                   fsdlttf_lib=true]) ])
+    if test x$fsdlttf_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fglu_lib=false
+    AC_CHECK_HEADERS([GL/glu.h], [
+      AC_CHECK_LIB(GLU,gluCylinder, [LIBS="-lGLU $LIBS";
+                   fglu_lib=true]) ])
+    AC_CHECK_HEADERS([OpenGL/glu.h], [
+      AC_CHECK_LIB(GLU,gluCylinder, [LIBS="-lGLU $LIBS";
+                   fglu_lib=true]) ])
+    if test x$fglu_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fglut_lib=false
+    AC_CHECK_HEADERS([GL/glut.h], [
+      AC_CHECK_LIB(glut,glutInit, [LIBS="-lglut $LIBS";
+                   fglut_lib=true]) ])
+    AC_CHECK_HEADERS([OpenGL/glut.h], [
+      AC_CHECK_LIB(glut,glutInit, [LIBS="-lglut $LIBS";
+                   fglut_lib=true]) ])
+    if test x$fglut_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fopengl_lib=false
+    AC_CHECK_HEADERS([GL/gl.h], [
+      AC_CHECK_LIB(GL,glColorTable, [LIBS="-lGL $LIBS";
+                   fopengl_lib=true]) ])
+    AC_CHECK_HEADERS([OpenGL/gl.h], [
+      AC_CHECK_LIB(GL,glColorTable, [LIBS="-lGL $LIBS";
+                   fopengl_lib=true]) ])
+    if test x$fopengl_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fgtk_lib=false
+    AC_CHECK_HEADERS([gtk/gtk.h], [
+      AC_CHECK_LIB(gtk-x11-2.0,gtk_main, [LIBS="$LIBS -lgtk-x11-2.0";
+                   fgtk_lib=true]) ])
+    if test x$fgtk_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fgdk_lib=false
+    AC_CHECK_HEADERS([gdk/gdk.h], [
+      AC_CHECK_LIB(gdk-x11-2.0,main, [LIBS="$LIBS -lgdk-x11-2.0";
+                   fgdk_lib=true]) ])
+    if test x$fgdk_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fpango_lib=false
+    AC_CHECK_HEADERS([pango/pango.h], [
+      AC_CHECK_LIB(pango-1.0,pango_item_new, [LIBS="$LIBS -lpango-1.0";
+                   fpango_lib=true]) ])
+    if test x$fpango_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  if test x$fgfx_possible = xtrue ; then
+    fatk_lib=false
+    AC_CHECK_HEADERS([atk/atk.h], [
+      AC_CHECK_LIB(atk-1.0,atk_action_do_action, [LIBS="$LIBS -latk-1.0";
+                   fatk_lib=true]) ])
+    if test x$fatk_lib = xfalse ; then
+      fgfx_possible=false;
+    fi
+  fi
+
+  GFXLIBS=$LIBS
+  LIBS=$OLDLIBS
+fi
 
 AM_CONDITIONAL(AMCMPI, [test x$ua_mpi = xtrue])
-AM_CONDITIONAL(AMCGFX, [test x$fsdlttf_lib = xtrue])
+AM_CONDITIONAL(AMCGFX, [test x$fgfx_possible = xtrue])
 
 AC_SUBST(NGDLIBS)
 AC_SUBST(GFXLIBS)
@@ -183,9 +312,19 @@ echo "fcsoap_lib    is $fcsoap_lib"
 echo "fgdbm_lib     is $fgdbm_lib"
 echo "fngd          is $fngd_possible"
 echo "fdl_lib       is $fdl_lib"
+echo "fsdl_lib      is $fsdl_lib"
 echo "fsdlttf_lib   is $fsdlttf_lib"
+echo "fopengl_lib   is $fopengl_lib"
+echo "fglu_lib      is $fglu_lib"
+echo "fglut_lib     is $fglut_lib"
+echo "fgtk_lib      is $fgtk_lib"
+echo "fgdk_lib      is $fgdk_lib"
+echo "fpango_lib    is $fpango_lib"
+echo "fatk_lib      is $fatk_lib"
+echo "fgfx          is $fgfx_possible"
 echo "ua_optimize   is $ua_optimize"
 echo "ua_mpi        is $ua_mpi"
+echo "ua_gfx        is $ua_gfx"
 echo "host          is $host"
 echo "target        is $target"
 echo "build         is $build"
