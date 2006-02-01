@@ -17,14 +17,13 @@ case "${host}" in
   echo "Building for target: ${host}"
 esac
 
-
 AC_ARG_ENABLE(optimize,
 [  --enable-optimize  Enable performance optimizations
 ],
 [case "${enableval}" in
    yes) ua_optimize=true ;;
    no)  ua_optimize=false ;;
-    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-mpi) ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-optimize) ;;
 esac], [ua_optimize=false])
 
 if test x$ua_optimize = xtrue ; then
@@ -38,7 +37,7 @@ fi
 # base dependencies
 echo "Checking BASE DEPENDENCIES"
 AC_ARG_WITH(gsl,
-  [  --with-gsl=PREFIX      where gsl is installed (required for NGD)],
+  [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
@@ -92,7 +91,7 @@ AC_ARG_WITH(nanohttp,
 )
 AC_ARG_WITH(csoap,
   [  --with-csoap=PREFIX     where csoap is installed (required for NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include" ;
+  [ CPPFLAGS="$CPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include/nanohttp-1.0 -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
 
@@ -174,14 +173,14 @@ fi
 # poc: if up_mpi, then CC = MPICC
 
 # 3d demo dependencies
-AC_ARG_ENABLE(gfx,
-[  --enable-gfx      Build CompLearn 3D demo
-],
-[case "${enableval}" in
-   yes) ua_gfx=true ;;
-   no)  ua_gfx=false ;;
-    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
-esac], [ua_gfx=false])
+#AC_ARG_ENABLE(gfx,
+#[  --enable-gfx      Build CompLearn 3D demo
+#],
+#[case "${enableval}" in
+#   yes) ua_gfx=true ;;
+#   no)  ua_gfx=false ;;
+#    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
+#esac], [ua_gfx=false])
 
 if test x$ua_gfx = xtrue ; then
 
@@ -312,19 +311,21 @@ echo "fcsoap_lib    is $fcsoap_lib"
 echo "fgdbm_lib     is $fgdbm_lib"
 echo "fngd          is $fngd_possible"
 echo "fdl_lib       is $fdl_lib"
-echo "fsdl_lib      is $fsdl_lib"
-echo "fsdlttf_lib   is $fsdlttf_lib"
-echo "fopengl_lib   is $fopengl_lib"
-echo "fglu_lib      is $fglu_lib"
-echo "fglut_lib     is $fglut_lib"
-echo "fgtk_lib      is $fgtk_lib"
-echo "fgdk_lib      is $fgdk_lib"
-echo "fpango_lib    is $fpango_lib"
-echo "fatk_lib      is $fatk_lib"
-echo "fgfx          is $fgfx_possible"
+if test x$ua_gfx = xtrue ; then
+  echo "fsdl_lib      is $fsdl_lib"
+  echo "fsdlttf_lib   is $fsdlttf_lib"
+  echo "fopengl_lib   is $fopengl_lib"
+  echo "fglu_lib      is $fglu_lib"
+  echo "fglut_lib     is $fglut_lib"
+  echo "fgtk_lib      is $fgtk_lib"
+  echo "fgdk_lib      is $fgdk_lib"
+  echo "fpango_lib    is $fpango_lib"
+  echo "fatk_lib      is $fatk_lib"
+  echo "fgfx          is $fgfx_possible"
+  echo "ua_gfx        is $ua_gfx"
+fi
 echo "ua_optimize   is $ua_optimize"
 echo "ua_mpi        is $ua_mpi"
-echo "ua_gfx        is $ua_gfx"
 echo "host          is $host"
 echo "target        is $target"
 echo "build         is $build"

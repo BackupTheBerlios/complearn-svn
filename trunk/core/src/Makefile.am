@@ -1,7 +1,6 @@
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo
 MPIPROGRAMS = partree
 GRAPHICSPROGRAMS = clfun
-#EXTRA_PROGRAMS = clfun
 
 GENCPPFLAGS = -I complearn
 CLLDFLAGS = libcomplearn.a
