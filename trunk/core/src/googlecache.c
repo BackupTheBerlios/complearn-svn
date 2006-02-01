@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <complearn/complearn.h>
 
-static const char *ROOTSYM = "0";
-
 struct GoogleCache {
   struct GDBMHelper *samp;
 };
@@ -66,7 +64,8 @@ void freeGC(struct GoogleCache *gc)
 static const char *makeCacheKey(const char *daystr, struct StringStack *terms)
 {
   static char ckbuf[3000];
-  sprintf(ckbuf, "ck-%s/%s", daystr, makeQueryString(terms));
+  memset(ckbuf, 0, sizeof(ckbuf));
+  sprintf(ckbuf, "ck-%s/%s", daystr ? daystr : "last", makeQueryString(terms));
   return ckbuf;
 }
 
@@ -81,7 +80,8 @@ struct DataBlock *makeCacheVal(double pg, struct DataBlock *lastdbval, const cha
   d.pagecount = pg;
   d.when = cldatetimeToInt(dt);
   strcpy(d.daystring, cldatetimeToDayString(dt));
-  memcpy(d.cknext, datablockData(lastdbval), datablockSize(lastdbval));
+  if (lastdbval && datablockSize(lastdbval) > 0)
+    memcpy(d.cknext, datablockData(lastdbval), datablockSize(lastdbval));
   strcpy(d.qorig, qorig);
 
   return datablockNewFromBlock(&d, sizeof(d));
@@ -141,62 +141,56 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
 int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
 {
   struct StringStack *normed;
-  const char *ckey;
-  struct DataBlock *dbroot;
-  struct DataBlock *dblastkey;
-  struct DataBlock *db;
-  struct DataBlock *dbckey;
-  const char *odaystr;
+  const char *daystrcachekey;
+  struct DataBlock *dblastkey, *lastdbval;
+  struct DataBlock *db, *oldlast;
+  struct DataBlock *dbdaystrkey;
 
-  odaystr = cldatetimePreviousDayString(daystr);
-
-  dbroot = stringToDataBlockPtr(ROOTSYM); /* FSA01 */
   normed = stringstackClone(terms);                    /* FSA02 */
   normalizeSearchTerms(normed);
+  dblastkey = stringToDataBlockPtr(makeCacheKey(NULL, normed));
 
-  ckey = makeCacheKey(daystr, normed);
+  daystrcachekey = clStrdup(makeCacheKey(daystr, normed));
 
-  dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
-  db = cldbfetch(gc->samp, dbckey);
+  dbdaystrkey = stringToDataBlockPtr(daystrcachekey);      /* FSA03 */
+  db = cldbfetch(gc->samp, dbdaystrkey);
+
+  lastdbval = cldbfetch(gc->samp, dblastkey);  /* may be NULL */
+
   if (!db) {
-    datablockFreePtr(dbckey);                /* FSF03:1/2 */
-    ckey = makeCacheKey(odaystr, normed);
-    dbckey = stringToDataBlockPtr(ckey);      /* FSA03 */
-    db = cldbfetch(gc->samp, dbckey);
+    if (lastdbval) {
+      db = cldbfetch(gc->samp, lastdbval);
+//      datablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
+    }
   }
   if (db) {
     assert(datablockSize(db) == sizeof(struct GCSample));
     *val = convertCacheVal(db);
     stringstackFree(normed);                       /* FSF02:1/2 */
     datablockFreePtr(db);
-    datablockFreePtr(dbroot);                /* FSF01:1/2 */
-    datablockFreePtr(dbckey);                /* FSF03:1/2 */
+    datablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
+    clFree(daystrcachekey);
     return 1;
   } else {
     double pgc;
-    struct DataBlock *newentry, *lastdbval;
+    struct DataBlock *newentry;
     pgc = getPageCount(terms, gkey);
     if (pgc < 0) {
-      printf("Error contacting Google, aborting...\n");
-      exit(1);
+      clogError("Error contacting Google, aborting...\n");
     }
     *val = pgc;
-    dblastkey = stringToDataBlockPtr(makeCacheKey(ROOTSYM, normed));
-    lastdbval = cldbfetch(gc->samp, dblastkey);
-    if (lastdbval == NULL)
-      lastdbval = dbroot;
-    newentry = makeCacheVal(pgc, lastdbval, makeCacheKey(ROOTSYM, terms));
-    cldbstore(gc->samp, dbckey, newentry);
-    cldbstore(gc->samp, dblastkey, dbckey);
+    newentry = makeCacheVal(pgc, lastdbval, makeQueryString(terms));
+    cldbstore(gc->samp, dbdaystrkey, newentry);
+    cldbstore(gc->samp, dblastkey, dbdaystrkey);
     stringstackFree(normed);                          /* FSF02:2/2 */
     datablockFreePtr(dblastkey);
     datablockFreePtr(newentry);
-    datablockFreePtr(dbroot);                /* FSF01:2/2 */
-    datablockFreePtr(dbckey);                /* FSF03:2/2 */
-    if (lastdbval != dbroot) {
+    datablockFreePtr(dbdaystrkey);                /* FSF03:2/2 */
+    if (lastdbval) {
       datablockFreePtr(lastdbval);
       lastdbval = NULL;
     }
+    clFree(daystrcachekey);
     return 0;
   }
 }

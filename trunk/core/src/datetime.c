@@ -7,7 +7,6 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
-#include "clalloc.h"
 #include <complearn/complearn.h>
 
 
@@ -41,9 +40,9 @@ struct CLDateTime {
 struct CLDateTime *cldatetimeNow(void)
 {
   struct CLDateTime *cldt = clCalloc(sizeof(struct CLDateTime), 1);
-#if HAVE_GETTIMEOFDAY
+//#if HAVE_GETTIMEOFDAY
   gettimeofday(&cldt->tv, &cldt->tz);
-#endif
+//#endif
   return cldt;
 }
 /** \brief Frees the memory allocated for a CLDateTime structure

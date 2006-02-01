@@ -14,6 +14,7 @@
 
 struct GDBMHelper {
   GDBM_FILE db;
+  char *filename;
 };
 
 const char *getHomeDir(void)
@@ -59,14 +60,14 @@ struct GDBMHelper *cldbopen(const char *userfilename)
   char *filename;
   struct GDBMHelper *gh;
   struct stat buf;
-  filename = makefilename(userfilename);
   gh = clCalloc(sizeof(struct GDBMHelper), 1);
-  if(stat(filename, &buf)) {
+  gh->filename = clStrdup(makefilename(userfilename));
+  if(stat(gh->filename, &buf)) {
     GDBM_FILE db;
-    db = gdbm_open(filename, 0, GDBM_WRCREAT, 0664, printfunc);
+    db = gdbm_open(gh->filename, 0, GDBM_WRCREAT, 0664, printfunc);
     gdbm_close(db);
   }
-  gh->db = gdbm_open(filename, 0, GDBM_READER, 0664, printfunc);
+  gh->db = gdbm_open(gh->filename, 0, GDBM_READER | GDBM_SYNC, 0664, printfunc);
   if (gh->db)
     return gh;
   clFree(gh);
@@ -77,11 +78,16 @@ struct GDBMHelper *cldbopen(const char *userfilename)
  */
 struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
+  GDBM_FILE db;
   datum result;
   result.dptr = NULL;
   assert(gh);
   assert(gh->db);
+//  db = gdbm_open(gh->filename, 0, GDBM_READER, 0664, printfunc);
+  assert(db);
   result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));
+//  clogWarning("KEY<%s:%d>FETCH to %p:%d\n", datablockToString(key), datablockSize(key),  result.dptr, result.dsize);
+//  gdbm_close(db);
   if (result.dptr)
     return datablockNewFromBlock(result.dptr, result.dsize);
   return NULL;
@@ -90,12 +96,11 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   GDBM_FILE db;
-  datum gkey;
   assert(gh);
   assert(gh->db);
-  gkey.dptr = (char *) datablockData(key);
+// clogWarning("KEY<%s:%d>STORE value size <%d>\n", datablockToString(key), datablockSize(key), datablockSize(val));
   while(1) {
-    db = gdbm_open(makefilename("gsamp"), 0, GDBM_WRCREAT, 0664, printfunc);
+    db = gdbm_open(gh->filename, 0, GDBM_WRCREAT | GDBM_SYNC, 0664, printfunc);
     if (db)
       break;
     clSleepMillis(100);
@@ -113,6 +118,7 @@ int cldbclose(struct GDBMHelper *gh)
   assert(gh->db);
   gdbm_close(gh->db);
   gh->db = NULL;
+  clFree(gh->filename);
   clFreeandclear(gh);
   return 0;
 }

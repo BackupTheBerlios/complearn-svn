@@ -103,22 +103,18 @@ double calculateMbase(const char *daystr, const char *gkey)
 static void goog_clsetenv(struct CompAdaptor *ca)
 {
 	struct GoogleCompInstance *ci = (struct GoogleCompInstance *) ca->cptr;
-  struct CLDateTime *dt;
   char *args[1] = { NULL };
   char *userKey;
   struct EnvMap *em = loadDefaultEnvironment()->em;
   herror_t err;
   err = soap_client_init_args(0, args);
-  dt = cldatetimeNow();
-  ci->daystr = clStrdup(cldatetimeToDayString(dt));
   userKey = envmapValueForKey(em, "GoogleKey");
   envmapSetKeyPrivate(em, "GoogleKey");
   if (userKey == NULL) {
     clogError("Cannot use google adaptor without %s property set","GoogleKey");
   }
   ci->gkey = clStrdup(userKey);
-  ci->m = calculateM(ci->daystr, ci->gkey);
-  cldatetimeFree(dt);
+  ci->m = calculateM(NULL, ci->gkey);
 }
 
 static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
@@ -151,7 +147,6 @@ static void goog_freecompfunc(struct CompAdaptor *ca)
 {
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   clFreeandclear(sci->gkey);
-  clFreeandclear(sci->daystr);
   clFreeandclear(sci);
 	clFreeandclear(ca);
 }

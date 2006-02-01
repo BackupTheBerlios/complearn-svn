@@ -24,7 +24,7 @@ void clogGenericPrint( const char *filename, int lineno, const char *msg, const 
   va_start( args, fmt );
   ptr += sprintf( ptr, "%s:%d  %s\n", filename, lineno, msg);
   ptr += vsprintf( ptr, fmt, args );
-  sprintf( ptr, "\n" );
+//  sprintf( ptr, "\n" );
   va_end( args );
   if (emitFunc)
     emitFunc(buf);

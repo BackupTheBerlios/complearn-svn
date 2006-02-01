@@ -120,12 +120,8 @@ double getPageCount(struct StringStack *terms, const char *gkey)
     word = stringstackReadAt(terms, 0);
     if (word[1] == '\0' && (word[0] == 'm' || word[0] == 'M')) {
       const char *daystr;
-      struct CLDateTime *cldt;
       double res;
-      cldt = cldatetimeNow();
-      daystr = cldatetimeToDayString(cldt);
-      res = calculateMbase(daystr, gkey);
-      cldatetimeFree(cldt);
+      res = calculateMbase(NULL, gkey);
       return 1.0/res;
     }
   }
