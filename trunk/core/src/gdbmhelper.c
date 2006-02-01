@@ -78,6 +78,7 @@ struct GDBMHelper *cldbopen(const char *userfilename)
 struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   datum result;
+  result.dptr = NULL;
   assert(gh);
   assert(gh->db);
   result = gdbm_fetch(gh->db, convertDataBlockToDatum(key));

@@ -3,6 +3,15 @@
 
 /*! \file clog.h */
 
+/** \brief Unique and authentic type of wooden shoe
+ * \struct Clog
+ *
+ * This structure maintain CompLearn log information.  It may direct
+ * output to a file, to stderr, or through a user-defined error
+ * function depending on how it is used.
+ */
+struct Clog;
+
 /* prints with msg */
 void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...);
 t_emitfunc clogSetEmitFunction(t_emitfunc newfunc);
