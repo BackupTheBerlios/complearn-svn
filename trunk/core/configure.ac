@@ -9,7 +9,7 @@ AM_CONFIG_HEADER(src/complearn/clconfig.h)
 case "${host}" in
   *-*-linux*)
   echo "Building for Linux"
-  CPPFLAGS="$CPPFLAGS -DLINUX -I/usr -I/usr/local"
+  CPPFLAGS="$CPPFLAGS -DLINUX -I/usr/include -I/usr/local/include -I/usr/include/cairo"
   LDFLAGS="-L/lib -L/usr/local/lib -L/usr/lib -L/usr/X11R6/lib"
   AC_DEFINE(LINUX, 1, "Linux")
 ;;
