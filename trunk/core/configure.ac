@@ -1,4 +1,4 @@
-AC_INIT(complearn,0.9.1,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,0.9.1,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
