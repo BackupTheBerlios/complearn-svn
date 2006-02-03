@@ -6,11 +6,37 @@ AC_CANONICAL_HOST
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
 
+AC_ARG_ENABLE(default-paths,
+[  --disable-default-paths  Disable default /usr and /usr/local search paths
+],
+[case "${enableval}" in
+   yes) ua_defpaths=true ;;
+   no)  ua_defpaths=false ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-optimize) ;;
+esac], [ua_defpaths=true])
+
+if test x$ua_defpaths = xtrue ; then
+  CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/include"
+  LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/lib -L/lib -L/usr/X11R6/lib"
+else
+  echo -n
+fi
+
+AC_CHECK_PROGS(PKGCONFIG, pkg-config)
+if ! test "x$PKGCONFIG" = "x" ; then
+for i in libxml-2.0 pango cairo glib-2.0 gdk-pixbuf-xlib-2.0 libcsoap gsl gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0  ; do
+  if $PKGCONFIG --exists $i ; then
+    CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
+    LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
+  else
+    echo -n
+  fi
+done
+fi
+
 case "${host}" in
   *-*-linux*)
   echo "Building for Linux"
-  CPPFLAGS="$CPPFLAGS -DLINUX -I/usr/include -I/usr/local/include -I/usr/include/cairo"
-  LDFLAGS="-L/lib -L/usr/local/lib -L/usr/lib -L/usr/X11R6/lib"
   AC_DEFINE(LINUX, 1, "Linux")
 ;;
   *)
