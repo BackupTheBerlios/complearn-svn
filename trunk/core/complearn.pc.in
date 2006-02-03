@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/complearn-1.0/include
+
+Name: complearn
+Description: CompLearn Machine Learning Library
+Requires: gsl
+Version: @VERSION@
+Libs: -L${exec_prefix}/lib -lcomplearn @LIBS@
+Cflags: -I${includedir} @CPPFLAGS@

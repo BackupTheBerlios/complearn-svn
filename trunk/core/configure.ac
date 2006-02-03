@@ -356,4 +356,4 @@ echo "host          is $host"
 echo "target        is $target"
 echo "build         is $build"
 
-AC_OUTPUT([Doxyfile Makefile src/Makefile])
+AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile])

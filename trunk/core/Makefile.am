@@ -1,6 +1,9 @@
 SUBDIRS = src
 am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = complearn.pc
+
 EXTRA_DIST = \
 $(src) \
 $(doc) \
@@ -13,6 +16,7 @@ doc/man/maketree.1 \
 doc/man/ncd.1
 
 src = \
+complearnpc.in \
 src/complearn/maketreeapp.h \
 src/complearn/ncdapp.h
 
