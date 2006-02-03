@@ -19,3 +19,7 @@ stamp-h.in
 maketree
 reordertree
 improvetree
+partree
+clfun
+treefile.dot
+distmatrix.clb
