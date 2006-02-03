@@ -6,7 +6,7 @@ static VALUE rbth_tree(VALUE tree)
   struct TreeHolder *th;
   struct TreeAdaptor *ta;
   Data_Get_Struct(tree, struct TreeHolder, th);
-  ta = treehTreeAdaptor(th);
+  ta = clTreehTreeAdaptor(th);
   if (ta)
     return secretrbtra_new(ta);
   else
@@ -17,14 +17,14 @@ static VALUE rbth_score(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return rb_float_new(treehScore(th));
+  return rb_float_new(clTreehScore(th));
 }
 
 static VALUE rbth_scramble(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  treehScramble(th);
+  clTreehScramble(th);
   return Qnil;
 }
 
@@ -32,35 +32,35 @@ static VALUE rbth_improve(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return treehImprove(th) ? Qtrue : Qfalse;
+  return clTreehImprove(th) ? Qtrue : Qfalse;
 }
 
 static VALUE rbth_failcount(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return INT2FIX(treehFailCount(th));
+  return INT2FIX(clTreehFailCount(th));
 }
 
 static VALUE rbth_treecount(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return INT2FIX(treehTreeCount(th));
+  return INT2FIX(clTreehTreeCount(th));
 }
 
 static VALUE rbth_clone(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return secretrbth_new(treehClone(th));
+  return secretrbth_new(clTreehClone(th));
 }
 
 static VALUE rbth_distmatrix(VALUE self)
 {
   struct TreeHolder *th;
   Data_Get_Struct(self, struct TreeHolder, th);
-  return convertgslmatrixToRubyMatrix(treehDistMatrix(th));
+  return convertgslmatrixToRubyMatrix(clTreehDistMatrix(th));
 }
 
 static VALUE rbth_init(VALUE self)
@@ -70,7 +70,7 @@ static VALUE rbth_init(VALUE self)
 VALUE secretrbth_new(struct TreeHolder *tomakeruby)
 {
   volatile VALUE tdata;
-  tdata= Data_Wrap_Struct(cTreeHolder, 0, treehFree, tomakeruby);
+  tdata= Data_Wrap_Struct(cTreeHolder, 0, clTreehFree, tomakeruby);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -90,11 +90,11 @@ VALUE rbth_new(VALUE cl, VALUE rbm, VALUE isrooted)
   assert(rb_class_of(rbm) == cMatrix);
 //  gslm = convertRubyMatrixTogsl_matrix(rbm);
   if (isrooted == Qnil || isrooted == Qfalse)
-    ta = treeaLoadUnrooted(gslm->size1);
+    ta = clTreeaLoadUnrooted(gslm->size1);
   else
-    ta = treeaLoadRootedBinary(gslm->size1);
-  th = treehNew(gslm,ta);
-  treehScramble(th);
+    ta = clTreeaLoadRootedBinary(gslm->size1);
+  th = clTreehNew(gslm,ta);
+  clTreehScramble(th);
   return secretrbth_new(th);
 }
 

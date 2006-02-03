@@ -13,8 +13,8 @@ VALUE rbincrdm_new(int argc, VALUE *argv, VALUE cl)
   if (argc > 0) {
     Data_Get_Struct(argv[0], struct CompAdaptor, incrdmca);
   }
-  idm = incrdmNew(incrdmca);
-  tdata = Data_Wrap_Struct(cl, 0, incrdmFree, idm);
+  idm = clIncrdmNew(incrdmca);
+  tdata = Data_Wrap_Struct(cl, 0, clIncrdmFree, idm);
   rb_obj_call_init(tdata, 0, 0);
   if (argc > 0)
     rb_ivar_set(tdata, rb_intern("ca"), argv[0]);
@@ -26,7 +26,7 @@ static VALUE rbincrdm_addstring(VALUE self, VALUE rstr)
   struct IncrementalDistMatrix *idm;
   struct DataBlock *db = convertRubyStringToDataBlock(rstr);
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  incrdmAddDataBlock(idm,db);
+  clIncrdmAddDataBlock(idm,db);
   return Qnil;
 }
 
@@ -34,7 +34,7 @@ static VALUE rbincrdm_distmatrix(VALUE self)
 {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  return convertgslmatrixToRubyMatrix(incrdmDistMatrix(idm));
+  return convertgslmatrixToRubyMatrix(clIncrdmDistMatrix(idm));
 }
 
 static VALUE ksDMK;
@@ -68,7 +68,7 @@ static VALUE rbincrdm_size(VALUE self)
 {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
-  return INT2FIX(incrdmSize(idm));
+  return INT2FIX(clIncrdmSize(idm));
 }
 
 static VALUE ksDMK;
@@ -93,7 +93,7 @@ static VALUE rbincrdm_dump(VALUE self, VALUE depth) {
   rb_hash_aset(obj, ksDBK, dba);
   rb_hash_aset(obj, ksSSK, ssa);
   rb_hash_aset(obj, ksCAK, rb_ivar_get(self, rb_intern("ca")));
-  return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
+  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
 static VALUE rbincrdm_load(VALUE kl, VALUE str)
@@ -106,7 +106,7 @@ static VALUE rbincrdm_load(VALUE kl, VALUE str)
   VALUE rca, dba, ssa, tdata, dm;
   struct CompAdaptor *ca = NULL;
 
-  obj = rb_funcall(cMarshal, rb_intern("load"), 1, str);
+  obj = rb_clFuncall(cMarshal, rb_intern("load"), 1, str);
   rca = rb_hash_aref(obj, ksCAK);
   dba = rb_hash_aref(obj, ksDBK);
   ssa = rb_hash_aref(obj, ksSSK);
@@ -115,7 +115,7 @@ static VALUE rbincrdm_load(VALUE kl, VALUE str)
     Data_Get_Struct(rca, struct CompAdaptor, ca);
   }
 
-  idm = incrdmNew(ca);
+  idm = clIncrdmNew(ca);
   idm->dbcount = RARRAY(dba)->len;
 
   if (idm->dbcount) {
@@ -137,7 +137,7 @@ static VALUE rbincrdm_load(VALUE kl, VALUE str)
     gsl_matrix_free(gslm);
   }
 
-  tdata = Data_Wrap_Struct(cIncrementalDistMatrix, 0, incrdmFree, idm);
+  tdata = Data_Wrap_Struct(cIncrementalDistMatrix, 0, clIncrdmFree, idm);
   rb_ivar_set(tdata, rb_intern("ca"), rca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;

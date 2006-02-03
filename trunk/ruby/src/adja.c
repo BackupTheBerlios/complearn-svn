@@ -19,7 +19,7 @@ rbadja_path(VALUE self, VALUE vsrc, VALUE vdest)
   src = NUM2INT(vsrc);
   dest = NUM2INT(vdest);
   plen = MAXPATHLEN;
-  presult = pathFinder(adja, src, dest, pbuf, &plen);
+  presult = clPathFinder(adja, src, dest, pbuf, &plen);
   if (presult == CL_OK) {
     int i;
     result = rb_ary_new();
@@ -34,7 +34,7 @@ rbadja_size(VALUE self)
 {
   struct AdjAdaptor *adja;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  return INT2FIX(adjaSize(adja));
+  return INT2FIX(clAdjaSize(adja));
 }
 
 static VALUE
@@ -45,7 +45,7 @@ rbadja_getconstate(VALUE self, VALUE vi, VALUE vj)
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   i = NUM2INT(vi);
   j = NUM2INT(vj);
-  return adjaGetConState(adja, i, j)?Qtrue:Qnil;
+  return clAdjaGetConState(adja, i, j)?Qtrue:Qnil;
 }
 
 static VALUE
@@ -56,7 +56,7 @@ rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   i = NUM2INT(vi);
   j = NUM2INT(vj);
-  adjaSetConState(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
+  clAdjaSetConState(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
 }
 
 static VALUE
@@ -76,13 +76,13 @@ rbadja_spmmap(VALUE self)
   struct DRA *da = NULL;
   volatile VALUE result;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  da = adjaSPMMap(adja);
+  da = clAdjaSPMMap(adja);
   if (da) {
     result = DRAOfIntsToRubyArray(da, 1);
   } else {
     result = Qnil;
   }
-//  freeSPMMap(da);
+//  clFreeSPMMap(da);
   return result;
 }
 
@@ -95,13 +95,13 @@ rbadja_getneighbors(VALUE self, VALUE vwhich)
   int nc, i;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   which = NUM2INT(vwhich);
-  nc = adjaNeighborCount(adja, which);
+  nc = clAdjaNeighborCount(adja, which);
 
   if (nc > 0) {
     int bufsize = sizeof(int) * nc;
     int *nbuf = malloc(bufsize);
     int retval;
-    retval = adjaNeighbors(adja,which,nbuf, &bufsize);
+    retval = clAdjaNeighbors(adja,which,nbuf, &bufsize);
     assert(retval == CL_OK);
     for (i = 0; i < nc; i += 1)
       rb_ary_push(result, INT2FIX(nbuf[i]));
@@ -118,7 +118,7 @@ rbadja_init(VALUE self)
 VALUE
 rbadja_new(VALUE cl, VALUE sz)
 {
-  struct AdjAdaptor *adja = adjaLoadAdjList(NUM2INT(sz));
+  struct AdjAdaptor *adja = clAdjaLoadAdjList(NUM2INT(sz));
   return rbadja_secretnew(cl, adja);
 }
 
@@ -127,14 +127,14 @@ rbadja_clone(VALUE self)
 {
   struct AdjAdaptor *adja;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  adja = adjaClone(adja);
+  adja = clAdjaClone(adja);
   return rbadja_secretnew(cAdjAdaptor, adja);
 }
 
 static VALUE
 rbadja_dump(VALUE self, VALUE depth) {
   VALUE obj = rbadja_tomatrix(self);
-  return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
+  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
 static VALUE
@@ -143,14 +143,14 @@ rbadja_load(VALUE kl, VALUE mat)
   int i, j;
   VALUE self;
   struct AdjAdaptor *adja;
-  mat = rb_funcall(cMarshal, rb_intern("load"), 1, mat);
+  mat = rb_clFuncall(cMarshal, rb_intern("load"), 1, mat);
   gsl_matrix *gslm = convertRubyMatrixTogsl_matrix(mat);
-  adja = adjaLoadAdjList(gslm->size1);
+  adja = clAdjaLoadAdjList(gslm->size1);
   self = rbadja_secretnew(cAdjAdaptor, adja);
   //adja = rbadja_new((VALUE) cAdjAdaptor, (VALUE) INT2FIX(gslm->size1));
   for (i = 0; i < gslm->size1; i += 1)
     for (j = i + 1; j < gslm->size2; j += 1)
-        adjaSetConState(adja, i, j, (gsl_matrix_get(gslm, i, j) == 0) ? 0:1);
+        clAdjaSetConState(adja, i, j, (gsl_matrix_get(gslm, i, j) == 0) ? 0:1);
   gsl_matrix_free(gslm);
   return self;
 }
@@ -162,7 +162,7 @@ rbadja_tomatrix(VALUE self)
   gsl_matrix *mat;
   VALUE result;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
-  mat = adjaToGSLMatrix(adja);
+  mat = clAdjaToGSLMatrix(adja);
   result = convertgslmatrixToRubyMatrix(mat);
   gsl_matrix_free(mat);
   return result;
@@ -192,7 +192,7 @@ VALUE
 rbadja_secretnew(VALUE cl, struct AdjAdaptor *adja)
 {
   assert(adja);
-  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, adjaFree, adja);
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clAdjaFree, adja);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, adja);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;

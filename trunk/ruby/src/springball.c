@@ -6,7 +6,7 @@ static VALUE rbsbs_retarget(VALUE self, VALUE tree)
   struct TreeAdaptor *ta;
   Data_Get_Struct(tree, struct TreeAdaptor, ta);
   Data_Get_Struct(self, struct SpringBallSystem, sbs);
-  sbsChangeTargetTree(sbs, ta);
+  clSbsChangeTargetTree(sbs, ta);
   return Qnil;
 }
 
@@ -15,7 +15,7 @@ static VALUE rbsbs_springsmooth(VALUE self, VALUE ri, VALUE rj)
   struct SpringBallSystem *sbs;
   int i= NUM2INT(ri), j = NUM2INT(rj);
   Data_Get_Struct(self, struct SpringBallSystem, sbs);
-  return rb_float_new(sbsGetSpringSmooth(sbs, i, j));
+  return rb_float_new(clSbsGetSpringSmooth(sbs, i, j));
 }
 
 static VALUE rbsbs_pos(VALUE self, VALUE which)
@@ -23,14 +23,14 @@ static VALUE rbsbs_pos(VALUE self, VALUE which)
   struct SpringBallSystem *sbs;
   int ind = NUM2INT(which);
   Data_Get_Struct(self, struct SpringBallSystem, sbs);
-  return convertgslvectorToRubyVector(sbsBallPosition(sbs, ind));
+  return convertgslvectorToRubyVector(clSbsBallPosition(sbs, ind));
 }
 
 static VALUE rbsbs_evolve(VALUE self)
 {
   struct SpringBallSystem *sbs;
   Data_Get_Struct(self, struct SpringBallSystem, sbs);
-  sbsEvolveForward(sbs);
+  clSbsEvolveForward(sbs);
   return Qnil;
 }
 
@@ -38,7 +38,7 @@ static VALUE rbsbs_size(VALUE self)
 {
   struct SpringBallSystem *sbs;
   Data_Get_Struct(self, struct SpringBallSystem, sbs);
-  return INT2FIX(sbsNodeCount(sbs));
+  return INT2FIX(clSbsNodeCount(sbs));
 }
 
 static VALUE rbsbs_init(VALUE self)
@@ -51,8 +51,8 @@ VALUE rbsbs_new(VALUE cl, VALUE tree, VALUE isRooted)
   struct TreeAdaptor *ta;
   volatile VALUE tdata;
   Data_Get_Struct(tree, struct TreeAdaptor, ta);
-  sbs = sbsNew(ta);
-  sbsSetModelSpeed(sbs, 5);
+  sbs = clSbsNew(ta);
+  clSbsSetModelSpeed(sbs, 5);
   tdata = Data_Wrap_Struct(cl, NULL, NULL, sbs);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
@@ -70,10 +70,10 @@ VALUE rbsbs_new(VALUE cl, VALUE tree, VALUE isRooted)
   }
   if (isRooted == Qnil || isRooted == Qfalse)
     fIsRooted = 0;
-  tm = treemasterNew(gdm, fIsRooted);
-  tdata = Data_Wrap_Struct(cl, markTreeMaster, treemasterFree, tm);
+  tm = clTreemasterNew(gdm, fIsRooted);
+  tdata = Data_Wrap_Struct(cl, markTreeMaster, clTreemasterFree, tm);
 //  tdata = Data_Wrap_Struct(cl, 0, 0, tm);
-  treemasterSetUserData(tm, (void *) tdata);
+  clTreemasterSetUserData(tm, (void *) tdata);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -87,7 +87,7 @@ void doInitSpringBallSystem(void) {
   rb_define_method(cSpringBallSystem, "evolve", rbsbs_evolve, 0);
   rb_define_method(cSpringBallSystem, "[]", rbsbs_pos, 1);
   rb_define_method(cSpringBallSystem, "pos", rbsbs_pos, 1);
-  rb_define_method(cSpringBallSystem, "sbsBallPosition", rbsbs_pos, 1);
+  rb_define_method(cSpringBallSystem, "clSbsBallPosition", rbsbs_pos, 1);
   rb_define_method(cSpringBallSystem, "retarget", rbsbs_retarget, 1);
   rb_define_method(cSpringBallSystem, "springSmooth", rbsbs_springsmooth, 2);
 }

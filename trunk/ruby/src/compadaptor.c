@@ -9,48 +9,48 @@ static VALUE rbcompa_params(VALUE self) {
   VALUE hash;
   Data_Get_Struct(self, struct CompAdaptor, ca);
   assert(ca);
-  pl = compaParameters(ca);
+  pl = clCompaParameters(ca);
   assert(pl);
 
   hash = rb_hash_new();
-  rb_hash_aset(hash, rb_str_new2("compressor"),rb_str_new2(compaShortName(ca)));
+  rb_hash_aset(hash, rb_str_new2("compressor"),rb_str_new2(clCompaShortName(ca)));
   for (i = 0; i < pl->size ; i += 1) {
     key = pl->fields[i]->key; val = pl->fields[i]->value;
     rb_hash_aset(hash, rb_str_new2(key), rb_str_new2(val));;
   }
   assert(pl);
-  paramlistFree(pl);
+  clParamlistFree(pl);
   return hash;
 }
 
 static VALUE rbcompa_dump(VALUE self) {
-  return rb_funcall(cMarshal, rb_intern("dump"), 1, rbcompa_params(self));
+  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, rbcompa_params(self));
 }
 
 static VALUE rbcompa_load(VALUE cl, VALUE rdata)
 {
   struct CompAdaptor *ca;
   int i;
-  struct EnvMap *em = envmapNew();
+  struct EnvMap *em = clEnvmapNew();
   char *key;
   char *val;
   volatile VALUE tdata;
   VALUE cname, rkeys, rsize;
 
-  rdata = rb_funcall(cMarshal, rb_intern("load"), 1, rdata);
-  rkeys = rb_funcall(rdata, rb_intern("keys"), 0);
-  rsize = rb_funcall(rdata, rb_intern("size"), 0);
+  rdata = rb_clFuncall(cMarshal, rb_intern("load"), 1, rdata);
+  rkeys = rb_clFuncall(rdata, rb_intern("keys"), 0);
+  rsize = rb_clFuncall(rdata, rb_intern("size"), 0);
   cname = rb_hash_aref(rdata, rb_str_new2("compressor"));
   for ( i = 0; i < NUM2INT(rsize) ; i += 1) {
     key = STR2CSTR(rb_ary_entry(rkeys, i));
     val = STR2CSTR(rb_hash_aref(rdata, rb_ary_entry(rkeys, i)));
-    envmapSetKeyVal(em, key, val);
+    clEnvmapSetKeyVal(em, key, val);
   }
-  envmapMerge(loadDefaultEnvironment()->em, em);
-  ca = compaLoadBuiltin(STR2CSTR(cname));
+  clEnvmapMerge(clLoadDefaultEnvironment()->em, em);
+  ca = clCompaLoadBuiltin(STR2CSTR(cname));
   assert(ca);
 
-  tdata = Data_Wrap_Struct(cCompAdaptor, 0, compaFree, ca);
+  tdata = Data_Wrap_Struct(cCompAdaptor, 0, clCompaFree, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -59,32 +59,32 @@ static VALUE rbcompa_shortname(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(compaShortName(ca));
+  return rb_str_new2(clCompaShortName(ca));
 }
 
 static VALUE rbcompa_longname(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(compaLongName(ca));
+  return rb_str_new2(clCompaLongName(ca));
 }
 
 static VALUE rbcompa_apiver(VALUE self)
 {
   struct CompAdaptor *ca;
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  return INT2NUM(compaAPIVer(ca));
+  return INT2NUM(clCompaAPIVer(ca));
 }
 
-static VALUE rbcompa_compfunc(VALUE self, VALUE str)
+static VALUE rbcompa_compclFunc(VALUE self, VALUE str)
 {
   struct CompAdaptor *ca;
-  struct DataBlock *db = stringToDataBlockPtr(STR2CSTR(str));
+  struct DataBlock *db = clStringToDataBlockPtr(STR2CSTR(str));
   double result;
   Data_Get_Struct(self, struct CompAdaptor, ca);
 
-  result = compaCompress(ca, db);
-  datablockFreePtr(db);
+  result = clCompaCompress(ca, db);
+  clDatablockFreePtr(db);
   return rb_float_new(result);
 }
 
@@ -92,22 +92,22 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
   struct CompAdaptor *ca;
   double result;
-  struct DataBlock *dba = stringToDataBlockPtr(STR2CSTR(stra));
-  struct DataBlock *dbb = stringToDataBlockPtr(STR2CSTR(strb));
+  struct DataBlock *dba = clStringToDataBlockPtr(STR2CSTR(stra));
+  struct DataBlock *dbb = clStringToDataBlockPtr(STR2CSTR(strb));
 
   Data_Get_Struct(self, struct CompAdaptor, ca);
-  result = compaNCD(ca, dba, dbb);
-  datablockFreePtr(dba);
-  datablockFreePtr(dbb);
+  result = clCompaNCD(ca, dba, dbb);
+  clDatablockFreePtr(dba);
+  clDatablockFreePtr(dbb);
   return rb_float_new(result);
 }
 
 static VALUE rbcompa_names(VALUE kl)
 {
   VALUE result;
-  struct StringStack *ss = compaListBuiltin();
+  struct StringStack *ss = clCompaListBuiltin();
   result = convertStringStackToRubyArray(ss);
-  stringstackFree(ss);
+  clStringstackFree(ss);
   return result;
 }
 
@@ -117,8 +117,8 @@ static VALUE rbcompa_init(VALUE self)
 
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
-  struct CompAdaptor *ca = compaLoadBuiltin(STR2CSTR(comp));
-  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, compaFree, ca);
+  struct CompAdaptor *ca = clCompaLoadBuiltin(STR2CSTR(comp));
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clCompaFree, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
@@ -131,7 +131,7 @@ void doInitCompa(void) {
   rb_define_singleton_method(cCompAdaptor, "loadBuiltin", rbcompa_new, 1);
   rb_define_singleton_method(cCompAdaptor, "names", rbcompa_names, 0);
   rb_define_singleton_method(cCompAdaptor, "listBuiltin", rbcompa_names, 0);
-  rb_define_method(cCompAdaptor, "compfunc", rbcompa_compfunc, 1);
+  rb_define_method(cCompAdaptor, "compclFunc", rbcompa_compclFunc, 1);
   rb_define_method(cCompAdaptor, "shortname", rbcompa_shortname, 0);
   rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
   rb_define_method(cCompAdaptor, "apiver", rbcompa_apiver, 0);
