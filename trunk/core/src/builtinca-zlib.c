@@ -106,6 +106,10 @@ struct CompAdaptor *builtin_ZLIB(void)
   };
   struct CompAdaptor *ca;
   struct ZlibCompInstance *zci;
+  struct ZlibDynamicAdaptor *zlib;
+  zlib = grabZlibDA();
+  if (!zlib)
+    return NULL;
   ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct ZlibCompInstance), 1);

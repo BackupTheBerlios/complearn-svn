@@ -59,7 +59,7 @@ struct CompAdaptor *compaLoadZlib(void);
  *
  *  compaPrintBuiltin() prints to stdout a list of builtin compressors
  *  supported by CompLearn.  This list is dependent on the compression
- *  libraries detected during source compilcation.
+ *  libraries detected during source compilation.
  */
 void compaPrintBuiltin(void);
 

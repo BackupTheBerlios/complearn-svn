@@ -120,6 +120,10 @@ struct CompAdaptor *builtin_BZIP(void)
   };
   struct CompAdaptor *ca;
   struct BZ2CompInstance *bzci;
+  struct BZ2DynamicAdaptor *bzlib;
+  bzlib = grabBZ2DA();
+  if (!bzlib)
+    return NULL;
   ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct BZ2CompInstance), 1);

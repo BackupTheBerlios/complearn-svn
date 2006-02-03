@@ -1,5 +1,4 @@
 #include <complearn/complearn.h>
-#include <zlib.h>
 #include <string.h>
 
 #include <complearn/transadaptor.h>
@@ -60,7 +59,7 @@ static struct DataBlock *unzlib_transform(struct DataBlock *src)
     p = triedp;
 		i = uncompress(dbuff, &p,datablockData(src),datablockSize(src));
 		triedp = 2*triedp;
-	} while (i == Z_BUF_ERROR);
+	} while (i == -5);  /* Z_BUF_ERROR */
   result = datablockNewFromBlock(dbuff, triedp);
 	free(dbuff);
 //	datablockFree(src); /* TODO: document this new non-free behavior */
