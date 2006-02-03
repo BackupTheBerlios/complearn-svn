@@ -31,17 +31,17 @@ struct GeneralConfig;
 
 typedef unsigned int t_tagtype;
 
-typedef void (*t_emitfunc)(char *str);
+typedef void (*t_emitclFunc)(char *str);
 typedef struct CompAdaptor *(*t_clnewca)(void);
-typedef double (*t_compfunc)(struct CompAdaptor *ca, struct DataBlock *src);
-typedef void (*t_freecompfunc)(struct CompAdaptor *ca);
+typedef double (*t_compclFunc)(struct CompAdaptor *ca, struct DataBlock *src);
+typedef void (*t_freecompclFunc)(struct CompAdaptor *ca);
 typedef char *(*t_shortname)(void);
 typedef char *(*t_longname)(void);
 typedef char *(*t_compparam)(struct CompAdaptor *ca);
 typedef int (*t_apiver)(void);
 typedef struct ParamList *(*t_getparams)(void);
 
-typedef void (*t_doublefreefunc)(struct DRA *da, void *udata);
+typedef void (*t_doublefreeclFunc)(struct DRA *da, void *udata);
 
 typedef int (*t_predicate)(struct DataBlock *db);
 typedef void (*t_transfree)(struct TransformAdaptor *ta);
@@ -53,7 +53,7 @@ typedef void (*t_enumfree)(struct DataBlockEnumeration *);
 typedef struct DataBlock *(*t_istar)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
 typedef void (*t_istep)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
 typedef char * (*t_ilabel)(struct DataBlockEnumeration *, struct DataBlockEnumerationIterator *);
-typedef struct TransformAdaptor *(*t_searchfunc)(void *container, void *element);
+typedef struct TransformAdaptor *(*t_searchclFunc)(void *container, void *element);
 
 struct QuartetObserver;
 struct Quartet;
@@ -64,7 +64,7 @@ struct AdjAdaptor;
 typedef void (*t_adjaprint)(struct AdjAdaptor *a);
 typedef int (*t_adjasize)(struct AdjAdaptor *a);
 typedef void (*t_adjafree)(struct AdjAdaptor *a);
-typedef struct AdjAdaptor *(*t_adjaclone)(struct AdjAdaptor *a);
+typedef struct AdjAdaptor *(*t_adclJaclone)(struct AdjAdaptor *a);
 typedef int (*t_adjagetconstate)(struct AdjAdaptor *a, int i, int j);
 typedef void (*t_adjasetconstate)(struct AdjAdaptor *a, int i, int j, int which);
 typedef int (*t_adjagetneighborcount)(struct AdjAdaptor *a, int i);

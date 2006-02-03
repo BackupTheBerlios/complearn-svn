@@ -46,7 +46,7 @@ static struct DataBlock *dbe_ar_istar(struct DataBlockEnumeration *dbe, struct D
   struct DataBlock **old, *cur = NULL;
   old = (ardbi->cur >= 0 && ardbi->cur < ardbe->size) ? ardbe->db + ardbi->cur : NULL;
   if (old)
-    cur = datablockClonePtr(*old);
+    cur = clDatablockClonePtr(*old);
   return cur;
 }
 static char *dbe_ar_ilabel(struct DataBlockEnumeration *dbe, struct DataBlockEnumerationIterator *dbi)
@@ -64,7 +64,7 @@ static void dbe_ar_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
     ardbi->cur += 1;
 }
 
-struct DataBlockEnumeration *dbeLoadArray(struct DataBlock **db, int size)
+struct DataBlockEnumeration *clDbeLoadArray(struct DataBlock **db, int size)
 {
   struct DataBlockEnumeration e = {
     NULL, /* eptr, private enumeration instance */

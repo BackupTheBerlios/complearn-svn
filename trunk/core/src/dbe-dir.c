@@ -84,7 +84,7 @@ static struct DataBlock *dbe_dir_istar(struct DataBlockEnumeration *dbe, struct 
   struct DBEDirEnumerationIterator *dirdbi = (struct DBEDirEnumerationIterator *) dbi;
   if (dirdbi->curfilename) {
     struct DataBlock *db;
-    db = fileToDataBlockPtr(dbe_get_pathname(dbe,dbi));
+    db = clFileToDataBlockPtr(dbe_get_pathname(dbe,dbi));
     return db;
   } else
     return NULL;
@@ -131,7 +131,7 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
   } while (dirdbi->curfilename[0] == '.');
 }
 
-struct DataBlockEnumeration *dbeLoadDirectory(const char *dirname)
+struct DataBlockEnumeration *clDbeLoadDirectory(const char *dirname)
 {
   struct DataBlockEnumeration c = {
     NULL, /* eptr, private enumeration instance */

@@ -1,84 +1,84 @@
 #include <complearn/complearn.h>
 
-void treealabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
+void clTreeaclLabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
     int colInd, int nodeNum)
 {
   ta->treelpsetat(ta, colInd, nodeNum);
 }
 
-void treeaMutate(struct TreeAdaptor *tra)
+void clTreeaMutate(struct TreeAdaptor *tra)
 {
   assert(tra);
   tra->treemutate(tra);
 }
 
-struct TreeAdaptor *treeaNew(int isRooted, int howbig)
+struct TreeAdaptor *clTreeaNew(int isRooted, int howbig)
 {
   if (isRooted)
-    return treeaLoadRootedBinary(howbig);
+    return clTreeaLoadRootedBinary(howbig);
   else
-    return treeaLoadUnrooted(howbig);
+    return clTreeaLoadUnrooted(howbig);
 }
 
-void treeaFree(struct TreeAdaptor *tra)
+void clTreeaFree(struct TreeAdaptor *tra)
 {
   assert(tra);
   assert(tra->treefree);
   tra->treefree(tra);
 }
 
-struct TreeAdaptor *treeaClone(struct TreeAdaptor *tra)
+struct TreeAdaptor *clTreeaClone(struct TreeAdaptor *tra)
 {
   assert(tra);
   return tra->treeclone(tra);
 }
 
-struct LabelPerm *treeaLabelPerm(struct TreeAdaptor *tra)
+struct LabelPerm *clTreeaLabelPerm(struct TreeAdaptor *tra)
 {
   assert(tra);
   return tra->treegetlabelperm(tra);
 }
 
-struct AdjAdaptor *treeaAdjAdaptor(struct TreeAdaptor *tra)
+struct AdjAdaptor *clTreeaAdjAdaptor(struct TreeAdaptor *tra)
 {
   assert(tra);
   return tra->treegetadja(tra);
 }
 
-int treeaIsQuartettable(struct TreeAdaptor *tra, int which)
+int clTreeaIsQuartettable(struct TreeAdaptor *tra, int which)
 {
   assert(tra);
   return tra->treeisquartetable(tra, which);
 }
 
-int treeaIsFlippable(struct TreeAdaptor *tra, int which)
+int clTreeaIsFlippable(struct TreeAdaptor *tra, int which)
 {
   assert(tra);
   return tra->treeisflippable(tra, which);
 }
-int treeaIsRoot(struct TreeAdaptor *tra, int which)
+int clTreeaIsRoot(struct TreeAdaptor *tra, int which)
 {
   assert(tra);
   return tra->treeisroot(tra, which);
 }
 
 
-int treeaMutationCount(struct TreeAdaptor *tra)
+int clTreeaMutationCount(struct TreeAdaptor *tra)
 {
   assert(tra);
   return tra->treemutecount(tra);
 }
 
-struct DRA *treeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
+struct DRA *clTreeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
 {
   assert(tra);
   return tra->treeperimpairs(tra, flips);
 }
 
-int treeaNodeCount(struct TreeAdaptor *tra)
+int clTreeaNodeCount(struct TreeAdaptor *tra)
 {
-  struct AdjAdaptor *ad = treeaAdjAdaptor(tra);
-  return adjaSize(ad);
+  struct AdjAdaptor *ad = clTreeaAdjAdaptor(tra);
+  return clAdjaSize(ad);
 }
 
 static double nchoosefourScale(int n, int inp)
@@ -88,31 +88,31 @@ static double nchoosefourScale(int n, int inp)
   return ((double) inp) / bign;
 }
 
-double treeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
+double clTreeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2)
 {
   struct AdjAdaptor *ad1, *ad2;
   struct LabelPerm *lab1, *lab2;
   int diff;
   int lps;
-  lab1 = treeaLabelPerm(tra1);
-  lab2 = treeaLabelPerm(tra2);
-  lps = labelpermSize(lab1);
-  ad1 = treeaAdjAdaptor(tra1);
-  ad2 = treeaAdjAdaptor(tra2);
-  diff = countTrinaryDifferences(ad1, lab1, ad2, lab2);
-  labelpermFree(lab1);
-  labelpermFree(lab2);
+  lab1 = clTreeaLabelPerm(tra1);
+  lab2 = clTreeaLabelPerm(tra2);
+  lps = clLabelpermSize(lab1);
+  ad1 = clTreeaAdjAdaptor(tra1);
+  ad2 = clTreeaAdjAdaptor(tra2);
+  diff = clCountTrinaryDifferences(ad1, lab1, ad2, lab2);
+  clLabelpermFree(lab1);
+  clLabelpermFree(lab2);
   return nchoosefourScale(lps, diff);
 }
 
-struct DRA *treeaNodes(struct TreeAdaptor *ta)
+struct DRA *clTreeaNodes(struct TreeAdaptor *ta)
 {
-  struct DRA *n = draNew();
+  struct DRA *n = clDraNew();
   union PCTypes p = zeropct;
   int i;
-  for (i = 0; i < treeaNodeCount(ta) ;  i += 1) {
+  for (i = 0; i < clTreeaNodeCount(ta) ;  i += 1) {
     p.i = i;
-    draPush(n,p);
+    clDraPush(n,p);
   }
   return n;
 }

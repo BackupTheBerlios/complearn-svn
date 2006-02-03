@@ -1,88 +1,88 @@
 #include <stdio.h>
 #include <complearn/complearn.h>
 
-struct CompAdaptor *builtin_BZIP(void);
-struct CompAdaptor *builtin_GOOG(void);
-struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *method);
-struct CompAdaptor *builtin_ZLIB(void);
-struct CompAdaptor *builtin_blocksort(void);
-struct CompAdaptor *builtin_RealComp(const char *cmd);
+struct CompAdaptor *clBuiltin_BZIP(void);
+struct CompAdaptor *clBuiltin_GOOG(void);
+struct CompAdaptor *clBuiltin_SC(const char *url, const char *urn, const char *method);
+struct CompAdaptor *clBuiltin_ZLIB(void);
+struct CompAdaptor *clBuiltin_blocksort(void);
+struct CompAdaptor *clBuiltin_RealComp(const char *cmd);
 struct CompAdaptor *builtin_VirtComp(const char *cmd);
 
 
-struct CompAdaptor *compaLoadGoogle(void)
+struct CompAdaptor *clCompaLoadGoogle(void)
 {
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
-  return builtin_GOOG();
+  return clBuiltin_GOOG();
 #else
   return NULL;
 #endif
 }
 
-struct CompAdaptor *compaLoadSOAP(const char *url, const char *urn)
+struct CompAdaptor *clCompaLoadSOAP(const char *url, const char *urn)
 {
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
-  return builtin_SC(url, urn, "compfunc");
+  return clBuiltin_SC(url, urn, "compclFunc");
 #else
   return NULL;
 #endif
 }
 
-struct CompAdaptor *compaLoadBzip2(void)
+struct CompAdaptor *clCompaLoadBzip2(void)
 {
-  return builtin_BZIP();
+  return clBuiltin_BZIP();
 }
 
-struct CompAdaptor *compaLoadBlockSort(void)
+struct CompAdaptor *clCompaLoadBlockSort(void)
 {
-  return builtin_blocksort();
+  return clBuiltin_blocksort();
 }
 
 #if HAVE_ZLIB_H
 #include "builtinta-ungz.c"
 #endif
 
-struct CompAdaptor *compaLoadZlib(void)
+struct CompAdaptor *clCompaLoadZlib(void)
 {
-  return builtin_ZLIB();
+  return clBuiltin_ZLIB();
 }
 
-struct CompAdaptor *compaLoadReal(const char *cmd)
+struct CompAdaptor *clCompaLoadReal(const char *cmd)
 {
-  struct CompAdaptor *result = builtin_RealComp(cmd);
+  struct CompAdaptor *result = clBuiltin_RealComp(cmd);
   return result;
 }
 
-struct CompAdaptor *compaLoadBuiltin(const char *name)
+struct CompAdaptor *clCompaLoadBuiltin(const char *name)
 {
   struct CompAdaptor *result = NULL;
   if (strcmp(name, "zlib") == 0)
-    result = compaLoadZlib();
+    result = clCompaLoadZlib();
   if (strncmp(name, "bz",2) == 0)
-    result = compaLoadBzip2();
+    result = clCompaLoadBzip2();
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
   if (strcmp(name, "google") == 0)
-    result = compaLoadGoogle();
+    result = clCompaLoadGoogle();
 #endif
   if (strcmp(name, "blocksort") == 0)
-    result = compaLoadBlockSort();
+    result = clCompaLoadBlockSort();
   return result;
 }
 
 static void addIfPresent(struct StringStack *ss, const char *name)
 {
   struct CompAdaptor *ca;
-  ca = compaLoadBuiltin(name);
+  ca = clCompaLoadBuiltin(name);
   if (ca) {
-    stringstackPush(ss,compaShortName(ca));
-    compaFree(ca);
+    clStringstackPush(ss,clCompaShortName(ca));
+    clCompaFree(ca);
   }
 }
 
-struct StringStack *compaListBuiltin(void)
+struct StringStack *clCompaListBuiltin(void)
 {
   struct StringStack *ss;
-  ss = stringstackNew();
+  ss = clStringstackNew();
   addIfPresent(ss, "zlib");
   addIfPresent(ss, "bzip");
   addIfPresent(ss, "google");
@@ -90,11 +90,11 @@ struct StringStack *compaListBuiltin(void)
   return ss;
 }
 
-void compaPrintBuiltin(void)
+void clCompaPrintBuiltin(void)
 {
   struct StringStack *sup;
   printf("Your supported compressors are:\n\n");
-  sup = compaListBuiltin();
-  stringstackPrint(sup);
-  stringstackFree(sup);
+  sup = clCompaListBuiltin();
+  clStringstackPrint(sup);
+  clStringstackFree(sup);
 }

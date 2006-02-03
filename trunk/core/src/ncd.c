@@ -48,11 +48,11 @@ void loadCompressor(struct GeneralConfig *cur)
   if (cur->ca == NULL) {
     if (cur->fVerbose)
       printf("About to load %s..\n", cur->compressor_name);
-      cur->ca = compaLoadBuiltin(cur->compressor_name);
+      cur->ca = clCompaLoadBuiltin(cur->compressor_name);
     if (cur->ca == NULL) {
       //clogError( "Error, cannot load builtin compressor %s\n", cur->compressor_name);
       printf("Available compressors:\n");
-      compaPrintBuiltin();
+      clCompaPrintBuiltin();
       clogError("Cannot load builtin compressor %s\n", cur->compressor_name);
     }
     if (cur->fVerbose)
@@ -62,12 +62,12 @@ void loadCompressor(struct GeneralConfig *cur)
       printf("Now have instance %p\n", cur->ca->cptr);
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock *db;
-    db = stringToDataBlockPtr("m\n");
-    cur->M = pow(2.0, compaCompress(cur->ca, db));
+    db = clStringToDataBlockPtr("m\n");
+    cur->M = pow(2.0, clCompaCompress(cur->ca, db));
     cur->multiplier = cur->M;
-    datablockFreePtr(db);
+    clDatablockFreePtr(db);
   }
-  updateConfigToEM(cur);
+  clUpdateConfigToEM(cur);
 }
 void printCounts(struct DataBlockEnumeration *a)
 {
@@ -77,16 +77,16 @@ void printCounts(struct DataBlockEnumeration *a)
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   for ( ia = a->newenumiter(a); (dba = a->istar(a, ia)) ; a->istep(a, ia) ) {
     double pg;
-    if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && datablockSize(dba) == 1 && (datablockData(dba)[0] == 'm' || datablockData(dba)[0] == 'M')) {
+    if (cur->fDoExponentiate && ncdcfg->fUsingGoogle && clDatablockSize(dba) == 1 && (clDatablockData(dba)[0] == 'm' || clDatablockData(dba)[0] == 'M')) {
       pg = 0.0;
     }
     else {
 //      ncdcfg->M = 1.0;
-      pg = compaCompress(cur->ca, dba);
+      pg = clCompaCompress(cur->ca, dba);
     }
-    printf(fmtString, xpremap(pg, cur));
-    //double m = calculateM();
-    datablockFreePtr(dba);
+    printf(fmtString, clXpremap(pg, cur));
+    //double m = clCalculateM();
+    clDatablockFreePtr(dba);
   }
   printf("\n");
 }
@@ -100,7 +100,7 @@ struct GeneralConfig *loadNCDEnvironment()
 
   if (!cur) {
     struct NCDConfig *ncdcfg;
-    cur = loadDefaultEnvironment();
+    cur = clLoadDefaultEnvironment();
     cur->ptr = clCalloc(sizeof(struct NCDConfig),1);
     ncdcfg = (struct NCDConfig *) cur->ptr;
     *ncdcfg = defaultNCDConfig;
@@ -139,10 +139,10 @@ int main(int argc, char **argv)
   whichLongOpt = 1;
   if (ncdcfg->da.dbf == NULL) /* must init */ {
     ncdcfg->da.desize = 0;
-    ncdcfg->da.dbf = dbefactoryNew();
+    ncdcfg->da.dbf = clDbefactoryNew();
   }
   while (1) {
-    next_option = complearn_getopt_long(argc, argv, ncd_short_options, ncd_long_options, &whichLongOpt, cur);
+    next_option = clComplearn_getopt_long(argc, argv, ncd_short_options, ncd_long_options, &whichLongOpt, cur);
     if (next_option == -1) /* options done */
       break;
 
@@ -152,45 +152,45 @@ int main(int argc, char **argv)
         ncdcfg->output_distmat_fname = clStrdup(optarg);
         break;
       case 'f':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 't':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         cur->fUsingFilenames = 1;
         break;
       case 'p':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'l':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
-        compaPrintBuiltin();
+        clCompaPrintBuiltin();
 //        cleanupBeforeExit();
         exit(0);
         break;
       case 'd':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'w':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'r':
-        cur->ca = compaLoadReal(optarg);
+        cur->ca = clCompaLoadReal(optarg);
         cur->compressor_name = clStrdup(optarg);
         break;
       case 'g':
-        dbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
         cur->compressor_name = clStrdup("google");
         break;
       case 'D':
-        deleteSavedGC();
+        clDeleteSavedGC();
         printf("Cache deleted.\n");
 //        cleanupBeforeExit();
         exit(0);
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
     }
   }
   if (strcmp(cur->compressor_name, "google") == 0 ||
-      (cur->ca != NULL && strcmp(compaShortName(cur->ca),"google") == 0)) {
+      (cur->ca != NULL && strcmp(clCompaShortName(cur->ca),"google") == 0)) {
     ncdcfg->fUsingGoogle = 1;
   }
 
@@ -214,11 +214,11 @@ int main(int argc, char **argv)
       char *op, *goodop;
       op = argv[optind++];
       if (cur->fAddNL) {
-        goodop = addNL(op);
+        goodop = clAddNL(op);
       }
       else
         goodop = clStrdup(op);
-      ncdcfg->da.de[ncdcfg->da.desize++] =  dbefactoryNewDBE(ncdcfg->da.dbf, goodop);
+      ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, goodop);
     }
   }
 #if 1
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
   }
   if (ncdcfg->da.desize == 2) {
     loadCompressor(cur);
-    printProduct(ncdcfg->da.de[0], ncdcfg->da.de[1], cur);
+    clPrintProduct(ncdcfg->da.de[0], ncdcfg->da.de[1], cur);
   }
 #endif
 //  cleanupBeforeExit();

@@ -12,7 +12,7 @@ static void ungz_transfree(struct TransformAdaptor *ta);
 static int ungz_predicate(struct DataBlock *db);
 static struct DataBlock *ungz_transform(struct DataBlock *src);
 
-struct TransformAdaptor *builtin_UNGZ(void)
+struct TransformAdaptor *clBuiltin_UNGZ(void)
 {
   struct TransformAdaptor *ptr;
   struct TransformAdaptor t =
@@ -40,7 +40,7 @@ static void ungz_transfree(struct TransformAdaptor *ta)
 
 static int ungz_predicate(struct DataBlock *db)
 {
-	return datablockSize(db) > 1 && datablockData(db)[0]==0x1f && datablockData(db)[1]==0x8b;
+	return clDatablockSize(db) > 1 && clDatablockData(db)[0]==0x1f && clDatablockData(db)[1]==0x8b;
 }
 
 static struct DataBlock *ungz_transform(struct DataBlock *src)
@@ -67,7 +67,7 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
   fd = mkstemp(tmpfile);
   close(fd);
  	fp = clFopen(tmpfile,"wb");
-	written = fwrite(datablockData(src),1,datablockSize(src),fp);
+	written = fwrite(clDatablockData(src),1,clDatablockSize(src),fp);
 	if (written == 0) {
 		exit(1);
 	}
@@ -93,13 +93,13 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
 	}
 	gzclose(gzfp);
 	unlink(tmpfile);
-  result = datablockNewFromBlock(dbuff,p);
+  result = clDatablockNewFromBlock(dbuff,p);
 	free(dbuff);
-	// datablockFree(src); /* TODO: document me */
+	// clDatablockFree(src); /* TODO: document me */
 	return result;
 }
 #else
-struct TransformAdaptor *builtin_UNGZ(void)
+struct TransformAdaptor *clBuiltin_UNGZ(void)
 {
   return NULL;
 }

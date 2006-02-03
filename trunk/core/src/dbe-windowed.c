@@ -44,7 +44,7 @@ static void dbe_wi_iterfree(struct DataBlockEnumerationIterator *dbi)
 static void dbe_wi_enumfree(struct DataBlockEnumeration *dbe)
 {
   struct DBEWindowedEnumeration *widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
-  datablockFreePtr(widbe->db);
+  clDatablockFreePtr(widbe->db);
   widbe->db = NULL;
   clFreeandclear(dbe->eptr);
   clFreeandclear(dbe);
@@ -55,9 +55,9 @@ static struct DataBlock *dbe_wi_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEWindowedEnumerationIterator *widbi = (struct DBEWindowedEnumerationIterator *) dbi;
   if (widbi->curpos >= 0 && widbi->curpos + widbe->width - 1 <= widbe->lastpos)
   {
-   widbi->dbptr = datablockData(widbe->db) + widbi->curpos;
+   widbi->dbptr = clDatablockData(widbe->db) + widbi->curpos;
    widbi->dbsize = widbe->width;
-   return datablockNewFromBlock(widbi->dbptr, widbi->dbsize);
+   return clDatablockNewFromBlock(widbi->dbptr, widbi->dbsize);
   }
   else
     return NULL;
@@ -78,7 +78,7 @@ static void dbe_wi_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
     widbi->curpos += widbe->stepsize;
 }
 
-struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
+struct DataBlockEnumeration *clDbeLoadWindowed(struct DataBlock *db,
     int firstpos, int stepsize, int width, int lastpos)
 {
   struct DataBlockEnumeration c = {
@@ -93,8 +93,8 @@ struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
   struct DataBlockEnumeration *dbe;
   struct DBEWindowedEnumeration *widbe;
   assert(db);
-  assert(datablockSize(db) > 0);
-  assert(datablockSize(db) < 10000000); /* TODO: remove me */
+  assert(clDatablockSize(db) > 0);
+  assert(clDatablockSize(db) < 10000000); /* TODO: remove me */
   assert(stepsize > 0);
   assert(width > 0);
   assert(firstpos >= 0);
@@ -103,7 +103,7 @@ struct DataBlockEnumeration *dbeLoadWindowed(struct DataBlock *db,
   *dbe = c;
   dbe->eptr = clCalloc(sizeof(struct DBEWindowedEnumeration), 1);
   widbe = (struct DBEWindowedEnumeration *) dbe->eptr;
-  widbe->db = datablockClonePtr(db);
+  widbe->db = clDatablockClonePtr(db);
   widbe->firstpos = firstpos;
   widbe->stepsize = stepsize;
   widbe->width = width;

@@ -14,7 +14,7 @@ gsl_matrix *dm;
 static void freedotth (struct TreeHolder *dotth)
 {
   if (dotth) {
-    treehFree(dotth);
+    clTreehFree(dotth);
     dotth = NULL;
   }
 }
@@ -44,17 +44,17 @@ static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet 
 {
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   struct DataBlock *dotdb;
-  dotdb = convertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
-  datablockWriteToFile(dotdb, maketreecfg->output_tree_fname);
-  datablockFreePtr(dotdb);
+  dotdb = clConvertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
+  clDatablockWriteToFile(dotdb, maketreecfg->output_tree_fname);
+  clDatablockFreePtr(dotdb);
 }
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
-  printf("Just got new tree with score %f\n", treehScore(th));
-  writeDotFile(treehTreeAdaptor(th), treehScore(th), NULL);
+  printf("Just got new tree with score %f\n", clTreehScore(th));
+  writeDotFile(clTreehTreeAdaptor(th), clTreehScore(th), NULL);
   freedotth(dotth);
-  dotth = treehClone(th);
+  dotth = clTreehClone(th);
 }
 
 struct TreeObserver tob = {
@@ -65,29 +65,29 @@ struct TreeObserver tob = {
     treerejected:NULL,
 };
 
-void funcstart(struct TreeOrderObserver *tob)
+void clFuncstart(struct TreeOrderObserver *tob)
 {
   printf("Started order search.\n");
 }
-void funcordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
+void clFuncordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
 {
-  printf("order improvement Or(T) = %f\n", treemolderScoreScaled(th));
+  printf("order improvement Or(T) = %f\n", clTreemolderScoreScaled(th));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
-  writeDotFile(treemolderTreeAdaptor(th), treemolderScore(th), flips);
+  writeDotFile(clTreemolderTreeAdaptor(th), clTreemolderScore(th), flips);
 }
 
-void funcorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
+void clFuncorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
 {
-  printf("Score done to Or(T) = %f\n", treemolderScoreScaled(tm));
+  printf("Score done to Or(T) = %f\n", clTreemolderScoreScaled(tm));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
   assert(dotth);
-  writeDotFile(treemolderTreeAdaptor(tm), treehScore(dotth), flips);
+  writeDotFile(clTreemolderTreeAdaptor(tm), clTreehScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
 
-struct TreeOrderObserver too = { NULL, funcstart, funcordimproved, funcorddone };
+struct TreeOrderObserver too = { NULL, clFuncstart, clFuncordimproved, clFuncorddone };
 
 struct GeneralConfig *loadMakeTreeEnvironment()
 {
@@ -97,7 +97,7 @@ struct GeneralConfig *loadMakeTreeEnvironment()
 
   if (!cur) {
     struct MakeTreeConfig *maketreecfg;
-    cur = loadDefaultEnvironment();
+    cur = clLoadDefaultEnvironment();
     cur->ptr = clCalloc(sizeof(struct MakeTreeConfig),1);
     maketreecfg = (struct MakeTreeConfig *) cur->ptr;
     *maketreecfg = defaultMakeTreeConfig;
@@ -138,21 +138,21 @@ int main(int argc, char **argv)
   maketreecfg = (struct MakeTreeConfig *) cur->ptr;
 
   while (1) {
-    next_option = complearn_getopt_long(argc, argv, short_options, long_options, NULL, cur);
+    next_option = clComplearn_getopt_long(argc, argv, short_options, long_options, NULL, cur);
     if (next_option == -1) /* options done */
       break;
     switch (next_option) {
       case 'R':
         isRooted = 1;
-        envmapSetKeyVal(cur->em, "isRooted", "1");
+        clEnvmapSetKeyVal(cur->em, "isRooted", "1");
         break;
       case 'F':
         isEnablingMaxFailCount = 1;
-        envmapSetKeyVal(cur->em, "selfAgreementTermination", "0");
+        clEnvmapSetKeyVal(cur->em, "selfAgreementTermination", "0");
         break;
       case 'u':
         isOrdered = 0;
-        envmapSetKeyVal(cur->em, "isOrdered", "0");
+        clEnvmapSetKeyVal(cur->em, "isOrdered", "0");
         break;
       case 'T':
         isText = 1;
@@ -182,66 +182,66 @@ int main(int argc, char **argv)
     char *cmd = NULL;
     assert(ss);
     if (cur->cmdKeeper) {
-      cmd = shiftSS(cur->cmdKeeper);
-      stringstackFree(cur->cmdKeeper);
+      cmd = clShiftSS(cur->cmdKeeper);
+      clStringstackFree(cur->cmdKeeper);
       cur->cmdKeeper = NULL;
     }
     cur->cmdKeeper = ss;
     if (cmd)
-      stringstackPush(cur->cmdKeeper, cmd);
-    envmapMerge(cur->em, em);
+      clStringstackPush(cur->cmdKeeper, cmd);
+    clEnvmapMerge(cur->em, em);
     dm = clbDistMatrix(fname);
     labels = clbLabels(fname);
-    envmapFree(em);
+    clEnvmapFree(em);
     clFreeandclear(cmd);
   }
 
   printf("The matrix is %d by %d\n", (int) dm->size1, (int) dm->size2);
 
-  tm = treemasterNewEx(dm, isRooted, cur->em);
+  tm = clTreemasterNewEx(dm, isRooted, cur->em);
   globtm = tm;
-  treemasterSetTreeObserver(tm, &tob);
-  th = treemasterFindTree(tm);
-  ub = treehTreeAdaptor(th);
-  s = treehScore(th);
-  j = treemasterTreeCount(tm);
+  clTreemasterSetTreeObserver(tm, &tob);
+  th = clTreemasterFindTree(tm);
+  ub = clTreehTreeAdaptor(th);
+  s = clTreehScore(th);
+  j = clTreemasterTreeCount(tm);
   printf("Examined %d trees total\n", j);
   if (isOrdered) {
     printf("Proceeding with ordering phase...\n");
-    tb = treebNew(dm, ub);
+    tb = clTreebNew(dm, ub);
     printf("tb is %p\n", tb);
-    treebSetTreeOrderObserver(tb, &too);
-    clns = treebFindTreeOrder(tb, &score);
+    clTreebSetTreeOrderObserver(tb, &too);
+    clns = clTreebFindTreeOrder(tb, &score);
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
     clnodesetPrint(clns);
   }
   printf("\nNode ordering:\n");
-  res = simpleWalkTree(ub, clns);
-  draPrintIntList(res);
+  res = clSimpleWalkTree(ub, clns);
+  clDraPrintIntList(res);
   printf("\nLeaf ordering:\n");
-  for (j = 0; j < draSize(res); j += 1) {
-    int nodenum = draGetValueAt(res, j).i;
-    if (treeaIsQuartettable(ub, nodenum))
+  for (j = 0; j < clDraSize(res); j += 1) {
+    int nodenum = clDraGetValueAt(res, j).i;
+    if (clTreeaIsQuartettable(ub, nodenum))
       printf("%d ", nodenum);
   }
   printf("\nLeaf labels, in %s order:\n", isOrdered ? "best" : "arbitrary");
-  struct LabelPerm *lph = treeaLabelPerm(ub);
-  for (j = 0; j < draSize(res); j += 1) {
-    int nodenum = draGetValueAt(res, j).i;
-    if (!treeaIsQuartettable(ub, nodenum))
+  struct LabelPerm *lph = clTreeaLabelPerm(ub);
+  for (j = 0; j < clDraSize(res); j += 1) {
+    int nodenum = clDraGetValueAt(res, j).i;
+    if (!clTreeaIsQuartettable(ub, nodenum))
       continue;
-    int indnum = labelpermColIndexForNodeID(lph, nodenum);
-    printf("%s\n", stringstackReadAt(labels, indnum));
+    int indnum = clLabelpermColIndexForNodeID(lph, nodenum);
+    printf("%s\n", clStringstackReadAt(labels, indnum));
   }
-  labelpermFree(lph);
+  clLabelpermFree(lph);
   printf("Done.\n");
-  draFree(res);
+  clDraFree(res);
   freedotth(dotth);
-  treemasterFree(tm);
-  gslmatrixFree(dm);
+  clTreemasterFree(tm);
+  clGslmatrixFree(dm);
   if (labels) {
-    stringstackFree(labels);
+    clStringstackFree(labels);
   }
   return 0;
 }

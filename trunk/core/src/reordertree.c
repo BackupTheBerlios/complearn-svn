@@ -12,7 +12,7 @@ int main(int argc, char **argv)
   struct TreeMolder *tb;
   struct DataBlock *db, *matdb, *dotdb;
   struct CLNodeSet *clns = NULL;
-  struct GeneralConfig *cur = loadDefaultEnvironment();
+  struct GeneralConfig *cur = clLoadDefaultEnvironment();
   double score;
   if (argc != 4) {
     fprintf(stderr, "Usage: %s distmatrix.clb starttree.dot newtree.dot\n", argv[0]);
@@ -22,18 +22,18 @@ int main(int argc, char **argv)
   startfname = argv[2];
   outfname = argv[3];
   fprintf(stderr, "Opening tree %s\n", startfname);
-  /* All func */
-  db = fileToDataBlockPtr(startfname);
-  matdb = fileToDataBlockPtr(dmfname);
-  dpt = parseDotDB(db, matdb);
-  tb = treemolderNew(dpt->dm, dpt->tree);
-  clns = treemolderFlips(tb);
+  /* All clFunc */
+  db = clFileToDataBlockPtr(startfname);
+  matdb = clFileToDataBlockPtr(dmfname);
+  dpt = clParseDotDB(db, matdb);
+  tb = clTreemolderNew(dpt->dm, dpt->tree);
+  clns = clTreemolderFlips(tb);
   score = 0;
-  dotdb = convertTreeToDot(dpt->tree, score, dpt->labels, clns, cur,
+  dotdb = clConvertTreeToDot(dpt->tree, score, dpt->labels, clns, cur,
                            NULL, dpt->dm);
   fprintf(stderr, "Reordering finished:  writing tree %s\n", outfname);
-  datablockWriteToFile(dotdb, outfname);
-  datablockFreePtr(dotdb);
+  clDatablockWriteToFile(dotdb, outfname);
+  clDatablockFreePtr(dotdb);
   dotdb = NULL;
   return 0;
 }

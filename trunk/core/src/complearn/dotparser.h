@@ -16,6 +16,6 @@ struct DotParseTree {
   char *parseErrorString;
 };
 
-struct DotParseTree *parseDotDB(struct DataBlock *db, struct DataBlock *matdb);
+struct DotParseTree *clParseDotDB(struct DataBlock *db, struct DataBlock *matdb);
 
 #endif

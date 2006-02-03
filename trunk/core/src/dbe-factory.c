@@ -8,7 +8,7 @@ struct DBEFactory {
   int mode;
 };
 
-struct DBEFactory *dbefactoryNew(void)
+struct DBEFactory *clDbefactoryNew(void)
 {
   struct DBEFactory *dbf;
   dbf = clCalloc(sizeof(struct DBEFactory), 1);
@@ -16,25 +16,25 @@ struct DBEFactory *dbefactoryNew(void)
   return dbf;
 }
 
-void dbefactoryFree(struct DBEFactory *dbf)
+void clDbefactoryFree(struct DBEFactory *dbf)
 {
   dbf->mode = 0;
   clFreeandclear(dbf);
 }
 
-int dbefactorySetMode(struct DBEFactory *dbf, int newMode)
+int clDbefactorySetMode(struct DBEFactory *dbf, int newMode)
 {
   assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
 }
 
-int dbefactoryGetMode(struct DBEFactory *dbf)
+int clDbefactoryGetMode(struct DBEFactory *dbf)
 {
   return dbf->mode;
 }
 
-const char *dbefactoryModeString(struct DBEFactory *dbf)
+const char *clDbefactoryModeString(struct DBEFactory *dbf)
 {
   switch (dbf->mode) {
     case DBF_MODE_QUOTED: return "quoted";
@@ -63,8 +63,8 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
   cstr = clStrdup(str);
   fname = strtok(cstr, WINDELIMS);
   assert(fname && "Must specify filename for window");
-  db = fileToDataBlockPtr(fname);
-  lastpos = datablockSize(db) - 1;
+  db = clFileToDataBlockPtr(fname);
+  lastpos = clDatablockSize(db) - 1;
   cur = strtok(NULL, WINDELIMS);
   if (cur) {
     width = atoi(cur);
@@ -82,26 +82,26 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
       }
     }
   }
-  return dbeLoadWindowed(db, startpos, stepsize, width, lastpos);
+  return clDbeLoadWindowed(db, startpos, stepsize, width, lastpos);
 }
 
-struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char
+struct DataBlockEnumeration *clDbefactoryNewDBE(struct DBEFactory *dbf, const char
  *str)
 {
   struct DataBlock *db;
   switch (dbf->mode) {
     case DBF_MODE_QUOTED:
-      db = stringToDataBlockPtr(str);
-      return dbeLoadSingleton(db);
+      db = clStringToDataBlockPtr(str);
+      return clDbeLoadSingleton(db);
     case DBF_MODE_FILE:
-      db = fileToDataBlockPtr(str);
-      return dbeLoadSingleton(db);
+      db = clFileToDataBlockPtr(str);
+      return clDbeLoadSingleton(db);
     case DBF_MODE_FILELIST:
-      return dbeLoadFileList(str);
+      return clDbeLoadFileList(str);
     case DBF_MODE_STRINGLIST:
-      return dbeLoadStringList(str);
+      return clDbeLoadStringList(str);
     case DBF_MODE_DIRECTORY:
-      return dbeLoadDirectory(str);
+      return clDbeLoadDirectory(str);
     case DBF_MODE_WINDOWED:
       return dbef_handleWindowedDBE(dbf, str);
     default:

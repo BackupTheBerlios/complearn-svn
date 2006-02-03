@@ -20,63 +20,63 @@ struct TransformAdaptorStack {
   struct DRA *da;
 };
 
-struct TransformAdaptorStack *newTAStack()
+struct TransformAdaptorStack *clNewTAStack()
 {
 	struct TransformAdaptorStack *ts;
 	ts = (struct TransformAdaptorStack*)clCalloc(sizeof(struct TransformAdaptorStack), 1);
-  ts->da = draNew();
+  ts->da = clDraNew();
 	return ts;
 }
 
-int freeTS(struct TransformAdaptorStack *ts)
+int clFreeTS(struct TransformAdaptorStack *ts)
 {
-	draFree(ts->da);
+	clDraFree(ts->da);
 	ts->da = NULL;
 	free(ts);
 	return CL_OK;
 }
 
-int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta)
+int clPushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta)
 {
   union PCTypes p;
 
   p.ta = ta;
-  draPush(ts->da, p);
+  clDraPush(ts->da, p);
   return CL_OK;
 }
 
-struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts)
+struct TransformAdaptor *clShiftTS(struct TransformAdaptorStack *ts)
 {
   union PCTypes p;
   memset(&p, 0, sizeof(p));
-	if (sizeTS(ts) == 0) return p.ta;
-	p = draShift(ts->da);
+	if (clSizeTS(ts) == 0) return p.ta;
+	p = clDraShift(ts->da);
   return p.ta;
 }
 
-struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts)
+struct TransformAdaptor *clPopTS(struct TransformAdaptorStack *ts)
 {
   union PCTypes p;
   memset(&p, 0, sizeof(p));
-	if (sizeTS(ts) == 0) return p.ta;
-	p = draPop(ts->da);
+	if (clSizeTS(ts) == 0) return p.ta;
+	p = clDraPop(ts->da);
   return p.ta;
 }
 
-int isEmptyTS(struct TransformAdaptorStack *ts)
+int clIsEmptyTS(struct TransformAdaptorStack *ts)
 {
-	return draSize(ts->da) == 0;
+	return clDraSize(ts->da) == 0;
 }
 
-int sizeTS(struct TransformAdaptorStack *ts)
+int clSizeTS(struct TransformAdaptorStack *ts)
 {
-	return draSize(ts->da);
+	return clDraSize(ts->da);
 }
 
-struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc)
+struct TransformAdaptor *clSearchTS(void *ts, void *s, t_searchclFunc searchclFunc)
 {
 	struct TransformAdaptor *curta = NULL;
-	curta = searchfunc(ts,s);
+	curta = searchclFunc(ts,s);
 	return curta;
 }
 

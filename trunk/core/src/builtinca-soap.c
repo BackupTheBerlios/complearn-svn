@@ -13,8 +13,8 @@ struct SOAPCompInstance;
 #include <stdlib.h>
 #include <string.h>
 
-static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void sca_freecompfunc(struct CompAdaptor *ca);
+static double sca_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void sca_freecompclFunc(struct CompAdaptor *ca);
 static char *sca_shortname(void);
 static char *sca_longname(void);
 static int sca_apiver(void);
@@ -26,14 +26,14 @@ struct SOAPCompInstance {
   SoapCtx *ctx, *ctx2;
 };
 
-struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *method)
+struct CompAdaptor *clBuiltin_SC(const char *url, const char *urn, const char *method)
 {
 	struct CompAdaptor c =
   {
     cptr: NULL,
 //    se:   sca_clsetenv,
-    cf:   sca_compfunc,
-    fcf:  sca_freecompfunc,
+    cf:   sca_compclFunc,
+    fcf:  sca_freecompclFunc,
     sn:   sca_shortname,
     ln:   sca_longname,
     apiv: sca_apiver,
@@ -50,7 +50,7 @@ struct CompAdaptor *builtin_SC(const char *url, const char *urn, const char *met
   sci->urn = clStrdup(urn);
   sci->method = clStrdup(method);
 
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
   return ca;
 }
@@ -75,9 +75,9 @@ static SoapCtx *invokeMethod(struct SOAPCompInstance *sci, SoapCtx *inp)
 static double getValue(struct SOAPCompInstance *sci)
 {
   double compsize = -2.0;
-  xmlNodePtr function, node;
-  function = soap_env_get_method(sci->ctx2->env);
-  node = soap_xml_get_children(function);
+  xmlNodePtr clFunction, node;
+  clFunction = soap_env_get_method(sci->ctx2->env);
+  node = soap_xml_get_children(clFunction);
 
   while (node) {
     char *str;
@@ -98,7 +98,7 @@ static SoapCtx *prepareSOAPEnvForMethod(struct SOAPCompInstance *sci)
   SoapCtx *ctx;
   const char *urn;
   herror_t err;
-  //xmlNodePtr function, node;
+  //xmlNodePtr clFunction, node;
 
   urn = sci->urn;
   err = soap_ctx_new_with_method(urn, sci->method, &ctx);
@@ -110,11 +110,11 @@ static SoapCtx *prepareSOAPEnvForMethod(struct SOAPCompInstance *sci)
   return ctx;
 }
 
-SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method)
+SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method)
 {
   SoapCtx *ctx;
   herror_t err;
-  //xmlNodePtr function, node;
+  //xmlNodePtr clFunction, node;
 
   err = soap_ctx_new_with_method(urn, method, &ctx);
   if (err != H_OK) {
@@ -125,15 +125,15 @@ SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method)
   return ctx;
 }
 
-static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double sca_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct SOAPCompInstance *sci = (struct SOAPCompInstance *) ca->cptr;
 	//int s;
   double compsize;
-  char *str = clCalloc(1,datablockSize(src)+1);
-  str = (char *) datablockData(src);
+  char *str = clCalloc(1,clDatablockSize(src)+1);
+  str = (char *) clDatablockData(src);
 
-  memcpy(str, datablockData(src), datablockSize(src));
+  memcpy(str, clDatablockData(src), clDatablockSize(src));
 
   sci->ctx = prepareSOAPEnvForMethod(sci);
   soap_env_add_item(sci->ctx->env, "xsd:string", "str",str);
@@ -144,7 +144,7 @@ static double sca_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 	return (double) compsize;
 }
 
-static void sca_freecompfunc(struct CompAdaptor *ca)
+static void sca_freecompclFunc(struct CompAdaptor *ca)
 {
 	struct SOAPCompInstance *ci = (struct SOAPCompInstance *) ca->cptr;
   clFreeandclear(ci->urn);
@@ -171,7 +171,7 @@ static int sca_apiver(void)
 
 #else
 #include <stdio.h>
-struct CompAdaptor *builtin_SC(void)
+struct CompAdaptor *clBuiltin_SC(void)
 {
   return NULL;
 }

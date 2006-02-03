@@ -63,11 +63,11 @@ struct Quartet {
  */
 struct TreeScore;
 
-struct Quartet permuteLabels(qbase_t lab[4], int which); /* between 0, 1, 2 */
-struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which);
-void normalizeQuartet(struct Quartet *q);
-void freeSPMSingle(struct DRA *d);
-void freeSPMSet(struct DRA *d);
+struct Quartet clPermuteLabels(qbase_t lab[4], int which); /* between 0, 1, 2 */
+struct Quartet clPermuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which);
+void clNormalizeQuartet(struct Quartet *q);
+void clFreeSPMSingle(struct DRA *d);
+void clFreeSPMSet(struct DRA *d);
 
 #endif
 

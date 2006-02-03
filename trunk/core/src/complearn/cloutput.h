@@ -10,28 +10,28 @@
 
 /*! \file cloutput.h */
 
-gsl_matrix *svdProject(gsl_matrix *a);
-gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
+gsl_matrix *clSvdProject(gsl_matrix *a);
+gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
 
 struct TreeMaster;
 
-double xpremap(double inp, struct GeneralConfig *cur);
+double clXpremap(double inp, struct GeneralConfig *cur);
 
 /** \brief Products results of NCD calculations
  *
  * \param a pointer to first DataBlockEnumeration
  * \param b pointer to second DataBlockEnumeration
  */
-void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
+void clPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur);
 
 /** \brief outputs a tree into a .dot format DataBlock
  *
- * This function writes a DataBlock representation of the given tree in
+ * This clFunction writes a DataBlock representation of the given tree in
  * the .dot file format.  This is the tree format used by dot and neato
  * of the popular AT&T graphviz package.  This is often used before
  * laying out a tree for visual representation by another program.
  *
- * To use this function, you must first have a tree.  You may optionally
+ * To use this clFunction, you must first have a tree.  You may optionally
  * pass in a StringStack holding an ordered list of leaf-labels.
  * This list must be in the same order that columns were given for the
  * distance matrix that led to this tree.  If NULL is passed in
@@ -39,18 +39,18 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
  * themselves.
  *
  * In order to export a file to another program you must call
- * datablockWriteToFile
+ * clDatablockWriteToFile
  *
  * \param ub pointer to the UnrootedBinary to be path queried
  * \param labels pointer to a StringStack holding labels for each
  * column indicator in order
  * \return pointer to a new DataBlock holding the .dot-format tree
  */
-struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm);
+struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm);
 
-const char *getUsername(void);
-int getPID(void);
-const char *getHostname(void);
-const char *getUTSName(void);
+const char *clGetUsername(void);
+int clGetPID(void);
+const char *clGetHostname(void);
+const char *clGetUTSName(void);
 
 #endif

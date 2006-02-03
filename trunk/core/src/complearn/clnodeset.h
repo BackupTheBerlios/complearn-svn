@@ -12,7 +12,7 @@
 struct CLNodeSet;
 
 /** \brief Allocates a new struct CLNodeSet
- * This function allocates a new CLNodeSet.
+ * This clFunction allocates a new CLNodeSet.
  * \param howbig an optional value indicating how big this set should
  * initially be sized.  This value is not a limit.
  */
@@ -30,7 +30,7 @@ void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
 int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which);
 void clnodesetPrint(struct CLNodeSet *cl);
 struct DRA *clnodesetToDRA(const struct CLNodeSet *cl);
-struct CLNodeSet *draToCLNodeSet(const struct DRA *da);
+struct CLNodeSet *clDraToCLNodeSet(const struct DRA *da);
 int clnodesetSize(const struct CLNodeSet *cl);
 
 #endif

@@ -27,7 +27,7 @@ struct BlockSortCompInstance {
   int *x, *p, allocated;
 };
 
-void suffixsort(int *x, int *p, int n, int k, int l);
+void clSuffixsort(int *x, int *p, int n, int k, int l);
 
 static double bs_compress(struct BlockSortCompInstance *CI,
 			  unsigned char *data, int size) {
@@ -50,7 +50,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
 
   /* Suffix sort the data (permutes x and p) */
   for (i=0; i<size; i++) x[i] = data[i];
-  suffixsort(x, p, size, UCHAR_MAX+1, 0);
+  clSuffixsort(x, p, size, UCHAR_MAX+1, 0);
 
   /* Initialise state transition statistics */
   for (j=0; j<MAXSTATES; j++) {
@@ -175,7 +175,7 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   return (cl + log(size)) / M_LN2;
 }
 
-void bs_freecompfunc(struct CompAdaptor *ca) {
+void clBs_freecompclFunc(struct CompAdaptor *ca) {
   struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
   if (bsci->allocated > 0) {
@@ -186,23 +186,23 @@ void bs_freecompfunc(struct CompAdaptor *ca) {
   free(ca);
 }
 
-static double bs_compfunc(struct CompAdaptor *ca, struct DataBlock *src) {
+static double bs_compclFunc(struct CompAdaptor *ca, struct DataBlock *src) {
   struct BlockSortCompInstance *bsci =
     (struct BlockSortCompInstance *)ca->cptr;
-  return bs_compress(bsci, datablockData(src), datablockSize(src));
+  return bs_compress(bsci, clDatablockData(src), clDatablockSize(src));
 }
 
 static char *bs_shortname(void) { return "blocksort"; }
 static char *bs_longname(void) { return "block-sorting compressor"; }
 static int   bs_apiver(void) { return APIVER_V1; }
 
-struct CompAdaptor *builtin_blocksort(void) {
+struct CompAdaptor *clBuiltin_blocksort(void) {
   int i, d, m, s;
   double prev, cur;
   const static struct CompAdaptor c = {
     cptr: NULL,
-    cf:   bs_compfunc,
-    fcf:  bs_freecompfunc,
+    cf:   bs_compclFunc,
+    fcf:  clBs_freecompclFunc,
     sn:   bs_shortname,
     ln:   bs_longname,
     apiv: bs_apiver
@@ -213,7 +213,7 @@ struct CompAdaptor *builtin_blocksort(void) {
   ca   = clCalloc(sizeof(*ca), 1);
   bsci = clCalloc(sizeof(*bsci), 1);
 
-  if (ca==NULL || bsci==NULL) { clogError("builtin_blocksort"); }
+  if (ca==NULL || bsci==NULL) { clogError("clBuiltin_blocksort"); }
   *ca = c;
   ca->cptr= bsci;
 
@@ -236,7 +236,7 @@ struct CompAdaptor *builtin_blocksort(void) {
     exit(1);
   }
 
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
   return ca;
 }

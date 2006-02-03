@@ -11,6 +11,6 @@
  *  \param filename pointer to string filename
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *dbeLoadFileList(const char *filename);
+struct DataBlockEnumeration *clDbeLoadFileList(const char *filename);
 
 #endif

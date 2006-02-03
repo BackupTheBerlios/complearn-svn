@@ -19,17 +19,17 @@ struct ParamList {
   struct FieldDesc *fields[MAXFIELDS];
 };
 
-int paramlistParamType(struct ParamList *pl, const char *key);
-char *paramlistGetString(struct ParamList *pl, const char *key);
-int paramlistGetInt(struct ParamList *pl, const char *key);
-double paramlistGetDouble(struct ParamList *pl, const char *key);
-char *paramlistToString(struct ParamList *pl);
-struct ParamList *paramlistNew(void);
-void paramlistFree(struct ParamList *pl);
-struct ParamList *paramlistClone(struct ParamList *pl);
-struct FieldDesc *fielddescNew(const char *key, const char *value, int type);
-void fielddescFree(struct FieldDesc *fd);
-int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type);
+int clParamlistParamType(struct ParamList *pl, const char *key);
+char *clParamlistGetString(struct ParamList *pl, const char *key);
+int clParamlistGetInt(struct ParamList *pl, const char *key);
+double clParamlistGetDouble(struct ParamList *pl, const char *key);
+char *clParamlistToString(struct ParamList *pl);
+struct ParamList *clParamlistNew(void);
+void clParamlistFree(struct ParamList *pl);
+struct ParamList *clParamlistClone(struct ParamList *pl);
+struct FieldDesc *clFielddescNew(const char *key, const char *value, int type);
+void clFielddescFree(struct FieldDesc *fd);
+int clParamlistGetValue(struct ParamList *pl, const char *key, void *dest, int type);
 
 
 #endif

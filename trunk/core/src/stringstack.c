@@ -9,12 +9,12 @@ struct StringStack {
   struct DRA *da;
 };
 
-struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
+struct StringStack *clStringstackLoad(struct DataBlock *db, int fmustbe)
 {
-  struct StringStack *result = stringstackNew();
+  struct StringStack *result = clStringstackNew();
   struct DataBlock *cur = NULL;
   struct TagManager *tm;
-  struct TagHdr *h = (struct TagHdr *) datablockData(db);
+  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
@@ -26,151 +26,151 @@ struct StringStack *stringstackLoad(struct DataBlock *db, int fmustbe)
       return NULL;
   }
 
-  tm = newTagManager(db);
+  tm = clNewTagManager(db);
 
-  while ((cur = getCurDataBlock(tm))) {
+  while ((cur = clGetCurDataBlock(tm))) {
     char *str;
-    str = stringLoad(cur, 1);
-    stringstackPush(result, str);
+    str = clStringLoad(cur, 1);
+    clStringstackPush(result, str);
     clFreeandclear(str);
-    stepNextDataBlock(tm);
-    datablockFreePtr(cur);
+    clStepNextDataBlock(tm);
+    clDatablockFreePtr(cur);
   }
 
-  freeTagManager(tm);
+  clFreeTagManager(tm);
   return result;
 }
 
-struct DataBlock *stringstackDump(const struct StringStack *ss)
+struct DataBlock *clStringstackDump(const struct StringStack *ss)
 {
   struct DataBlock *result;
-  struct DRA *parts = draNew();
+  struct DRA *parts = clDraNew();
   int i;
 
-  for ( i = 0; i < stringstackSize(ss); i += 1) {
+  for ( i = 0; i < clStringstackSize(ss); i += 1) {
     union PCTypes p = zeropct;
-    char *s = draGetValueAt(ss->da,i).str;
-    p.dbp = stringDump(s); // TODO: fix mem leak here
-    draPush(parts,p);
+    char *s = clDraGetValueAt(ss->da,i).str;
+    p.dbp = clStringDump(s); // TODO: fix mem leak here
+    clDraPush(parts,p);
   }
 
-  result = package_dd_DataBlocks(TAGNUM_STRINGSTACK, parts);
-  draFree(parts);
+  result = clPackage_dd_DataBlocks(TAGNUM_STRINGSTACK, parts);
+  clDraFree(parts);
   return result;
 }
 
-struct StringStack *stringstackNewSingle(const char *str)
+struct StringStack *clStringstackNewSingle(const char *str)
 {
 	struct StringStack *ss;
-  ss = stringstackNew();
-  stringstackPush(ss, str);
+  ss = clStringstackNew();
+  clStringstackPush(ss, str);
   return ss;
 }
 
-struct StringStack *stringstackNew()
+struct StringStack *clStringstackNew()
 {
 	struct StringStack *ss;
 	ss = (struct StringStack*)clCalloc(sizeof(struct StringStack), 1);
-  ss->da = draNew();
+  ss->da = clDraNew();
 	// ss->size = 0;
 	return ss;
 }
 
-struct StringStack *stringstackClone(struct StringStack *ss)
+struct StringStack *clStringstackClone(struct StringStack *ss)
 {
   struct StringStack *nss;
   int i, sz;
-  sz = stringstackSize(ss);
-  nss = stringstackNew();
+  sz = clStringstackSize(ss);
+  nss = clStringstackNew();
   for (i = 0; i < sz; ++i) {
     union PCTypes p;
-    p.str = clStrdup(draGetValueAt(ss->da, i).str);
-    draSetValueAt(nss->da, i, p);
+    p.str = clStrdup(clDraGetValueAt(ss->da, i).str);
+    clDraSetValueAt(nss->da, i, p);
   }
   return nss;
 }
 
-int stringstackFree(struct StringStack *ss)
+int clStringstackFree(struct StringStack *ss)
 {
   int i;
-  for (i = 0; i < draSize(ss->da); i += 1) {
-    clFree(draGetValueAt(ss->da, i).str);
+  for (i = 0; i < clDraSize(ss->da); i += 1) {
+    clFree(clDraGetValueAt(ss->da, i).str);
   }
-  draFree(ss->da);
+  clDraFree(ss->da);
   ss->da = NULL;
 	clFreeandclear(ss);
 	return CL_OK;
 }
 
-int stringstackUnshift(struct StringStack *ss, const char *str)
+int clStringstackUnshift(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
-  draUnshift(ss->da, p);
+  clDraUnshift(ss->da, p);
   return CL_OK;
 }
 
-int stringstackPush(struct StringStack *ss, const char *str)
+int clStringstackPush(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
   assert(ss);
   assert(str);
   p.str = clStrdup(str);
-  draPush(ss->da, p);
+  clDraPush(ss->da, p);
   return CL_OK;
 }
 
-int stringstackIsEmpty(struct StringStack *ss)
+int clStringstackIsEmpty(struct StringStack *ss)
 {
-	return draSize(ss->da) == 0;
+	return clDraSize(ss->da) == 0;
 }
 
-int stringstackSize(const struct StringStack *ss)
+int clStringstackSize(const struct StringStack *ss)
 {
-	return draSize(ss->da);
+	return clDraSize(ss->da);
 }
 
-/* After calling shiftSS, it is the responsibility of the programmer to free
+/* After calling clShiftSS, it is the responsibility of the programmer to free
  * the shifted string
  */
-char *shiftSS(struct StringStack *ss)
+char *clShiftSS(struct StringStack *ss)
 {
   union PCTypes p;
-  assert(stringstackSize(ss) > 0);
+  assert(clStringstackSize(ss) > 0);
   memset(&p, 0, sizeof(p));
-	if (stringstackSize(ss) == 0) return p.str;
-	p = draShift(ss->da);
+	if (clStringstackSize(ss) == 0) return p.str;
+	p = clDraShift(ss->da);
   return p.str;
 }
 
-/* After calling stringstackPop, it is the responsibility of the programmer to free
+/* After calling clStringstackPop, it is the responsibility of the programmer to free
  * the popped string
  */
-char *stringstackPop(struct StringStack *ss)
+char *clStringstackPop(struct StringStack *ss)
 {
   union PCTypes p;
   memset(&p, 0, sizeof(p));
-	if (stringstackSize(ss) == 0) return p.str;
-	p = draPop(ss->da);
+	if (clStringstackSize(ss) == 0) return p.str;
+	p = clDraPop(ss->da);
   return p.str;
 }
 
-char *stringstackReadAt(struct StringStack *ss, int i)
+char *clStringstackReadAt(struct StringStack *ss, int i)
 {
-	return draGetValueAt(ss->da, i).str;
+	return clDraGetValueAt(ss->da, i).str;
 }
 
-int stringstackSort(struct StringStack *ss)
+int clStringstackSort(struct StringStack *ss)
 {
   int flipped, i;
-  int sz = stringstackSize(ss);
+  int sz = clStringstackSize(ss);
   do {
     flipped = 0;
     for (i = 1; i < sz; ++i) {
-      if (strcmp(draGetValueAt(ss->da, i-1).str, draGetValueAt(ss->da, i).str) > 0) {
-        draSwapAt(ss->da, i-1, i);
+      if (strcmp(clDraGetValueAt(ss->da, i-1).str, clDraGetValueAt(ss->da, i).str) > 0) {
+        clDraSwapAt(ss->da, i-1, i);
         flipped = 1;
       }
     }
@@ -178,20 +178,20 @@ int stringstackSort(struct StringStack *ss)
   return CL_OK;
 }
 
-struct StringStack *stringstackMerge(struct StringStack *ssa, struct StringStack *ssb)
+struct StringStack *clStringstackMerge(struct StringStack *ssa, struct StringStack *ssb)
 {
   struct StringStack *result;
   int i;
-  result = stringstackClone(ssa);
-  for (i = 0; i < stringstackSize(ssb); i += 1)
-    stringstackPush(result, stringstackReadAt(ssb, i));
+  result = clStringstackClone(ssa);
+  for (i = 0; i < clStringstackSize(ssb); i += 1)
+    clStringstackPush(result, clStringstackReadAt(ssb, i));
   return result;
 }
 
-void stringstackPrint(struct StringStack *ss)
+void clStringstackPrint(struct StringStack *ss)
 {
   int i;
-  for (i = 0; i < stringstackSize(ss); i += 1)
-    printf("%s\n", stringstackReadAt(ss, i));
+  for (i = 0; i < clStringstackSize(ss); i += 1)
+    printf("%s\n", clStringstackReadAt(ss, i));
 }
 

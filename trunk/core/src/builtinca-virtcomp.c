@@ -24,22 +24,22 @@ struct VirtualCompInstance {
 };
 
 //static void vc_clsetenv(struct CompAdaptor *ca, struct EnvMap *em);
-int forkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd);
+int clForkPipeExecAndFeed(const struct DataBlock *inp, const char *cmd);
 
-static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void vc_freecompfunc(struct CompAdaptor *ca);
+static double vc_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void vc_freecompclFunc(struct CompAdaptor *ca);
 static char *vc_shortname(void);
 static char *vc_longname(void);
 static int vc_apiver(void);
 
-struct CompAdaptor *compaLoadVirtual(const char *cmd)
+struct CompAdaptor *clCompaLoadVirtual(const char *cmd)
 {
 	struct CompAdaptor c =
   {
     cptr: NULL,
 //    se:   vc_clsetenv,
-    cf:   vc_compfunc,
-    fcf:  vc_freecompfunc,
+    cf:   vc_compclFunc,
+    fcf:  vc_freecompclFunc,
     sn:   vc_shortname,
     ln:   vc_longname,
     apiv: vc_apiver,
@@ -59,17 +59,17 @@ struct CompAdaptor *compaLoadVirtual(const char *cmd)
     exit(1);
   }
 
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
 	return ca;
 }
 
-static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double vc_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
   int readfd;
   char ch;
-  readfd = forkPipeExecAndFeed(src, ci->cmd);
+  readfd = clForkPipeExecAndFeed(src, ci->cmd);
   while (read(readfd, &ch, 1) == 1 && ci->curpt < 512) {
     ci->sbuf[ci->curpt++] = ch;
   }
@@ -77,7 +77,7 @@ static double vc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   return atof(ci->sbuf);
 }
 
-static void vc_freecompfunc(struct CompAdaptor *ca)
+static void vc_freecompclFunc(struct CompAdaptor *ca)
 {
 	struct VirtualCompInstance *ci = (struct VirtualCompInstance *) ca->cptr;
   clFreeandclear(ci->cmd);

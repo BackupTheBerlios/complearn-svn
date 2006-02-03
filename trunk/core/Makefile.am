@@ -16,7 +16,7 @@ doc/man/maketree.1 \
 doc/man/ncd.1
 
 src = \
-complearnpc.in \
+complearn.pc.in \
 src/complearn/maketreeapp.h \
 src/complearn/ncdapp.h
 

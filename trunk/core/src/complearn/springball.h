@@ -31,15 +31,15 @@ struct SpringBallSystem;
 
 /** \brief Converts an AdjAdaptor into a GSL-style matrix with 1's for connected nodes
  *
- * adjaToGSLMatrix() takes a pointer to an AdjAdaptor adjacency matrix
+ * clAdjaToGSLMatrix() takes a pointer to an AdjAdaptor adclJacency matrix
  * adaptor and converts it into a standard gsl_matrix.  This is the standard
- * adjacency-matrix representation where each entry at location i, j is
+ * adclJacency-matrix representation where each entry at location i, j is
  * 1 if nodes i and j are connected, or 0 otherwise.
  *
  *  \param aa pointer to AdjAdaptor
  *  \return pointer to new gsl_matrix
  */
-gsl_matrix *adjaToGSLMatrix(struct AdjAdaptor *aa);
+gsl_matrix *clAdjaToGSLMatrix(struct AdjAdaptor *aa);
 
 /** \brief clStepTowardsTree() allows for smooth time-splicing of dynamic springs
  *
@@ -49,45 +49,45 @@ gsl_matrix *adjaToGSLMatrix(struct AdjAdaptor *aa);
  * and another must appear somewhere new in order to transform the old tree
  * into a new best one.  Doing this instantaneously would result in visually
  * uncomfortable jerkiness and is better handled using a smoothing matrix.
- * The smoothing matrix is the standard binary adjacency matrix (as returned
- * instantaneously from adjaToGSLMatrix() at any point in time) put
- * through an exponential smoothing-filter so that when an adjacency changes
+ * The smoothing matrix is the standard binary adclJacency matrix (as returned
+ * instantaneously from clAdjaToGSLMatrix() at any point in time) put
+ * through an exponential smoothing-filter so that when an adclJacency changes
  * status it does so with a time-constant that is not instantaneous.  This
- * results in a matrix of smoothed adjacency values that are then directly
+ * results in a matrix of smoothed adclJacency values that are then directly
  * usable in the phsyical simulation as k-values in Hook's law springs to
  * allow for a smooth morphing from one tree to the next.  A decaying average
  * is used in combination with a duration parameter dt to adjust the smooth
- * matrix towards the adjacency matrix of the tree.  The dt represents the
- * amount of time elapsed since the last call to this function so that it
+ * matrix towards the adclJacency matrix of the tree.  The dt represents the
+ * amount of time elapsed since the last call to this clFunction so that it
  * may know how far to tend towards the new tree at this point.
  *
  * \param smooth the old "smoothed" k gsl_matrix from which to adjust
  * \param ta a new TreeAdaptor to tend towards
  * \param dt the amount of time since the last clStepTowardsTree() call
  *
- * This function does not return any values.  It simply modifies the smooth
+ * This clFunction does not return any values.  It simply modifies the smooth
  * matrix in place.
  */
 void clStepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt);
 
 /** \brief Allocates a new SpringBallSystem big enough for the given tree
  *
- * This function allocates a new SpringBallSystem with a number of nodes equal
+ * This clFunction allocates a new SpringBallSystem with a number of nodes equal
  * to the number of nodes in the TreeAdaptor.  It returns a pointer to the
  * new SpringBallSystem.
  *
  * \param ta pointer to a TreeAdaptor to be modelled in the SpringBallSystem
  * \return point to the newly allocated SpringBallSystem
  */
-struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta);
+struct SpringBallSystem *clSbsNew(struct TreeAdaptor *ta);
 
 /** \brief frees a SpringBallSystem
  *
- * This function has no return value.
+ * This clFunction has no return value.
  *
  * \param sbs pointer to the SpringBallSystem to be freed
  */
-void sbsFree(struct SpringBallSystem *sbs);
+void clSbsFree(struct SpringBallSystem *sbs);
 
 /** \brief sets or clears the 2 dimensional flattening force
  *
@@ -102,12 +102,12 @@ void sbsFree(struct SpringBallSystem *sbs);
  *
  * There is no return value.
  */
-void sbsSet2DForce(struct SpringBallSystem *sbs, int newval);
+void clSbsSet2DForce(struct SpringBallSystem *sbs, int newval);
 
 /** \brief returns the 3 dimensional position of a given ball
  *
  * The main purpose of the SpringBallSystem is to smoothly track the
- * position of these charged balls over time.  This function is the window
+ * position of these charged balls over time.  This clFunction is the window
  * into their position at any point in time.  The balls are indexed by
  * consecutive integers starting at 0.
  *
@@ -115,13 +115,13 @@ void sbsSet2DForce(struct SpringBallSystem *sbs, int newval);
  * \param whichBall integer index for which ball is under consideration
  * \return pointer to a gsl_vector of 3 dimensions indicating the ball position
  */
-gsl_vector *sbsBallPosition(struct SpringBallSystem *sbs, int whichBall);
+gsl_vector *clSbsBallPosition(struct SpringBallSystem *sbs, int whichBall);
 
 /** \brief adjusts the speed of the simulation relative to realtime
  *
  * The SpringBallSystem evolves forward by using the realtime clock from
  * the operating system.  This starts from the moment of construction.  In
- * order to control the speed of simulation this function may be used.  The
+ * order to control the speed of simulation this clFunction may be used.  The
  * modelSpeed is a multiplicative speed parameter; higher values make it go
  * faster, and the value 1 makes it go at "realtime" speed.  There is no
  * return value.
@@ -129,27 +129,27 @@ gsl_vector *sbsBallPosition(struct SpringBallSystem *sbs, int whichBall);
  * \param sbs pointer to a SpringBallSystem to adjust
  * \param modelSpeed speedup factor to switch to
  */
-void sbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed);
+void clSbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed);
 
 /** \brief Adjusts the current "target" tree for this SpringBallSystem
  *
  * At any point in time, the SpringBallSystem is tending towards a given
  * "target" tree via an exponential decay path.  This tree is initially
  * that one that it is constructed with, but may be changed only with this
- * function.  Once this is called, over time, the springs will adjust to
+ * clFunction.  Once this is called, over time, the springs will adjust to
  * match the most recently changed-to tree.
  *
  * \param sbs pointer to a SpringBallSystem to retarget
  * \param ta new tree to be set as a target to strive towards
  */
-void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
+void clSbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
 
 /** \brief Inspects the smoothed-k matrix for instantaneously smoothed values
  *
  * At any point in time, the SpringBallSystem is tending towards a given
  * "target" tree via an exponential decay path, and each spring in the
  * system is represented by a single double-precision floating point number
- * within a matrix.  This function allows you to find the value of that
+ * within a matrix.  This clFunction allows you to find the value of that
  * number between 0 and 1.   0 means fully disconnected, 1 means fully
  * connected, and as the tree changes you may find many values in between.
  *
@@ -158,11 +158,11 @@ void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta);
  * \param j second node index to consider
  * \return value between 0 and 1 indicating how connected node i and node j is
  */
-double sbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
+double clSbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
 
 /** \brief Steps the system forward some small amount of time
  *
- * This function should be called for each frame of animation.  It will
+ * This clFunction should be called for each frame of animation.  It will
  * get the current time from the OS and step the SpringBallSystem forward
  * as much as is appropriate to catch up with realtime.
  *
@@ -170,11 +170,11 @@ double sbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
  * balls in the system.  There is no return value.
  *
  * Be careful!  If there are too many balls in the system (or they are in
- * an unsolveable tangle) this function may infinite loop.
+ * an unsolveable tangle) this clFunction may infinite loop.
  *
  * \param sbs pointer to a SpringBallSystem to evolve
  */
-void sbsEvolveForward(struct SpringBallSystem *sbs);
+void clSbsEvolveForward(struct SpringBallSystem *sbs);
 
 /** \brief returns a count of the number of balls in this SpringBallSystem
  *
@@ -184,6 +184,6 @@ void sbsEvolveForward(struct SpringBallSystem *sbs);
  * \param sbs pointer to a SpringBallSystem to evolve
  * \return number of balls in this SpringBallSystem
  */
-int sbsNodeCount(struct SpringBallSystem *sbs);
+int clSbsNodeCount(struct SpringBallSystem *sbs);
 
 #endif

@@ -6,13 +6,13 @@ struct Clog { /* NL */
   FILE *fp;
 };
 
-static t_emitfunc emitFunc;
+static t_emitclFunc emitFunc;
 
-t_emitfunc clogSetEmitFunction(t_emitfunc newfunc)
+t_emitclFunc clogSetEmitFunction(t_emitclFunc newclFunc)
 {
-  t_emitfunc oldFunc;
+  t_emitclFunc oldFunc;
   oldFunc = emitFunc;
-  emitFunc = newfunc;
+  emitFunc = newclFunc;
   return oldFunc;
 }
 

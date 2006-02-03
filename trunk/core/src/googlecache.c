@@ -30,7 +30,7 @@ struct GCSample {
                         perhaps not normalized. */
 };
 
-struct GoogleCache *newGC(void)
+struct GoogleCache *clNewGC(void)
 {
   struct GoogleCache *gc;
   int retryNum = 0;
@@ -49,12 +49,12 @@ struct GoogleCache *newGC(void)
   return gc;
 }
 
-void deleteSavedGC(void)
+void clDeleteSavedGC(void)
 {
   cldbunlink("gsamp");
 }
 
-void freeGC(struct GoogleCache *gc)
+void clFreeGC(struct GoogleCache *gc)
 {
   cldbclose(gc->samp);
   gc->samp = NULL;
@@ -65,11 +65,11 @@ static const char *makeCacheKey(const char *daystr, struct StringStack *terms)
 {
   static char ckbuf[3000];
   memset(ckbuf, 0, sizeof(ckbuf));
-  sprintf(ckbuf, "ck-%s/%s", daystr ? daystr : "last", makeQueryString(terms));
+  sprintf(ckbuf, "ck-%s/%s", daystr ? daystr : "last", clMakeQueryString(terms));
   return ckbuf;
 }
 
-struct DataBlock *makeCacheVal(double pg, struct DataBlock *lastdbval, const char *qorig)
+struct DataBlock *clMakeCacheVal(double pg, struct DataBlock *lastdbval, const char *qorig)
 {
   static struct GCSample d, lastd;
   struct CLDateTime *dt;
@@ -80,19 +80,19 @@ struct DataBlock *makeCacheVal(double pg, struct DataBlock *lastdbval, const cha
   d.pagecount = pg;
   d.when = cldatetimeToInt(dt);
   strcpy(d.daystring, cldatetimeToDayString(dt));
-  if (lastdbval && datablockSize(lastdbval) > 0)
-    memcpy(d.cknext, datablockData(lastdbval), datablockSize(lastdbval));
+  if (lastdbval && clDatablockSize(lastdbval) > 0)
+    memcpy(d.cknext, clDatablockData(lastdbval), clDatablockSize(lastdbval));
   strcpy(d.qorig, qorig);
 
-  return datablockNewFromBlock(&d, sizeof(d));
+  return clDatablockNewFromBlock(&d, sizeof(d));
 }
 
-double convertCacheVal(struct DataBlock *d)
+double clConvertCacheVal(struct DataBlock *d)
 {
-  struct GCSample *r = (struct GCSample *) datablockData(d);
+  struct GCSample *r = (struct GCSample *) clDatablockData(d);
   return r->pagecount;
 }
-double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char *udaystr)
+double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const char *udaystr)
 {
   static struct GoogleCache *gc;
   double result;
@@ -107,15 +107,15 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
     daystr = clStrdup(udaystr);
   }
   if (gc == NULL)
-    gc = newGC();
-  fetchsample(gc, daystr, terms, &result, gkey);
+    gc = clNewGC();
+  clFetchsample(gc, daystr, terms, &result, gkey);
   clFreeandclear(daystr);
   return result;
 }
 /** \brief Fetches a sample from the local count database with the help of the
  * caching agent, GoogleCache.
  *
- * The fetchsample function is the primary interface to the GoogleCache
+ * The clFetchsample clFunction is the primary interface to the GoogleCache
  * database, and is expected to be sufficient for most uses.  It supports a
  * GDBM-based query mechanism that allows efficient retrieval of count
  * information for any given day.  In order to fetch a sample, a user must
@@ -123,12 +123,12 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
  * encodes day information, as well as a searchquery that is comprised of
  * a StringStack of search terms.  The results are returned via the
  * out parameter val as well as a return status code, nominally CL_OK.
- * Another requirement of using fetchsample is a Google API account key.
+ * Another requirement of using clFetchsample is a Google API account key.
  * This key looks like "Q/ZMtPCJYCKQrnxeq/pXJ/UNC4DEG1CZe" and is sent to
  * you after applying with Google online.
  *
  * The search terms supplied in the terms StringStack are expected to be
- * unquoted.  The fetchsample function will add double-quotes around these
+ * unquoted.  The clFetchsample clFunction will add double-quotes around these
  * strings as well as preceding each of them with + and joining them with
  * spaces.  This will form one large string query to send to Google from
  * the passed-in array.
@@ -138,7 +138,7 @@ double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char
  * \param terms pointer to a StringStack of terms that will be
  * \return a value 0 indicating a cache-miss, or 1 indicating a cache-success
  */
-int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
+int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
 {
   struct StringStack *normed;
   char *daystrcachekey;
@@ -146,13 +146,13 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   struct DataBlock *db, *oldlast;
   struct DataBlock *dbdaystrkey;
 
-  normed = stringstackClone(terms);                    /* FSA02 */
-  normalizeSearchTerms(normed);
-  dblastkey = stringToDataBlockPtr(makeCacheKey(NULL, normed));
+  normed = clStringstackClone(terms);                    /* FSA02 */
+  clNormalizeSearchTerms(normed);
+  dblastkey = clStringToDataBlockPtr(makeCacheKey(NULL, normed));
 
   daystrcachekey = clStrdup(makeCacheKey(daystr, normed));
 
-  dbdaystrkey = stringToDataBlockPtr(daystrcachekey);      /* FSA03 */
+  dbdaystrkey = clStringToDataBlockPtr(daystrcachekey);      /* FSA03 */
   db = cldbfetch(gc->samp, dbdaystrkey);
 
   lastdbval = cldbfetch(gc->samp, dblastkey);  /* may be NULL */
@@ -160,34 +160,34 @@ int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *
   if (!db) {
     if (lastdbval) {
       db = cldbfetch(gc->samp, lastdbval);
-//      datablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
+//      clDatablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
     }
   }
   if (db) {
-    assert(datablockSize(db) == sizeof(struct GCSample));
-    *val = convertCacheVal(db);
-    stringstackFree(normed);                       /* FSF02:1/2 */
-    datablockFreePtr(db);
-    datablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
+    assert(clDatablockSize(db) == sizeof(struct GCSample));
+    *val = clConvertCacheVal(db);
+    clStringstackFree(normed);                       /* FSF02:1/2 */
+    clDatablockFreePtr(db);
+    clDatablockFreePtr(dbdaystrkey);                /* FSF03:1/2 */
     clFree(daystrcachekey);
     return 1;
   } else {
     double pgc;
     struct DataBlock *newentry;
-    pgc = getPageCount(terms, gkey);
+    pgc = clGetPageCount(terms, gkey);
     if (pgc < 0) {
       clogError("Error contacting Google, aborting...\n");
     }
     *val = pgc;
-    newentry = makeCacheVal(pgc, lastdbval, makeQueryString(terms));
+    newentry = clMakeCacheVal(pgc, lastdbval, clMakeQueryString(terms));
     cldbstore(gc->samp, dbdaystrkey, newentry);
     cldbstore(gc->samp, dblastkey, dbdaystrkey);
-    stringstackFree(normed);                          /* FSF02:2/2 */
-    datablockFreePtr(dblastkey);
-    datablockFreePtr(newentry);
-    datablockFreePtr(dbdaystrkey);                /* FSF03:2/2 */
+    clStringstackFree(normed);                          /* FSF02:2/2 */
+    clDatablockFreePtr(dblastkey);
+    clDatablockFreePtr(newentry);
+    clDatablockFreePtr(dbdaystrkey);                /* FSF03:2/2 */
     if (lastdbval) {
-      datablockFreePtr(lastdbval);
+      clDatablockFreePtr(lastdbval);
       lastdbval = NULL;
     }
     clFree(daystrcachekey);

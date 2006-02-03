@@ -16,7 +16,7 @@ static void *dl_musthavesymbol(void *dlhandle, const char *str)
 	return result;
 }
 
-struct CompAdaptor *compaLoadDynamicLib(const char *libraryname)
+struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname)
 {
 	void *dlhandle;
   struct CompAdaptor *c;
@@ -35,7 +35,7 @@ struct CompAdaptor *compaLoadDynamicLib(const char *libraryname)
 
 #else
 
-struct CompAdaptor *compaLoadDynamicLib(const char *libraryname)
+struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname)
 {
   return NULL;
 }

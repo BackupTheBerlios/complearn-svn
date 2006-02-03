@@ -16,7 +16,7 @@ struct TreeMolder {
   int k;
 */
 
-void treemolderFree(struct TreeMolder *tm)
+void clTreemolderFree(struct TreeMolder *tm)
 {
   clnodesetFree(tm->flips);
   tm->flips = NULL;
@@ -37,14 +37,14 @@ static void calcRangesTM(struct TreeMolder *tm)
   }
 }
 
-struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
+struct TreeMolder *clTreemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 {
   struct TreeMolder *tm = clCalloc(sizeof(*tm), 1);
   struct AdjAdaptor *aa;
   assert(gm->size1 > 0 && gm->size1 == gm->size2);
-  aa = treeaAdjAdaptor(ta);
+  aa = clTreeaAdjAdaptor(ta);
   assert(aa);
-  tm->nodecount = adjaSize(aa);
+  tm->nodecount = clAdjaSize(aa);
   tm->ta = ta;
   tm->dm = gm;
   tm->flips = clnodesetNew(tm->nodecount);
@@ -56,35 +56,35 @@ struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 static double scorePerimeter(const gsl_matrix *dm, struct TreeAdaptor *ts, struct CLNodeSet *flips)
 {
   double acc = 0.0;
-  struct DRA *pairs = treeaPerimPairs(ts, flips);
+  struct DRA *pairs = clTreeaPerimPairs(ts, flips);
   int i;
-  struct LabelPerm *lph = treeaLabelPerm(ts);
-  for (i = 0; i < draSize(pairs); i += 1) {
-    union PCTypes p = draGetValueAt(pairs, i);
+  struct LabelPerm *lph = clTreeaLabelPerm(ts);
+  for (i = 0; i < clDraSize(pairs); i += 1) {
+    union PCTypes p = clDraGetValueAt(pairs, i);
     double x, y;
-    x = labelpermColIndexForNodeID(lph, p.ip.x);
-    y = labelpermColIndexForNodeID(lph, p.ip.y);
+    x = clLabelpermColIndexForNodeID(lph, p.ip.x);
+    y = clLabelpermColIndexForNodeID(lph, p.ip.y);
     acc += gsl_matrix_get(dm, x, y);
   }
-  draFree(pairs);
-  labelpermFree(lph);
+  clDraFree(pairs);
+  clLabelpermFree(lph);
   return acc;
 }
 
-double treemolderScoreScaled(struct TreeMolder *tm)
+double clTreemolderScoreScaled(struct TreeMolder *tm)
 {
-  double rawscore = treemolderScore(tm);
+  double rawscore = clTreemolderScore(tm);
   return 1.0 - ((rawscore - tm->minscore) / (tm->maxscore-tm->minscore));
 }
 
-double treemolderScore(struct TreeMolder *tm)
+double clTreemolderScore(struct TreeMolder *tm)
 {
   if (tm->score == -1)
     tm->score = scorePerimeter(tm->dm, tm->ta, tm->flips);
   return tm->score;
 }
 
-struct CLNodeSet *treemolderFlips(struct TreeMolder *tm)
+struct CLNodeSet *clTreemolderFlips(struct TreeMolder *tm)
 {
   return tm->flips;
 }
@@ -95,14 +95,14 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
   do {
     do {
       whichNode = rand() % tm->nodecount;
-    } while (!treeaIsFlippable(tm->ta, whichNode));
+    } while (!clTreeaIsFlippable(tm->ta, whichNode));
     oldStatus = clnodesetHasNode(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
     clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
   } while ((rand() % 2) == 0);
 }
 
-void treemolderScramble(struct TreeMolder *tm)
+void clTreemolderScramble(struct TreeMolder *tm)
 {
   int i;
   for (i = 0; i < tm->nodecount; i += 1)
@@ -110,13 +110,13 @@ void treemolderScramble(struct TreeMolder *tm)
   tm->score = -1;
 }
 
-int treemolderImprove(struct TreeMolder *tm)
+int clTreemolderImprove(struct TreeMolder *tm)
 {
   struct CLNodeSet *cand = clnodesetClone(tm->flips);
   double candscore;
   mutateFlipArray(tm, cand);
   candscore = scorePerimeter(tm->dm, tm->ta, cand);
-  if (candscore < treemolderScore(tm)) {
+  if (candscore < clTreemolderScore(tm)) {
 //    printf("In treemolder %p, raw score impr from %f to %f\n", tm, tm->score, candscore );
     tm->score = candscore;
     clnodesetFree(tm->flips);
@@ -129,12 +129,12 @@ int treemolderImprove(struct TreeMolder *tm)
   }
 }
 
-struct TreeAdaptor *treemolderTreeAdaptor(const struct TreeMolder *tmo)
+struct TreeAdaptor *clTreemolderTreeAdaptor(const struct TreeMolder *tmo)
 {
-  return treeaClone(tmo->ta);
+  return clTreeaClone(tmo->ta);
 }
 
-int treemolderNodeCount(const struct TreeMolder *tmo)
+int clTreemolderNodeCount(const struct TreeMolder *tmo)
 {
   return tmo->nodecount;
 }

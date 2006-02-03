@@ -9,10 +9,10 @@ struct TreeScore;
 struct TreeAdaptor;
 struct AdjAdaptor;
 
-struct TreeScore *initTreeScore(struct TreeAdaptor *ta);
+struct TreeScore *clInitTreeScore(struct TreeAdaptor *ta);
 
-double scoreTree(struct TreeScore *ts, gsl_matrix *dm);
-int isConsistent(struct AdjAdaptor *ad, struct Quartet q);
-void freeTreeScore(struct TreeScore *ts);
+double clScoreTree(struct TreeScore *ts, gsl_matrix *dm);
+int clIsConsistent(struct AdjAdaptor *ad, struct Quartet q);
+void clFreeTreeScore(struct TreeScore *ts);
 
 #endif

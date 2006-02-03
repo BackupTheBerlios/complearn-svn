@@ -11,64 +11,64 @@ struct TagManager {
   int size;
 };
 
-struct TagManager *newTagManager(struct DataBlock *db)
+struct TagManager *clNewTagManager(struct DataBlock *db)
 {
   struct TagManager *tm = clCalloc(sizeof(*tm),1);
-  struct TagHdr *h = (struct TagHdr *) datablockData(db);
+  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
   tm->db = db;
-  tm->cur = datablockData(db) + sizeof(struct TagHdr);
+  tm->cur = clDatablockData(db) + sizeof(struct TagHdr);
   tm->size = h->size;
   tm->read = 0;
   return tm;
 }
 
-t_tagtype getCurTagNum(const struct TagManager *tm)
+t_tagtype clGetCurTagNum(const struct TagManager *tm)
 {
   struct TagHdr *h = (struct TagHdr *) tm->cur;
   return h->tagnum;
 }
 
-void stepNextDataBlock(struct TagManager *tm)
+void clStepNextDataBlock(struct TagManager *tm)
 {
   struct TagHdr *h = (struct TagHdr *) tm->cur;
   tm->cur += h->size + sizeof(*h);
   tm->read += h->size + sizeof(*h);
 }
 
-struct DataBlock *getCurDataBlock(struct TagManager *tm)
+struct DataBlock *clGetCurDataBlock(struct TagManager *tm)
 {
   struct TagHdr *h = (struct TagHdr *) tm->cur;
   if (tm->read >= tm->size) return NULL;
-  return datablockNewFromBlock(tm->cur, h->size + sizeof(*h));
+  return clDatablockNewFromBlock(tm->cur, h->size + sizeof(*h));
 }
 
-void freeTagManager(struct TagManager *tm)
+void clFreeTagManager(struct TagManager *tm)
 {
   tm->cur = NULL;
   tm->db = NULL;
   clFreeandclear(tm);
 }
 
-struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...)
+struct DataBlock *clPackage_DataBlocks(t_tagtype overalltag, ...)
 {
   va_list ap;
   struct DataBlock *db, *result;
-  struct DRA *parts = draNew();
+  struct DRA *parts = clDraNew();
   va_start(ap, overalltag);
   while ( (db = va_arg(ap, struct DataBlock *)) ) {
     union PCTypes p = zeropct;
     p.dbp = db;
-    draPush(parts, p);
+    clDraPush(parts, p);
   }
   va_end(ap);
 
-  result = package_dd_DataBlocks(overalltag,parts);
+  result = clPackage_dd_DataBlocks(overalltag,parts);
 
-  draFree(parts);
+  clDraFree(parts);
   return result;
 }
 
-struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
+struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
 {
   struct DataBlock *result;
   struct TagHdr h;
@@ -77,15 +77,15 @@ struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
   int dbsize = 0;
   unsigned char *dbptr, *resptr;
 
-  for ( i = 0; i < draSize(parts); i += 1) {
-    dbsize += datablockSize(draGetValueAt(parts,i).dbp);
+  for ( i = 0; i < clDraSize(parts); i += 1) {
+    dbsize += clDatablockSize(clDraGetValueAt(parts,i).dbp);
   }
   dbptr = clCalloc(dbsize,1);
   ptr = dbptr;
 
-  for ( i = 0; i < draSize(parts); i += 1) {
-    memcpy(ptr, datablockData(draGetValueAt(parts,i).dbp), datablockSize(draGetValueAt(parts,i).dbp));
-    ptr += datablockSize(draGetValueAt(parts,i).dbp);
+  for ( i = 0; i < clDraSize(parts); i += 1) {
+    memcpy(ptr, clDatablockData(clDraGetValueAt(parts,i).dbp), clDatablockSize(clDraGetValueAt(parts,i).dbp));
+    ptr += clDatablockSize(clDraGetValueAt(parts,i).dbp);
   }
 
   h.tagnum = tnum;
@@ -98,51 +98,51 @@ struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
 
   clFree(dbptr);
 
-  result =  datablockNewFromBlock(resptr,ressize);
+  result =  clDatablockNewFromBlock(resptr,ressize);
   clFree(resptr);
   return result;
 
 }
 
-void free_DataBlock_package ( struct DRA *da, void *udata)
+void clFree_DataBlock_package ( struct DRA *da, void *udata)
 {
   int i;
-  for ( i = 0; i < draSize(da) ; i += 1) {
-    datablockFreePtr(draGetValueAt(da,i).idbp.db);
+  for ( i = 0; i < clDraSize(da) ; i += 1) {
+    clDatablockFreePtr(clDraGetValueAt(da,i).idbp.db);
   }
 }
 
-struct DRA *load_DataBlock_package(struct DataBlock *db)
+struct DRA *clLoad_DataBlock_package(struct DataBlock *db)
 {
-  struct DRA *result = draNew();
+  struct DRA *result = clDraNew();
   struct TagManager *tm;
   struct DataBlock *cur = NULL;
 
-  tm = newTagManager(db);
+  tm = clNewTagManager(db);
 
-  while ((cur = getCurDataBlock(tm))) {
+  while ((cur = clGetCurDataBlock(tm))) {
     union PCTypes p = zeropct;
-    p.idbp.tnum = getCurTagNum(tm);
-    p.idbp.db = datablockClonePtr(cur);
-    draPush(result, p);
-    stepNextDataBlock(tm);
-    datablockFreePtr(cur);
+    p.idbp.tnum = clGetCurTagNum(tm);
+    p.idbp.db = clDatablockClonePtr(cur);
+    clDraPush(result, p);
+    clStepNextDataBlock(tm);
+    clDatablockFreePtr(cur);
   }
-  freeTagManager(tm);
+  clFreeTagManager(tm);
 
   return result;
 }
 
-struct DataBlock *scanForTag(struct DRA *dd, int tnum)
+struct DataBlock *clScanForTag(struct DRA *dd, int tnum)
 {
   int i;
   struct DataBlock *db;
   t_tagtype curtnum;
-  for (i = 0; i < draSize(dd); i += 1) {
-    curtnum = draGetValueAt(dd,i).idbp.tnum;
+  for (i = 0; i < clDraSize(dd); i += 1) {
+    curtnum = clDraGetValueAt(dd,i).idbp.tnum;
     if (curtnum == tnum) {
-      db = draGetValueAt(dd,i).idbp.db;
-      return datablockClonePtr(db);
+      db = clDraGetValueAt(dd,i).idbp.db;
+      return clDatablockClonePtr(db);
     }
   }
   return NULL;

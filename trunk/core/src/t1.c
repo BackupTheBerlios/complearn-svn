@@ -4,8 +4,8 @@ int main()
 {
   struct DataBlock *dbkey, *dbval, *fval;
   struct GDBMHelper *gdbm = cldbopen("fun");
-  dbkey = stringToDataBlockPtr("lisa");
-  dbval = stringToDataBlockPtr("gogo dancer");
+  dbkey = clStringToDataBlockPtr("lisa");
+  dbval = clStringToDataBlockPtr("gogo dancer");
   fval = cldbfetch(gdbm, dbkey);
   printf("The fval is %p\n", fval);
   cldbstore(gdbm, dbkey, dbval);

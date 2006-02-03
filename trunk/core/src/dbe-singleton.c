@@ -4,8 +4,8 @@
 
 #include <complearn/complearn.h>
 
-struct DataBlockEnumeration *dbeLoadSingleton(struct DataBlock *db)
+struct DataBlockEnumeration *clDbeLoadSingleton(struct DataBlock *db)
 {
   assert(db);
-  return dbeLoadArray(&db, 1);
+  return clDbeLoadArray(&db, 1);
 }

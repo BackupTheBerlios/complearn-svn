@@ -12,12 +12,12 @@ struct DataBlock {
 /* Allocates memory for a new DataBlock and copies string into new
  * DataBlock without a terminal nul
  */
-struct DataBlock *stringToDataBlockPtr(const char *s)
+struct DataBlock *clStringToDataBlockPtr(const char *s)
 {
-  return datablockNewFromBlock(s,strlen(s));
+  return clDatablockNewFromBlock(s,strlen(s));
 }
 
-struct DataBlock *fileToDataBlockPtr(const char *path)
+struct DataBlock *clFileToDataBlockPtr(const char *path)
 {
   struct DataBlock *result;
   FILE *fp = fopen(path, "rb");
@@ -25,60 +25,60 @@ struct DataBlock *fileToDataBlockPtr(const char *path)
     clogError("fopen error reading <%s>", path);
   }
   assert(fp);
-  result = filePtrToDataBlockPtr(fp);
+  result = clFilePtrToDataBlockPtr(fp);
   fclose(fp);
   return result;
 }
 
-struct DataBlock *filePtrToDataBlockPtr(FILE *fp)
+struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
 {
   int toread = 812;
 	int incrbytes,totalbytes, i;
   char *dbuf[toread];
-  struct DRA *parts = draNew();
+  struct DRA *parts = clDraNew();
   unsigned char *ptr;
   unsigned char *partsbuf;
   struct DataBlock *result;
 
   if (fp == NULL) {
-    clogError("NULL ptr in filePtrToDataBlockPtr()\n");
+    clogError("NULL ptr in clFilePtrToDataBlockPtr()\n");
   }
 
   totalbytes = 0;
 	while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
     union PCTypes p;
     totalbytes += incrbytes;
-    p.dbp = datablockNewFromBlock(dbuf,incrbytes);
-    draPush(parts,p);
+    p.dbp = clDatablockNewFromBlock(dbuf,incrbytes);
+    clDraPush(parts,p);
   }
 
   partsbuf = clCalloc(totalbytes,1);
   ptr = partsbuf;
 
-  for ( i = 0; i < draSize(parts); i += 1) {
-    memcpy(ptr, datablockData(draGetValueAt(parts,i).dbp), datablockSize(draGetValueAt(parts,i).dbp));
-    ptr += datablockSize(draGetValueAt(parts,i).dbp);
+  for ( i = 0; i < clDraSize(parts); i += 1) {
+    memcpy(ptr, clDatablockData(clDraGetValueAt(parts,i).dbp), clDatablockSize(clDraGetValueAt(parts,i).dbp));
+    ptr += clDatablockSize(clDraGetValueAt(parts,i).dbp);
   }
 
-  draFree(parts);
+  clDraFree(parts);
 
-  result = datablockNewFromBlock(partsbuf,totalbytes);
+  result = clDatablockNewFromBlock(partsbuf,totalbytes);
   clFree(partsbuf);
   return result;
 }
 
-void datablockFree(struct DataBlock db)
+void clDatablockFree(struct DataBlock db)
 {
   clFreeandclear(db.ptr);
 }
 
-void datablockFreePtr(struct DataBlock *db)
+void clDatablockFreePtr(struct DataBlock *db)
 {
   clFreeandclear(db->ptr);
   clFreeandclear(db);
 }
 
-void datablockPrintPtr(struct DataBlock *db)
+void clDatablockPrintPtr(struct DataBlock *db)
 {
   if (db)
     fwrite(db->ptr, 1, db->size, stdout);
@@ -86,11 +86,11 @@ void datablockPrintPtr(struct DataBlock *db)
     fwrite("(null)", 1, 6, stdout);
 }
 
-char *datablockToString(struct DataBlock *db)
+char *clDatablockToString(struct DataBlock *db)
 {
   char *s;
   if (db == NULL) {
-    clogError("NULL ptr in datablockToString()\n");
+    clogError("NULL ptr in clDatablockToString()\n");
   }
   s = clMalloc(db->size+1);
   memcpy(s, db->ptr, db->size);
@@ -98,16 +98,16 @@ char *datablockToString(struct DataBlock *db)
 	return s;
 }
 
-void datablockWriteToFile(struct DataBlock *db, const char *path)
+void clDatablockWriteToFile(struct DataBlock *db, const char *path)
 {
 	FILE *fp;
 	int err;
   if (db == NULL) {
-    clogError("NULL ptr in datablockWriteToFile()\n");
+    clogError("NULL ptr in clDatablockWriteToFile()\n");
   }
 	fp = clFopen(path,"wb");
   if (fp == NULL) {
-    clogError("fopen error in datablockWriteToFile()\n");
+    clogError("fopen error in clDatablockWriteToFile()\n");
   }
 	err = fwrite(db->ptr,1,db->size,fp);
 	if (err == 0) {
@@ -117,12 +117,12 @@ void datablockWriteToFile(struct DataBlock *db, const char *path)
   clFclose(fp);
 }
 
-struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
+struct DataBlock *clDatablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 {
 	struct DataBlock *d;
   int sz;
   if (a == NULL || b == NULL) {
-    clogError("NULL ptr in datablockCatPtr()\n");
+    clogError("NULL ptr in clDatablockCatPtr()\n");
   }
   sz = a->size + b->size;
   d = clCalloc(sz, 1);
@@ -133,15 +133,15 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 	return d;
 }
 
-struct DataBlock *datablockClonePtr(struct DataBlock *db)
+struct DataBlock *clDatablockClonePtr(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in datablockCatPtr()\n");
+    clogError("NULL ptr in clDatablockCatPtr()\n");
   }
-  return datablockNewFromBlock(datablockData(db),datablockSize(db));
+  return clDatablockNewFromBlock(clDatablockData(db),clDatablockSize(db));
 }
 
-struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
+struct DataBlock *clDatablockNewFromBlock(const void *ptr, unsigned int size)
 {
   struct DataBlock *db;
   db = clCalloc(sizeof(struct DataBlock), 1);
@@ -151,18 +151,18 @@ struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size)
   return db;
 }
 
-int datablockSize(struct DataBlock *db)
+int clDatablockSize(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in datablockSize()\n");
+    clogError("NULL ptr in clDatablockSize()\n");
   }
   return db->size;
 }
 
-unsigned char *datablockData(struct DataBlock *db)
+unsigned char *clDatablockData(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in datablockData()\n");
+    clogError("NULL ptr in clDatablockData()\n");
   }
   return db->ptr;
 }

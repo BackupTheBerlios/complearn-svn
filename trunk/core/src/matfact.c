@@ -6,17 +6,17 @@ struct GSLMHdr {
   int size1, size2;
 };
 
-gsl_matrix *gslmatrixClone(const gsl_matrix *a)
+gsl_matrix *clGslmatrixClone(const gsl_matrix *a)
 {
   gsl_matrix *u;
   u = gsl_matrix_alloc(a->size1, a->size2);
   gsl_matrix_memcpy(u, a);
   return u;
 }
-struct DataBlock *gslmatrixDump(const gsl_matrix *a)
+struct DataBlock *clGslmatrixDump(const gsl_matrix *a)
 {
   struct DataBlock *result, *dubs;
-  struct DRA *dac = draNew();
+  struct DRA *dac = clDraNew();
   struct TagHdr h;
   struct GSLMHdr m;
   unsigned char *dbptr;
@@ -26,28 +26,28 @@ struct DataBlock *gslmatrixDump(const gsl_matrix *a)
     for (y = 0; y < a->size2; ++y) {
       union PCTypes p = zeropct;
       p.d = gsl_matrix_get(a, x, y);
-      draPush(dac, p);
+      clDraPush(dac, p);
     }
   }
   h.tagnum = TAGNUM_GSLMATRIX;
   m.size1 = a->size1;
   m.size2 = a->size2;
-  dubs = draDump(dac);
-  h.size = datablockSize(dubs) + sizeof(m);
+  dubs = clDraDump(dac);
+  h.size = clDatablockSize(dubs) + sizeof(m);
 
-  dbsize = datablockSize(dubs) + sizeof(h) + sizeof(m);
+  dbsize = clDatablockSize(dubs) + sizeof(h) + sizeof(m);
   dbptr = clCalloc(dbsize, 1);
   memcpy(dbptr, &h, sizeof(h));
   memcpy(dbptr + sizeof(h), &m, sizeof(m));
-  memcpy(dbptr + sizeof(h) + sizeof(m), datablockData(dubs), datablockSize(dubs));
-  result = datablockNewFromBlock(dbptr, dbsize);
-  datablockFreePtr(dubs);
+  memcpy(dbptr + sizeof(h) + sizeof(m), clDatablockData(dubs), clDatablockSize(dubs));
+  result = clDatablockNewFromBlock(dbptr, dbsize);
+  clDatablockFreePtr(dubs);
   clFree(dbptr);
-  draFree(dac);
+  clDraFree(dac);
   return result;
 }
 
-gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
+gsl_matrix *clGslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
 {
   gsl_matrix *result;
   struct TagHdr *h;
@@ -56,9 +56,9 @@ gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
   struct DRA *da;
   int x, y, i = 0;
   d = ptrd;
-  assert(sizeof(*m)+sizeof(*h) <= datablockSize(d));
-  h = (struct TagHdr *) datablockData(d);
-  m = (struct GSLMHdr *) (datablockData(d) + sizeof(*h));
+  assert(sizeof(*m)+sizeof(*h) <= clDatablockSize(d));
+  h = (struct TagHdr *) clDatablockData(d);
+  m = (struct GSLMHdr *) (clDatablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_GSLMATRIX) {
     if (fmustbe) {
     clogError("Error: expecting GSLMATRIX tagnum %x, got %x\n",
@@ -69,32 +69,32 @@ gsl_matrix *gslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
       return NULL;
   }
   assert(m->size1 > 0 && m->size2 > 0);
-  db = datablockNewFromBlock( datablockData(d) + sizeof(*h) + sizeof(*m), datablockSize(d) - (sizeof(*h) + sizeof(*m)));
+  db = clDatablockNewFromBlock( clDatablockData(d) + sizeof(*h) + sizeof(*m), clDatablockSize(d) - (sizeof(*h) + sizeof(*m)));
 
-  da = draLoad(db, 1);
+  da = clDraLoad(db, 1);
 
   result = gsl_matrix_alloc(m->size1, m->size2);
   for (x = 0; x < m->size1; x += 1)
     for (y = 0; y < m->size2; y += 1)
-      gsl_matrix_set(result, x, y, draGetDValueAt(da, i++));
-  draFree(da);
-  datablockFreePtr(db);
+      gsl_matrix_set(result, x, y, clDraGetDValueAt(da, i++));
+  clDraFree(da);
+  clDatablockFreePtr(db);
   return result;
 }
 
-struct DataBlock *distmatrixDump(gsl_matrix *m)
+struct DataBlock *clDistmatrixDump(gsl_matrix *m)
 {
   struct DataBlock *db, *dbm;
-  db = gslmatrixDump(m);
-  dbm = package_DataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
+  db = clGslmatrixDump(m);
+  dbm = clPackage_DataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
   return dbm;
 }
 
-gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
+gsl_matrix *clDistmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
 {
   gsl_matrix *m;
   struct DRA *dd;
-  struct TagHdr *h = (struct TagHdr *) datablockData(ptrdb);
+  struct TagHdr *h = (struct TagHdr *) clDatablockData(ptrdb);
   struct DataBlock *dbdm;
 
   if (h->tagnum != TAGNUM_CLDISTMATRIX) {
@@ -107,16 +107,16 @@ gsl_matrix *distmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
       return NULL;
   }
 
-  dd = load_DataBlock_package(ptrdb);
-  dbdm = scanForTag(dd, TAGNUM_GSLMATRIX );
-  m = gslmatrixLoad(dbdm, 1);
-  draFree(dd);
-  datablockFreePtr(dbdm);
+  dd = clLoad_DataBlock_package(ptrdb);
+  dbdm = clScanForTag(dd, TAGNUM_GSLMATRIX );
+  m = clGslmatrixLoad(dbdm, 1);
+  clDraFree(dd);
+  clDatablockFreePtr(dbdm);
 
   return m;
 }
 
-void gslmatrixFree(gsl_matrix *m)
+void clGslmatrixFree(gsl_matrix *m)
 {
   gsl_matrix_free(m);
 }
@@ -127,12 +127,12 @@ gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
   gsl_matrix *dm;
   struct DRA *dd;
 
-  dd = load_DataBlock_package(db);
-  dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
+  dd = clLoad_DataBlock_package(db);
+  dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clbDistMatrixLoad(dbdm);
 
-  datablockFreePtr(dbdm);
-  draFree(dd);
+  clDatablockFreePtr(dbdm);
+  clDraFree(dd);
   return dm;
 }
 
@@ -140,19 +140,19 @@ struct DataBlock *clbDMDataBlock(char *fname) {
   struct DataBlock *db, *dbdm;
   struct DRA *dd;
 
-  db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(db);
-  dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
+  db = clFileToDataBlockPtr(fname);
+  dd = clLoad_DataBlock_package(db);
+  dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
 
-  datablockFreePtr(db);
-  draFree(dd);
+  clDatablockFreePtr(db);
+  clDraFree(dd);
   return dbdm;
 }
 
 gsl_matrix *clbDistMatrixLoad(struct DataBlock *db)
 {
   gsl_matrix *dm;
-  dm = distmatrixLoad(db,1);
+  dm = clDistmatrixLoad(db,1);
   return dm;
 }
 
@@ -165,7 +165,7 @@ gsl_matrix *clbDistMatrix(char *fname)
   db = clbDMDataBlock(fname);
   result = clbDistMatrixLoad(db);
 
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
   return result;
 }
 
@@ -175,17 +175,17 @@ gsl_matrix *clbDistMatrix(char *fname)
 
 static struct DRA *get_dm_row_from_txt(char *linebuf, int isLabeled)
 {
-  struct DRA *row = draNew();
+  struct DRA *row = clDraNew();
   char *s;
   union PCTypes p = zeropct;
   s = strtok(linebuf, DELIMS);
   if (!isLabeled) {
     p.d = atof(s);
-    draPush(row,p);
+    clDraPush(row,p);
   }
   while((s = strtok(NULL, DELIMS))) {
     p.d = atof(s);
-    draPush(row,p);
+    clDraPush(row,p);
   }
   return row;
 }
@@ -241,8 +241,8 @@ gsl_matrix *cltxtDistMatrix(char *fname)
     struct DRA *rowvals;
     fgets(linebuf, MAXLINESIZE, fp);
     rowvals = get_dm_row_from_txt(linebuf, isLabeled);
-    for (j = 0; j < draSize(rowvals); j +=1) {
-      gsl_matrix_set(result, i, j, draGetValueAt(rowvals, j).d);
+    for (j = 0; j < clDraSize(rowvals); j +=1) {
+      gsl_matrix_set(result, i, j, clDraGetValueAt(rowvals, j).d);
     }
   }
 
@@ -258,22 +258,22 @@ int cltxtToCLB(char *source, char *dest)
 
   dm = cltxtDistMatrix(source);
   labels = cltxtLabels(source);
-  dmdb = distmatrixDump(dm);
-  labelsdb = labelsDump(labels);
+  dmdb = clDistmatrixDump(dm);
+  labelsdb = clLabelsDump(labels);
 
-  clbdb = package_DataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
-  datablockWriteToFile(clbdb, dest);
+  clbdb = clPackage_DataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
+  clDatablockWriteToFile(clbdb, dest);
 
-  datablockFreePtr(clbdb);
-  datablockFreePtr(dmdb);
-  datablockFreePtr(labelsdb);
-  stringstackFree(labels);
+  clDatablockFreePtr(clbdb);
+  clDatablockFreePtr(dmdb);
+  clDatablockFreePtr(labelsdb);
+  clStringstackFree(labels);
   gsl_matrix_free(dm);
 
   return 1;
 }
 
-void gslmatrixPrint(gsl_matrix *m, char *delim)
+void clGslmatrixPrint(gsl_matrix *m, char *delim)
 {
   int i, j;
   for (i = 0; i < m->size1 ; i += 1) {

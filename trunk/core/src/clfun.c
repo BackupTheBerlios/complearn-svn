@@ -68,9 +68,9 @@
 #define RADMAX 1000.0
 #define RADSPEED 10.0
 
-struct TransformAdaptor *builtin_UNBZIP(void);
-struct TransformAdaptor *builtin_UNGZ(void);
-struct TransformAdaptor *builtin_UNZLIB(void);
+struct TransformAdaptor *clBuiltin_UNBZIP(void);
+struct TransformAdaptor *clBuiltin_UNGZ(void);
+struct TransformAdaptor *clBuiltin_UNZLIB(void);
 
 struct DataBlock *testCompression(struct DataBlock *db, struct TransformAdaptor *t) {
   struct DataBlock *result = db;
@@ -78,8 +78,8 @@ struct DataBlock *testCompression(struct DataBlock *db, struct TransformAdaptor 
   if (t->pf(db)) {
 //    result = calloc(sizeof(struct DataBlock), 1);
     result = t->tf(db);
-    assert(datablockSize(result) > 0);
-    assert(datablockData(result) != NULL);
+    assert(clDatablockSize(result) > 0);
+    assert(clDatablockData(result) != NULL);
   } 
   return result;
 }
@@ -91,9 +91,9 @@ void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock 
 #if 1
   static struct TransformAdaptor *buz, *bgz, *bbzip;
   if (!buz) {
-    buz = builtin_UNZLIB();
-    bgz = builtin_UNGZ();
-    bbzip = builtin_UNBZIP();
+    buz = clBuiltin_UNZLIB();
+    bgz = clBuiltin_UNGZ();
+    bbzip = clBuiltin_UNBZIP();
   }
   struct DataBlock *oldresult, *result = db;
   do {
@@ -103,7 +103,7 @@ void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock 
     result = testCompression(result, bgz);
   } while (result != oldresult);
 #endif
-  incrdmAddDataBlock(idm, result);
+  clIncrdmAddDataBlock(idm, result);
 }
 
 static double myPI;
@@ -151,7 +151,7 @@ int countThreeSlashes(char *buf)
  *
  * \struct Camera
  *
- * This function maintains all state associated with viewer position and
+ * This clFunction maintains all state associated with viewer position and
  * orientation. The orientation is controlled by two angles, angle1 and
  * angle2.  angle1 represents horizontal heading (as on a horizontal compass)
  * and angle2 represents vertical pitch above or below the horizon.
@@ -254,13 +254,13 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
         if (isDown) {
           fTwoDForce = !fTwoDForce;
           if (sbs)
-            sbsSet2DForce(sbs, fTwoDForce);
+            clSbsSet2DForce(sbs, fTwoDForce);
         }
         break;
     case SDLK_m:
         if (ta) {
-          nextbest = treeaClone(ta);
-          treeaMutate(nextbest);
+          nextbest = clTreeaClone(ta);
+          clTreeaMutate(nextbest);
         }
         break;
     case SDLK_l:
@@ -344,7 +344,7 @@ static void doNextTree(void)
   assert(curFiles);
   assert(curFiles->size > 0);
   if (tm) {
-    treemasterAbortSearch(tm);
+    clTreemasterAbortSearch(tm);
     tm = NULL;
   }
 }
@@ -359,8 +359,8 @@ static void doDroppedFiles(HANDLE dragDrop)
   char buf[16384];
   int fileCount;
   if (gc == NULL) {
-    gc = loadDefaultEnvironment();
-    gc->ca = compaLoadBuiltin("blocksort");
+    gc = clLoadDefaultEnvironment();
+    gc->ca = clCompaLoadBuiltin("blocksort");
   }
   fileCount = DragQueryFile(dragDrop, 0xffffffff, NULL, 0);
   for (i = 0; i < fileCount; ++i) {
@@ -553,12 +553,12 @@ static void draw_screen(void)
 //  glColor3fv(matspring_diff);
 
   if (ta && sbs) {
-    for (i = 0; i < treeaNodeCount(ta); i += 1) {
-      gsl_vector *p = sbsBallPosition(sbs, i);
-      for (j = i+1; j < treeaNodeCount(ta); j += 1) {
-        if (sbsGetSpringSmooth(sbs, i, j) < 0.7)
+    for (i = 0; i < clTreeaNodeCount(ta); i += 1) {
+      gsl_vector *p = clSbsBallPosition(sbs, i);
+      for (j = i+1; j < clTreeaNodeCount(ta); j += 1) {
+        if (clSbsGetSpringSmooth(sbs, i, j) < 0.7)
           continue;
-        gsl_vector *p2 = sbsBallPosition(sbs, j);
+        gsl_vector *p2 = clSbsBallPosition(sbs, j);
       draw_spring(gsl_vector_get(p, 0), gsl_vector_get(p, 1), gsl_vector_get(p, 2) , gsl_vector_get(p2, 0), gsl_vector_get(p2, 1), gsl_vector_get(p2, 2) );
       }
     }
@@ -566,9 +566,9 @@ static void draw_screen(void)
   glDisable(GL_COLOR_MATERIAL);
 //  glColor3f(1.0,1.0,1.0);
 
-    for (i = 0; i < treeaNodeCount(ta); i += 1) {
-      gsl_vector *p = sbsBallPosition(sbs, i);
-      if (treeaIsQuartettable(ta, i)) {
+    for (i = 0; i < clTreeaNodeCount(ta); i += 1) {
+      gsl_vector *p = clSbsBallPosition(sbs, i);
+      if (clTreeaIsQuartettable(ta, i)) {
         glMaterialfv(GL_FRONT, GL_DIFFUSE, matball_diff);
         glMaterialfv(GL_FRONT, GL_SPECULAR, matball_spec);
         glMaterialfv(GL_FRONT, GL_SHININESS, matball_shine);
@@ -588,12 +588,12 @@ static void draw_screen(void)
 //    glColor3f(1.0,1.0,1.0);
   #if HAVE_SDL_SDL_TTF_H
     if (fShowLabels) {
-      for (i = 0; i < treeaNodeCount(ta); i += 1) {
-        gsl_vector *p = sbsBallPosition(sbs, i);
-        if (treeaIsQuartettable(ta, i)) { // TODO: fix memleak with treeaLabelPerm here
-          int colind = labelpermColIndexForNodeID(treeaLabelPerm(ta), i);
+      for (i = 0; i < clTreeaNodeCount(ta); i += 1) {
+        gsl_vector *p = clSbsBallPosition(sbs, i);
+        if (clTreeaIsQuartettable(ta, i)) { // TODO: fix memleak with clTreeaLabelPerm here
+          int colind = clLabelpermColIndexForNodeID(clTreeaLabelPerm(ta), i);
           static struct CLTexture texLabels[MAXTEX];
-          draw_sdltext(stringstackReadAt(labels, colind), &texLabels[colind], p);
+          draw_sdltext(clStringstackReadAt(labels, colind), &texLabels[colind], p);
         }
       }
     }
@@ -603,7 +603,7 @@ static void draw_screen(void)
   if (fShowHelp || !ta )
     draw_sdlhelp();
 
-  if ( !ta && (n = stringstackSize(labels))) {
+  if ( !ta && (n = clStringstackSize(labels))) {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matball_diff);
     glMaterialfv(GL_FRONT, GL_SPECULAR, matball_spec);
     glMaterialfv(GL_FRONT, GL_SHININESS, matball_shine);
@@ -618,14 +618,14 @@ static void draw_screen(void)
   SDL_GL_SwapBuffers( );
   setupCameraAngle();
   if (sbs)
-    sbsEvolveForward(sbs);
+    clSbsEvolveForward(sbs);
   if (nextbest) {
-    if (sbs == NULL || treeaNodeCount(nextbest) != sbsNodeCount(sbs)) {
-      sbs = sbsNew(nextbest);
-      sbsSetModelSpeed(sbs, 4.0);
+    if (sbs == NULL || clTreeaNodeCount(nextbest) != clSbsNodeCount(sbs)) {
+      sbs = clSbsNew(nextbest);
+      clSbsSetModelSpeed(sbs, 4.0);
     }
     else
-      sbsChangeTargetTree(sbs, nextbest);
+      clSbsChangeTargetTree(sbs, nextbest);
     ta = nextbest;
     nextbest = NULL;
   }
@@ -633,9 +633,9 @@ static void draw_screen(void)
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
-  double score = treehScore(th);
-  if (treehGetTreeIndex(th) == 0)
-    nextbest = treeaClone(treehTreeAdaptor(th));
+  double score = clTreehScore(th);
+  if (clTreehGetTreeIndex(th) == 0)
+    nextbest = clTreeaClone(clTreehTreeAdaptor(th));
 }
 
 struct TreeObserver tob = {
@@ -657,24 +657,24 @@ int calcThreadFunc(void *unused)
       int dmsize;
       fIsCalculatingDM = 1;
       for (;;) {
-        dmsize = incrdmSize(distmatglob);
-        if (dmsize < stringstackSize(labels))
+        dmsize = clIncrdmSize(distmatglob);
+        if (dmsize < clStringstackSize(labels))
           addAndProcessDataBlock(distmatglob, curFiles->db[dmsize]);
         else
           break;
       }
       fIsCalculatingDM = 0;
       assert(distmatglob);
-      if (incrdmSize(distmatglob) < 4) {
+      if (clIncrdmSize(distmatglob) < 4) {
         clSleepMillis(40);
         continue;
       }
-      tm = treemasterNew(incrdmDistMatrix(distmatglob), 0);
-      nextbest = treehTreeAdaptor(treemasterStarterTree(tm));
-      treemasterSetTreeObserver(tm, &tob);
+      tm = clTreemasterNew(clIncrdmDistMatrix(distmatglob), 0);
+      nextbest = clTreehTreeAdaptor(clTreemasterStarterTree(tm));
+      clTreemasterSetTreeObserver(tm, &tob);
     }
     if (tm) {
-      treemasterFindTree(tm);
+      clTreemasterFindTree(tm);
     }
     else {
       clSleepMillis(40);  /* display help / status info here */
@@ -918,7 +918,7 @@ static void realDoDroppedFile(char *buf)
     curFiles = clCalloc(sizeof(struct DataBlockKeeper), 1);
   }
   if (clIsDirectory(buf)) {
-    struct DataBlockEnumeration *dbe = dbeLoadDirectory(buf);
+    struct DataBlockEnumeration *dbe = clDbeLoadDirectory(buf);
     struct DataBlockEnumerationIterator *dbi;
     struct DataBlock *cur;
     dbi = dbe->newenumiter(dbe);
@@ -926,14 +926,14 @@ static void realDoDroppedFile(char *buf)
     while ( ( cur = dbe->istar(dbe, dbi) ) ) {
       curFiles->db[curFiles->size++] = cur;
       addAndProcessDataBlock(distmatglob, cur);
-      stringstackPush(labels, dbe->ilabel(dbe, dbi));
+      clStringstackPush(labels, dbe->ilabel(dbe, dbi));
       dbe->istep(dbe, dbi);
-//      datablockFreePtr(cur);
+//      clDatablockFreePtr(cur);
     }
   } else {
-    curFiles->db[curFiles->size++] =  fileToDataBlockPtr(buf);
+    curFiles->db[curFiles->size++] =  clFileToDataBlockPtr(buf);
     lastpart = findLastPart(buf);
-    stringstackPush(labels, lastpart);
+    clStringstackPush(labels, lastpart);
   }
   //clFree(buf);
 }
@@ -970,7 +970,7 @@ int main( int argc, char* argv[] )
   initDragDropSubsystem(window);
 #endif
 #endif
-  distmatglob = incrdmNew(NULL);
+  distmatglob = clIncrdmNew(NULL);
   myPI = atan(1.0)*4;
   /* Information about the current video settings. */
   const SDL_VideoInfo* info = NULL;
@@ -988,7 +988,7 @@ setRotParms(1, -1, -1, 1, 1);
 
   cam.angle1 = cam.angle2 = 0.0;
   cam.radius = 25.0;
-  labels = stringstackNew();
+  labels = clStringstackNew();
   glutInit(&argc, argv);
 
   /* Let's get some video information. */

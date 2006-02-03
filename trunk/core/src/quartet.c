@@ -9,7 +9,7 @@
 
 #include <complearn/complearn.h>
 
-void normalizeQuartet(struct Quartet *q)
+void clNormalizeQuartet(struct Quartet *q)
 {
   qbase_t tmp;
   if (q->q[0] > q->q[1]) {
@@ -33,28 +33,28 @@ void normalizeQuartet(struct Quartet *q)
   }
 }
 
-struct Quartet permuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which)
+struct Quartet clPermuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which)
 {
   qbase_t d[4];
   d[0] = i; d[1] = j; d[2] = k; d[3] = m;
-  return permuteLabels(d, which);
+  return clPermuteLabels(d, which);
 }
 
-void freeSPMSingle(struct DRA *d)
+void clFreeSPMSingle(struct DRA *d)
 {
   int i;
-  int n = draSize(d);
+  int n = clDraSize(d);
   for (i = 0; i < n; ++i)
-    draFree(draGetValueAt(d, i).ar);
-  draFree(d);
+    clDraFree(clDraGetValueAt(d, i).ar);
+  clDraFree(d);
 }
 
-void freeSPMSet(struct DRA *d)
+void clFreeSPMSet(struct DRA *d)
 {
   int i;
-  int n = draSize(d);
+  int n = clDraSize(d);
   for (i = 0; i < n; ++i)
-    freeSPMSingle(draGetValueAt(d, i).ar);
+    clFreeSPMSingle(clDraGetValueAt(d, i).ar);
 }
 
 static void mustBeSorted(qbase_t labels[4])
@@ -65,24 +65,24 @@ static void mustBeSorted(qbase_t labels[4])
   }
 }
 
-int findConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4])
+int clFindConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4])
 {
   int i, z;
   mustBeSorted(labels);
   for (i = 0; i < 3; ++i) {
-    struct Quartet q = permuteLabels(labels, i);
+    struct Quartet q = clPermuteLabels(labels, i);
     struct Quartet q1;
     for (z = 0; z < 4; z += 1) {
-      q1.q[z] = labelpermNodeIDForColIndex(lab, q.q[z]);
+      q1.q[z] = clLabelpermNodeIDForColIndex(lab, q.q[z]);
     }
-    if (isConsistent(ad, q1))
+    if (clIsConsistent(ad, q1))
       return i;
   }
   assert(0 && "Quartet consistency failure.");
   return 0;
 }
 
-struct Quartet permuteLabels(qbase_t lab[4], int which)
+struct Quartet clPermuteLabels(qbase_t lab[4], int which)
 {
   struct Quartet q;
   switch (which) {

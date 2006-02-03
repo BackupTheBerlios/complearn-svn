@@ -18,8 +18,8 @@
  * to tell them an error message.
  */
 
-static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void zlib_freecompfunc(struct CompAdaptor *ca);
+static double zlib_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void zlib_freecompclFunc(struct CompAdaptor *ca);
 static char *zlib_shortname(void);
 static char *zlib_longname(void);
 static int zlib_apiver(void);
@@ -49,7 +49,7 @@ static struct ZlibDynamicAdaptor zlibsda;
 static struct ZlibDynamicAdaptor zlibdda;
 static int haveTriedDL; /* Singleton */
 
-struct ZlibDynamicAdaptor *grabZlibDA(void) {
+struct ZlibDynamicAdaptor *clGrabZlibDA(void) {
   if (zlibsda.compress2)
     return &zlibsda;
   if (!haveTriedDL) {
@@ -79,27 +79,27 @@ struct ZlibCompInstance {
 
 /** \brief Initializes a ZLIB CompAdaptor instance
  *
- *  builtin_ZLIB() allocates memory to a ZLIB CompAdaptor instance. The
+ *  clBuiltin_ZLIB() allocates memory to a ZLIB CompAdaptor instance. The
  *  ZLIB CompAdaptor is required for use in computing NCDs with the zlib
  *  compression library.
  *
  *  One option can be set for the ZLIB CompAdaptor: level. By default, level is
  *  set to 9.
  *
- *  builtin_ZLIB() will also read a CompLearn configuration file to override
+ *  clBuiltin_ZLIB() will also read a CompLearn configuration file to override
  *  the option defaults. For details on how to create a configuration file, see
  *  http://www.complearn.org/config.html
  *
  *  \return pointer to newly initialized ZLIB CompAdaptor instance
  */
-struct CompAdaptor *builtin_ZLIB(void)
+struct CompAdaptor *clBuiltin_ZLIB(void)
 {
 	struct CompAdaptor c =
 	{
     cptr: NULL,
 //    se:   zlib_clsetenv,
-    cf:   zlib_compfunc,
-    fcf:  zlib_freecompfunc,
+    cf:   zlib_compclFunc,
+    fcf:  zlib_freecompclFunc,
     sn:   zlib_shortname,
     ln:   zlib_longname,
     apiv: zlib_apiver
@@ -107,7 +107,7 @@ struct CompAdaptor *builtin_ZLIB(void)
   struct CompAdaptor *ca;
   struct ZlibCompInstance *zci;
   struct ZlibDynamicAdaptor *zlib;
-  zlib = grabZlibDA();
+  zlib = clGrabZlibDA();
   if (!zlib)
     return NULL;
   ca = clCalloc(sizeof(*ca), 1);
@@ -115,18 +115,18 @@ struct CompAdaptor *builtin_ZLIB(void)
   ca->cptr = clCalloc(sizeof(struct ZlibCompInstance), 1);
   zci = (struct ZlibCompInstance *) ca->cptr;
 
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
   /* default compressor options */
-  compaPushParameter(ca, "zliblevel", "9", PARAMINT);
-  compaSetValueForKey(ca, "zliblevel", &zci->level);
+  clCompaPushParameter(ca, "zliblevel", "9", PARAMINT);
+  clCompaSetValueForKey(ca, "zliblevel", &zci->level);
 
   return ca;
 }
 
-static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double zlib_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
-  struct ZlibDynamicAdaptor *zlib = grabZlibDA();
+  struct ZlibDynamicAdaptor *zlib = clGrabZlibDA();
 	struct ZlibCompInstance *ci = (struct ZlibCompInstance *) ca->cptr;
 	int s;
 
@@ -137,9 +137,9 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
     clogError("Cannot do zlib compression: no zlib library available.");
   }
 
-	p = datablockSize(src)*1.001 + 12;
+	p = clDatablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = (zlib->compress2)(dbuff,&p,datablockData(src),datablockSize(src),ci->level);
+	s = (zlib->compress2)(dbuff,&p,clDatablockData(src),clDatablockSize(src),ci->level);
 
 	if (s == -5 ) {  /* Z_BUF_ERROR */
 		printf ("destLen not big enough!\n");
@@ -153,7 +153,7 @@ static double zlib_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 	return (double) p*8.0;
 }
 
-static void zlib_freecompfunc(struct CompAdaptor *ca)
+static void zlib_freecompclFunc(struct CompAdaptor *ca)
 {
   clFreeandclear(ca->cptr);
 	clFreeandclear(ca);

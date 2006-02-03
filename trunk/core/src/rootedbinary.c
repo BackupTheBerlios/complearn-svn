@@ -17,7 +17,7 @@ struct RootedBinary {
   struct AdjAdaptor *aa;
 };
 
-struct AdjAdaptor *rootedbinaryAdjAdaptor(struct RootedBinary *rb)
+struct AdjAdaptor *clRootedbinaryAdjAdaptor(struct RootedBinary *rb)
 {
   return rb->aa;
 }
@@ -33,7 +33,7 @@ static qbase_t randomKernelNode(struct RootedBinary *rb)
   int nsize;
   do {
     result = randomTreeNode(rb);
-    nsize = adjaNeighborCount(rb->aa, result);
+    nsize = clAdjaNeighborCount(rb->aa, result);
   } while (nsize == 1);
   return result;
 }
@@ -42,7 +42,7 @@ static int randomNeighbor(struct RootedBinary *rb, qbase_t who)
 {
   for (;;) {
     qbase_t result = randomTreeNode(rb);
-    if (adjaGetConState(rb->aa, who, result))
+    if (clAdjaGetConState(rb->aa, who, result))
       return result;
   }
 }
@@ -51,34 +51,34 @@ static int verifyTree(struct RootedBinary *rb)
 {
   int i, j;
   int nc;
-  struct DRA *result = rootedbinaryNodes(rb);
-  if (draSize(result) != rb->nodecount) {
+  struct DRA *result = clRootedbinaryNodes(rb);
+  if (clDraSize(result) != rb->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
-      draSize(result), rb->nodecount);
-    adjaPrint(rb->aa);
+      clDraSize(result), rb->nodecount);
+    clAdjaPrint(rb->aa);
     for (i = 0; i < rb->nodecount; ++i) {
       for (j = 0; j < i; ++j)
         printf(" ");
       for (j = i+1; j < rb->nodecount; ++j)
-        printf("%c", adjaGetConState(rb->aa, i, j) + '0');
+        printf("%c", clAdjaGetConState(rb->aa, i, j) + '0');
       printf("\n");
     }
     return 0;
   }
   for (i = 0; i < rb->nodecount; ++i) {
-    nc = adjaNeighborCount(rb->aa, i);
+    nc = clAdjaNeighborCount(rb->aa, i);
     if ((nc != 1 && nc != 3 && i != rb->root) || (nc != 2 && i == rb->root)) {
       int nbp[20], retval;
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
-      retval = adjaNeighbors(rb->aa, i, nbp, &nlenhere);
+      retval = clAdjaNeighbors(rb->aa, i, nbp, &nlenhere);
       assert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
       return 0;
     }
   }
-  draFree(result);
+  clDraFree(result);
   return 1;
 }
 
@@ -96,22 +96,22 @@ tryagain:
     k2 = randomKernelNode(rb);
     } while (k1 == rb->root || k1 == k2);
     pathlen = MAXPATHNODES;
-    retval = pathFinder(rb->aa, k1, k2, pbuf, &pathlen);
+    retval = clPathFinder(rb->aa, k1, k2, pbuf, &pathlen);
     assert(retval == CL_OK);
     assert(pbuf[0] == k1);
-    assert(adjaGetConState(rb->aa, k1, pbuf[1]));
+    assert(clAdjaGetConState(rb->aa, k1, pbuf[1]));
   } while (pathlen <= 2);
   i1 = pbuf[1];
   assert(i1 < MAXPATHNODES);
-  assert(adjaGetConState(rb->aa, k1, i1));
+  assert(clAdjaGetConState(rb->aa, k1, i1));
   nsizems = MAXNEIGHBORS;
 
-  retval = adjaNeighbors(rb->aa, i1, nbufms, &nsizems);
+  retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
   assert(retval == CL_OK);
   if (nsizems < 3)
     goto tryagain;
-  adjaSetConState(rb->aa, k1, i1, 0);
-  retval = adjaNeighbors(rb->aa, i1, nbufms, &nsizems);
+  clAdjaSetConState(rb->aa, k1, i1, 0);
+  retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
   assert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
@@ -124,14 +124,14 @@ tryagain:
     m3 = randomNeighbor(rb, k2);
   } while (m3 == pbuf[pathlen-2]);
 
-  adjaSetConState(rb->aa, m1, i1, 0);
-  adjaSetConState(rb->aa, m2, i1, 0);
-  adjaSetConState(rb->aa, m3, k2, 0);
+  clAdjaSetConState(rb->aa, m1, i1, 0);
+  clAdjaSetConState(rb->aa, m2, i1, 0);
+  clAdjaSetConState(rb->aa, m3, k2, 0);
 
-  adjaSetConState(rb->aa, m1, m2, 1);
-  adjaSetConState(rb->aa, k2, i1, 1);
-  adjaSetConState(rb->aa, m3, i1, 1);
-  adjaSetConState(rb->aa, k1, i1, 1);
+  clAdjaSetConState(rb->aa, m1, m2, 1);
+  clAdjaSetConState(rb->aa, k2, i1, 1);
+  clAdjaSetConState(rb->aa, m3, i1, 1);
+  clAdjaSetConState(rb->aa, k1, i1, 1);
 
 }
 
@@ -149,18 +149,18 @@ tryagain:
       i2 = randomKernelNode(rb);
     } while (i1 == i2 || i1 == rb->root || i2 == rb->root);
     pathlen = MAXPATHNODES;
-    retval = pathFinder(rb->aa, i1, i2, pathbuf, &pathlen);
+    retval = clPathFinder(rb->aa, i1, i2, pathbuf, &pathlen);
     assert(retval == CL_OK);
   } while (pathlen <= 2);
   n1 = pathbuf[1];
   if (n1 == rb->root)
     goto tryagain;
-  assert(adjaGetConState(rb->aa, n1, i1));
+  assert(clAdjaGetConState(rb->aa, n1, i1));
   n2 = pathbuf[pathlen-2];
   if (n2 == rb->root)
     goto tryagain;
-  assert(adjaGetConState(rb->aa, n2, i2));
-  flipCrosswise(rb->aa, i1, n1, i2, n2);
+  assert(clAdjaGetConState(rb->aa, n2, i2));
+  clFlipCrosswise(rb->aa, i1, n1, i2, n2);
 }
 
 static void mutateSimple(struct RootedBinary *rb)
@@ -178,7 +178,7 @@ static void mutateSimple(struct RootedBinary *rb)
 //  printf("About to do mutation %d\n", c);
 //  printf("Doing MUTATION %d (%p)\n", c, rb);
   switch (c) {
-    case 0: mutateSpecies(rb->aa, rb->labelperm); break;
+    case 0: clMutateSpecies(rb->aa, rb->labelperm); break;
     case 1: mutateSubtreeInterchange(rb); break;
     case 2: mutateSubtreeTransfer(rb); break;
     default: assert(0 && "bad tree op"); break;
@@ -198,9 +198,9 @@ static void mutateSimple(struct RootedBinary *rb)
 static int howManyMutations(void)
 {
   if (0 == 0)
-    return howManyMutationsTwoMinusExp();
+    return clHowManyMutationsTwoMinusExp();
   else
-    return howManyMutationsWeirdLogFormula();
+    return clHowManyMutationsWeirdLogFormula();
 }
 
 static void mutateComplex(struct RootedBinary *rb)
@@ -216,22 +216,22 @@ static void mutateComplex(struct RootedBinary *rb)
   }
 }
 
-int rootedbinaryLastMutationCount(const struct RootedBinary *rb)
+int clRootedbinaryLastMutationCount(const struct RootedBinary *rb)
 {
   return rb->mc;
 }
 
-void rootedbinaryComplexMutation(struct RootedBinary *rb)
+void clRootedbinaryComplexMutation(struct RootedBinary *rb)
 {
   mutateComplex(rb);
 }
 
-void rootedbinaryLabelPermSetter(struct RootedBinary *rb, int j, int i)
+void clRootedbinaryLabelPermSetter(struct RootedBinary *rb, int j, int i)
 {
-  labelpermSetColumnIndexToNodeNumber(rb->labelperm, j, i);
+  clLabelpermSetColumnIndexToNodeNumber(rb->labelperm, j, i);
 }
 
-struct RootedBinary *rootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
+struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
 {
   int i;
   struct DRA *leaves;
@@ -242,29 +242,29 @@ struct RootedBinary *rootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, 
   rb->nodecount = 2*howManyLeaves-3;
 
   if (uaa) {
-    rb->aa = newPathKeeper(uaa);
+    rb->aa = clNewPathKeeper(uaa);
   }
     else {
-      rb->aa = newPathKeeper(adjaLoadAdjList(rb->nodecount));
+      rb->aa = clNewPathKeeper(clAdjaLoadAdjList(rb->nodecount));
     for (i = 0; i < howManyLeaves-2; ++i) {
-      adjaSetConState(rb->aa, i, i+howManyLeaves-1, 1);
-      adjaSetConState(rb->aa, i, i+1, 1);
+      clAdjaSetConState(rb->aa, i, i+howManyLeaves-1, 1);
+      clAdjaSetConState(rb->aa, i, i+1, 1);
     }
   }
 
   leaves = getLabellableNodes(rb);
-  assert(draSize(leaves) == howManyLeaves);
+  assert(clDraSize(leaves) == howManyLeaves);
 
   if (! (rb->labelperm = ulabelperm))
-    rb->labelperm = labelpermNew(leaves);
+    rb->labelperm = clLabelpermNew(leaves);
 
-  draFree(leaves);
+  clDraFree(leaves);
 
   verifyTree(rb);
   return rb;
 }
 
-struct RootedBinary *rootedbinaryClone(const struct RootedBinary *rb)
+struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *rb)
 {
   struct RootedBinary *cp;
   cp = clCalloc(sizeof(*cp), 1);
@@ -272,80 +272,80 @@ struct RootedBinary *rootedbinaryClone(const struct RootedBinary *rb)
   cp->root = rb->root;
   cp->mc = rb->mc;
   cp->nodecount = rb->nodecount;
-  cp->aa = adjaClone(rb->aa);
-  cp->labelperm = labelpermClone(rb->labelperm);
+  cp->aa = clAdjaClone(rb->aa);
+  cp->labelperm = clLabelpermClone(rb->labelperm);
   return cp;
 }
 
 
-int rootedbinaryIsQuartetableNode(const struct RootedBinary *rb, qbase_t which)
+int clRootedbinaryIsQuartetableNode(const struct RootedBinary *rb, qbase_t which)
 {
-  return adjaNeighborCount(rb->aa, which) < 3;
+  return clAdjaNeighborCount(rb->aa, which) < 3;
 }
 
-int rootedbinaryIsFlippableNode(struct RootedBinary *rb, qbase_t which)
+int clRootedbinaryIsFlippableNode(struct RootedBinary *rb, qbase_t which)
 {
-  int nc = adjaNeighborCount(rb->aa, which);
+  int nc = clAdjaNeighborCount(rb->aa, which);
 // return nc != 1;
   return nc == 2 || nc == 3;
 }
 
-qbase_t rootedbinaryStartingNode(const struct RootedBinary *rb)
+qbase_t clRootedbinaryStartingNode(const struct RootedBinary *rb)
 {
   return 0;
 }
 
-struct DRA *rootedbinaryNodes(const struct RootedBinary *rb)
+struct DRA *clRootedbinaryNodes(const struct RootedBinary *rb)
 {
   union PCTypes p = zeropct;
-  struct DRA *result = draNew();
-  struct DRA *border = draNew();
+  struct DRA *result = clDraNew();
+  struct DRA *border = clDraNew();
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
-  draPush(border, p);
-  walkTree(rootedbinaryAdjAdaptor((struct RootedBinary *) rb), result, border, done, 0, NULL);
-  draFree(border);
+  clDraPush(border, p);
+  clWalkTree(clRootedbinaryAdjAdaptor((struct RootedBinary *) rb), result, border, done, 0, NULL);
+  clDraFree(border);
   clnodesetFree(done);
   return result;
 }
 
-struct DRA *rootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips)
+struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips)
 {
-  struct DRA *pairs = draNew();
+  struct DRA *pairs = clDraNew();
   union PCTypes p = zeropct;
   int i;
   int lastval = -1;
   int firstnode = -1;
-  struct DRA *traversalseq = draNew();
-  struct DRA *border = draNew();
+  struct DRA *traversalseq = clDraNew();
+  struct DRA *border = clDraNew();
   struct CLNodeSet *done = clnodesetNew(rb->nodecount);
   p.i = rb->root; /* start at root */
-  draPush(border, p);
-  walkTree(rootedbinaryAdjAdaptor((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
+  clDraPush(border, p);
+  clWalkTree(clRootedbinaryAdjAdaptor((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
 
-  for (i = 0;i < draSize(traversalseq); i += 1) {
-    int curnode = draGetValueAt(traversalseq, i).i;
+  for (i = 0;i < clDraSize(traversalseq); i += 1) {
+    int curnode = clDraGetValueAt(traversalseq, i).i;
     if (curnode == rb->root)
       continue;
-    if (rootedbinaryIsQuartetableNode(rb, curnode)) {
+    if (clRootedbinaryIsQuartetableNode(rb, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
       if (lastval != -1) {
         p = zeropct;
         p.ip.x = lastval;
         p.ip.y = curnode;
-        draPush(pairs, p);
+        clDraPush(pairs, p);
       }
       lastval = curnode;
     }
   }
-  draFree(traversalseq);
+  clDraFree(traversalseq);
   return pairs;
 }
 
-void rootedbinaryFreeRB(struct RootedBinary *rb)
+void clRootedbinaryFreeRB(struct RootedBinary *rb)
 {
-  labelpermFree(rb->labelperm);
-  adjaFree(rb->aa);
+  clLabelpermFree(rb->labelperm);
+  clAdjaFree(rb->aa);
   rb->aa = NULL;
   clFreeandclear(rb);
 }
@@ -353,32 +353,32 @@ void rootedbinaryFreeRB(struct RootedBinary *rb)
 static struct DRA *getLabellableNodes(const struct RootedBinary *rb)
 {
   int i;
-  struct DRA *result = draNew();
+  struct DRA *result = clDraNew();
   for (i = 0; i < rb->nodecount; i += 1) {
-    if (rootedbinaryIsQuartetableNode(rb, i) == 1) {
+    if (clRootedbinaryIsQuartetableNode(rb, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
-      draPush(result, p);
+      clDraPush(result, p);
     }
   }
   return result;
 }
 
-struct DRA *rootedbinaryLeafLabels(const struct RootedBinary *rb)
+struct DRA *clRootedbinaryLeafLabels(const struct RootedBinary *rb)
 {
-  struct DRA *result = draNew();
+  struct DRA *result = clDraNew();
   int i;
-  for (i = 0; i < labelpermSize(rb->labelperm); i += 1) {
+  for (i = 0; i < clLabelpermSize(rb->labelperm); i += 1) {
     union PCTypes p = zeropct;
-    p.i = labelpermNodeIDForColIndex(rb->labelperm, i);
-    draPush(result, p);
+    p.i = clLabelpermNodeIDForColIndex(rb->labelperm, i);
+    clDraPush(result, p);
   }
   return result;
 }
 
-struct LabelPerm *rootedbinaryLabelPerm(struct RootedBinary *rb)
+struct LabelPerm *clRootedbinaryLabelPerm(struct RootedBinary *rb)
 {
-  return labelpermClone(rb->labelperm);
+  return clLabelpermClone(rb->labelperm);
 }
 
 static struct TreeAdaptor *rb_treeclone(struct TreeAdaptor *ta)
@@ -386,7 +386,7 @@ static struct TreeAdaptor *rb_treeclone(struct TreeAdaptor *ta)
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
   *result = *ta;
-  result->ptr = rootedbinaryClone(rb);
+  result->ptr = clRootedbinaryClone(rb);
   return result;
 }
 
@@ -399,34 +399,34 @@ static void rb_treemutate(struct TreeAdaptor *ta)
 static void rb_treefree(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  rootedbinaryFreeRB(rb);
+  clRootedbinaryFreeRB(rb);
   rb = NULL;
   memset(ta, 0, sizeof(*ta));
   clFreeandclear(ta);
 }
 
-void rb_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
+void clRb_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  rootedbinaryLabelPermSetter(rb, j, i);
+  clRootedbinaryLabelPermSetter(rb, j, i);
 }
 
 static struct LabelPerm *rb_treegetlabelperm(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryLabelPerm(rb);
+  return clRootedbinaryLabelPerm(rb);
 }
 
 static struct AdjAdaptor *rb_treegetadja(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryAdjAdaptor(rb);
+  return clRootedbinaryAdjAdaptor(rb);
 }
 
 static int rb_treeisquartetable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryIsQuartetableNode(rb, which);
+  return clRootedbinaryIsQuartetableNode(rb, which);
 }
 
 static int rb_treeisroot(struct TreeAdaptor *ta, int which)
@@ -435,27 +435,27 @@ static int rb_treeisroot(struct TreeAdaptor *ta, int which)
   return rb->root == which;
 }
 
-int rb_treeisflippable(struct TreeAdaptor *ta, int which)
+int clRb_treeisflippable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryIsFlippableNode(rb, which);
+  return clRootedbinaryIsFlippableNode(rb, which);
 }
 
-struct DRA *rb_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
+struct DRA *clRb_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryPerimeterPairs(rb, flips);
+  return clRootedbinaryPerimeterPairs(rb, flips);
 }
 
-int rb_treemutecount(struct TreeAdaptor *ta)
+int clRb_treemutecount(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return rootedbinaryLastMutationCount(rb);
+  return clRootedbinaryLastMutationCount(rb);
 }
 
-struct TreeAdaptor *treeaLoadRootedBinary(int howBig)
+struct TreeAdaptor *clTreeaLoadRootedBinary(int howBig)
 {
-  return loadRBTRA(rootedbinaryNew(howBig, NULL, NULL));
+  return loadRBTRA(clRootedbinaryNew(howBig, NULL, NULL));
 }
 
 static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)
@@ -468,11 +468,11 @@ static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)
     treegetlabelperm:rb_treegetlabelperm,
     treegetadja:rb_treegetadja,
     treeisquartetable:rb_treeisquartetable,
-    treeisflippable:rb_treeisflippable,
+    treeisflippable:clRb_treeisflippable,
     treeisroot:rb_treeisroot,
-    treemutecount:rb_treemutecount,
-    treeperimpairs:rb_treeperimpairs,
-    treelpsetat:rb_treesetlabelperm
+    treemutecount:clRb_treemutecount,
+    treeperimpairs:clRb_treeperimpairs,
+    treelpsetat:clRb_treesetlabelperm
   };
 
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);

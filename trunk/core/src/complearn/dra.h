@@ -27,9 +27,9 @@ struct DRA;
  *  \struct DRAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
- *  functions draDump() and draDeepDump(), both of which
+ *  clFunctions clDraDump() and clDraDeepDump(), both of which
  *  are used to write a DRA to file. DRAHdr contains information necessary
- *  for the conversion of a "dumped" DataBlock, using draLoad(),
+ *  for the conversion of a "dumped" DataBlock, using clDraLoad(),
  *  back into a DRA.
  */
 struct DRAHdr;
@@ -95,26 +95,26 @@ const extern union PCTypes zeropct, onepcti;
 /** \brief Creates a new DRA
  *
  *  Allocates memory and returns a pointer to for a new DRA.  Free memory
- *  allocated by a DRA using draFree().
+ *  allocated by a DRA using clDraFree().
  *  \return pointer to DRA
  */
-struct DRA *draNew(void);
+struct DRA *clDraNew(void);
 
 /** \brief Frees a DRA from memory.
  *  \param ptr pointer to DRA
  */
-void draFree(struct DRA *ptr);
+void clDraFree(struct DRA *ptr);
 
 /** \brief Converts a "dumped" DRA DataBlock back into a DRA
  *
- *  draLoad() will take as an argument a DataBlock, which was created
- *  by the draDump() or the draDeepDump() function, and
+ *  clDraLoad() will take as an argument a DataBlock, which was created
+ *  by the clDraDump() or the clDraDeepDump() clFunction, and
  *  convert the DataBlock into a DRA, even if originally a multi-level
  *  DRA. A pointer to the DRA is returned.
  *
- *  An option to draLoad() is the fmustbe flag, which, if set to 1,
- *  forces the function to exit when check for the special DRA tag created
- *  by draDump() or draDeepDump() fails.  If the tag is not
+ *  An option to clDraLoad() is the fmustbe flag, which, if set to 1,
+ *  forces the clFunction to exit when check for the special DRA tag created
+ *  by clDraDump() or clDraDeepDump() fails.  If the tag is not
  *  found, an error message is printed to stdout.  Set fmustbe to 0 to return
  *  NULL instead.
  *
@@ -123,175 +123,175 @@ void draFree(struct DRA *ptr);
  *  0 if not
  *  \return pointer to new DRA
  */
-struct DRA *draLoad(struct DataBlock *d, int fmustbe);
+struct DRA *clDraLoad(struct DataBlock *d, int fmustbe);
 
 /** \brief Serializes a single-level DRA into a DataBlock
  *
- *  draDump() returns a DataBlock which then can be
- *  written to a file using the function datablockWriteToFile().  This
- *  resulting DataBlock is also appropriate when using the function
- *  package_DataBlocks().
+ *  clDraDump() returns a DataBlock which then can be
+ *  written to a file using the clFunction clDatablockWriteToFile().  This
+ *  resulting DataBlock is also appropriate when using the clFunction
+ *  clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
- *  draLoad() function.
+ *  clDraLoad() clFunction.
  *
- *  Same as using draDeepDump(da,0).
+ *  Same as using clDraDeepDump(da,0).
  *  \param d pointer to DRA
  *  \return a DataBlock which can be written to file
  */
-struct DataBlock *draDump(const struct DRA *d);
+struct DataBlock *clDraDump(const struct DRA *d);
 
 /** \brief Serializes a multi-level DRA into a DataBlock
  *
- *  draDeepDump() returns a DataBlock which then can be
- *  written to a file using the function datablockWriteToFile().  This
- *  resulting DataBlock is also appropriate when using the function
- *  package_DataBlocks().
+ *  clDraDeepDump() returns a DataBlock which then can be
+ *  written to a file using the clFunction clDatablockWriteToFile().  This
+ *  resulting DataBlock is also appropriate when using the clFunction
+ *  clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
- *  draLoad() function.
+ *  clDraLoad() clFunction.
  *  \param em pointer to DRA
  *  \param level number of levels starting at 0; 0 indicates a single level, 1
  *  indicates a 2-level and so on
  *  \return a DataBlock which can be written to file
  *
  */
-struct DataBlock *draDeepDump(const struct DRA *d, int level);
+struct DataBlock *clDraDeepDump(const struct DRA *d, int level);
 
 /** \brief Frees a multi-level DRA from memory
  *  \param ptr pointer to DRA
  *  \param lvl number of levels starting at 0; 0 indicates a single level, 1
  *  indidicates a 2-level, and so on
  */
-void draDeepFree(struct DRA *ptr, int lvl);
+void clDraDeepFree(struct DRA *ptr, int lvl);
 
 /** \brief Returns a double, for a DRA of doubles, at a given index
  *
- *  This function is a shortcut used for a DRA of doubles.  Same as
- *  using draGetValueAt(da, where).d
+ *  This clFunction is a shortcut used for a DRA of doubles.  Same as
+ *  using clDraGetValueAt(da, where).d
  *  \param da pointer to DRA
  *  \param where index
  */
-double draGetDValueAt(struct DRA *da, int where);
+double clDraGetDValueAt(struct DRA *da, int where);
 
 /** \brief Sets a double, for a DRA of doubles, at a given index
  *  \param a pointer to DRA
  *  \param where index
  *  \param val double to set
  */
-void draSetDValueAt(struct DRA *a, int where, double val);
+void clDraSetDValueAt(struct DRA *a, int where, double val);
 
 /** \brief Returns number of elements in DRA.
  *  \param a pointer to DRA
  *  \return size
  */
-int draSize(const struct DRA *a);
+int clDraSize(const struct DRA *a);
 
 /** \brief Creates a copy of a multi-level DRA
  *  \param ptr pointer to DRA to be copied
  *  \param level number of levels starting at 0
  *  \return pointer to new DRA
  */
-struct DRA *draDeepClone(const struct DRA *ptr, int lvl);
+struct DRA *clDraDeepClone(const struct DRA *ptr, int lvl);
 
 /** \brief Creates a copy of a single-level DRA
  *
- *  Same as using draDeepClone(da,0)
+ *  Same as using clDraDeepClone(da,0)
  *  \param ptr pointer to DRA to be copied
  *  \return pointer to new DRA
  */
-struct DRA *draClone(const struct DRA *ptr);
+struct DRA *clDraClone(const struct DRA *ptr);
 
 /** \brief Returns element at given index
  *  \param da pointer to DRA
  *  \param where index
  *  \return pctype instance
  */
-union PCTypes draGetValueAt(const struct DRA *da, int where);
+union PCTypes clDraGetValueAt(const struct DRA *da, int where);
 
 /** \brief Sets a PCTypes instance at a given index
  *  \param da pointer to DRA
  *  \param where index
  *  \param val PCTypes instance to set
  */
-void draSetValueAt(struct DRA *da, int where, union PCTypes p);
+void clDraSetValueAt(struct DRA *da, int where, union PCTypes p);
 
 /** \brief Adds a PCTypes instance to bottom of array (at index 0)
  *  \param da pointer to DRA
  *  \param p PCTypes instance to set
  */
-void draUnshift(struct DRA *da, union PCTypes p);
+void clDraUnshift(struct DRA *da, union PCTypes p);
 
 /** \brief Adds a PCTypes instance to top of array (at index size)
  *  \param da pointer to DRA
  *  \param p PCTypes instance to set
  */
-void draPush(struct DRA *da, union PCTypes p);
+void clDraPush(struct DRA *da, union PCTypes p);
 
 /** \brief Removes PCTypes instance from bottom of array (at index 0)
  *  \param da pointer to DRA
  *  \return PCTypes instance from bottom of array
  */
-union PCTypes draShift(struct DRA *da);
+union PCTypes clDraShift(struct DRA *da);
 
 /** \brief Removes PCTypes instance from top of array (at index size)
  *  \param da pointer to DRA
  *  \return PCTypes instance from top of array
  */
-union PCTypes draPop(struct DRA *da);
+union PCTypes clDraPop(struct DRA *da);
 
 /** \brief Returns random PCTypes instance from array
  *  \param da pointer to DRA
  *  \return PCTypes instance randomly chosen from array
  */
-union PCTypes draRandom(const struct DRA *da);
+union PCTypes clDraRandom(const struct DRA *da);
 
 /** \brief Swaps values at given two indeces
  *
- *  draSwapAt() will take two indeces of an array and swap their contents.
+ *  clDraSwapAt() will take two indeces of an array and swap their contents.
  *  Returns CL_OK upon success.
  *  \param da pointer to DRA
  *  \param inda first index
  *  \param indb second index
  *  \return CL_OK
  */
-int draSwapAt(struct DRA *da, int inda, int indb);
+int clDraSwapAt(struct DRA *da, int inda, int indb);
 
 /** \brief Prints to stdout list of integers stored in DRA
  *
- *  draPrintIntList() only works if the DRA consists of integers
+ *  clDraPrintIntList() only works if the DRA consists of integers
  *  \param da pointer to DRA
  */
-void draPrintIntList(const struct DRA *da);
+void clDraPrintIntList(const struct DRA *da);
 
-/* TODO: following 2 functions, stringDump() and stringLoad() obviously belong
+/* TODO: following 2 clFunctions, clStringDump() and clStringLoad() obviously belong
  * somewhere else.
  */
 
 /** \brief Converts a character string to a file-writable DataBlock
  *
- *  stringDump() returns a DataBlock which then can be written to a file using
- *  the function datablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the function package_DataBlocks().
+ *  clStringDump() returns a DataBlock which then can be written to a file using
+ *  the clFunction clDatablockWriteToFile().  This resulting DataBlock is also
+ *  appropriate when using the clFunction clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use
- *  stringLoad() function.
+ *  clStringLoad() clFunction.
  *
  *  \param s pointer to character string
  *  \return a pointer to a DataBlock which can be written to file
  */
-struct DataBlock *stringDump(const char *s);
+struct DataBlock *clStringDump(const char *s);
 
 /** \brief Converts a "dumped" string DataBlock back into a string
  *
- *  stringLoad() will take as an argument a pointer to a DataBlock,
- *  which was created by the stringDump() function
+ *  clStringLoad() will take as an argument a pointer to a DataBlock,
+ *  which was created by the clStringDump() clFunction
  *  and convert the DataBlock into a chracter string. A pointer to the string
  *  is returned.
  *
- *  An option to stringLoad() is the fmustbe flag, which, if set to 1,
- *  forces the function to exit when the check for the special string tag
- *  created by stringDump() fails.  If the tag is not found, an error message
+ *  An option to clStringLoad() is the fmustbe flag, which, if set to 1,
+ *  forces the clFunction to exit when the check for the special string tag
+ *  created by clStringDump() fails.  If the tag is not found, an error message
  *  is printed to stdout.  Set fmustbe to 0 to return NULL instead.
  *
  *  \param db pointer to DataBlock
@@ -299,15 +299,15 @@ struct DataBlock *stringDump(const char *s);
  *  0 if not
  *  \return pointer to new DRA
  */
-char *stringLoad(struct DataBlock *d, int fmustbe);
+char *clStringLoad(struct DataBlock *d, int fmustbe);
 
-/** \brief Consistency function, to ensure a DRA is memory safe
+/** \brief Consistency clFunction, to ensure a DRA is memory safe
  *
  *  If input DRA is memory corrupt in any way, program will exit and an
  *  error message will be printed to stdout.
  *  \param da pointer to DRA
  */
-void draVerify(const struct DRA *da);
+void clDraVerify(const struct DRA *da);
 
 /** \brief Checks if a qbase_t node label is in DRA
  *
@@ -316,19 +316,19 @@ void draVerify(const struct DRA *da);
  *  \param which node label in question
  *  \returns 1 if node label is stored in DRA, 0 if not
  */
-int draHasQB(const struct DRA *da, qbase_t which);
+int clDraHasQB(const struct DRA *da, qbase_t which);
 
 /** \brief Prints to stdout a DRA of IntPairs separated by spaces
  *
  *  printInPairList() will only work with a DRA of IntPair objects.
  *  \param da pointer to DRA
  */
-void draPrintIntPairList(const struct DRA *da);
+void clDraPrintIntPairList(const struct DRA *da);
 
 /** \brief Adds node label to DRA if not already there
  *  \param which node label to be added
  */
-void draAddQBIfNew(struct DRA *da, qbase_t which);
+void clDraAddQBIfNew(struct DRA *da, qbase_t which);
 
 #define ALLNODES(sz, i) \
   for (i = 0; i < sz; i += 1)

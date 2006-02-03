@@ -12,7 +12,7 @@ static void makeSizeFor(struct DRA *da, int where);
 
 struct DRA {
   int alloc, size, elemsize;
-  t_doublefreefunc func;
+  t_doublefreeclFunc clFunc;
   void *udata;
   union PCTypes *pc;
 };
@@ -24,11 +24,11 @@ struct DRAHdr {
   int size;
 };
 
-union PCTypes draRandom(const struct DRA *da)
+union PCTypes clDraRandom(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in draRandom()\n");
+    clogError("NULL ptr in clDraRandom()\n");
   }
   assert(da->size > 0);
   i = rand() % da->size;
@@ -37,14 +37,14 @@ union PCTypes draRandom(const struct DRA *da)
 
 static void callUserFunc(struct DRA *ptr)
 {
-  if (!ptr->func)
+  if (!ptr->clFunc)
     return;
-  ptr->func(ptr, ptr->udata);
-  ptr->func = NULL;
+  ptr->clFunc(ptr, ptr->udata);
+  ptr->clFunc = NULL;
   ptr->udata = NULL;
 }
 
-void draFree(struct DRA *ptr)
+void clDraFree(struct DRA *ptr)
 {
   assert(ptr);
   callUserFunc(ptr);
@@ -55,33 +55,33 @@ void draFree(struct DRA *ptr)
   clFreeandclear(ptr);
 }
 
-struct DRA *draNew(void)
+struct DRA *clDraNew(void)
 {
   struct DRA *da = clCalloc(sizeof(struct DRA), 1);
   da->alloc = 10;
-  da->func = NULL;
+  da->clFunc = NULL;
   da->elemsize = sizeof(union PCTypes);
   da->pc = clCalloc(da->elemsize, da->alloc);
   return da;
 }
 
-int draSize(const struct DRA *a)
+int clDraSize(const struct DRA *a)
 {
   if (a == NULL) {
-    clogError("NULL ptr in draSize()\n");
+    clogError("NULL ptr in clDraSize()\n");
   }
   return a->size;
 }
 
-double draGetDValueAt(struct DRA *da, int where)
+double clDraGetDValueAt(struct DRA *da, int where)
 {
   if (da == NULL) {
-    clogError("NULL ptr in draGetDValueAt()\n");
+    clogError("NULL ptr in clDraGetDValueAt()\n");
   }
-  return draGetValueAt(da, where).d;
+  return clDraGetValueAt(da, where).d;
 }
 
-void draVerify(const struct DRA *da)
+void clDraVerify(const struct DRA *da)
 {
   if (!(da) )
     goto isBad;
@@ -97,15 +97,15 @@ isBad:
   exit(1);
 }
 
-union PCTypes draGetValueAt(const struct DRA *da, int where)
+union PCTypes clDraGetValueAt(const struct DRA *da, int where)
 {
 #if LOGICWALL
   if (da == NULL) {
-    clogError("NULL ptr in draGetValueAt()\n");
+    clogError("NULL ptr in clDraGetValueAt()\n");
   }
   assert(da);
   assert(da->pc && "tried to access freed DRA");
-  draVerify(da);
+  clDraVerify(da);
   assert(where >= 0);
   assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
@@ -117,10 +117,10 @@ union PCTypes draGetValueAt(const struct DRA *da, int where)
   return da->pc[where];
 }
 
-void draSetValueAt(struct DRA *da, int where, union PCTypes p)
+void clDraSetValueAt(struct DRA *da, int where, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in draSetValueAt()\n");
+    clogError("NULL ptr in clDraSetValueAt()\n");
   }
   assert(da);
   assert(where >= 0);
@@ -130,14 +130,14 @@ void draSetValueAt(struct DRA *da, int where, union PCTypes p)
     da->size = where + 1;
 }
 
-void draSetDValueAt(struct DRA *da, int where, double val)
+void clDraSetDValueAt(struct DRA *da, int where, double val)
 {
   union PCTypes pc;
   if (da == NULL) {
-    clogError("NULL ptr in draSetDValueAt()\n");
+    clogError("NULL ptr in clDraSetDValueAt()\n");
   }
   pc.d = val;
-  draSetValueAt(da, where, pc);
+  clDraSetValueAt(da, where, pc);
 }
 
 static void makeSizeFor(struct DRA *da, int where)
@@ -157,11 +157,11 @@ static void makeSizeFor(struct DRA *da, int where)
   }
 }
 
-union PCTypes draShift(struct DRA *da)
+union PCTypes clDraShift(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in draShift()\n");
+    clogError("NULL ptr in clDraShift()\n");
   }
   result = da->pc[0];
   assert(da->size > 0);
@@ -170,11 +170,11 @@ union PCTypes draShift(struct DRA *da)
   return result;
 }
 
-union PCTypes draPop(struct DRA *da)
+union PCTypes clDraPop(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in draPop()\n");
+    clogError("NULL ptr in clDraPop()\n");
   }
   result  = da->pc[da->size-1];
   assert(da->size > 0);
@@ -183,23 +183,23 @@ union PCTypes draPop(struct DRA *da)
   return result;
 }
 
-void draUnshift(struct DRA *da, union PCTypes p)
+void clDraUnshift(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in draUnshift()\n");
+    clogError("NULL ptr in clDraUnshift()\n");
   }
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  makeSizeFor(da, draSize(da));
+  makeSizeFor(da, clDraSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->alloc >= 0);
   assert(da->alloc >= da->size);
-  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * draSize(da));
+  memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * clDraSize(da));
   assert(da);
   assert(da->size >= 0);
   assert(da->pc);
@@ -214,24 +214,24 @@ void draUnshift(struct DRA *da, union PCTypes p)
   da->size += 1;
 }
 
-void draPush(struct DRA *da, union PCTypes p)
+void clDraPush(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in draPush()\n");
+    clogError("NULL ptr in clDraPush()\n");
   }
 #if LOGICWALL
   assert(da->size >= 0);
   assert(da->pc);
   assert(da->size < 10000);
 #endif
-  draSetValueAt(da, da->size, p);
+  clDraSetValueAt(da, da->size, p);
 }
 
-int draSwapAt(struct DRA *da, int inda, int indb)
+int clDraSwapAt(struct DRA *da, int inda, int indb)
 {
   union PCTypes tmp;
   if (da == NULL) {
-    clogError("NULL ptr in draSwapAt()\n");
+    clogError("NULL ptr in clDraSwapAt()\n");
   }
   assert(da);
   assert(inda >= 0);
@@ -244,73 +244,73 @@ int draSwapAt(struct DRA *da, int inda, int indb)
   return CL_OK;
 }
 
-struct DRA *draClone(const struct DRA *ptr)
+struct DRA *clDraClone(const struct DRA *ptr)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in draClone()\n");
+    clogError("NULL ptr in clDraClone()\n");
   }
   assert(ptr);
-  return draDeepClone(ptr, 0);
+  return clDraDeepClone(ptr, 0);
 }
 
-void draDeepFree(struct DRA *ptr, int lvl)
+void clDraDeepFree(struct DRA *ptr, int lvl)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in draDeepFree()\n");
+    clogError("NULL ptr in clDraDeepFree()\n");
   }
   assert(ptr);
   if (lvl) {
     int i;
-    int sz = draSize(ptr);
+    int sz = clDraSize(ptr);
     for (i = 0; i < sz; ++i)
-      draDeepFree(draGetValueAt(ptr, i).ar, lvl-1);
+      clDraDeepFree(clDraGetValueAt(ptr, i).ar, lvl-1);
   }
-  draFree(ptr);
+  clDraFree(ptr);
 }
 
-struct DRA *draDeepClone(const struct DRA *ptr, int lvl)
+struct DRA *clDraDeepClone(const struct DRA *ptr, int lvl)
 {
-  struct DRA *result = draNew();
+  struct DRA *result = clDraNew();
   int sz;
   int i;
   if (ptr == NULL) {
-    clogError("NULL ptr in draDeepClone()\n");
+    clogError("NULL ptr in clDraDeepClone()\n");
   }
-  sz = draSize(ptr);
+  sz = clDraSize(ptr);
   for (i = 0; i < sz; ++i) {
     union PCTypes p = zeropct;
     if (lvl)
-      p.ar = draDeepClone(draGetValueAt(ptr, i).ar, lvl-1);
+      p.ar = clDraDeepClone(clDraGetValueAt(ptr, i).ar, lvl-1);
     else
-      p = draGetValueAt(ptr, i);
-    draSetValueAt(result, i, p);
+      p = clDraGetValueAt(ptr, i);
+    clDraSetValueAt(result, i, p);
   }
   return result;
 }
 
-void draPrintIntList(const struct DRA *da)
+void clDraPrintIntList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in draPrintIntList()\n");
+    clogError("NULL ptr in clDraPrintIntList()\n");
   }
   for (i = 0; i < da->size; ++i)
     printf("%d ", da->pc[i].i);
   printf("\n");
 }
 
-void draPrintIntPairList(const struct DRA *da)
+void clDraPrintIntPairList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in draPrintIntPairList()\n");
+    clogError("NULL ptr in clDraPrintIntPairList()\n");
   }
   for (i = 0; i < da->size; i += 1)
     printf("(%d,%d) ", da->pc[i].ip.x, da->pc[i].ip.y);
   printf("\n");
 }
 
-struct DRA *draLoad(struct DataBlock *d, int fmustbe)
+struct DRA *clDraLoad(struct DataBlock *d, int fmustbe)
 {
   int i;
   struct TagHdr *h;
@@ -318,25 +318,25 @@ struct DRA *draLoad(struct DataBlock *d, int fmustbe)
   struct DRA *result;
   unsigned char *cur;
   if (d == NULL) {
-    clogError("NULL ptr in draLoad()\n");
+    clogError("NULL ptr in clDraLoad()\n");
   }
-  cur = datablockData(d) + sizeof(*h) + sizeof(*ddh);
-  h = (struct TagHdr *) datablockData(d);
-  ddh = (struct DRAHdr *) (datablockData(d) + sizeof(*h));
+  cur = clDatablockData(d) + sizeof(*h) + sizeof(*ddh);
+  h = (struct TagHdr *) clDatablockData(d);
+  ddh = (struct DRAHdr *) (clDatablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_DOUBLEDOUBLER) {
     clogError("Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
         TAGNUM_DOUBLEDOUBLER, h->tagnum);
     exit(1);
   }
   if (ddh->level) {
-    result = draNew();
+    result = clDraNew();
     for (i = 0; i < ddh->size; ++i) {
       union PCTypes p = zeropct;
       struct DataBlock *dbcur;
-      dbcur = datablockNewFromBlock(cur,cur+datablockSize(d)-datablockData(d));
-      p.ar = draLoad(dbcur, 1);
-      draPush(result, p);
-      datablockFreePtr(dbcur);
+      dbcur = clDatablockNewFromBlock(cur,cur+clDatablockSize(d)-clDatablockData(d));
+      p.ar = clDraLoad(dbcur, 1);
+      clDraPush(result, p);
+      clDatablockFreePtr(dbcur);
     }
   }
   else {
@@ -347,22 +347,22 @@ struct DRA *draLoad(struct DataBlock *d, int fmustbe)
     result->pc = clCalloc(sizeof(result->pc[0]), result->alloc);
     result->size = ddh->size;
     memcpy(result->pc, cur, sizeof(result->pc[0]) * result->size);
-    draVerify(result);
+    clDraVerify(result);
   }
   return result;
 }
 
-struct DataBlock *draDump(const struct DRA *d)
+struct DataBlock *clDraDump(const struct DRA *d)
 {
   if (d == NULL) {
-    clogError("NULL ptr in draDump()\n");
+    clogError("NULL ptr in clDraDump()\n");
   }
-  return draDeepDump(d, 0);
+  return clDraDeepDump(d, 0);
 }
 
-struct DataBlock *draDeepDump(const struct DRA *d, int level)
+struct DataBlock *clDraDeepDump(const struct DRA *d, int level)
 {
-  struct DRA *bufs = draNew();
+  struct DRA *bufs = clDraNew();
   unsigned char *ptr;
   int dbsize;
   struct DataBlock *result;
@@ -370,7 +370,7 @@ struct DataBlock *draDeepDump(const struct DRA *d, int level)
   struct TagHdr h;
   struct DRAHdr ddh;
   if (d == NULL) {
-    clogError("NULL ptr in draDeepDump()\n");
+    clogError("NULL ptr in clDraDeepDump()\n");
   }
   dbsize = 0;
 
@@ -382,9 +382,9 @@ struct DataBlock *draDeepDump(const struct DRA *d, int level)
     int i;
     for (i = 0; i < d->size; i += 1) {
       union PCTypes p;
-      p.dbp = draDeepDump(draGetValueAt(d, i).ar, level-1);
-      draPush(bufs, p);
-      dbsize += datablockSize(p.dbp);
+      p.dbp = clDraDeepDump(clDraGetValueAt(d, i).ar, level-1);
+      clDraPush(bufs, p);
+      dbsize += clDatablockSize(p.dbp);
     }
     ptr = clCalloc(dbsize + sizeof(h) + sizeof(ddh), 1);
     h.size = dbsize + sizeof(ddh);
@@ -392,10 +392,10 @@ struct DataBlock *draDeepDump(const struct DRA *d, int level)
     memcpy(ptr + sizeof(h), &ddh, sizeof(ddh));
     dbsize = sizeof(h) + sizeof(ddh);
     for (i = 0; i < bufs->size; i += 1) {
-      struct DataBlock *cur = draGetValueAt(bufs, i).dbp;
-      memcpy(ptr + dbsize, datablockData(cur), datablockSize(cur));
-      dbsize += datablockSize(cur);
-      datablockFreePtr(cur);
+      struct DataBlock *cur = clDraGetValueAt(bufs, i).dbp;
+      memcpy(ptr + dbsize, clDatablockData(cur), clDatablockSize(cur));
+      dbsize += clDatablockSize(cur);
+      clDatablockFreePtr(cur);
     }
   }
   else {
@@ -407,12 +407,12 @@ struct DataBlock *draDeepDump(const struct DRA *d, int level)
     memcpy(ptr + sizeof(h) + sizeof(ddh), d->pc, d->size * sizeof(d->pc[0]));
   }
 
-  result = datablockNewFromBlock(ptr, dbsize);
+  result = clDatablockNewFromBlock(ptr, dbsize);
   clFree(ptr);
   return result;
 }
 
-struct DataBlock *stringDump(const char *s)
+struct DataBlock *clStringDump(const char *s)
 {
   struct DataBlock *result;
   unsigned char *ptr;
@@ -420,7 +420,7 @@ struct DataBlock *stringDump(const char *s)
   int dbsize;
 
   if (s == NULL) {
-    clogError("NULL ptr in stringDump()\n");
+    clogError("NULL ptr in clStringDump()\n");
   }
 
   h.tagnum = TAGNUM_STRING;
@@ -429,18 +429,18 @@ struct DataBlock *stringDump(const char *s)
   ptr = clCalloc(dbsize,1);
   memcpy(ptr, &h, sizeof(h));
   memcpy(ptr + sizeof(h), s, h.size);
-  result = datablockNewFromBlock(ptr, dbsize);
+  result = clDatablockNewFromBlock(ptr, dbsize);
   clFree(ptr);
   return result;
 }
 
-char *stringLoad(struct DataBlock *db, int fmustbe)
+char *clStringLoad(struct DataBlock *db, int fmustbe)
 {
   char *result;
-  struct TagHdr *h = (struct TagHdr *) datablockData(db);
+  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
 
   if (db == NULL) {
-    clogError("NULL ptr in stringLoad()\n");
+    clogError("NULL ptr in clStringLoad()\n");
   }
   if (h->tagnum != TAGNUM_STRING) {
     if (fmustbe) {
@@ -452,26 +452,26 @@ char *stringLoad(struct DataBlock *db, int fmustbe)
       return NULL;
   }
   result = clCalloc(h->size + 1, 1);
-  memcpy(result,datablockData(db) + sizeof(*h), h->size);
+  memcpy(result,clDatablockData(db) + sizeof(*h), h->size);
   result[h->size] = '\0';
   return result;
 }
 
-int draHasQB(const struct DRA *da, qbase_t which)
+int clDraHasQB(const struct DRA *da, qbase_t which)
 {
   int i;
-  for (i = 0; i < draSize(da); i += 1)
-    if (which == draGetValueAt(da, i).i)
+  for (i = 0; i < clDraSize(da); i += 1)
+    if (which == clDraGetValueAt(da, i).i)
       return 1;
   return 0;
 }
 
-void draAddQBIfNew(struct DRA *da, qbase_t which)
+void clDraAddQBIfNew(struct DRA *da, qbase_t which)
 {
-  if (!draHasQB(da, which)) {
+  if (!clDraHasQB(da, which)) {
     union PCTypes p = zeropct;
     p.i = which;
-    draPush(da, p);
+    clDraPush(da, p);
   }
 }
 

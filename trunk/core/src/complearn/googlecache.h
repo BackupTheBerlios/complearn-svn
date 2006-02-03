@@ -17,12 +17,12 @@
  */
 struct GoogleCache;
 
-struct GoogleCache *newGC(void);
-void freeGC(struct GoogleCache *gc);
+struct GoogleCache *clNewGC(void);
+void clFreeGC(struct GoogleCache *gc);
 
-int fetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey);
-double fetchSampleSimple(struct StringStack *terms, const char *gkey, const char *daystr);
+int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey);
+double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const char *daystr);
 
-void deleteSavedGC(void);
+void clDeleteSavedGC(void);
 
 #endif

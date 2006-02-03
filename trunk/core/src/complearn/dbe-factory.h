@@ -30,33 +30,33 @@ struct DBEFactory;
 /** \brief Returns a pointer to a new DBEFactory instance.
  *  \return pointer to a new DBEFactory instance
  */
-struct DBEFactory *dbefactoryNew(void);
+struct DBEFactory *clDbefactoryNew(void);
 
 /** \brief Frees DBEFactory instance from memory.
  *  \param dbf DBEFactory instance
  */
-void dbefactoryFree(struct DBEFactory *dbf);
+void clDbefactoryFree(struct DBEFactory *dbf);
 
 /** \brief Sets a new mode for a DBEFactory.
  *  \param dbf pointer to a DBEFactory instance
  *  \param dbf newMode
  *  \return 0 on success
  */
-int dbefactorySetMode(struct DBEFactory *dbf, int newMode);
+int clDbefactorySetMode(struct DBEFactory *dbf, int newMode);
 
 /** \brief Returns mode of DBEFactory instance.
  *  \param dbf pointer to a DBEFactory instance
  *  \return value between 1 and 5 inclusive. 1 = quoted, 2 = file, 3 =
  *   filelist, 4 = directory, 5 = windowed
  */
-int dbefactoryGetMode(struct DBEFactory *dbf);
+int clDbefactoryGetMode(struct DBEFactory *dbf);
 
 /** \brief Returns string which describes mode of DBEFactory instance.
  *  \param dbf pinter to a DBEFactory instance
  *  \return pointer to string of one of the following values: quoted, file,
  *   filelist, directory, windowed
  */
-const char *dbefactoryModeString(struct DBEFactory *dbf);
+const char *clDbefactoryModeString(struct DBEFactory *dbf);
 
 /** \brief Given a DBEFactory instance and string argument, returns a pointer
  *  to a new DataBlockEnumeration.
@@ -69,5 +69,5 @@ const char *dbefactoryModeString(struct DBEFactory *dbf);
  *  \param str string
  *  \return pointer to newly created DataBlockEnumeration
  */
-struct DataBlockEnumeration *dbefactoryNewDBE(struct DBEFactory *dbf, const char *str);
+struct DataBlockEnumeration *clDbefactoryNewDBE(struct DBEFactory *dbf, const char *str);
 #endif

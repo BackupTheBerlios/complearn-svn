@@ -2,33 +2,33 @@
 #include <complearn/complearn.h>
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock *dumpTaggedStringStack(struct StringStack *ss, int tagnum)
+struct DataBlock *clDumpTaggedStringStack(struct StringStack *ss, int tagnum)
 {
   struct DataBlock *db, *dblabels;
-  db = stringstackDump(ss);
-  dblabels = package_DataBlocks(tagnum,db,NULL);
-  datablockFreePtr(db);
+  db = clStringstackDump(ss);
+  dblabels = clPackage_DataBlocks(tagnum,db,NULL);
+  clDatablockFreePtr(db);
   return dblabels;
 }
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock *commandsDump(struct StringStack *ss)
+struct DataBlock *clCommandsDump(struct StringStack *ss)
 {
-  return dumpTaggedStringStack(ss, TAGNUM_COMMANDS);
+  return clDumpTaggedStringStack(ss, TAGNUM_COMMANDS);
 }
 
-struct DataBlock *labelsDump(struct StringStack *ss)
+struct DataBlock *clLabelsDump(struct StringStack *ss)
 {
-  return dumpTaggedStringStack(ss, TAGNUM_DMLABELS);
+  return clDumpTaggedStringStack(ss, TAGNUM_DMLABELS);
 }
 
 /* TODO: needs new home; does not belong here */
-struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, const char *tagname, int tagnum)
+struct StringStack *clLoadTaggedStringStack(struct DataBlock *db, int fmustbe, const char *tagname, int tagnum)
 {
   struct StringStack *ss;
   struct DataBlock *dbss;
   struct DRA *results;
-  struct TagHdr *h = (struct TagHdr *) datablockData(db);
+  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
 
   if (h->tagnum != tagnum) {
     if (fmustbe) {
@@ -39,17 +39,17 @@ struct StringStack *loadTaggedStringStack(struct DataBlock *db, int fmustbe, con
     else
       return NULL;
   }
-  results = load_DataBlock_package(db);
-  dbss = scanForTag(results, TAGNUM_STRINGSTACK);
-  ss = stringstackLoad(dbss, 1);
-  datablockFreePtr(dbss);
-  draFree(results);
+  results = clLoad_DataBlock_package(db);
+  dbss = clScanForTag(results, TAGNUM_STRINGSTACK);
+  ss = clStringstackLoad(dbss, 1);
+  clDatablockFreePtr(dbss);
+  clDraFree(results);
   return ss;
 }
 
-struct StringStack *labelsLoad(struct DataBlock *db, int fmustbe)
+struct StringStack *clLabelsLoad(struct DataBlock *db, int fmustbe)
 {
-  return loadTaggedStringStack(db, fmustbe, "DMLABELS", TAGNUM_DMLABELS);
+  return clLoadTaggedStringStack(db, fmustbe, "DMLABELS", TAGNUM_DMLABELS);
 }
 
 struct DataBlock *clbLabelsDataBlock(char *fname)
@@ -57,12 +57,12 @@ struct DataBlock *clbLabelsDataBlock(char *fname)
   struct DataBlock *db, *dblabels;
   struct DRA *dd;
 
-  db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(db);
-  dblabels = scanForTag(dd, TAGNUM_DMLABELS);
+  db = clFileToDataBlockPtr(fname);
+  dd = clLoad_DataBlock_package(db);
+  dblabels = clScanForTag(dd, TAGNUM_DMLABELS);
 
-  datablockFreePtr(db);
-  draFree(dd);
+  clDatablockFreePtr(db);
+  clDraFree(dd);
 
   return dblabels;
 }
@@ -70,7 +70,7 @@ struct DataBlock *clbLabelsDataBlock(char *fname)
 struct StringStack *clbLabelsLoad(struct DataBlock *db)
 {
   struct StringStack *labels;
-  labels = labelsLoad(db, 1);
+  labels = clLabelsLoad(db, 1);
   return labels;
 }
 
@@ -80,13 +80,13 @@ struct StringStack *clbDBLabels(struct DataBlock *db)
   struct DRA *dd;
   struct StringStack *ss;
 
-  dd = load_DataBlock_package(db);
-  dblabels = scanForTag(dd, TAGNUM_DMLABELS);
+  dd = clLoad_DataBlock_package(db);
+  dblabels = clScanForTag(dd, TAGNUM_DMLABELS);
 
   ss = clbLabelsLoad(dblabels);
 
-  datablockFreePtr(dblabels);
-  draFree(dd);
+  clDatablockFreePtr(dblabels);
+  clDraFree(dd);
   return ss;
 }
 
@@ -98,7 +98,7 @@ struct StringStack *clbLabels(char *fname)
   db = clbLabelsDataBlock(fname);
   result = clbLabelsLoad(db);
 
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
   return result;
 }
 
@@ -114,10 +114,10 @@ struct StringStack *cltxtLabels(char *fname)
     clogError("Error: no labels in this file\n");
     exit(1);
   }
-  labels = stringstackNew();
+  labels = clStringstackNew();
   fp = clFopen(fname, "r");
   while (fgets(linebuf, MAXLINESIZE, fp)) {
-    stringstackPush(labels, strtok(linebuf,DELIMS));
+    clStringstackPush(labels, strtok(linebuf,DELIMS));
   }
   return labels;
 }
@@ -129,13 +129,13 @@ struct StringStack *clbCommands(char *fname)
   struct DRA *dd;
   struct StringStack *result;
 
-  db = fileToDataBlockPtr(fname);
-  dd = load_DataBlock_package(db);
-  dbem = scanForTag(dd, TAGNUM_COMMANDS);
-  result = loadTaggedStringStack(dbem, 1, "COMMANDS", TAGNUM_COMMANDS);
+  db = clFileToDataBlockPtr(fname);
+  dd = clLoad_DataBlock_package(db);
+  dbem = clScanForTag(dd, TAGNUM_COMMANDS);
+  result = clLoadTaggedStringStack(dbem, 1, "COMMANDS", TAGNUM_COMMANDS);
 
-  datablockFreePtr(db);
-  datablockFreePtr(dbem);
-  draFree(dd);
+  clDatablockFreePtr(db);
+  clDatablockFreePtr(dbem);
+  clDraFree(dd);
   return result;
 }

@@ -10,21 +10,21 @@
 #include <libcsoap/soap-client.h>
 #include <stdlib.h>
 
-SoapCtx *simplePrepareSOAPEnvForMethod(const char *urn, const char *method);
+SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method);
 
-void normalizeSearchTerms(struct StringStack *terms)
+void clNormalizeSearchTerms(struct StringStack *terms)
 {
-  stringstackSort(terms);
+  clStringstackSort(terms);
 }
 
-const char *makeQueryString(struct StringStack *terms)
+const char *clMakeQueryString(struct StringStack *terms)
 {
   static char buf[2536];
   int sb = 0;
   int i;
-  for (i = 0; i < stringstackSize(terms); ++i) {
+  for (i = 0; i < clStringstackSize(terms); ++i) {
     assert(sb + 100 < sizeof(buf));
-    sb += sprintf(buf+sb, "%s+\"%s\"",i==0?"":" ",stringstackReadAt(terms, i));
+    sb += sprintf(buf+sb, "%s+\"%s\"",i==0?"":" ",clStringstackReadAt(terms, i));
   }
   return buf;
 }
@@ -38,16 +38,16 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
   int trynum = 0;
   int isDone = 0;
   double estDouble = -1;
-  xmlNodePtr function, node;
+  xmlNodePtr clFunction, node;
   method = "doGoogleSearch";
   urn = "urn:GoogleSearch";
   url = "http://api.google.com/search/beta2";
   while (!isDone) {
     trynum += 1;
 
-    ctx = simplePrepareSOAPEnvForMethod(urn, method);
+    ctx = clSimplePrepareSOAPEnvForMethod(urn, method);
     soap_env_add_item(ctx->env, "xsd:string", "key", gkey);
-    soap_env_add_item(ctx->env, "xsd:string", "q",makeQueryString(terms));
+    soap_env_add_item(ctx->env, "xsd:string", "q",clMakeQueryString(terms));
     soap_env_add_item(ctx->env, "xsd:int", "start","0");
     soap_env_add_item(ctx->env, "xsd:int", "maxResults","1");
     soap_env_add_item(ctx->env, "xsd:boolean", "filter","true");
@@ -60,13 +60,13 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     err = soap_client_invoke(ctx, &ctx2, url, method);
 //    printf("Done: %d,%d\n", err,trynum);
     if (err != H_OK) {
-      //log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
+      //log_error4("%s():%s [%d]", herror_clFunc(err), herror_message(err), herror_code(err));
       herror_release(err);
       sleep(trynum*trynum+5);
       continue;
     }
-    function = soap_env_get_method(ctx2->env);
-    node = soap_xml_get_children(function);
+    clFunction = soap_env_get_method(ctx2->env);
+    node = soap_xml_get_children(clFunction);
     node = soap_xml_get_children(node);
 
     while (node) {
@@ -112,16 +112,16 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
   return estDouble;
 }
 
-double getPageCount(struct StringStack *terms, const char *gkey)
+double clGetPageCount(struct StringStack *terms, const char *gkey)
 {
   char *word;
 
-  if (stringstackSize(terms) == 1) {
-    word = stringstackReadAt(terms, 0);
+  if (clStringstackSize(terms) == 1) {
+    word = clStringstackReadAt(terms, 0);
     if (word[1] == '\0' && (word[0] == 'm' || word[0] == 'M')) {
       const char *daystr;
       double res;
-      res = calculateMbase(NULL, gkey);
+      res = clCalculateMbase(NULL, gkey);
       return 1.0/res;
     }
   }
@@ -130,18 +130,18 @@ double getPageCount(struct StringStack *terms, const char *gkey)
 
 #else
 
-double getPageCount(struct StringStack *terms, const char *gkey)
+double clGetPageCount(struct StringStack *terms, const char *gkey)
 {
   assert(0 && "No SOAP support installed");
   return -1;
 }
 
-void normalizeSearchTerms(struct StringStack *terms)
+void clNormalizeSearchTerms(struct StringStack *terms)
 {
   assert(0 && "No SOAP support installed");
 }
 
-const char *makeQueryString(struct StringStack *terms)
+const char *clMakeQueryString(struct StringStack *terms)
 {
   assert(0 && "No SOAP support installed");
   return NULL;

@@ -25,9 +25,9 @@
 static char *testfile, *testbzfile, *testgzfile, *testzlibfile, *testpg4dir;
 struct GeneralConfig *gconf;
 
-struct TransformAdaptor *builtin_UNBZIP(void);
-struct TransformAdaptor *builtin_UNGZ(void);
-struct TransformAdaptor *builtin_UNZLIB(void);
+struct TransformAdaptor *clBuiltin_UNBZIP(void);
+struct TransformAdaptor *clBuiltin_UNGZ(void);
+struct TransformAdaptor *clBuiltin_UNZLIB(void);
 
 struct GeneralConfig *loadNCDEnvironment()
 {
@@ -39,7 +39,7 @@ struct GeneralConfig *loadNCDEnvironment()
 
   if (!gconf) {
     struct NCDConfig *ncdcfg;
-    gconf = loadDefaultEnvironment();
+    gconf = clLoadDefaultEnvironment();
     gconf->ptr = clCalloc(sizeof(struct NCDConfig),1);
     ncdcfg = (struct NCDConfig *) gconf->ptr;
     *ncdcfg = defaultNCDConfig;
@@ -53,26 +53,26 @@ void testDataBlock()
   char *str = "hello, world\n";
 	char *str2 = "welcome to the jungle\n";
 	char *result;
-  dbstr = stringToDataBlockPtr(str);
-  assert(strlen(str) == datablockSize(dbstr));
-  assert(datablockData(dbstr) != NULL);
-  assert(datablockData(dbstr) != (unsigned char *) str);
-	result = datablockToString(dbstr);
+  dbstr = clStringToDataBlockPtr(str);
+  assert(strlen(str) == clDatablockSize(dbstr));
+  assert(clDatablockData(dbstr) != NULL);
+  assert(clDatablockData(dbstr) != (unsigned char *) str);
+	result = clDatablockToString(dbstr);
 	assert(strcmp(result,str) == 0);
-  dbstr2 = stringToDataBlockPtr(str2);
-  assert(datablockData(dbstr2) != NULL);
-  assert(datablockData(dbstr2) != (unsigned char *) str2);
-  dbcat = datablockCatPtr(dbstr,dbstr2);
-  assert(datablockData(dbcat) != NULL);
-  assert(datablockData(dbcat) != datablockData(dbstr));
-  assert(datablockData(dbcat) != datablockData(dbstr2));
-  datablockFreePtr(dbcat);
-  datablockFreePtr(dbstr);
-  datablockFreePtr(dbstr2);
-  dbfile = fileToDataBlockPtr(testfile);
-  assert(datablockData(dbfile) != NULL);
-  assert(datablockData(dbfile) != (unsigned char *) str);
-  datablockFreePtr(dbfile);
+  dbstr2 = clStringToDataBlockPtr(str2);
+  assert(clDatablockData(dbstr2) != NULL);
+  assert(clDatablockData(dbstr2) != (unsigned char *) str2);
+  dbcat = clDatablockCatPtr(dbstr,dbstr2);
+  assert(clDatablockData(dbcat) != NULL);
+  assert(clDatablockData(dbcat) != clDatablockData(dbstr));
+  assert(clDatablockData(dbcat) != clDatablockData(dbstr2));
+  clDatablockFreePtr(dbcat);
+  clDatablockFreePtr(dbstr);
+  clDatablockFreePtr(dbstr2);
+  dbfile = clFileToDataBlockPtr(testfile);
+  assert(clDatablockData(dbfile) != NULL);
+  assert(clDatablockData(dbfile) != (unsigned char *) str);
+  clDatablockFreePtr(dbfile);
   clFreeandclear(result);
 }
 
@@ -87,29 +87,29 @@ void testDL2()
   char *strlargealpha = "kdjbabenzo";
   struct DataBlock *dbab, *dbaa, *dbsmallalpha, *dblargealpha;
   double cdbab, cdbaa, cdbsa, cdbla;
-  dbab = stringToDataBlockPtr(strab);
-  dbaa = stringToDataBlockPtr(straa);
-  dbsmallalpha = stringToDataBlockPtr(strsmallalpha);
-  dblargealpha = stringToDataBlockPtr(strlargealpha);
-  em = getEnvMap(gconf);
+  dbab = clStringToDataBlockPtr(strab);
+  dbaa = clStringToDataBlockPtr(straa);
+  dbsmallalpha = clStringToDataBlockPtr(strsmallalpha);
+  dblargealpha = clStringToDataBlockPtr(strlargealpha);
+  em = clGetEnvMap(gconf);
   assert(em != NULL);
-  envmapSetKeyVal(em, "padding", "40");
-  comp = compaLoadDynamicLib(DLNAME);
+  clEnvmapSetKeyVal(em, "padding", "40");
+  comp = clCompaLoadDynamicLib(DLNAME);
   assert(comp->cf != NULL);
   //comp->se(comp,em);
-  sn = compaShortName(comp);
+  sn = clCompaShortName(comp);
   assert(strcmp(sn, "art") == 0);
-  cdbab = compaCompress(comp, dbab);
-  assert(cdbab >= datablockSize(dbab)*8);
-  cdbaa = compaCompress(comp, dbaa);
-  assert(cdbaa <= datablockSize(dbaa)*8);
-  cdbsa = compaCompress(comp, dbsmallalpha);
-  cdbla = compaCompress(comp, dblargealpha);
+  cdbab = clCompaCompress(comp, dbab);
+  assert(cdbab >= clDatablockSize(dbab)*8);
+  cdbaa = clCompaCompress(comp, dbaa);
+  assert(cdbaa <= clDatablockSize(dbaa)*8);
+  cdbsa = clCompaCompress(comp, dbsmallalpha);
+  cdbla = clCompaCompress(comp, dblargealpha);
   assert(cdbsa < cdbla);
-  datablockFreePtr(dbab);
-  datablockFreePtr(dbaa);
-  datablockFreePtr(dbsmallalpha);
-  datablockFreePtr(dblargealpha);
+  clDatablockFreePtr(dbab);
+  clDatablockFreePtr(dbaa);
+  clDatablockFreePtr(dbsmallalpha);
+  clDatablockFreePtr(dblargealpha);
 }
 
 void testDL()
@@ -117,10 +117,10 @@ void testDL()
   void *dlh;
   char *(*fn)(void);
   struct EnvMap *em;
-  em = envmapNew();
-  envmapSetKeyVal(em, "ignorethis", "noproblem");
-  envmapSetKeyVal(em, "ignorethis2", "ok");
-  envmapSetKeyVal(em, "padding", "20");
+  em = clEnvmapNew();
+  clEnvmapSetKeyVal(em, "ignorethis", "noproblem");
+  clEnvmapSetKeyVal(em, "ignorethis2", "ok");
+  clEnvmapSetKeyVal(em, "padding", "20");
   dlh = dlopen(DLNAME, RTLD_NOW | RTLD_GLOBAL);
   if (dlh == NULL) {
     clogError( "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
@@ -130,66 +130,66 @@ void testDL()
   assert("Error: cannot open dynamic library, did you build it yet?" && dlh);
   fn = dlsym(dlh, "newCompAdaptor");
   assert(fn);
-  envmapFree(em);
+  clEnvmapFree(em);
 }
 
 void testEM()
 {
   struct EnvMap *em;
   union PCTypes p;
-  em = envmapNew();
-  envmapSetKeyVal(em,"key1","val1");
-  envmapSetKeyVal(em,"key2","val2");
-  envmapSetKeyVal(em,"key3","val3");
-  envmapSetKeyVal(em,"key4","val4");
-  assert(strcmp("val1", envmapValueForKey(em,"key1")) == 0);
-  assert(strcmp("val2", envmapValueForKey(em,"key2")) == 0);
-  envmapSetKeyVal(em,"key2","newval2");
-  envmapSetKeyVal(em,"key3","newval3");
-  p = envmapKeyValAt(em,1);
+  em = clEnvmapNew();
+  clEnvmapSetKeyVal(em,"key1","val1");
+  clEnvmapSetKeyVal(em,"key2","val2");
+  clEnvmapSetKeyVal(em,"key3","val3");
+  clEnvmapSetKeyVal(em,"key4","val4");
+  assert(strcmp("val1", clEnvmapValueForKey(em,"key1")) == 0);
+  assert(strcmp("val2", clEnvmapValueForKey(em,"key2")) == 0);
+  clEnvmapSetKeyVal(em,"key2","newval2");
+  clEnvmapSetKeyVal(em,"key3","newval3");
+  p = clEnvmapKeyValAt(em,1);
   assert(strcmp(p.sp.key,"key2") == 0);
   assert(strcmp(p.sp.val,"newval2") == 0);
-  p = envmapKeyValAt(em,2);
+  p = clEnvmapKeyValAt(em,2);
   assert(strcmp(p.sp.key,"key3") == 0);
   assert(strcmp(p.sp.val,"newval3") == 0);
-  envmapFree(em);
+  clEnvmapFree(em);
 }
 
 void testSS()
 {
-  struct StringStack *ss = stringstackNew(), *nss;
+  struct StringStack *ss = clStringstackNew(), *nss;
   struct DataBlock *db;
   char *s;
-  stringstackPush(ss, "ape");
-  stringstackPush(ss, "bird");
-  stringstackPush(ss, "cat");
-  stringstackPush(ss, "dog");
-  db = stringstackDump(ss);
-  datablockWriteToFile(db, "baddb.dat");
-  s = shiftSS(ss);
+  clStringstackPush(ss, "ape");
+  clStringstackPush(ss, "bird");
+  clStringstackPush(ss, "cat");
+  clStringstackPush(ss, "dog");
+  db = clStringstackDump(ss);
+  clDatablockWriteToFile(db, "baddb.dat");
+  s = clShiftSS(ss);
   assert(strcmp(s,"ape") == 0);
   clFreeandclear(s);
-  s = stringstackPop(ss);
+  s = clStringstackPop(ss);
   assert(strcmp(s,"dog") == 0);
   clFreeandclear(s);
-  assert(stringstackSize(ss) == 2);
-  s = shiftSS(ss);
+  assert(clStringstackSize(ss) == 2);
+  s = clShiftSS(ss);
   clFreeandclear(s);
-  assert(!stringstackIsEmpty(ss));
-  s = shiftSS(ss);
+  assert(!clStringstackIsEmpty(ss));
+  s = clShiftSS(ss);
   clFreeandclear(s);
-  assert(stringstackIsEmpty(ss));
-  stringstackFree(ss);
-  nss = stringstackLoad(db, 1);
-  assert(stringstackSize(nss) == 4);
-  s = shiftSS(nss);
+  assert(clStringstackIsEmpty(ss));
+  clStringstackFree(ss);
+  nss = clStringstackLoad(db, 1);
+  assert(clStringstackSize(nss) == 4);
+  s = clShiftSS(nss);
   assert(strcmp(s, "ape") == 0);
   clFreeandclear(s);
-  s = stringstackPop(nss);
+  s = clStringstackPop(nss);
   assert(strcmp(s, "dog") == 0);
   clFreeandclear(s);
-  stringstackFree(nss);
-  datablockFreePtr(db);
+  clStringstackFree(nss);
+  clDatablockFreePtr(db);
 }
 
 void testCAPtr(struct CompAdaptor *ca)
@@ -203,23 +203,23 @@ void testCAPtr(struct CompAdaptor *ca)
                   /* */
                     ;
 
-  struct DataBlock *db = stringToDataBlockPtr(str);
+  struct DataBlock *db = clStringToDataBlockPtr(str);
   double c;
   assert(ca != NULL);
   //ca->se(ca,em);
 //  assert(ci != NULL);
   assert(ca->cf != NULL);
-  c = compaCompress(ca,db);
+  c = clCompaCompress(ca,db);
   assert(c < strlen(str)*8);
   if (gconf->fVerbose)
-    printf("Testing %s to get compressed size %f\n", compaShortName(ca), c);
-  datablockFreePtr(db);
-  compaFree(ca);
+    printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), c);
+  clDatablockFreePtr(db);
+  clCompaFree(ca);
 }
 
 void testCANamed(const char *name)
 {
-  struct CompAdaptor *ca = compaLoadBuiltin(name);
+  struct CompAdaptor *ca = clCompaLoadBuiltin(name);
   testCAPtr(ca);
 }
 
@@ -238,7 +238,7 @@ void testBlockSortCA()
 #define REPS 10
 #define MAX_BLKSIZE 200
   int i, j, c;
-  struct CompAdaptor *ca = compaLoadBuiltin("blocksort");
+  struct CompAdaptor *ca = clCompaLoadBuiltin("blocksort");
   struct DataBlock *db = NULL;
   double v;
   int dbsize;
@@ -254,12 +254,12 @@ void testBlockSortCA()
     dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(dbptr, c, dbsize);
-    db = datablockNewFromBlock(dbptr,dbsize);
-    v = compaCompress(ca,db);
+    db = clDatablockNewFromBlock(dbptr,dbsize);
+    v = clCompaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
     clFree(dbptr);
-    datablockFreePtr(db);
+    clDatablockFreePtr(db);
   }
 
   /* Blocks with the same character repeated */
@@ -268,12 +268,12 @@ void testBlockSortCA()
     dbptr = (unsigned char*)clMalloc(dbsize);
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(dbptr, c, dbsize);
-    db = datablockNewFromBlock(dbptr,dbsize);
-    v = compaCompress(ca,db);
+    db = clDatablockNewFromBlock(dbptr,dbsize);
+    v = clCompaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
     clFree(dbptr);
-    datablockFreePtr(db);
+    clDatablockFreePtr(db);
   }
 
   /* Blocks with randomly generated characters */
@@ -283,14 +283,14 @@ void testBlockSortCA()
     for (j = 0; j < dbsize ; j +=1 ) {
       dbptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
-    db = datablockNewFromBlock(dbptr,dbsize);
-    v = compaCompress(ca,db);
+    db = clDatablockNewFromBlock(dbptr,dbsize);
+    v = clCompaCompress(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", compaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
     clFree(dbptr);
-    datablockFreePtr(db);
+    clDatablockFreePtr(db);
   }
-  compaFree(ca);
+  clCompaFree(ca);
 }
 
 void testYamlParser()
@@ -300,20 +300,20 @@ void testYamlParser()
 //  "compressor: zlib\n"
 //  "zliblevel: 5\n"
 	;
-//  struct StringStack *getDefaultFileList(void);
-  em = envmapNew();
-  readDefaultConfig(em);
+//  struct StringStack *clGetDefaultFileList(void);
+  em = clEnvmapNew();
+  clReadDefaultConfig(em);
 
-	assert(strcmp(envmapValueForKey(em,"compressor"),"zlib") == 0);
-	assert(strcmp(envmapValueForKey(em,"zliblevel"),"5") == 0);
-  envmapFree(em);
+	assert(strcmp(clEnvmapValueForKey(em,"compressor"),"zlib") == 0);
+	assert(strcmp(clEnvmapValueForKey(em,"zliblevel"),"5") == 0);
+  clEnvmapFree(em);
 }
 
 void testVirtComp()
 {
   char *cmdname = "/home/cilibrar/src/shared/complearn/scripts/testvirtcomp.zsh";
   struct CompAdaptor *ca;
-  ca = compaLoadVirtual(cmdname);
+  ca = clCompaLoadVirtual(cmdname);
   testCAPtr(ca);
 }
 
@@ -321,7 +321,7 @@ void testRealComp()
 {
   char *cmdname = "/home/cilibrar/src/shared/complearn/scripts/testrealcomp.sh";
   struct CompAdaptor *ca;
-  ca = compaLoadReal(cmdname);
+  ca = clCompaLoadReal(cmdname);
   testCAPtr(ca);
 }
 
@@ -334,47 +334,47 @@ void testGoogle()
   const char *gotQStr;
   double pg;
   wantedQStr = wantedQStr; /* warning stopper */
-  em = envmapNew();
-  terms = stringstackNew();
-  stringstackPush(terms, "ball");
-  stringstackPush(terms, "apple");
-  assert(stringstackReadAt(terms, 0)[0] == 'b');
+  em = clEnvmapNew();
+  terms = clStringstackNew();
+  clStringstackPush(terms, "ball");
+  clStringstackPush(terms, "apple");
+  assert(clStringstackReadAt(terms, 0)[0] == 'b');
 
-  normalizeSearchTerms(terms);
+  clNormalizeSearchTerms(terms);
 
-  assert(stringstackReadAt(terms, 0)[0] == 'a');
+  assert(clStringstackReadAt(terms, 0)[0] == 'a');
 
-  gotQStr = makeQueryString(terms);
+  gotQStr = clMakeQueryString(terms);
   assert(strcmp(gotQStr, wantedQStr) == 0);
 
-  readDefaultConfig(em);
+  clReadDefaultConfig(em);
 
-  gkey = envmapValueForKey(em, "GoogleKey");
+  gkey = clEnvmapValueForKey(em, "GoogleKey");
 
   if (gkey) {
-//    pg = fetchSampleSimple(terms, gkey, NULL);
-    pg = fetchSampleSimple(terms, gkey, NULL);
+//    pg = clFetchSampleSimple(terms, gkey, NULL);
+    pg = clFetchSampleSimple(terms, gkey, NULL);
     if (gconf->fVerbose)
       printf("pg is %f\n", pg);
     assert(pg > 10 && pg < 1000000000000.0);
-    horse = stringstackNewSingle("horse");
-    rider = stringstackNewSingle("rider");
-    horserider = stringstackMerge(horse, rider);
+    horse = clStringstackNewSingle("horse");
+    rider = clStringstackNewSingle("rider");
+    horserider = clStringstackMerge(horse, rider);
     if (gconf->fVerbose) {
-      printf("[horse]: %f\n", fetchSampleSimple(horse, gkey, NULL));
-      printf("[rider]: %f\n", fetchSampleSimple(rider, gkey, NULL));
-      printf("[horse,rider]: %f\n", fetchSampleSimple(horserider, gkey, NULL));
+      printf("[horse]: %f\n", clFetchSampleSimple(horse, gkey, NULL));
+      printf("[rider]: %f\n", clFetchSampleSimple(rider, gkey, NULL));
+      printf("[horse,rider]: %f\n", clFetchSampleSimple(horserider, gkey, NULL));
     }
-    stringstackFree(horse);
-    stringstackFree(rider);
-    stringstackFree(horserider);
+    clStringstackFree(horse);
+    clStringstackFree(rider);
+    clStringstackFree(horserider);
   } else {
     if (gconf->fVerbose) {
       printf("(no GoogleKey set, skipping Google test)\n");
     }
   }
-  stringstackFree(terms);
-  envmapFree(em);
+  clStringstackFree(terms);
+  clEnvmapFree(em);
 }
 
 void testSOAPComp()
@@ -382,30 +382,30 @@ void testSOAPComp()
   char *url = "http://localhost:2000/";
   char *urn = "urn:hws";
   struct CompAdaptor *ca;
-  ca = compaLoadSOAP(url, urn);
+  ca = clCompaLoadSOAP(url, urn);
   testCAPtr(ca);
 }
 
 void testTransformBZ()
 {
-  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNBZIP();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNBZIP();
 	struct DataBlock *db;
 	if (!fopen(testbzfile, "rb")) {
 		printf("Can't find test bz2 file. Skipping transformBZ test...\n");
 		return;
 	}
- 	db = fileToDataBlockPtr(testbzfile);
+ 	db = clFileToDataBlockPtr(testbzfile);
 	assert(strcmp(t->sn(),"unbzip") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(datablockSize(result) > 0);
-		assert(datablockData(result) != NULL);
+		assert(clDatablockSize(result) > 0);
+		assert(clDatablockData(result) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
 }
 
 struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
@@ -414,9 +414,9 @@ struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
   unsigned char *dbuff;
 	int p, s;
 
-	p = datablockSize(src)*1.001 + 12;
+	p = clDatablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = compress2(dbuff,(uLongf *) &p,datablockData(src),datablockSize(src),0);
+	s = compress2(dbuff,(uLongf *) &p,clDatablockData(src),clDatablockSize(src),0);
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enoughC!\n");
 		exit(1);
@@ -425,53 +425,53 @@ struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
 		printf ("Unknown error: zlibBuff returned %d\n",s);
 		exit(1);
 	}
-  result = datablockNewFromBlock(dbuff,p);
+  result = clDatablockNewFromBlock(dbuff,p);
 	free(dbuff);
 	return result;
 }
 
 void testTransformGZ()
 {
-  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNGZ();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNGZ();
 	struct DataBlock *db;
 	if (!fopen(testgzfile, "rb")) {
 		printf("Can't find test gz file. Skipping transformGZ test...\n");
 		return;
 	}
-	db = fileToDataBlockPtr(testgzfile);
+	db = clFileToDataBlockPtr(testgzfile);
 	assert(strcmp(t->sn(),"ungz") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(datablockSize(result) > 0);
-		assert(datablockData(result) != NULL);
+		assert(clDatablockSize(result) > 0);
+		assert(clDatablockData(result) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
 }
 
 void testTransformZLIB()
 {
-  struct TransformAdaptor *t = (struct TransformAdaptor*)builtin_UNZLIB();
+  struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNZLIB();
 	struct DataBlock *db;
 	if (!fopen(testzlibfile, "rb")) {
 		printf("Can't find test zlib file. Skipping transformZLIB test...\n");
 		return;
 	}
- 	db = fileToDataBlockPtr(testzlibfile);
+ 	db = clFileToDataBlockPtr(testzlibfile);
 	assert(strcmp(t->sn(),"unzlib") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(datablockSize(result) > 0);
-		assert(datablockData(result) != NULL);
+		assert(clDatablockSize(result) > 0);
+		assert(clDatablockData(result) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
   t = NULL;
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
 }
 
 void testSingletonDBE()
@@ -480,20 +480,20 @@ void testSingletonDBE()
   struct DataBlock *db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = stringToDataBlockPtr(teststr);
-  dbe = dbeLoadSingleton(db);
+  db = clStringToDataBlockPtr(teststr);
+  dbe = clDbeLoadSingleton(db);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == 3 && datablockData(cur)[0] == 'f' && datablockData(cur)[2] == 'o');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == 3 && clDatablockData(cur)[0] == 'f' && clDatablockData(cur)[2] == 'o');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
 }
 
 void testWindowedDBE()
@@ -507,29 +507,29 @@ void testWindowedDBE()
   struct DataBlock *db, *cur;
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
-  db = stringToDataBlockPtr(teststr);
-  lastpos = datablockSize(db) - 1;
-  dbe = dbeLoadWindowed(db, firstpos, stepsize, width, lastpos);
+  db = clStringToDataBlockPtr(teststr);
+  lastpos = clDatablockSize(db) - 1;
+  dbe = clDbeLoadWindowed(db, firstpos, stepsize, width, lastpos);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'b');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'b');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'c');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'c');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == width && datablockData(cur)[0] == 'd');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'd');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
-  datablockFreePtr(db);
+  clDatablockFreePtr(db);
 }
 
 void testDirectoryDBE()
@@ -538,7 +538,7 @@ void testDirectoryDBE()
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int fcount = 0;
-  dbe = dbeLoadDirectory(testpg4dir);
+  dbe = clDbeLoadDirectory(testpg4dir);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -547,7 +547,7 @@ void testDirectoryDBE()
 //   datablockPrint(*cur);
 //    printf("\n");
     dbe->istep(dbe, dbi);
-    datablockFreePtr(cur);
+    clDatablockFreePtr(cur);
   }
   assert(fcount >= 2); /* Should have at least two files in pg4 */
   dbe->ifree(dbi);
@@ -562,32 +562,32 @@ void testArrayDBE()
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int i;
-  db[0] = stringToDataBlockPtr("a");
-  assert(datablockSize(db[0]) == 1);
-  db[1] = stringToDataBlockPtr("b");
-  db[2] = stringToDataBlockPtr("c");
-  dbe = dbeLoadArray(db, size);
+  db[0] = clStringToDataBlockPtr("a");
+  assert(clDatablockSize(db[0]) == 1);
+  db[1] = clStringToDataBlockPtr("b");
+  db[2] = clStringToDataBlockPtr("c");
+  dbe = clDbeLoadArray(db, size);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'a');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'a');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'b');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'b');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && datablockSize(cur) == 1 && datablockData(cur)[0] == 'c');
-  datablockFreePtr(cur);
+  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'c');
+  clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
   assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   for (i = 0; i < 3; i += 1)
-    datablockFreePtr(db[i]);
+    clDatablockFreePtr(db[i]);
 }
 /*
 void testFileListDBE(void)
@@ -597,7 +597,7 @@ void testFileListDBE(void)
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
-  dbe = dbeLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
+  dbe = clDbeLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -628,44 +628,44 @@ void testTAStack()
 	struct TransformAdaptor *tmp = NULL;
 	struct TransformAdaptor *cur = NULL;
 	struct TransformAdaptor *taarray[TEST_TS_SIZE];
-  ts = newTAStack();
+  ts = clNewTAStack();
 	assert(ts != NULL);
-	taa = (struct TransformAdaptor *)builtin_UNBZIP();
+	taa = (struct TransformAdaptor *)clBuiltin_UNBZIP();
   if (taa) {
     assert(strcmp(taa->sn(),"unbzip") == 0);
-    pushTS(ts, taa);
+    clPushTS(ts, taa);
   }
 #ifdef HAVE_ZLIB_H
-	tab = (struct TransformAdaptor *)builtin_UNGZ();
+	tab = (struct TransformAdaptor *)clBuiltin_UNGZ();
 	assert(strcmp(tab->sn(),"ungz") == 0);
-  pushTS(ts, tab);
-	tac = (struct TransformAdaptor *)builtin_UNZLIB();
+  clPushTS(ts, tab);
+	tac = (struct TransformAdaptor *)clBuiltin_UNZLIB();
 	assert(strcmp(tac->sn(),"unzlib") == 0);
-  pushTS(ts, tac);
+  clPushTS(ts, tac);
 #endif
 
-	tmp = (struct TransformAdaptor *)shiftTS(ts);
+	tmp = (struct TransformAdaptor *)clShiftTS(ts);
   if (taa) {
     if (tmp) {
     assert(strcmp(tmp->sn(),"unbzip") == 0);
     }
   }
 #ifdef HAVE_ZLIB_H
-	cur = (struct TransformAdaptor *)searchTS(ts,"unzlib",sequentialSearchTS);
+	cur = (struct TransformAdaptor *)clSearchTS(ts,"unzlib",sequentialSearchTS);
 	assert(cur);
 	assert(strcmp(cur->sn(),"unzlib") == 0);
-	tmp = (struct TransformAdaptor *)popTS(ts);
+	tmp = (struct TransformAdaptor *)clPopTS(ts);
 	assert(strcmp(tmp->sn(),"unzlib") == 0);
-	tmp = (struct TransformAdaptor *)shiftTS(ts);
+	tmp = (struct TransformAdaptor *)clShiftTS(ts);
 	assert(strcmp(tmp->sn(),"ungz") == 0);
 #endif
-	freeTS(ts);
+	clFreeTS(ts);
 
-  ts = newTAStack();
+  ts = clNewTAStack();
 	for (i = 0; i < TEST_TS_SIZE ; i++) {
-		taarray[i] = (struct TransformAdaptor *)builtin_UNBZIP();
+		taarray[i] = (struct TransformAdaptor *)clBuiltin_UNBZIP();
 		assert(strcmp(taa->sn(),"unbzip") == 0);
-		pushTS(ts, taarray[i]);
+		clPushTS(ts, taarray[i]);
 	}
 }
 */
@@ -675,10 +675,10 @@ void testNCDPair()
 	char *stra = "aaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaa";
 	char *strb = "bbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaa";
 	struct DataBlock *dba, *dbb;
-	dba = stringToDataBlockPtr(stra);
-	dbb = stringToDataBlockPtr(strb);
-  datablockFreePtr(dba);
-  datablockFreePtr(dbb);
+	dba = clStringToDataBlockPtr(stra);
+	dbb = clStringToDataBlockPtr(strb);
+  clDatablockFreePtr(dba);
+  clDatablockFreePtr(dbb);
 }
 
 void testDateTime(void)
@@ -700,19 +700,19 @@ void testMarshalling(void)
   char *strtest = "the test string";
   struct DataBlock *m;
   char *res = NULL;
-  struct EnvMap *em = envmapNew();
+  struct EnvMap *em = clEnvmapNew();
   struct EnvMap *resem;
-  m = stringDump(strtest);
-  res = stringLoad(m, 1);
+  m = clStringDump(strtest);
+  res = clStringLoad(m, 1);
   assert(strcmp(res, strtest) == 0);
   assert(res != strtest);
-  datablockFreePtr(m);
+  clDatablockFreePtr(m);
   clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
-  m = gslmatrixDump(gm);
-  ngm = gslmatrixLoad(m, 1);
+  m = clGslmatrixDump(gm);
+  ngm = clGslmatrixLoad(m, 1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
@@ -720,19 +720,19 @@ void testMarshalling(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(gm);
   gsl_matrix_free(ngm);
-  datablockFreePtr(m);
-  envmapSetKeyVal(em, "key1", "val1");
-  envmapSetKeyVal(em, "key2", "val2");
-  envmapSetKeyVal(em, "key3", "val3");
-  envmapSetKeyVal(em, "key4", "val4");
-  m = envmapDump(em);
-  resem = envmapLoad(m,1);
+  clDatablockFreePtr(m);
+  clEnvmapSetKeyVal(em, "key1", "val1");
+  clEnvmapSetKeyVal(em, "key2", "val2");
+  clEnvmapSetKeyVal(em, "key3", "val3");
+  clEnvmapSetKeyVal(em, "key4", "val4");
+  m = clEnvmapDump(em);
+  resem = clEnvmapLoad(m,1);
   assert( em != resem);
-  assert(strcmp(envmapValueForKey(em,"key1"), envmapValueForKey(resem,"key1")) == 0);
-  assert(strcmp(envmapValueForKey(em,"key2"), envmapValueForKey(resem,"key2")) == 0);
-  assert(strcmp(envmapValueForKey(em,"key3"), envmapValueForKey(resem,"key3")) == 0);
-  assert(strcmp(envmapValueForKey(em,"key4"), envmapValueForKey(resem,"key4")) == 0);
-  envmapFree(em); envmapFree(resem);
+  assert(strcmp(clEnvmapValueForKey(em,"key1"), clEnvmapValueForKey(resem,"key1")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key2"), clEnvmapValueForKey(resem,"key2")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key3"), clEnvmapValueForKey(resem,"key3")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key4"), clEnvmapValueForKey(resem,"key4")) == 0);
+  clEnvmapFree(em); clEnvmapFree(resem);
 }
 
 void testDoubleDoubler(void)
@@ -740,44 +740,44 @@ void testDoubleDoubler(void)
   struct DRA *dd, *ee, *sm;
   struct DataBlock *dumptest;
   union PCTypes p = zeropct;
-  dd = draNew();
+  dd = clDraNew();
   assert(dd);
-  assert(draSize(dd) == 0);
-  draSetDValueAt(dd, 0, 2.0);
-  assert(draSize(dd) == 1);
-  draSetDValueAt(dd, 999, 123.0);
-  assert(draSize(dd) == 1000);
-  assert(draGetDValueAt(dd, 0) == 2.0);
-  assert(draGetDValueAt(dd, 999) == 123.0);
-  dumptest = draDump(dd);
-  ee = draLoad(dumptest, 1);
+  assert(clDraSize(dd) == 0);
+  clDraSetDValueAt(dd, 0, 2.0);
+  assert(clDraSize(dd) == 1);
+  clDraSetDValueAt(dd, 999, 123.0);
+  assert(clDraSize(dd) == 1000);
+  assert(clDraGetDValueAt(dd, 0) == 2.0);
+  assert(clDraGetDValueAt(dd, 999) == 123.0);
+  dumptest = clDraDump(dd);
+  ee = clDraLoad(dumptest, 1);
   assert(dd != ee);
-  assert(draSize(ee) == draSize(dd));
-  assert(draGetDValueAt(dd, 0) == draGetDValueAt(ee, 0));
-  assert(draGetDValueAt(dd, 999) == draGetDValueAt(ee, 999));
-  draFree(dd);
-  draFree(ee);
-  datablockFreePtr(dumptest);
-  sm = draNew();
-  draSetDValueAt(sm, 0, 7.0);
-  draSetDValueAt(sm, 1, 3.0);
-  draSetDValueAt(sm, 2, 13.0);
-  dd = draNew();
+  assert(clDraSize(ee) == clDraSize(dd));
+  assert(clDraGetDValueAt(dd, 0) == clDraGetDValueAt(ee, 0));
+  assert(clDraGetDValueAt(dd, 999) == clDraGetDValueAt(ee, 999));
+  clDraFree(dd);
+  clDraFree(ee);
+  clDatablockFreePtr(dumptest);
+  sm = clDraNew();
+  clDraSetDValueAt(sm, 0, 7.0);
+  clDraSetDValueAt(sm, 1, 3.0);
+  clDraSetDValueAt(sm, 2, 13.0);
+  dd = clDraNew();
   p.ar = sm;
-  draPush(dd, p);
-  dumptest = draDeepDump(dd, 1);
-  ee = draLoad(dumptest, 1);
+  clDraPush(dd, p);
+  dumptest = clDraDeepDump(dd, 1);
+  ee = clDraLoad(dumptest, 1);
   assert(dd != ee);
-  assert(draGetValueAt(dd, 0).ar != draGetValueAt(ee, 0).ar);
-  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 0).d == draGetValueAt(sm, 0).d);
-  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 1).d == draGetValueAt(sm, 1).d);
-  assert(draGetValueAt(draGetValueAt(dd, 0).ar, 2).d == draGetValueAt(sm, 2).d);
-  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 0).d == draGetValueAt(sm, 0).d);
-  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 1).d == draGetValueAt(sm, 1).d);
-  assert(draGetValueAt(draGetValueAt(ee, 0).ar, 2).d == draGetValueAt(sm, 2).d);
-  draDeepFree(ee, 1);
-  draDeepFree(dd, 1);
-  datablockFreePtr(dumptest);
+  assert(clDraGetValueAt(dd, 0).ar != clDraGetValueAt(ee, 0).ar);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 0).d == clDraGetValueAt(sm, 0).d);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 1).d == clDraGetValueAt(sm, 1).d);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 2).d == clDraGetValueAt(sm, 2).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 0).d == clDraGetValueAt(sm, 0).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 1).d == clDraGetValueAt(sm, 1).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 2).d == clDraGetValueAt(sm, 2).d);
+  clDraDeepFree(ee, 1);
+  clDraDeepFree(dd, 1);
+  clDatablockFreePtr(dumptest);
 }
 
 void testQuartet(void)
@@ -786,7 +786,7 @@ void testQuartet(void)
 #define TREETRIALCOUNT 5
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompAdaptor *bz = compaLoadBuiltin("bzip");
+  struct CompAdaptor *bz = clCompaLoadBuiltin("bzip");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
@@ -794,8 +794,8 @@ void testQuartet(void)
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
-    struct TreeAdaptor *ta = treeaLoadUnrooted(labelcount);
-    struct DRA *n = treeaNodes(ta);
+    struct TreeAdaptor *ta = clTreeaLoadUnrooted(labelcount);
+    struct DRA *n = clTreeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -803,43 +803,43 @@ void testQuartet(void)
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = stringToDataBlockPtr(buf2);
+      db[i] = clStringToDataBlockPtr(buf2);
     }
-    dbe = dbeLoadArray(db, labelcount);
-    dm = getNCDMatrix(dbe, dbe, gconf);
+    dbe = clDbeLoadArray(db, labelcount);
+    dm = clGetNCDMatrix(dbe, dbe, gconf);
 //    printf("Got NCD matrix... %dx%d\n", dm->size1, dm->size2);
     assert(n);
-    assert(draSize(n) == 2*dm->size1 - 2);
-    assert(draSize(n) == 2*dm->size2 - 2);
-    ts = initTreeScore(ta);
-    score = scoreTree(ts, dm);
+    assert(clDraSize(n) == 2*dm->size1 - 2);
+    assert(clDraSize(n) == 2*dm->size2 - 2);
+    ts = clInitTreeScore(ta);
+    score = clScoreTree(ts, dm);
 //    printf("Got score: %f\n", score);
     assert(score >= 0.0 && score <= 1.0);
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
-    struct TreeAdaptor *tra = treeaNew(0,dm->size1);
-    th = treehNew(dm, tra);
+    struct TreeAdaptor *tra = clTreeaNew(0,dm->size1);
+    th = clTreehNew(dm, tra);
     for (i = 0; i < 100; i += 1) {
-      score = treehScore(th);
+      score = clTreehScore(th);
       if (score > 1.0 || score < 0.0) {
         printf("Error, got score %f\n", score);
       }
       assert(score >= 0.0 && score <= 1.0);
 //      printf("Got TH score: %f\n", score);
-      treehImprove(th);
+      clTreehImprove(th);
     }
     th = NULL;
   }
-    draFree(n);
-    freeTreeScore(ts);
-//    unrootedbinaryFree(ct);
-    treeaFree(ta);
+    clDraFree(n);
+    clFreeTreeScore(ts);
+//    clUnrootedbinaryFree(ct);
+    clTreeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      datablockFreePtr(db[i]);
+      clDatablockFreePtr(db[i]);
   }
-  compaFree(bz);
+  clCompaFree(bz);
   gconf->ca = NULL;
   bz = NULL;
 }
@@ -851,8 +851,8 @@ void testCLTree(void)
 #define TREENODEWANTED (2*TREELEAFSIZE-2)
 #define MAXPATHTESTS 128
 #define MAXPATHLEN 16
-  struct UnrootedBinary *ct = unrootedbinaryNew(TREELEAFSIZE);
-  struct DRA *n = unrootedbinaryNodes(ct, NULL);
+  struct UnrootedBinary *ct = clUnclRootedbinaryNew(TREELEAFSIZE);
+  struct DRA *n = clUnclRootedbinaryNodes(ct, NULL);
   struct DRA *spm, *spmmap, *pp;
   union PCTypes a, b;
   int retval;
@@ -862,18 +862,18 @@ void testCLTree(void)
 	int plen = MAXPATHLEN;
 	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
-  assert(draSize(n) == TREENODEWANTED);
-  pp = unrootedbinaryPerimPairs(ct, NULL);
-  assert(draSize(pp) == TREELEAFSIZE);
-  draFree(pp);
-  spmmap = makeSPMMap(getAdjAdaptorForUB(ct));
+  assert(clDraSize(n) == TREENODEWANTED);
+  pp = clUnrootedbinaryPerimPairs(ct, NULL);
+  assert(clDraSize(pp) == TREELEAFSIZE);
+  clDraFree(pp);
+  spmmap = clMakeSPMMap(clGetAdjAdaptorForUB(ct));
   for (i = 0; i < RETRIES; ++i) {
-    a = draRandom(n);
+    a = clDraRandom(n);
     assert(a.i >= 0 && a.i < 100);
-    b = draRandom(n);
+    b = clDraRandom(n);
 
     assert(b.i >= 0 && b.i < 100);
-    spm = makeSPMFor(getAdjAdaptorForUB(ct), b.i);
+    spm = clMakeSPMFor(clGetAdjAdaptorForUB(ct), b.i);
     cur = a.i;
     psize = 1;
     while (cur != b.i) {
@@ -881,11 +881,11 @@ void testCLTree(void)
       assert(cur < TREENODEWANTED * 2 - 2);
       psize += 1;
 //      printf("%d ", cur);
-      cur = draGetValueAt(spm, cur).i;
+      cur = clDraGetValueAt(spm, cur).i;
     }
 //    printf("\n");
 //
-    retval = pathFinder(getAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
+    retval = clPathFinder(clGetAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
     assert(retval == CL_OK);
     if (plen != psize) {
       clogError( "Error, plen %d and psize %d\n", plen, psize);
@@ -894,19 +894,19 @@ void testCLTree(void)
         clogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
     assert(plen == psize);
-    draFree(spm);
+    clDraFree(spm);
     spm = NULL;
   }
-  freeSPMMap(spmmap);
+  clFreeSPMMap(spmmap);
   spmmap = NULL;
-  draFree(n);
+  clDraFree(n);
   n = NULL;
-//  dotdb = convertTreeToDot(ct, NULL, unrootedbinaryLabelPerm(ct));
-//  datablockWriteToFile(dotdb, "treefile.dot");
+//  dotdb = clConvertTreeToDot(ct, NULL, clUnclRootedbinaryLabelPerm(ct));
+//  clDatablockWriteToFile(dotdb, "treefile.dot");
 //  assert(dotdb);
 //  assert(dotdb->ptr);
 //  assert(dotdb->size > TREENODEWANTED * 2);
-  unrootedbinaryFree(ct);
+  clUnrootedbinaryFree(ct);
   ct = NULL;
 }
 
@@ -918,25 +918,25 @@ void testAdjAdaptor(void)
   int labelsize;
   int i, n1, n2;
   labelsize = rand() % 10 + 4;
-  a1 = adjaLoadAdjMatrix(labelsize);
-  a2 = newPathKeeper(adjaLoadAdjList(labelsize));
+  a1 = clAdjaLoadAdjMatrix(labelsize);
+  a2 = clNewPathKeeper(clAdjaLoadAdjList(labelsize));
   for (i = 0; i < ADJATRIALS; i += 1) {
     n1 = rand() % labelsize;
     do {
     n2 = rand() % labelsize;
     } while (n1 == n2);
     if (rand() % 2 == 0) {
-      assert(adjaGetConState(a1, n1, n2) == adjaGetConState(a2,n1,n2));
+      assert(clAdjaGetConState(a1, n1, n2) == clAdjaGetConState(a2,n1,n2));
     }
     else {
       int newval = rand() % 2;
-      adjaSetConState(a1, n1, n2, newval);
-      adjaSetConState(a2, n2, n1, newval);
+      clAdjaSetConState(a1, n1, n2, newval);
+      clAdjaSetConState(a2, n2, n1, newval);
     }
   }
-  m = adjaToGSLMatrix(a1);
-  adjaFree(a1);
-  adjaFree(a2);
+  m = clAdjaToGSLMatrix(a1);
+  clAdjaFree(a1);
+  clAdjaFree(a2);
   gsl_matrix_free(m);
 }
 
@@ -944,43 +944,43 @@ void testAdjList(void)
 {
 #define ALSIZE 10
 #define ALTRIALS 1000
-  struct AdjList *al = adjlistNew(ALSIZE);
+  struct AdjList *al = clAdjlistNew(ALSIZE);
   int c, m, i, j;
   for (i = 0; i < ALTRIALS; ++i) {
     m = rand() % ALSIZE;
     j = rand() % ALSIZE;
     if (rand() % 3 == 1) {
-      c = adjlistGetConState(al, m, j);
+      c = clAdjlistGetConState(al, m, j);
       c ^= 1;
-      adjlistSetConState(al, m, j, c);
+      clAdjlistSetConState(al, m, j, c);
     }
     else {
-      c = adjlistGetConState(al, m, j);
-      assert(c == adjlistGetConState(al, j, m));
+      c = clAdjlistGetConState(al, m, j);
+      assert(c == clAdjlistGetConState(al, j, m));
     }
   }
-  adjlistFree(al);
+  clAdjlistFree(al);
 }
 void testAdjMatrix(void)
 {
 #define AMSIZE 10
 #define AMTRIALS 1000
-  struct AdjMatrix *am = adjmatrixNew(AMSIZE);
+  struct AdjMatrix *am = clAdjmatrixNew(AMSIZE);
   int c, m, i, j;
   for (i = 0; i < AMTRIALS; ++i) {
     m = rand() % AMSIZE;
     j = rand() % AMSIZE;
     if (rand() % 3 == 1) {
-      c = adjmatrixGetConState(am, m, j);
+      c = clAdjmatrixGetConState(am, m, j);
       c ^= 1;
-      adjmatrixSetConState(am, m, j, c);
+      clAdjmatrixSetConState(am, m, j, c);
     }
     else {
-      c = adjmatrixGetConState(am, m, j);
-      assert(c == adjmatrixGetConState(am, j, m));
+      c = clAdjmatrixGetConState(am, m, j);
+      assert(c == clAdjmatrixGetConState(am, j, m));
     }
   }
-  adjmatrixFree(am);
+  clAdjmatrixFree(am);
 }
 #if 0
   c = 0;
@@ -1006,11 +1006,11 @@ void testAdjMatrix(void)
 }
 #endif
 
-void doSBS3Test(void);
+void clDoSBS3Test(void);
 
 void testSpringBall(void)
 {
-  doSBS3Test();
+  clDoSBS3Test();
 }
 
 void testALTagFile(void)
@@ -1024,44 +1024,44 @@ void testALTagFile(void)
   int i;
   t_tagtype curtnum;
 
-  dbstr = stringDump(s);
-  result = stringLoad(dbstr, 1);
+  dbstr = clStringDump(s);
+  result = clStringLoad(dbstr, 1);
   assert(strcmp(s,result) == 0);
 
-  ss = stringstackNew();
-  stringstackPush(ss, "Liesl");
-  stringstackPush(ss, "Frederick");
-  stringstackPush(ss, "Louisa");
+  ss = clStringstackNew();
+  clStringstackPush(ss, "Liesl");
+  clStringstackPush(ss, "Frederick");
+  clStringstackPush(ss, "Louisa");
 
-  dbss = stringstackDump(ss);
-  nes = stringstackLoad(dbss, 1);
-  assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
-  assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
-  assert(strcmp(stringstackReadAt(nes,2), stringstackReadAt(ss,2)) == 0);
+  dbss = clStringstackDump(ss);
+  nes = clStringstackLoad(dbss, 1);
+  assert(strcmp(clStringstackReadAt(nes,0), clStringstackReadAt(ss,0)) == 0);
+  assert(strcmp(clStringstackReadAt(nes,1), clStringstackReadAt(ss,1)) == 0);
+  assert(strcmp(clStringstackReadAt(nes,2), clStringstackReadAt(ss,2)) == 0);
 
-  dblabels = labelsDump(ss);
-  nlabels = labelsLoad(dblabels,1);
-  assert(strcmp(stringstackReadAt(nlabels,0), stringstackReadAt(ss,0)) == 0);
-  assert(strcmp(stringstackReadAt(nlabels,1), stringstackReadAt(ss,1)) == 0);
-  assert(strcmp(stringstackReadAt(nlabels,2), stringstackReadAt(ss,2)) == 0);
+  dblabels = clLabelsDump(ss);
+  nlabels = clLabelsLoad(dblabels,1);
+  assert(strcmp(clStringstackReadAt(nlabels,0), clStringstackReadAt(ss,0)) == 0);
+  assert(strcmp(clStringstackReadAt(nlabels,1), clStringstackReadAt(ss,1)) == 0);
+  assert(strcmp(clStringstackReadAt(nlabels,2), clStringstackReadAt(ss,2)) == 0);
 
-  stringstackFree(nes);
+  clStringstackFree(nes);
   clFreeandclear(result);
 
 #define TAGFILENAME "tagtest.clb"
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
-  dbgslm = gslmatrixDump(gm);
-  dbdm = distmatrixDump(gm);
-  ngm = gslmatrixLoad(dbgslm, 1);
+  dbgslm = clGslmatrixDump(gm);
+  dbdm = clDistmatrixDump(gm);
+  ngm = clGslmatrixLoad(dbgslm, 1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
   assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(ngm);
-  ngm = distmatrixLoad(dbdm,1);
+  ngm = clDistmatrixLoad(dbdm,1);
   assert(gm != ngm);
   assert(gm->size1 == ngm->size1);
   assert(gm->size2 == ngm->size2);
@@ -1069,29 +1069,29 @@ void testALTagFile(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(ngm);
 
-  dbpkg = package_DataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
-  datablockFreePtr(dbss);
-  datablockFreePtr(dbstr);
-  datablockFreePtr(dbgslm);
+  dbpkg = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
+  clDatablockFreePtr(dbss);
+  clDatablockFreePtr(dbstr);
+  clDatablockFreePtr(dbgslm);
 
-  datablockWriteToFile(dbpkg,TAGFILENAME);
-  datablockFreePtr(dbpkg);
-  dbpkg_read = fileToDataBlockPtr(TAGFILENAME);
+  clDatablockWriteToFile(dbpkg,TAGFILENAME);
+  clDatablockFreePtr(dbpkg);
+  dbpkg_read = clFileToDataBlockPtr(TAGFILENAME);
   unlink(TAGFILENAME);
-  dd = load_DataBlock_package(dbpkg_read);
-  for (i = 0; i < draSize(dd); i += 1) {
+  dd = clLoad_DataBlock_package(dbpkg_read);
+  for (i = 0; i < clDraSize(dd); i += 1) {
     struct DataBlock *dblame;
-    curtnum = draGetValueAt(dd,i).idbp.tnum;
+    curtnum = clDraGetValueAt(dd,i).idbp.tnum;
     switch (curtnum) {
       case TAGNUM_STRING:
-        dblame = draGetValueAt(dd,i).idbp.db;
-        result = stringLoad(dblame, 1);
+        dblame = clDraGetValueAt(dd,i).idbp.db;
+        result = clStringLoad(dblame, 1);
         assert(strcmp(s,result) == 0);
         clFreeandclear(result);
         break;
       case TAGNUM_GSLMATRIX:
-        dblame = draGetValueAt(dd,i).idbp.db;
-        ngm = gslmatrixLoad(dblame, 1);
+        dblame = clDraGetValueAt(dd,i).idbp.db;
+        ngm = clGslmatrixLoad(dblame, 1);
         assert(gm != ngm);
         assert(gm->size1 == ngm->size1);
         assert(gm->size2 == ngm->size2);
@@ -1100,21 +1100,21 @@ void testALTagFile(void)
         gsl_matrix_free(ngm);
         break;
       case TAGNUM_STRINGSTACK:
-        dblame = draGetValueAt(dd,i).idbp.db;
-        nes = stringstackLoad(dblame, 1);
-        assert(strcmp(stringstackReadAt(nes,0), stringstackReadAt(ss,0)) == 0);
-        assert(strcmp(stringstackReadAt(nes,1), stringstackReadAt(ss,1)) == 0);
-        assert(strcmp(stringstackReadAt(nes,2), stringstackReadAt(ss,2)) == 0);
-        stringstackFree(nes);
+        dblame = clDraGetValueAt(dd,i).idbp.db;
+        nes = clStringstackLoad(dblame, 1);
+        assert(strcmp(clStringstackReadAt(nes,0), clStringstackReadAt(ss,0)) == 0);
+        assert(strcmp(clStringstackReadAt(nes,1), clStringstackReadAt(ss,1)) == 0);
+        assert(strcmp(clStringstackReadAt(nes,2), clStringstackReadAt(ss,2)) == 0);
+        clStringstackFree(nes);
         break;
       default:
         break;
     }
   }
-  draFree(dd);
-  stringstackFree(ss);
+  clDraFree(dd);
+  clStringstackFree(ss);
   gsl_matrix_free(gm);
-  datablockFreePtr(dbpkg_read);
+  clDatablockFreePtr(dbpkg_read);
 }
 
 #define ARRAYSIZE 10
@@ -1122,53 +1122,53 @@ void testALTagFile(void)
 void testLabelPerm(void)
 {
   struct LabelPerm *lpa, *lpb, *lpc;
-  struct DRA *nodes = draNew();
+  struct DRA *nodes = clDraNew();
   int i;
   for (i = 0; i < 10; i += 1) {
     union PCTypes p = zeropct;
     p.i = i + 23;
-    draSetValueAt(nodes, i, p);
+    clDraSetValueAt(nodes, i, p);
   }
-  lpa = labelpermNew(nodes);
-  lpb = labelpermClone(lpa);
-  lpc = labelpermClone(lpb);
-  assert(labelpermIdentical(lpa, lpb));
-  assert(labelpermIdentical(lpa, lpc));
-  labelpermMutate(lpb);
-  assert(!labelpermIdentical(lpa, lpb));
-  assert(labelpermIdentical(lpa, lpc));
-  assert(!labelpermIdentical(lpc, lpb));
-  labelpermFree(lpa);
-  labelpermFree(lpb);
-  labelpermFree(lpc);
-  draFree(nodes);
+  lpa = clLabelpermNew(nodes);
+  lpb = clLabelpermClone(lpa);
+  lpc = clLabelpermClone(lpb);
+  assert(clLabelpermIdentical(lpa, lpb));
+  assert(clLabelpermIdentical(lpa, lpc));
+  clLabelpermMutate(lpb);
+  assert(!clLabelpermIdentical(lpa, lpb));
+  assert(clLabelpermIdentical(lpa, lpc));
+  assert(!clLabelpermIdentical(lpc, lpb));
+  clLabelpermFree(lpa);
+  clLabelpermFree(lpb);
+  clLabelpermFree(lpc);
+  clDraFree(nodes);
 }
 
 void testPerimPairs()
 {
-  struct TreeAdaptor *tra = treeaLoadRootedBinary(6);
+  struct TreeAdaptor *tra = clTreeaLoadRootedBinary(6);
   struct DRA *da;
   struct CLNodeSet *clns = clnodesetNew(9);
   clnodesetAddNode(clns, 2);
-  da = treeaPerimPairs(tra, NULL);
-  draFree(da);
-  da = treeaPerimPairs(tra, clns);
-  draFree(da);
+  da = clTreeaPerimPairs(tra, NULL);
+  clDraFree(da);
+  da = clTreeaPerimPairs(tra, clns);
+  clDraFree(da);
 }
 
 void testTreeMolder()
 {
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompAdaptor *bz = compaLoadBuiltin("bzip");
+  struct CompAdaptor *bz = clCompaLoadBuiltin("bzip");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
   for (j = 0; j < TREETRIALCOUNT; j += 1) {
     int labelcount = rand() % 4 + 4;
 //    printf("doing trial %d, with %d leaves...\n", j, labelcount);
-    struct TreeAdaptor *ta = treeaLoadRootedBinary(labelcount);
-    struct DRA *n = treeaNodes(ta);
+    struct TreeAdaptor *ta = clTreeaLoadRootedBinary(labelcount);
+    struct DRA *n = clTreeaNodes(ta);
     gsl_matrix *dm;
     assert(bz);
     gconf->ca = bz;
@@ -1176,35 +1176,35 @@ void testTreeMolder()
       char buf[1024], buf2[2048];
       sprintf(buf, "%d%d%d%d%d%d%d%d", i,i,i,i,i,i,i,i);
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
-      db[i] = stringToDataBlockPtr(buf2);
+      db[i] = clStringToDataBlockPtr(buf2);
     }
-    dbe = dbeLoadArray(db, labelcount);
-    dm = getNCDMatrix(dbe, dbe, gconf);
-    ts = initTreeScore(ta);
+    dbe = clDbeLoadArray(db, labelcount);
+    dm = clGetNCDMatrix(dbe, dbe, gconf);
+    ts = clInitTreeScore(ta);
     {
       struct TreeMolder *tmolder;
-      struct TreeAdaptor *tram = treeaNew(1,dm->size1);
-      tmolder = treemolderNew(dm, tram);
+      struct TreeAdaptor *tram = clTreeaNew(1,dm->size1);
+      tmolder = clTreemolderNew(dm, tram);
       for (i = 0; i < 100; i += 1) {
-        score = treemolderScoreScaled(tmolder);
+        score = clTreemolderScoreScaled(tmolder);
         if (score > 1.0 || score < 0.0) {
           printf("Error, got score %f\n", score);
         }
         //assert(score >= 0.0 && score <= 1.0);
-        treemolderImprove(tmolder);
+        clTreemolderImprove(tmolder);
       }
-      treemolderFree(tmolder);
+      clTreemolderFree(tmolder);
       tmolder = NULL;
     }
-    draFree(n);
-    freeTreeScore(ts);
-//    unrootedbinaryFree(ct);
-    treeaFree(ta);
+    clDraFree(n);
+    clFreeTreeScore(ts);
+//    clUnrootedbinaryFree(ct);
+    clTreeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
-      datablockFreePtr(db[i]);
+      clDatablockFreePtr(db[i]);
   }
-  compaFree(bz);
+  clCompaFree(bz);
   gconf->ca = NULL;
   bz = NULL;
 }
@@ -1218,7 +1218,7 @@ void testReadTextDM()
   assert(dm);
   assert(labels);
   gsl_matrix_free(dm);
-  stringstackFree(labels);
+  clStringstackFree(labels);
 }
 
 void printGSLMatrix(gsl_matrix *m){
@@ -1232,14 +1232,14 @@ void printGSLMatrix(gsl_matrix *m){
 }
 void testSmoothing()
 {
-  struct TreeAdaptor *ta = treeaNew(0, 6);
+  struct TreeAdaptor *ta = clTreeaNew(0, 6);
   int i;
   gsl_matrix *m;
-  m = adjaToGSLMatrix(treeaAdjAdaptor(ta));
+  m = clAdjaToGSLMatrix(clTreeaAdjAdaptor(ta));
 //  printGSLMatrix(m);
 
   for (i = 0; i < 15 ; i += 1) {
-    treeaMutate(ta);
+    clTreeaMutate(ta);
     clStepTowardsTree(m, ta, 1.0);
 //    printGSLMatrix(m);
   }
@@ -1247,32 +1247,32 @@ void testSmoothing()
 #if 0
 void testParamList()
 {
-  struct ParamList *pl = paramlistNew();
+  struct ParamList *pl = clParamlistNew();
   struct ParamList *plclone;
-  struct EnvMap *em = loadDefaultEnvironment()->em;
+  struct EnvMap *em = clLoadDefaultEnvironment()->em;
   int bs;
   double wf;
   char *vb;
   paramlistPushField(pl, "blocksize", "9", PARAMINT);
   paramlistPushField(pl, "workfactor", "30.0", PARAMDOUBLE);
   paramlistPushField(pl, "shortname", "compatest", PARAMSTRING);
-  assert(paramlistGetInt(pl,"blocksize") == 9);
-  envmapSetKeyVal(em, "blocksize", "4");
-  envmapSetKeyVal(em, "workfactor", "30.0");
-  envmapSetKeyVal(em, "shortname", "compatest");
+  assert(clParamlistGetInt(pl,"blocksize") == 9);
+  clEnvmapSetKeyVal(em, "blocksize", "4");
+  clEnvmapSetKeyVal(em, "workfactor", "30.0");
+  clEnvmapSetKeyVal(em, "shortname", "compatest");
   paramlistSetValueForKey(pl, "blocksize", &bs);
   paramlistSetValueForKey(pl, "workfactor", &wf);
   paramlistSetValueForKey(pl, "shortname", &vb);
-  assert(paramlistGetInt(pl,"blocksize") == 4);
-  assert(paramlistGetDouble(pl,"workfactor") == 30.0);
-  assert(strcmp(paramlistGetString(pl,"shortname"),"compatest") == 0);
+  assert(clParamlistGetInt(pl,"blocksize") == 4);
+  assert(clParamlistGetDouble(pl,"workfactor") == 30.0);
+  assert(strcmp(clParamlistGetString(pl,"shortname"),"compatest") == 0);
   assert(strcmp(vb,"compatest") == 0);
-  plclone = paramlistClone(pl);
-  assert(paramlistGetInt(plclone,"blocksize") == 4);
-  assert(paramlistGetDouble(plclone,"workfactor") == 30.0);
-  assert(strcmp(paramlistGetString(plclone,"shortname"),"compatest") == 0);
-  paramlistFree(pl);
-  paramlistFree(plclone);
+  plclone = clParamlistClone(pl);
+  assert(clParamlistGetInt(plclone,"blocksize") == 4);
+  assert(clParamlistGetDouble(plclone,"workfactor") == 30.0);
+  assert(strcmp(clParamlistGetString(plclone,"shortname"),"compatest") == 0);
+  clParamlistFree(pl);
+  clParamlistFree(plclone);
 }
 #endif
 
@@ -1369,7 +1369,7 @@ int main(int argc, char **argv)
   //testCLTextConverter();
 #if 0
 #endif
-  freeDefaultEnvironment(gconf);
+  clFreeDefaultEnvironment(gconf);
   gconf = NULL;
 
   if (testpath) {

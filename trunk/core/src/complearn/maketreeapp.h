@@ -14,7 +14,7 @@ struct MakeTreeConfig {
 /** \brief Loads the environment for the maketree command
  *
  *  The environment created by loadMakeTreeEnvironment() will contain the same
- *  defaults created by loadDefaultEnvironment() but includes options specific
+ *  defaults created by clLoadDefaultEnvironment() but includes options specific
  *  only to the maketree command.
  *
  *  maketree options are set using command-line arguments.

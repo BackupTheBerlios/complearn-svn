@@ -12,8 +12,8 @@
  * It does this by way of a CLNodeSet containing a set of inverted nodes.
  * Nodes are inverted if their children are visitted in reversed order.
  *
- * The order fitness function is defined as the sum of the distance matrix
- * entries for each adjacent pair of labelled leaf nodes.  Thus, for n
+ * The order fitness clFunction is defined as the sum of the distance matrix
+ * entries for each adclJacent pair of labelled leaf nodes.  Thus, for n
  * leaves arranged in an unrooted binary tree there will be n elements in
  * the sum coming from n different places in the distance matrix.
  *
@@ -35,25 +35,25 @@ struct TreeMolder;
  * \param ta pointer to TreeAdaptor
  * \return pointer to TreeMolder ready to find an optimal traversal ordering
  */
-struct TreeMolder *treemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta);
+struct TreeMolder *clTreemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta);
 /** \brief frees the memory used to hold a TreeMolder
  *
  * There is no return value.
  *
  * \param tm pointer to the TreeMolder to be freed
  */
-void treemolderFree(struct TreeMolder *tm);
+void clTreemolderFree(struct TreeMolder *tm);
 
 /** \brief returns the raw order score for this particular TreeMolder
  *
  * The raw order score of a particular traversal is defined as the sum of
- * each distance-matrix element corresponding to every adjacent pair in the
+ * each distance-matrix element corresponding to every adclJacent pair in the
  * circle formed by an ordered traversal of all nodes.
  *
  * \param tm pointer to the TreeMolder to be inspected
  * \return double precision value indicating the raw order score
  */
-double treemolderScore(struct TreeMolder *tm);
+double clTreemolderScore(struct TreeMolder *tm);
 
 /** \brief returns the scaled order score for this particular TreeMolder
  *
@@ -63,12 +63,12 @@ double treemolderScore(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to be inspected
  * \return double precision value indicating the raw order score
  */
-double treemolderScoreScaled(struct TreeMolder *tm);
+double clTreemolderScoreScaled(struct TreeMolder *tm);
 
 /** \brief returns the current best ordering for this TreeMolder
  *
  * At any time a TreeMolder is working with a given candidate best ordering.
- * This function queries that ordering.
+ * This clFunction queries that ordering.
  *
  * The CLNodeSet returned contains entries for each flipped node.  This is
  * used to determine the order of child visitting.
@@ -76,36 +76,36 @@ double treemolderScoreScaled(struct TreeMolder *tm);
  * \param tm pointer to the TreeMolder to be inspected
  * \return CLNodeSet pointer containing node ids for all flipped nodes
  */
-struct CLNodeSet *treemolderFlips(struct TreeMolder *tm);
+struct CLNodeSet *clTreemolderFlips(struct TreeMolder *tm);
 
 /** \brief randomly flips a traversal order
  *
- * This routine is analogous to treehScramble() and serves much the
+ * This routine is analogous to clTreehScramble() and serves much the
  * same purpose but for orderwise search.  Note that with order searching
  * each traversal order has actually two distinct representations as a
  * CLNodeSet or its compliment.  There is no return value.
  *
  * \param tm pointer to the TreeMolder to be scrambled
  */
-void treemolderScramble(struct TreeMolder *tm);
+void clTreemolderScramble(struct TreeMolder *tm);
 
 /** \brief attempts to improve the current best ordering with a random mutation
  *
  * This routine tries a random mutation of the current best ordering for
  * the TreeMolder.  If it results in a better order-score then it keeps the
- * new mutation otherwise it discards it.  \sa treehImprove()
+ * new mutation otherwise it discards it.  \sa clTreehImprove()
  *
  * \param tm pointer to the TreeMolder to try to improve
  * \return 0 indicating failure to improve or nonzer indicating success
  */
-int treemolderImprove(struct TreeMolder *tm);
+int clTreemolderImprove(struct TreeMolder *tm);
 
 /** \brief Returns the TreeAdaptor corresponding to the tree in consideration
  *
  * \param tm pointer to the TreeMolder to try to investigate
  * \return pointer to a TreeAdaptor
  */
-struct TreeAdaptor *treemolderTreeAdaptor(const struct TreeMolder *tmo);
+struct TreeAdaptor *clTreemolderTreeAdaptor(const struct TreeMolder *tmo);
 
 /** \brief Returns the count of labelled nodes in this TreeMolder
  *
@@ -115,7 +115,7 @@ struct TreeAdaptor *treemolderTreeAdaptor(const struct TreeMolder *tmo);
  * \param tmo pointer to the TreeMolder to inspect
  * \return count of labelled nodes in this TreeMolder
  */
-int treemolderNodeCount(const struct TreeMolder *tmo);
+int clTreemolderNodeCount(const struct TreeMolder *tmo);
 
 #endif
 

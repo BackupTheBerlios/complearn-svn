@@ -34,12 +34,12 @@
  *  \subsection sub_soap SOAP Compressor Server
  *  requires a url of the form http://localhost:2000/ and urn of the form
  *  urn:hws. The complearn system will connect to the specified SOAP server
- *  and call a single function called compfunc and pass it one string. The
+ *  and call a single clFunction called compclFunc and pass it one string. The
  *  compression server is expected to return a double precision floating-point
  *  value indicating the compressed size, in bits, of the string.  Custom
  *  compressor module through dynamic library
- *  a custom compression module defines 7 C functions in a dynamic library with
- *  the following names: newcompinst, compfunc, freecompfunc, shortname,
+ *  a custom compression module defines 7 C clFunctions in a dynamic library with
+ *  the following names: newcompinst, compclFunc, freecompclFunc, shortname,
  *  longname, compparam, apiver
  *
  */
@@ -62,11 +62,11 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  db = fileToDataBlockPtr(argv[1]);
+  db = clFileToDataBlockPtr(argv[1]);
   printf("opening %s\n", argv[1]);
-  dd = load_DataBlock_package(db);
-  dbdm = scanForTag(dd, TAGNUM_CLDISTMATRIX);
-  dm = distmatrixLoad(dbdm, 1);
+  dd = clLoad_DataBlock_package(db);
+  dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
+  dm = clDistmatrixLoad(dbdm, 1);
 
   maxtrials = atoi(argv[2]);
   printf("doing %d trials\n", maxtrials);
@@ -77,18 +77,18 @@ int main(int argc, char *argv[])
     struct TreeMaster *tm1, *tm2;
     struct TreeHolder *th1, *th2;
     printf("starting trial #%d of %d\n", i+1, maxtrials);
-    gsl_matrix *cdm = gslmatrixClone(dm);
+    gsl_matrix *cdm = clGslmatrixClone(dm);
 
-    tm1 = treemasterNew(cdm, isRooted);
-    th1 = treemasterFindTree(tm1);
-    tm2 = treemasterNew(cdm, isRooted);
-    th2 = treemasterFindTree(tm2);
+    tm1 = clTreemasterNew(cdm, isRooted);
+    th1 = clTreemasterFindTree(tm1);
+    tm2 = clTreemasterNew(cdm, isRooted);
+    th2 = clTreemasterFindTree(tm2);
 
-    if (treehScore(th1) == treehScore(th2))
+    if (clTreehScore(th1) == clTreehScore(th2))
       matched +=1;
     gsl_matrix_free(cdm);
-    treemasterFree(tm1);
-    treemasterFree(tm2);
+    clTreemasterFree(tm1);
+    clTreemasterFree(tm2);
   }
   finish = cldatetimeStaticTimer();
 
@@ -104,8 +104,8 @@ int main(int argc, char *argv[])
 
   clFclose(fp);
   gsl_matrix_free(dm);
-  datablockFreePtr(db);
-  datablockFreePtr(dbdm);
-  draFree(dd);
+  clDatablockFreePtr(db);
+  clDatablockFreePtr(dbdm);
+  clDraFree(dd);
   exit(0);
 }

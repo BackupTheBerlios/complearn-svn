@@ -12,15 +12,15 @@ Java_CompLearnJ_ncd(JNIEnv *env, jobject obj, jstring a, jstring b)
   const char *strb = (*env)->GetStringUTFChars(env, b, 0);
   struct DataBlock dba, dbb;
   if (!gc) {
-    gc = loadDefaultEnvironment();
+    gc = clLoadDefaultEnvironment();
     loadCompressor(gc);
     assert(gc->ca);
   }
   dba = stringToDataBlock(stra);
   dbb = stringToDataBlock(strb);
   result = ncdPair(gc->ca, dba, dbb);
-  datablockFree(dba);
-  datablockFree(dbb);
+  clDatablockFree(dba);
+  clDatablockFree(dbb);
   (*env)->ReleaseStringUTFChars(env, a, stra);
   (*env)->ReleaseStringUTFChars(env, b, strb);
   return result;

@@ -33,39 +33,39 @@ struct IncrementalDistMatrix {
 
 /** \brief creates a new IncrementalDistMatrix using a given CompAdaptor
  *
- * This function is the basic constructor for an IncrementalDistMatrix.
+ * This clFunction is the basic constructor for an IncrementalDistMatrix.
  * The user must supply a CompAdaptor to use for compression.
  *
  * \param ca pointer to the CompAdaptor to be used in this distance matrix
  * \return pointer to an IncrementalDistMatrix with no objects yet added
  */
-struct IncrementalDistMatrix *incrdmNew(struct CompAdaptor *ca);
+struct IncrementalDistMatrix *clIncrdmNew(struct CompAdaptor *ca);
 
 /** \brief Adds a DataBlock to an IncrementalDistMatrix
  *
  *  Takes a DataBlock and calculates the NCDs between it and the DataBlocks
  *  previously added to the IncrementalDistMatrix.  An updated distance matrix
- *  can then be retrieved by calling incrdmDistMatrix().
+ *  can then be retrieved by calling clIncrdmDistMatrix().
  *  \param idm pointer to IncrementalDistMatrix
  *  \param db pointer to DataBlock to be added
  */
-void incrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db);
+void clIncrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db);
 
 /** \brief Frees IncrementDistMatrix from memory
  *  \param idm pointer to IncrementalDistMatrix
  */
-void incrdmFree(struct IncrementalDistMatrix *idm);
+void clIncrdmFree(struct IncrementalDistMatrix *idm);
 
 /** \brief Retrieves current snapshop the IncrementalDistMatrix is holding
  *  \param idm pointer to IncrementalDistMatrix to inspect
  *  \return pointer to gsl_matrix
  */
-gsl_matrix *incrdmDistMatrix(struct IncrementalDistMatrix *idm);
+gsl_matrix *clIncrdmDistMatrix(struct IncrementalDistMatrix *idm);
 
 /** \brief Retrieve size of IncrementalDistMatrix
  *  \param idm pointer to IncrementalDistMatrix
  *  \return int size of IncrementalDistMatrix
  */
-int incrdmSize(struct IncrementalDistMatrix *idm);
+int clIncrdmSize(struct IncrementalDistMatrix *idm);
 
 #endif

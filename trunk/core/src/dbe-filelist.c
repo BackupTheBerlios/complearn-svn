@@ -63,7 +63,7 @@ static struct DataBlock *dbe_fl_istar(struct DataBlockEnumeration *dbe, struct D
   struct DBEFileListEnumerationIterator *fldbi = (struct DBEFileListEnumerationIterator *) dbi;
   if (fldbi->linebuf) {
     struct DataBlock *db;
-    db = fileToDataBlockPtr(fldbi->linebuf);
+    db = clFileToDataBlockPtr(fldbi->linebuf);
     return db;
   } else
     return NULL;
@@ -116,7 +116,7 @@ static void dbe_fl_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
   }
 }
 
-struct DataBlockEnumeration *dbeLoadFileList(const char *filename)
+struct DataBlockEnumeration *clDbeLoadFileList(const char *filename)
 {
   struct DataBlockEnumeration c = {
     NULL, /* eptr, private enumeration instance */

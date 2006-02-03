@@ -19,20 +19,20 @@ struct TransformAdaptorStack;
  *  Allocates memory and returns pointer to new TransformAdaptorStack object, which contains
  *  0 elements.
  */
-struct TransformAdaptorStack *newTAStack(void);
+struct TransformAdaptorStack *clNewTAStack(void);
 
 /** \brief Frees TransformAdaptorStack object from memory.
  *  \param ts TransformAdaptorStack
  *  \return CL_OK on success
  */
-int freeTS(struct TransformAdaptorStack *ts);
+int clFreeTS(struct TransformAdaptorStack *ts);
 
 /** \brief TransformAdaptor object to top of TransformAdaptorStack.
  *  \param ts TransformAdaptorStack
  *  \param ta TransformAdaptor
  *  \return CL_OK on success
  */
-int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta);
+int clPushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta);
 
 /** \brief Removes and returns pointer to TransformAdaptor from bottom of TransformAdaptorStack.
  *
@@ -43,7 +43,7 @@ int pushTS(struct TransformAdaptorStack *ts, struct TransformAdaptor *ta);
  *  \param ts TransformAdaptorStack
  *  \return pointer to TransformAdaptor object
  */
-struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts);
+struct TransformAdaptor *clShiftTS(struct TransformAdaptorStack *ts);
 
 /** \brief Removes and returns pointer to TransformAdaptor object from top of
  *  TransformAdaptorStack.
@@ -53,38 +53,38 @@ struct TransformAdaptor *shiftTS(struct TransformAdaptorStack *ts);
  *  \param ts TransformAdaptorStack
  *  \return pointer to TransformAdaptor object
  */
-struct TransformAdaptor *popTS(struct TransformAdaptorStack *ts);
+struct TransformAdaptor *clPopTS(struct TransformAdaptorStack *ts);
 
 /** \brief Returns true value if TransformAdaptorStack is empty.
  *  \param ts TransformAdaptorStack
  *  \return true if TransformAdaptorStack contains 0 elements
  */
-int isEmptyTS(struct TransformAdaptorStack *ts);
+int clIsEmptyTS(struct TransformAdaptorStack *ts);
 
 /** \brief Returns number of elements in TransformAdaptorStack.
  *  \param ts TransformAdaptorStack
  *  \return size
  */
-int sizeTS(struct TransformAdaptorStack *ts);
+int clSizeTS(struct TransformAdaptorStack *ts);
 
 /** \brief Searchs a TransformAdaptorStack and returns pointer to TransformAdaptor object.
  *
- *  s is the search term, and searchfunc is a pointer to a function which
+ *  s is the search term, and searchclFunc is a pointer to a clFunction which
  *  matches s against TransformAdaptorStack ts. A pointer to the matching TransformAdaptor object
  *  is returned.
  *  \param ts TransformAdaptorStack
  *  \param s search term
- *  \param searchfunc search function
+ *  \param searchclFunc search clFunction
  *  \return pointer to TransformAdaptor object
  */
-struct TransformAdaptor *searchTS(void *ts, void *s, t_searchfunc searchfunc);
+struct TransformAdaptor *clSearchTS(void *ts, void *s, t_searchclFunc searchclFunc);
 
-/** \brief Searches a TransformAdaptorStack using the return value of the shortname function
+/** \brief Searches a TransformAdaptorStack using the return value of the shortname clFunction
  *  as a search term.
  *
  *  sequentialSearchTS() takes string s as a parameter and searches each
  *  element of the TransformAdaptorStack, starting at element 0, where s matches the
- *  return value of the TransformAdaptor object's shortname function.  A pointer to
+ *  return value of the TransformAdaptor object's shortname clFunction.  A pointer to
  *  the first matching TransformAdaptor object is returned.
  *  \param ts TransformAdaptorStack
  *  \param s string

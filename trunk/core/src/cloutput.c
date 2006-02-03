@@ -17,7 +17,7 @@
 
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur);
 
-double xpremap(double inp, struct GeneralConfig *cur)
+double clXpremap(double inp, struct GeneralConfig *cur)
 {
   if (cur->fDoExponentiate)
     return cur->multiplier * pow(2.0, -inp);
@@ -25,13 +25,13 @@ double xpremap(double inp, struct GeneralConfig *cur)
     return inp;
 }
 
-gsl_matrix *svdProject(gsl_matrix *a)
+gsl_matrix *clSvdProject(gsl_matrix *a)
 {
   int retval;
   gsl_matrix *res;
   gsl_matrix *u, *v;
   gsl_vector *s;
-  u = gslmatrixClone(a);
+  u = clGslmatrixClone(a);
   v = gsl_matrix_alloc(a->size2, a->size2);
   s = gsl_vector_alloc(a->size1);
   retval = gsl_linalg_SV_decomp_jacobi(u, v, s);
@@ -41,7 +41,7 @@ gsl_matrix *svdProject(gsl_matrix *a)
   return res;
 }
 
-void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
+void clPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
 {
   if (cur->fHTML) {
     printf("<table>\n");
@@ -52,22 +52,22 @@ void printProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b
     customPrintProduct(a, b, "", "\n", "", "  ", cur);
 }
 
-struct DataBlock *createCloneWithNLFree(struct DataBlock *db)
+struct DataBlock *clCreateCloneWithNLFree(struct DataBlock *db)
 {
   struct DataBlock *result;
-  result = datablockNewFromBlock(datablockData(db),datablockSize(db)+1);
-  datablockData(result)[datablockSize(db)] = '\n';
-  datablockFreePtr(db);
+  result = clDatablockNewFromBlock(clDatablockData(db),clDatablockSize(db)+1);
+  clDatablockData(result)[clDatablockSize(db)] = '\n';
+  clDatablockFreePtr(db);
   return result;
 }
 
-gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
+gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, struct GeneralConfig *cur)
 {
   gsl_matrix *gres;
 //  const char *fmtString = "%03.3f ";
   int n1Counter = 0, n1Set = 0;
   int n2Counter = 0, n2Set = 0;
-  struct DRA *da = draNew();
+  struct DRA *da = clDraNew();
   struct DataBlockEnumerationIterator *ia, *ib;
   struct DataBlock *dba, *dbb;
 
@@ -75,7 +75,7 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
     struct DataBlock *obj;
     n1Counter += 1;
     if (cur->fAddNLAtString)
-      dba = createCloneWithNLFree(dba);
+      dba = clCreateCloneWithNLFree(dba);
     for ( ib = b->newenumiter(b); ( obj = b->istar(b,ib) ) ; b->istep(b,ib) ) {
       int madeNewOne = 0;
       double ncd;
@@ -85,20 +85,20 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
         n2Counter += 1;
       }
       if (cur->fAddNLAtString) {
-        dbb = createCloneWithNLFree(dbb);
+        dbb = clCreateCloneWithNLFree(dbb);
         madeNewOne = 1;
       }
-      ncd = ncdfunc(dba, dbb, cur);
-      outnum = xpremap(ncd, cur);
+      ncd = clNcdclFunc(dba, dbb, cur);
+      outnum = clXpremap(ncd, cur);
 //      printf(fmtString, outnum);
-      draSetDValueAt(da, draSize(da), outnum);
+      clDraSetDValueAt(da, clDraSize(da), outnum);
       if (madeNewOne)
-        datablockFreePtr(dbb);
+        clDatablockFreePtr(dbb);
     }
     n2Set = 1;
     b->ifree(ib);
 //    printf("\n");
-    datablockFreePtr(dba);
+    clDatablockFreePtr(dba);
   }
   n1Set = 1;
   a->ifree(ia);
@@ -107,60 +107,60 @@ gsl_matrix *getNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnumera
     int x1, x2, i = 0;
     for (x1 = 0; x1 < n1Counter; x1++)
       for (x2 = 0; x2 < n2Counter; x2++) {
-        gsl_matrix_set(gres, x1, x2, draGetDValueAt(da, i++)); /**  ^-^ **/
+        gsl_matrix_set(gres, x1, x2, clDraGetDValueAt(da, i++)); /**  ^-^ **/
       }
   }
-  draFree(da);
+  clDraFree(da);
   return gres;
 }
 
-/* TODO: NCD only function; move to a better location */
+/* TODO: NCD only clFunction; move to a better location */
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur)
 {
   int n1c, n2c;
   struct DataBlockEnumerationIterator *dei = a->newenumiter(a);
-  struct StringStack *labels = stringstackNew();
+  struct StringStack *labels = clStringstackNew();
   struct DataBlock *curdb;
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   gsl_matrix *gres;
   while ( ( curdb = a->istar(a, dei) ) ) {
-    stringstackPush(labels, a->ilabel(a, dei));
+    clStringstackPush(labels, a->ilabel(a, dei));
     a->istep(a, dei);
-    datablockFreePtr(curdb);
+    clDatablockFreePtr(curdb);
   }
   a->ifree(dei);
-  gres = getNCDMatrix(a, b, cur);
+  gres = clGetNCDMatrix(a, b, cur);
 
   if (cur->fSVD) {
-    gres = svdProject(gres);
+    gres = clSvdProject(gres);
   }
   if (cur->fBinary) {
     struct DataBlock *dbdmtagged, *dblabelstagged, *dbcommandstagged, *dbenvmap=NULL, *db;
-    struct EnvMap *em = envmapNew();
+    struct EnvMap *em = clEnvmapNew();
     int i;
-    for (i = 0; i < envmapSize(cur->em); i += 1) {
+    for (i = 0; i < clEnvmapSize(cur->em); i += 1) {
       union PCTypes p;
-      p = envmapKeyValAt(cur->em, i);
-      if (envmapIsMarkedAt(cur->em, i) && !envmapIsPrivateAt(cur->em, i) )
-        envmapSetKeyVal(em, p.sp.key, p.sp.val);
+      p = clEnvmapKeyValAt(cur->em, i);
+      if (clEnvmapIsMarkedAt(cur->em, i) && !clEnvmapIsPrivateAt(cur->em, i) )
+        clEnvmapSetKeyVal(em, p.sp.key, p.sp.val);
     }
-    if (envmapSize(em) > 0)
-      dbenvmap = envmapDump(em);
-    dbdmtagged = distmatrixDump(gres);
+    if (clEnvmapSize(em) > 0)
+      dbenvmap = clEnvmapDump(em);
+    dbdmtagged = clDistmatrixDump(gres);
     assert(labels);
-    dblabelstagged = labelsDump(labels);
-    dbcommandstagged = commandsDump(cur->cmdKeeper);
-    db = package_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
-    datablockWriteToFile(db, ncdcfg->output_distmat_fname);
-    datablockFreePtr(db);
-    datablockFreePtr(dblabelstagged);
-    datablockFreePtr(dbdmtagged);
+    dblabelstagged = clLabelsDump(labels);
+    dbcommandstagged = clCommandsDump(cur->cmdKeeper);
+    db = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
+    clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
+    clDatablockFreePtr(db);
+    clDatablockFreePtr(dblabelstagged);
+    clDatablockFreePtr(dbdmtagged);
   }
   for (n1c = 0; n1c < gres->size1; n1c++) {
     printf(rowBegin);
     if (cur->fShowLabels) {
       printf(elemBegin);
-      printf("%s", stringstackReadAt(labels, n1c));
+      printf("%s", clStringstackReadAt(labels, n1c));
       printf(elemEnd);
     }
     for (n2c = 0; n2c < gres->size2; n2c++) {
@@ -171,7 +171,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     printf(rowEnd);
   }
   gsl_matrix_free(gres);
-	stringstackFree(labels);
+	clStringstackFree(labels);
 }
 
 #define PARAMLINESIZE 1024
@@ -179,27 +179,27 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
     *startparamstr, char *endparamstr)
 {
   int i;
-  struct StringStack *ss = stringstackNew();
+  struct StringStack *ss = clStringstackNew();
   char param[PARAMLINESIZE];
 
-  for (i = 0; i < envmapSize(em); i += 1) {
+  for (i = 0; i < clEnvmapSize(em); i += 1) {
     union PCTypes p;
-    p = envmapKeyValAt(em, i);
-    if (envmapIsMarkedAt(em, i) && !envmapIsPrivateAt(em, i) ) {
+    p = clEnvmapKeyValAt(em, i);
+    if (clEnvmapIsMarkedAt(em, i) && !clEnvmapIsPrivateAt(em, i) ) {
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
-      stringstackPush(ss, param);
+      clStringstackPush(ss, param);
     }
   }
-  sprintf(param,"%sUsername: %s%s", startparamstr, getUsername(), endparamstr);
-  stringstackPush(ss,param);
+  sprintf(param,"%sUsername: %s%s", startparamstr, clGetUsername(), endparamstr);
+  clStringstackPush(ss,param);
   return ss;
 }
 
-struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm)
+struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struct StringStack *labels, struct CLNodeSet *flips, struct GeneralConfig *cur, struct TreeMaster *tm, gsl_matrix *dm)
 {
   int i, j;
-  struct LabelPerm *labelperm = treeaLabelPerm(ta);
-  struct AdjAdaptor *ad = treeaAdjAdaptor(ta);
+  struct LabelPerm *labelperm = clTreeaLabelPerm(ta);
+  struct AdjAdaptor *ad = clTreeaAdjAdaptor(ta);
   struct DRA *nodes;
   static char labbuf[128];
   static char lab[1024];
@@ -212,156 +212,156 @@ struct DataBlock *convertTreeToDot(struct TreeAdaptor *ta, double score, struct 
   unsigned char *dbuff;
 
   assert(ad);
-  nodes = simpleWalkTree(ta, flips);
-  dasize = adjaSize(ad);
+  nodes = clSimpleWalkTree(ta, flips);
+  dasize = clAdjaSize(ad);
   assert(dasize > 0);
-  assert(draSize(nodes) == dasize);
-  dotacc = stringstackNew();
+  assert(clDraSize(nodes) == dasize);
+  dotacc = clStringstackNew();
   assert(dotacc);
   assert(labelperm);
 
-  stringstackPush(dotacc, "graph \"tree\" {");
+  clStringstackPush(dotacc, "graph \"tree\" {");
   if (cur && cur->fSuppressVisibleDetails) {
     startparamstr = "/* "; endparamstr = " */";
   } else {
-    stringstackPush(dotacc, "label=\"\\");
+    clStringstackPush(dotacc, "label=\"\\");
     startparamstr = ""; endparamstr = "\\n\\";
   }
 
   sprintf(con1, "%s%s version %s%s", startparamstr, PACKAGE_NAME,
       PACKAGE_VERSION, endparamstr);
-  stringstackPush(dotacc, con1);
+  clStringstackPush(dotacc, con1);
   if (score != 0.0) {
     sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
         endparamstr);
-    stringstackPush(dotacc, con1);
+    clStringstackPush(dotacc, con1);
   }
   if (cur) {
     params = convertParamsToStringStack(cur->em, startparamstr, endparamstr);
-    for (i = 0; i < stringstackSize(params); i += 1)
-      stringstackPush(dotacc, stringstackReadAt(params,i));
+    for (i = 0; i < clStringstackSize(params); i += 1)
+      clStringstackPush(dotacc, clStringstackReadAt(params,i));
   }
 
   if (!(cur && cur->fSuppressVisibleDetails))
-    stringstackPush(dotacc, "\";");
+    clStringstackPush(dotacc, "\";");
 
   if (cur) {
-    for (i = 0; i < stringstackSize(cur->cmdKeeper); i += 1) {
-      char *cmd = stringstackReadAt(cur->cmdKeeper, i);
+    for (i = 0; i < clStringstackSize(cur->cmdKeeper); i += 1) {
+      char *cmd = clStringstackReadAt(cur->cmdKeeper, i);
       sprintf(con1, "/* Step %d: %s */", i+1, cmd);
-      stringstackPush(dotacc, con1);
+      clStringstackPush(dotacc, con1);
     }
   }
   if (tm) {
     int t0, tf, dt;
-    if (treemasterStartTime(tm)) {
-      sprintf(con1, "/* start time %s */", cldatetimeToHumString(treemasterStartTime(tm)));
-      stringstackPush(dotacc, con1);
+    if (clTreemasterStartTime(tm)) {
+      sprintf(con1, "/* start time %s */", cldatetimeToHumString(clTreemasterStartTime(tm)));
+      clStringstackPush(dotacc, con1);
     }
-    if (treemasterEndTime(tm)) {
-      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(treemasterEndTime(tm)));
-      stringstackPush(dotacc, con1);
+    if (clTreemasterEndTime(tm)) {
+      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(clTreemasterEndTime(tm)));
+      clStringstackPush(dotacc, con1);
     }
-    sprintf(con1, "/* total trees: %d */", treemasterTreeCount(tm));
-    stringstackPush(dotacc, con1);
-    if (treemasterEndTime(tm) && treemasterStartTime(tm)) {
-      t0 = cldatetimeToInt(treemasterStartTime(tm));
-      tf = cldatetimeToInt(treemasterEndTime(tm));
+    sprintf(con1, "/* total trees: %d */", clTreemasterTreeCount(tm));
+    clStringstackPush(dotacc, con1);
+    if (clTreemasterEndTime(tm) && clTreemasterStartTime(tm)) {
+      t0 = cldatetimeToInt(clTreemasterStartTime(tm));
+      tf = cldatetimeToInt(clTreemasterEndTime(tm));
       dt = tf - t0;
       if (dt > 0) {
-        sprintf(con1, "/* trees / sec : %f */", treemasterTreeCount(tm) /
+        sprintf(con1, "/* trees / sec : %f */", clTreemasterTreeCount(tm) /
             (double) dt);
-        stringstackPush(dotacc, con1);
+        clStringstackPush(dotacc, con1);
       }
     }
   }
-  sprintf(con1,"/* Hostname: %s */", getHostname());
-  stringstackPush(dotacc,con1);
-  sprintf(con1,"/* Machine desc: %s */", getUTSName());
-  stringstackPush(dotacc,con1);
-  sprintf(con1,"/* PID: %d */", getPID());
-  stringstackPush(dotacc,con1);
+  sprintf(con1,"/* Hostname: %s */", clGetHostname());
+  clStringstackPush(dotacc,con1);
+  sprintf(con1,"/* Machine desc: %s */", clGetUTSName());
+  clStringstackPush(dotacc,con1);
+  sprintf(con1,"/* PID: %d */", clGetPID());
+  clStringstackPush(dotacc,con1);
 
   int rootnode = -1;
   for (i = 0; i < dasize; i += 1) {
-    int nodenum = draGetValueAt(nodes, i).i;
+    int nodenum = clDraGetValueAt(nodes, i).i;
     assert(nodenum >= 0 && nodenum <= 3 * dasize);
     char *str;
     char *extrastr = "";
-    if (treeaIsRoot(ta, nodenum)) {
+    if (clTreeaIsRoot(ta, nodenum)) {
       extrastr=",style=bold";
       rootnode = nodenum;
     }
-    if (treeaIsQuartettable(ta, nodenum) && labels)
-      str = stringstackReadAt(labels, labelpermColIndexForNodeID(labelperm,nodenum));
+    if (clTreeaIsQuartettable(ta, nodenum) && labels)
+      str = clStringstackReadAt(labels, clLabelpermColIndexForNodeID(labelperm,nodenum));
     else {
-      sprintf(labbuf, "%c%d", treeaIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
+      sprintf(labbuf, "%c%d", clTreeaIsQuartettable(ta, nodenum) ? 'L' : 'k', nodenum);
       str = labbuf;
     }
     sprintf(lab,"%d [label=\"%s\"%s];", nodenum, str, extrastr);
-    stringstackPush(dotacc, lab);
+    clStringstackPush(dotacc, lab);
   }
   for (i = 0; i < dasize; i += 1) {
-    int n1 = draGetValueAt(nodes, i).i;
+    int n1 = clDraGetValueAt(nodes, i).i;
     assert(n1 >= 0 && n1 <= 3 * dasize);
     sprintf(con1, "%d", n1);
     for (j = 0; j < dasize; j += 1) {
-      int n2 = draGetValueAt(nodes, j).i;
+      int n2 = clDraGetValueAt(nodes, j).i;
 //      printf("For %d, got %d on labelperm %p\n", j, n2, labelperm);
       assert(n2 >= 0 && n2 <= 3 * dasize);
       char con2[1024];
       sprintf(con2, "%d", n2);
-      if (n1 > n2 && adjaGetConState(ad, n1, n2)) {
+      if (n1 > n2 && clAdjaGetConState(ad, n1, n2)) {
         char buf[4096];
         sprintf(buf, "%s -- %s [weight=\"2\"];", con1, con2);
-        stringstackPush(dotacc, buf);
+        clStringstackPush(dotacc, buf);
       }
     }
   }
   if (rootnode != -1) {
     sprintf(lab,"%d [label=\"%s\",color=white,fontcolor=black];", 9999, "root");
-    stringstackPush(dotacc, lab);
+    clStringstackPush(dotacc, lab);
     sprintf(lab,"%d -- %d;", 9999, rootnode);
-    stringstackPush(dotacc, lab);
+    clStringstackPush(dotacc, lab);
   }
   /* Perimeter walker */
   if (flips)
   {
     int i;
     struct DRA *dapairs;
-    dapairs = treeaPerimPairs(ta, flips);
-    for (i = 0; i < draSize(dapairs); i += 1) {
-      int dmx = labelpermColIndexForNodeID(labelperm,draGetValueAt(dapairs,i).ip.x);
-      int dmy = labelpermColIndexForNodeID(labelperm,draGetValueAt(dapairs,i).ip.y);
+    dapairs = clTreeaPerimPairs(ta, flips);
+    for (i = 0; i < clDraSize(dapairs); i += 1) {
+      int dmx = clLabelpermColIndexForNodeID(labelperm,clDraGetValueAt(dapairs,i).ip.x);
+      int dmy = clLabelpermColIndexForNodeID(labelperm,clDraGetValueAt(dapairs,i).ip.y);
       double disthere = gsl_matrix_get(dm, dmx, dmy);
       sprintf(lab, "i%d [label=\"%03.3f\",color=\"white\"];", i, disthere);
-      stringstackPush(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, draGetValueAt(dapairs, i).ip.x);
-      stringstackPush(dotacc, lab);
-      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, draGetValueAt(dapairs, i).ip.y);
-      stringstackPush(dotacc, lab);
+      clStringstackPush(dotacc, lab);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, clDraGetValueAt(dapairs, i).ip.x);
+      clStringstackPush(dotacc, lab);
+      sprintf(lab, "i%d -- %d [style=\"dotted\"];",  i, clDraGetValueAt(dapairs, i).ip.y);
+      clStringstackPush(dotacc, lab);
     }
-    draFree(dapairs);
+    clDraFree(dapairs);
   }
-  stringstackPush(dotacc, "}");
+  clStringstackPush(dotacc, "}");
   tmpsize = 0;
-  for (i = 0; i < stringstackSize(dotacc); i += 1)
-    tmpsize += strlen(stringstackReadAt(dotacc, i)) + 1; /* for the \n */
+  for (i = 0; i < clStringstackSize(dotacc); i += 1)
+    tmpsize += strlen(clStringstackReadAt(dotacc, i)) + 1; /* for the \n */
   dbuff = clCalloc(tmpsize+1, 1); /* extra byte for temporary \0 */
   j = 0;
-  for (i = 0; i < stringstackSize(dotacc); i += 1)
-    j += sprintf((char *) (dbuff + j), "%s\n", stringstackReadAt(dotacc, i));
-  result = datablockNewFromBlock(dbuff,tmpsize);
-  stringstackFree(dotacc);
+  for (i = 0; i < clStringstackSize(dotacc); i += 1)
+    j += sprintf((char *) (dbuff + j), "%s\n", clStringstackReadAt(dotacc, i));
+  result = clDatablockNewFromBlock(dbuff,tmpsize);
+  clStringstackFree(dotacc);
   if (cur && params)
-    stringstackFree(params);
-  draFree(nodes);
-  labelpermFree(labelperm);
+    clStringstackFree(params);
+  clDraFree(nodes);
+  clLabelpermFree(labelperm);
   labelperm = NULL;
   return result;
 }
 
-const char *getUsername(void)
+const char *clGetUsername(void)
 {
   static char username[128];
 #if PWD_RDY
@@ -376,19 +376,19 @@ const char *getUsername(void)
   return username;
 }
 
-int getPID(void)
+int clGetPID(void)
 {
   return getpid();
 }
 
-const char *getHostname(void)
+const char *clGetHostname(void)
 {
   static char hostname[1024];
   gethostname(hostname, 1024);
   return hostname;
 }
 
-const char *getUTSName(void)
+const char *clGetUTSName(void)
 {
   static char utsname[1024];
 #if UTS_RDY

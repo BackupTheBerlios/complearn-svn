@@ -11,26 +11,26 @@ struct CLNodeSet *clnodesetNew(int howbig)
 {
   struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
   assert(howbig > 0);
-  result->da = draNew();
-  draSetValueAt(result->da, howbig-1, zeropct);
+  result->da = clDraNew();
+  clDraSetValueAt(result->da, howbig-1, zeropct);
   return result;
 }
 
 struct CLNodeSet *clnodesetClone(const struct CLNodeSet *cl)
 {
   struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
-  result->da = draClone(cl->da);
+  result->da = clDraClone(cl->da);
   return result;
 }
 
 void clnodesetPrint(struct CLNodeSet *cl)
 {
-  draPrintIntList(cl->da);
+  clDraPrintIntList(cl->da);
 }
 
 void clnodesetFree(struct CLNodeSet *cl)
 {
-  draFree(cl->da);
+  clDraFree(cl->da);
   clFreeandclear(cl);
 }
 
@@ -52,27 +52,27 @@ void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status)
 
   p.i = status;
 
-  draSetValueAt(cl->da, which, p);
+  clDraSetValueAt(cl->da, which, p);
 }
 
 int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which)
 {
-  return draGetValueAt(cl->da, which).i;
+  return clDraGetValueAt(cl->da, which).i;
 }
 
 struct DRA *clnodesetToDRA(const struct CLNodeSet *cl)
 {
-  return draClone(cl->da);
+  return clDraClone(cl->da);
 }
 
-struct CLNodeSet *draToCLNodeSet(const struct DRA *da)
+struct CLNodeSet *clDraToCLNodeSet(const struct DRA *da)
 {
   struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
-  result->da = draClone(da);
+  result->da = clDraClone(da);
   return result;
 }
 
 int clnodesetSize(const struct CLNodeSet *cl)
 {
-   return draSize(cl->da);
+   return clDraSize(cl->da);
 }

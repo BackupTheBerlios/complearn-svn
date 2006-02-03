@@ -8,7 +8,7 @@
  *
  * This structure maintain CompLearn log information.  It may direct
  * output to a file, to stderr, or through a user-defined error
- * function depending on how it is used.
+ * clFunction depending on how it is used.
  */
 struct Clog;
 
@@ -17,7 +17,7 @@ struct Clog;
 /* prints with msg */
 void clogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const char *msg, const char *fmt, ...);
 void clogGenericPrint( const char *filename, int lineno, const char *msg, const char *fmt, ...);
-t_emitfunc clogSetEmitFunction(t_emitfunc newfunc);
+t_emitclFunc clogSetEmitFunction(t_emitclFunc newclFunc);
 //void clogGenericLog( const char *filename, int lineno, const char *msg, const char *fmt, ...);
 
 /* prints and exits */

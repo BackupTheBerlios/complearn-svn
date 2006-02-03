@@ -20,7 +20,7 @@
  * bits.  This resultant length is returned to the CompLearn system.
  * A real compressor is often the most convenient interface with which to
  * use a custom compressor, as often a simple one-line shell script is
- * sufficient to make a real compressor out of any functional compression
+ * sufficient to make a real compressor out of any clFunctional compression
  * program.
  */
 struct RealCompInstance {
@@ -30,20 +30,20 @@ struct RealCompInstance {
 
 
 //static void rc_clsetenv(struct CompAdaptor *ca, struct EnvMap *em);
-static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void rc_freecompfunc(struct CompAdaptor *ca);
+static double rc_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void rc_freecompclFunc(struct CompAdaptor *ca);
 static char *rc_shortname(void);
 static char *rc_longname(void);
 static int rc_apiver(void);
 
-struct CompAdaptor *builtin_RealComp(const char *cmd)
+struct CompAdaptor *clBuiltin_RealComp(const char *cmd)
 {
 	struct CompAdaptor c =
 	{
     cptr: NULL,
 //    se:   rc_clsetenv,
-    cf:   rc_compfunc,
-    fcf:  rc_freecompfunc,
+    cf:   rc_compclFunc,
+    fcf:  rc_freecompclFunc,
     sn:   rc_shortname,
     ln:   rc_longname,
     apiv: rc_apiver,
@@ -63,11 +63,11 @@ struct CompAdaptor *builtin_RealComp(const char *cmd)
     clogError( "Error, no command specified for realcomp\n");
     exit(1);
   }
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
   return ca;
 }
 
-void zombie_reaper(int q)
+void clZombie_reaper(int q)
 {
   int stat;
   while(waitpid(-1, &stat, WNOHANG) > 0) ;
@@ -79,7 +79,7 @@ void zombie_reaper(int q)
  * \param cmd string indicating pathname for external program
  * \return fd that may be read to get data from external program stdout
  */
-int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
+int clForkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
 {
 	int pout[2], pin[2];
   int retval;
@@ -90,16 +90,16 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
   retval = pipe(pin);
   if (retval)
     clogError("pipe");
-  signal(SIGCHLD, (void(*)(int))zombie_reaper);
+  signal(SIGCHLD, (void(*)(int))clZombie_reaper);
   childid = fork();
   if (childid < 0) { // An error
         clogError("fork");
       }
   if (childid) { // parent
     int wlen, wtot = 0, wleft;
-    wleft = datablockSize(inp);
+    wleft = clDatablockSize(inp);
     while (wleft > 0) {
-      wlen = write(pout[1], datablockData(inp)+wtot, wleft);
+      wlen = write(pout[1], clDatablockData(inp)+wtot, wleft);
       if (wlen < 0) {
         clogError("write");
         continue;
@@ -126,7 +126,7 @@ int forkPipeExecAndFeed(struct DataBlock *inp, const char *cmd)
   return pin[0];
 }
 
-static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double rc_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
 #define READBLOCKSIZE 16384
@@ -134,7 +134,7 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   int readfd, readlen;
 
   ci->bytecount = 0;
-  readfd = forkPipeExecAndFeed(src, ci->cmd);
+  readfd = clForkPipeExecAndFeed(src, ci->cmd);
   while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
     ci->bytecount += readlen;
   }
@@ -143,7 +143,7 @@ static double rc_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   return ci->bytecount * 8.0;
 }
 
-static void rc_freecompfunc(struct CompAdaptor *ca)
+static void rc_freecompclFunc(struct CompAdaptor *ca)
 {
 	struct RealCompInstance *ci = (struct RealCompInstance *) ca->cptr;
   clFreeandclear(ci->cmd);

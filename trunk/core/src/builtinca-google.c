@@ -10,8 +10,8 @@ static const double refFactor = 2.0;
 
 
 static void goog_clsetenv(struct CompAdaptor *ca);
-static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void goog_freecompfunc(struct CompAdaptor *ca);
+static double goog_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void goog_freecompclFunc(struct CompAdaptor *ca);
 static char *goog_shortname(void);
 static char *goog_longname(void);
 static int goog_apiver(void);
@@ -31,7 +31,7 @@ struct GoogleCompInstance {
 
 /** \brief Initializes a GOOGLE CompAdaptor instance
  *
- *  builtin_GOOG() allocates memory to a GOOGLE CompAdaptor instance. The
+ *  clBuiltin_GOOG() allocates memory to a GOOGLE CompAdaptor instance. The
  *  GOOGLE CompAdaptor is required for NGD calculations.
  *
  *  For the GOOGLE CompAdaptor to work properly, a GoogleKey is required and
@@ -43,14 +43,14 @@ struct GoogleCompInstance {
  *
  *  \return pointer to newly initialized GOOGLE CompAdaptor instance
  */
-struct CompAdaptor *builtin_GOOG(void)
+struct CompAdaptor *clBuiltin_GOOG(void)
 {
 	struct CompAdaptor c =
 	{
     cptr: NULL,
 //    se :  goog_clsetenv,
-    cf:   goog_compfunc,
-    fcf:  goog_freecompfunc,
+    cf:   goog_compclFunc,
+    fcf:  goog_freecompclFunc,
     sn:   goog_shortname,
     ln:   goog_longname,
     apiv: goog_apiver,
@@ -64,7 +64,7 @@ struct CompAdaptor *builtin_GOOG(void)
 
   goog_clsetenv(ca);
 
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
   return ca;
 }
@@ -83,19 +83,19 @@ static const char *refWords[] = {
   NULL
 };
 
-double calculateM(const char *daystr, const char *gkey)
+double clCalculateM(const char *daystr, const char *gkey)
 {
-  return refFactor * calculateMbase(daystr, gkey);
+  return refFactor * clCalculateMbase(daystr, gkey);
 }
 
-double calculateMbase(const char *daystr, const char *gkey)
+double clCalculateMbase(const char *daystr, const char *gkey)
 {
   double acc = 0.0;
   int i;
   for (i = 0; refWords[i]; i += 1) {
-    struct StringStack *terms = stringstackNewSingle(refWords[i]);
-    acc += fetchSampleSimple(terms, gkey, daystr);
-    stringstackFree(terms);
+    struct StringStack *terms = clStringstackNewSingle(refWords[i]);
+    acc += clFetchSampleSimple(terms, gkey, daystr);
+    clStringstackFree(terms);
   }
   return acc;
 }
@@ -105,46 +105,46 @@ static void goog_clsetenv(struct CompAdaptor *ca)
 	struct GoogleCompInstance *ci = (struct GoogleCompInstance *) ca->cptr;
   char *args[1] = { NULL };
   char *userKey;
-  struct EnvMap *em = loadDefaultEnvironment()->em;
+  struct EnvMap *em = clLoadDefaultEnvironment()->em;
   herror_t err;
   err = soap_client_init_args(0, args);
-  userKey = envmapValueForKey(em, "GoogleKey");
-  envmapSetKeyPrivate(em, "GoogleKey");
+  userKey = clEnvmapValueForKey(em, "GoogleKey");
+  clEnvmapSetKeyPrivate(em, "GoogleKey");
   if (userKey == NULL) {
     clogError("Cannot use google adaptor without %s property set","GoogleKey");
   }
   ci->gkey = clStrdup(userKey);
-  ci->m = calculateM(NULL, ci->gkey);
+  ci->m = clCalculateM(NULL, ci->gkey);
   //clogLog("M=%f\n", ci->m);
 }
 
-static double goog_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double goog_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   double pagecount, compsize;
   char *cur;
-  char *str = clCalloc(1,datablockSize(src)+1);
+  char *str = clCalloc(1,clDatablockSize(src)+1);
   struct StringStack *terms;
   const double NOTFOUNDWEIGHT = 0.5;
 
-  terms = stringstackNew();
+  terms = clStringstackNew();
 
-  memset(str, 0, datablockSize(src)+1);
-  memcpy(str,datablockData(src), datablockSize(src));
+  memset(str, 0, clDatablockSize(src)+1);
+  memcpy(str,clDatablockData(src), clDatablockSize(src));
 //  printf("Str is <%s>\n", str);
   for (cur = strtok(str, "\r\n"); cur ; cur = strtok(NULL, "\r\n"))
-    stringstackPush(terms, cur);
-  pagecount = fetchSampleSimple(terms, sci->gkey, NULL);
+    clStringstackPush(terms, cur);
+  pagecount = clFetchSampleSimple(terms, sci->gkey, NULL);
   if (pagecount < 1) /* probably 0 */
     pagecount = NOTFOUNDWEIGHT;   /* a small amount given just for asking */
   compsize = -log(pagecount/sci->m)/log(2.0);
 
-  stringstackFree(terms);
+  clStringstackFree(terms);
   clFreeandclear(str);
 	return (double) compsize;
 }
 
-static void goog_freecompfunc(struct CompAdaptor *ca)
+static void goog_freecompclFunc(struct CompAdaptor *ca)
 {
 	struct GoogleCompInstance *sci = (struct GoogleCompInstance *) ca->cptr;
   clFreeandclear(sci->gkey);
@@ -169,7 +169,7 @@ static int goog_apiver(void)
 
 #else
 #include <stdio.h>
-struct CompAdaptor *builtin_GOOG(void)
+struct CompAdaptor *clBuiltin_GOOG(void)
 {
   return NULL;
 }

@@ -8,12 +8,12 @@ static FILE *makeTmpCopyStdin(void)
   int fd;
   FILE *fp;
   if (tmpfile[0] == 0) {
-    struct DataBlock *db = filePtrToDataBlockPtr(stdin);
+    struct DataBlock *db = clFilePtrToDataBlockPtr(stdin);
     strcpy(tmpfile, "/tmp/clstdintmp-XXXXXX");
     fd = mkstemp(tmpfile);
     close(fd);
-    datablockWriteToFile(db, tmpfile);
-    datablockFreePtr(db);
+    clDatablockWriteToFile(db, tmpfile);
+    clDatablockFreePtr(db);
   }
   fp = fopen(tmpfile,"r");
   return fp;

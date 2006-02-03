@@ -3,12 +3,12 @@
 
 /*! \file adjmatrix.h */
 
-/** \brief AdjMatrix represents a symmetric, undirected adjacency matrix
+/** \brief AdjMatrix represents a symmetric, undirected adclJacency matrix
  *
  * \struct AdjMatrix
  *
  * An AdjMatrix is a simple, fast data structure that allows for efficient
- * adjacency information tracking.  It represents a diagonally-symmetric
+ * adclJacency information tracking.  It represents a diagonally-symmetric
  * binary matrix where 0 means the nodes are disconnected, and 1 means they
  * are connected.  Note that any operation to adjust the connectivity at
  * coordinate i,j will necessarily affect the connectivity read back both
@@ -23,36 +23,36 @@ struct DRA;
 
 /** \brief Create a new AdjMatrix with a given size
  *
- * This function creates a new AdjMatrix with the given dimension on a side.
- * This memory should be freed using adjmatrixFree when it is no longer needed.
+ * This clFunction creates a new AdjMatrix with the given dimension on a side.
+ * This memory should be freed using clAdjmatrixFree when it is no longer needed.
  * An AdjMatrix of size n supports node-labels in the range 0 to n-1, inclusive.
  *
  * \param howbig the size of one side of the square matrix
  * \return a pointer to a newly allocated AdjMatrix of the given size
  */
-struct AdjMatrix *adjmatrixNew(int howbig);
+struct AdjMatrix *clAdjmatrixNew(int howbig);
 
 /** \brief Clones an AdjMatrix to make an independent copy
- * This function simply clones an AdjMatrix and returns a new copy.
+ * This clFunction simply clones an AdjMatrix and returns a new copy.
  *
  * \param inp a pointer to the AdjMatrix to be cloned
  * \return a pointer to a new copy of the input AdjMatrix
  */
-struct AdjMatrix *adjmatrixClone(const struct AdjMatrix *inp);
+struct AdjMatrix *clAdjmatrixClone(const struct AdjMatrix *inp);
 
 /** \brief Deallocates memory used for an AdjMatrix
  *
- * This function frees memory used to store an AdjMatrix.
+ * This clFunction frees memory used to store an AdjMatrix.
  * Do not use this pointer after the AdjMatrix has been freed.
  *
  * \param adj a pointer to the AdjMatrix that must be deallocated
  *
  */
-void adjmatrixFree(struct AdjMatrix *adj);
+void clAdjmatrixFree(struct AdjMatrix *adj);
 
 /** \brief Queries the connected status between two numbered nodes
  *
- * This function can be used to quickly determine if node i and node
+ * This clFunction can be used to quickly determine if node i and node
  * j are connected.  It will return 1 if they are connected, 0 if they
  * are not.
  *
@@ -63,11 +63,11 @@ void adjmatrixFree(struct AdjMatrix *adj);
  * respectively
  *
  */
-int adjmatrixGetConState(const struct AdjMatrix *adj, int i, int j);
+int clAdjmatrixGetConState(const struct AdjMatrix *adj, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
- * This function connects or disconnects two nodes, depending on if
+ * This clFunction connects or disconnects two nodes, depending on if
  * the third parameter is 1 or 0, respectively.
  *
  * \param adj a pointer to the AdjMatrix to be adjusted
@@ -75,11 +75,11 @@ int adjmatrixGetConState(const struct AdjMatrix *adj, int i, int j);
  * \param j the second node label
  * \param conStatus an integer indicating whether to 0=disconnect or 1=connect
  */
-void adjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState);
+void clAdjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
- * This function stores, into a given buffer, the integer labels for each
+ * This clFunction stores, into a given buffer, the integer labels for each
  * neighbor of the given node.
  *
  * \param adj a pointer to the AdjMatrix to be queried
@@ -91,11 +91,11 @@ void adjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState);
  *              to by nsize will not be affected.
  * \return CL_OK if the buffer was big enough, or CL_ERRFULL if it wasn't.
  */
-int adjmatrixNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
+int clAdjmatrixNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *nsize);
 
 /** \brief Counts the number of neighbors a given node contains
  *
- * This function counts the number of neighbors a given node has
+ * This clFunction counts the number of neighbors a given node has
  * within an AdjMatrix.  It will return a number between 0 and the
  * full size of one side of the AdjMatrix.
  *
@@ -103,28 +103,28 @@ int adjmatrixNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *ns
  * \param from the integer label for the node to be investigated
  * \return an integer representing the total count of neighbors for node from
  */
-int adjmatrixNeighborCount(const struct AdjMatrix *adj, int from);
+int clAdjmatrixNeighborCount(const struct AdjMatrix *adj, int from);
 
 /** \brief Returns the size of a given AdjMatrix
  *
- *  This function returns the size of a dimension of an AdjMatrix.  This
- *  number is the same value passed to adjmatrixNew() when a newly initialized
+ *  This clFunction returns the size of a dimension of an AdjMatrix.  This
+ *  number is the same value passed to clAdjmatrixNew() when a newly initialized
  *  AdjMatrix object is created.
  *
  *  \param adj a pointer to the AdjMatrix to be investigated
  *  \return an integer representing the size of an AdjMatrix
  */
-int adjmatrixSize(const struct AdjMatrix *adj);
+int clAdjmatrixSize(const struct AdjMatrix *adj);
 
 /** \brief Prints a visual representation of an AdjMatrix to stdout
  *
- * This function prints an AdjMatrix where 1's represent a state of connection
+ * This clFunction prints an AdjMatrix where 1's represent a state of connection
  * between nodes, and 0's represent a state of disconnection.
  *
  * \param adj a pointer to the AdjMatrix to be printed
  */
-void adjmatrixPrint(const struct AdjMatrix *which);
+void clAdjmatrixPrint(const struct AdjMatrix *which);
 
-struct AdjAdaptor *adjaLoadAdjMatrix(int howBig);
+struct AdjAdaptor *clAdjaLoadAdjMatrix(int howBig);
 
 #endif

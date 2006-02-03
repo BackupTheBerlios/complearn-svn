@@ -13,23 +13,23 @@ static char *readHomeVar(void)
 {
   return getenv("HOME");
 }
-struct StringStack *getDefaultFileList(void)
+struct StringStack *clGetDefaultFileList(void)
 {
   struct StringStack *ss;
   char *homedir = clCalloc(1, 2048);
   char *homeenv;
-  ss = stringstackNew();
-  stringstackPush(ss, SYSTEMDATAFILE);
+  ss = clStringstackNew();
+  clStringstackPush(ss, SYSTEMDATAFILE);
   homeenv = readHomeVar();
   if (homeenv) {
     sprintf(homedir, "%s/%s/%s", homeenv, COMPLEARNDIR, CONFIGNAME);
-    stringstackPush(ss, homedir);
+    clStringstackPush(ss, homedir);
   }
   free(homedir);
   return ss;
 }
 
-int doesFileExist(const char *fname)
+int clDoesFileExist(const char *fname)
 {
   FILE *fp;
   fp = clFopen(fname, "rb");
@@ -38,21 +38,21 @@ int doesFileExist(const char *fname)
   return fp ? 1 : 0;
 }
 
-int readDefaultConfig(struct EnvMap *dest)
+int clReadDefaultConfig(struct EnvMap *dest)
 {
-  struct StringStack *d = getDefaultFileList();
+  struct StringStack *d = clGetDefaultFileList();
   assert(dest);
   assert(d);
-  assert(stringstackSize(d) > 0);
-  assert(stringstackSize(d) < 10);
+  assert(clStringstackSize(d) > 0);
+  assert(clStringstackSize(d) < 10);
 
-  while (!stringstackIsEmpty(d)) {
-    char *str = shiftSS(d);
-    if (doesFileExist(str))
-      readSpecificFile(dest, str);
+  while (!clStringstackIsEmpty(d)) {
+    char *str = clShiftSS(d);
+    if (clDoesFileExist(str))
+      clReadSpecificFile(dest, str);
     clFreeandclear(str);
   }
-  stringstackFree(d);
+  clStringstackFree(d);
   return CL_OK;
 }
 
@@ -83,7 +83,7 @@ static int filterVal(const char *src, char *dst)
 
 #define DELIMS "=:\r\n"
 
-void handleLine(struct EnvMap *dest, const char *uline)
+void clHandleLine(struct EnvMap *dest, const char *uline)
 {
   char *key = NULL, *val = NULL;
   char *kbuf, *vbuf;
@@ -98,14 +98,14 @@ void handleLine(struct EnvMap *dest, const char *uline)
   vbuf = val;
   if (filterVal(key, kbuf)) {
     if (filterVal(val, vbuf)) {
-      envmapSetKeyVal(dest, kbuf, vbuf);
+      clEnvmapSetKeyVal(dest, kbuf, vbuf);
     }
   }
   clFreeandclear(line);
 }
 
 /* Returns CL_OK or CL_ERRBADFILE if it cannot read the given file. */
-int readSpecificFile(struct EnvMap *dest, const char *fname)
+int clReadSpecificFile(struct EnvMap *dest, const char *fname)
 {
 #define MAXLINESIZE 1024
   char linebuf[MAXLINESIZE];
@@ -113,7 +113,7 @@ int readSpecificFile(struct EnvMap *dest, const char *fname)
   fp = clFopen(fname, "rb");
   assert(fp);
   while (fgets(linebuf, MAXLINESIZE, fp)) {
-    handleLine(dest, linebuf);
+    clHandleLine(dest, linebuf);
   }
   clFclose(fp);
   return CL_OK;

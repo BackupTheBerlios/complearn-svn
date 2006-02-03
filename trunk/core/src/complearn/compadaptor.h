@@ -11,7 +11,7 @@
  *
  *  \struct CompAdaptor
  *
- *  CompAdaptor contains pointers to 5 functions which are defined in an
+ *  CompAdaptor contains pointers to 5 clFunctions which are defined in an
  *  external compression module.  There is also a user opaque pointer for
  *  custom extensions.
  *
@@ -19,17 +19,17 @@
  */
 struct CompAdaptor {
   void *cptr;
-	t_compfunc cf;      /*!< Pointer to function which returns the compressed
+	t_compclFunc cf;      /*!< Pointer to clFunction which returns the compressed
 												   size of a DataBlock in bits*/
-	t_freecompfunc fcf; /*!< Pointer to function which frees a compressor
+	t_freecompclFunc fcf; /*!< Pointer to clFunction which frees a compressor
 												   instance from memory */
-	t_shortname sn;     /*!< Pointer to function which returns string shortname of
+	t_shortname sn;     /*!< Pointer to clFunction which returns string shortname of
 										       CompAdaptor object */
-	t_longname ln;      /*!< Pointer to function which returns string longname of
+	t_longname ln;      /*!< Pointer to clFunction which returns string longname of
 											     CompAdaptor object */
-  t_apiver apiv;      /*!< Pointer to function which returns int api version
+  t_apiver apiv;      /*!< Pointer to clFunction which returns int api version
 												   of CompAdaptor interface */
-  t_getparams params; /*!< Pointer to function which returns a paramlist
+  t_getparams params; /*!< Pointer to clFunction which returns a paramlist
 												   of CompAdaptor interface */
   struct ParamList *pl;
 };
@@ -39,17 +39,17 @@ struct CompAdaptor {
  */
 #define APIVER_V1 1
 
-double compaCompress(struct CompAdaptor *ca, struct DataBlock *src);
-void compaFree(struct CompAdaptor *ca);
-char *compaShortName(struct CompAdaptor *ca);
-char *compaLongName(struct CompAdaptor *ca);
+double clCompaCompress(struct CompAdaptor *ca, struct DataBlock *src);
+void clCompaFree(struct CompAdaptor *ca);
+char *clCompaShortName(struct CompAdaptor *ca);
+char *clCompaLongName(struct CompAdaptor *ca);
 
 /** \brief Returns API version of CompAdaptor interface
  *
  *  \param ca pointer to CompAdaptor
  *  \return int API version number
  */
-int compaAPIVer(struct CompAdaptor *ca);
+int clCompaAPIVer(struct CompAdaptor *ca);
 
 /** \brief Returns the NCD of a pair of DataBlocks.
  *
@@ -63,7 +63,7 @@ int compaAPIVer(struct CompAdaptor *ca);
  *    C(a)   is the compressed size of a in bits
  *    C(b)   is the compressed size of b in bits
  *
- *  compaNCD() will return a double precision floating-point value 0 <= x < 1.1
+ *  clCompaNCD() will return a double precision floating-point value 0 <= x < 1.1
  *  representing  how different the two files are.  Smaller numbers represent
  *  more similar files.  The largest number is somewhere near 1.  It is not
  *  exactly 1 due to imperfections in compression techniques, but for most
@@ -74,11 +74,11 @@ int compaAPIVer(struct CompAdaptor *ca);
  *  \param b pointer to another DataBlock
  *  \returns ncd a double precision floating-point value
  */
-double compaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock *b);
-struct ParamList *compaParameters(struct CompAdaptor *comp);
-void compaInitParameters(struct CompAdaptor *ca);
-void compaPushParameter(struct CompAdaptor *ca, const char *key, const char *value, int type);
-void compaSetValueForKey(struct CompAdaptor *ca, const char *key, void *dest);
+double clCompaNCD(struct CompAdaptor *comp, struct DataBlock *a, struct DataBlock *b);
+struct ParamList *clCompaParameters(struct CompAdaptor *comp);
+void clCompaInitParameters(struct CompAdaptor *ca);
+void clCompaPushParameter(struct CompAdaptor *ca, const char *key, const char *value, int type);
+void clCompaSetValueForKey(struct CompAdaptor *ca, const char *key, void *dest);
 
 #endif
 

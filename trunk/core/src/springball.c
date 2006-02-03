@@ -90,23 +90,23 @@ struct SBS4 {
   double *statear, *stateback, *statebackj, *foball, *foballbase;
 };
 
-gsl_vector *sbsBallPosition(struct SpringBallSystem *sbs, int whichBall)
+gsl_vector *clSbsBallPosition(struct SpringBallSystem *sbs, int whichBall)
 {
   return (gsl_vector *) &sbs->sbs4->pos[whichBall];
 }
 
-int func(double t, const double uy[], double f[], void *params);
+int clFunc(double t, const double uy[], double f[], void *params);
 
-void sbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
+void clSbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
 {
   if (sbs->sbs4->targetk) {
 //    gsl_matrix_free(sbs->sbs4->targetk);
     sbs->sbs4->targetk = NULL;
   }
-  sbs->sbs4->targetk = adjaToGSLMatrix(treeaAdjAdaptor(ta));
+  sbs->sbs4->targetk = clAdjaToGSLMatrix(clTreeaAdjAdaptor(ta));
 }
 
-struct SBS3 *sbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
+struct SBS3 *clSbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl_vector_view v1)
 {
   struct SBS3 *ts;
   ts = clCalloc(sizeof(*ts), 1);
@@ -132,7 +132,7 @@ double clip_val_inbetween(double val, double minval, double maxval)
   return val;
 }
 
-void stepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, double speed) {
+void clStepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, double speed) {
   int i, j;
   for (i = 0; i < smooth->size1 ; i += 1) {
     for (j = 0; j < smooth->size2; j += 1) {
@@ -148,36 +148,36 @@ void stepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, double
 
 void clStepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt) {
   const double springkspeed = 0.1; /* "newtons" per "meter-second" */
-  gsl_matrix *targetks = adjaToGSLMatrix(treeaAdjAdaptor(ta));
-  stepTowards(smooth, targetks, dt, springkspeed);
+  gsl_matrix *targetks = clAdjaToGSLMatrix(clTreeaAdjAdaptor(ta));
+  clStepTowards(smooth, targetks, dt, springkspeed);
   gsl_matrix_free(targetks);
 }
 
-gsl_matrix *adjaToGSLMatrix(struct AdjAdaptor *aa)
+gsl_matrix *clAdjaToGSLMatrix(struct AdjAdaptor *aa)
 {
   gsl_matrix *m;
   int size, i, j;
-  size = adjaSize(aa);
+  size = clAdjaSize(aa);
   m = gsl_matrix_alloc(size,size);
   for (i = 0; i < size ; i += 1) {
     for (j = 0; j < size; j += 1) {
-      gsl_matrix_set(m, i, j, (double) adjaGetConState(aa,i,j));
+      gsl_matrix_set(m, i, j, (double) clAdjaGetConState(aa,i,j));
     }
   }
   return m;
 }
 
-static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
+static struct SBS4 *clSbsNew4(struct TreeAdaptor *ta)
 {
   int i, j;
-  int howBig = treeaNodeCount(ta);
+  int howBig = clTreeaNodeCount(ta);
   const double posRadius = 3.0;
   struct SBS4 *sbs4 = clCalloc(sizeof(*sbs4), 1);
   int pairnum = howBig * (howBig-1);
   sbs4->d = 3;
   /* initially, there are no springs */
   sbs4->smoothk = gsl_matrix_calloc(howBig, howBig);
-  sbs4->targetk = adjaToGSLMatrix(treeaAdjAdaptor(ta));
+  sbs4->targetk = clAdjaToGSLMatrix(clTreeaAdjAdaptor(ta));
 
   /* views for position and velocity by ball */
   sbs4->pos = clCalloc(sizeof(*sbs4->pos), howBig);
@@ -189,7 +189,7 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
   sbs4->foball = clCalloc(sizeof(double), 2*sbs4->d*howBig);
   sbs4->foballbase = clCalloc(sizeof(double), 2*sbs4->d*howBig);
 
-  sbs4->subsys = draNew();
+  sbs4->subsys = clDraNew();
 
   for (i = 0; i < howBig; i += 1) {
 
@@ -216,17 +216,17 @@ static struct SBS4 *sbsNew4(struct TreeAdaptor *ta)
       union PCTypes p = zeropct;
       if (i == j)
         continue;
-      sbs3 = sbsNew3(i, j, sbs4->pos[i], sbs4->pos[j], sbs4->vel[i]);
+      sbs3 = clSbsNew3(i, j, sbs4->pos[i], sbs4->pos[j], sbs4->vel[i]);
       p.ptr = sbs3;
 
       sbs3->kmat = gsl_matrix_submatrix(sbs4->smoothk, i, j, 1, 1);
 
-      draPush(sbs4->subsys, p);
+      clDraPush(sbs4->subsys, p);
     }
   }
 
   pairnum += 0;
-  assert(draSize(sbs4->subsys) == pairnum);
+  assert(clDraSize(sbs4->subsys) == pairnum);
 
   return sbs4;
 }
@@ -253,7 +253,7 @@ static void addValueToElement(gsl_matrix *m, int i, int j, double delta)
   gsl_matrix_set(m, i, j, gsl_matrix_get(m,i,j)+delta/massScale);
 }
 
-void calculateJacobian(struct SBS3 *model, gsl_matrix *m)
+void clCalculateJacobian(struct SBS3 *model, gsl_matrix *m)
 {
   int mustDoDrag;
   int mustDoCharge = 0;
@@ -333,7 +333,7 @@ void calculateJacobian(struct SBS3 *model, gsl_matrix *m)
   }
 }
 #if 0
-static gsl_matrix *calculateJacobian(struct SBS3 *model, gsl_matrix *m, int fCharge, int fSpring, int fDrag)
+static gsl_matrix *clCalculateJacobian(struct SBS3 *model, gsl_matrix *m, int fCharge, int fSpring, int fDrag)
 {
   if (fCharge) {
     double denom = pow(((X1-X2)*(X1-X2)+(Y1-Y2)*(Y1-Y2)+(Z1-Z2)*(Z1-Z2)), 2.5);
@@ -423,47 +423,47 @@ static void calculateForceOnBall1(struct SBS4 *sbs4, struct SBS3 *model, gsl_vec
       gsl_vector_set(result, i, answer[i]);
 }
 
-void sbsFree(struct SpringBallSystem *sbs)
+void clSbsFree(struct SpringBallSystem *sbs)
 {
 }
 
-int ajac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
+int clAclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   int d = sbs4->d;
   int ballnum = sbs4->smoothk->size1;
   int i, j;
   double smalld = 0.001;
-  gsl_matrix_view bigjac;
+  gsl_matrix_view bigclJac;
   memcpy(sbs4->statebackj, sbs4->statear, (sizeof(double)*2*d*ballnum));
-  bigjac = gsl_matrix_view_array(dfdy, 2*d*ballnum, 2*d*ballnum);
+  bigclJac = gsl_matrix_view_array(dfdy, 2*d*ballnum, 2*d*ballnum);
   for (i = 0; i < 2*d*ballnum; i += 1) {
     double yold;
     memcpy(sbs4->statear, uy, (sizeof(double)*2*d*ballnum));
     yold = sbs4->statear[i];
     sbs4->statear[i] -= 0.5*smalld;
-    func(t, sbs4->statear, sbs4->foballbase, params);
+    clFunc(t, sbs4->statear, sbs4->foballbase, params);
     sbs4->statear[i] += smalld;
     dfdt[i] = 0;
-    func(t, sbs4->statear, sbs4->foball, params);
+    clFunc(t, sbs4->statear, sbs4->foball, params);
     sbs4->statear[i] = yold;
     for (j = 0; j < 2*d*ballnum; j += 1) {
 /*
       if (i == j) {
 #if AJAC_PARITY
-        gsl_matrix_set((gsl_matrix *) &bigjac, i, j, 1.0);
+        gsl_matrix_set((gsl_matrix *) &bigclJac, i, j, 1.0);
 #else
-        gsl_matrix_set((gsl_matrix *) &bigjac, j, i, 1.0);
+        gsl_matrix_set((gsl_matrix *) &bigclJac, j, i, 1.0);
 #endif
         continue;
       }
 */
       double answer = (sbs4->foball[j] - sbs4->foballbase[j]) / smalld;
-//      printf("Got jacobian %f for entry with index %d, %d\n", answer, i, j);
+//      printf("Got clJacobian %f for entry with index %d, %d\n", answer, i, j);
 #if AJAC_PARITY
-        gsl_matrix_set((gsl_matrix *) &bigjac, i, j, answer);
+        gsl_matrix_set((gsl_matrix *) &bigclJac, i, j, answer);
 #else
-        gsl_matrix_set((gsl_matrix *) &bigjac, j, i, answer);
+        gsl_matrix_set((gsl_matrix *) &bigclJac, j, i, answer);
 #endif
     }
   }
@@ -471,7 +471,7 @@ int ajac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
   return GSL_SUCCESS;
 }
 
-int jac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
+int clJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   int i, j;
@@ -479,13 +479,13 @@ int jac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
   int ballnum = sbs4->smoothk->size1;
   memcpy(sbs4->statebackj, sbs4->statear, (sizeof(double)*2*d*ballnum));
   memcpy(sbs4->statear, uy, (sizeof(double)*2*d*ballnum));
-  gsl_matrix_view bigjac;
-  bigjac = gsl_matrix_view_array(dfdy, 2*d*ballnum, 2*d*ballnum);
-//  func(t, uy, sbs4->foball, params);
+  gsl_matrix_view bigclJac;
+  bigclJac = gsl_matrix_view_array(dfdy, 2*d*ballnum, 2*d*ballnum);
+//  clFunc(t, uy, sbs4->foball, params);
   for (i = 0; i < ballnum; i += 1) {
     for (j = 0; j < d; j += 1) {
-      gsl_matrix_set((gsl_matrix *) &bigjac, 2*i*d + j, 2*i*d+d+j,1);
-      gsl_matrix_set((gsl_matrix *) &bigjac, 2*i*d + d + j, 2*i*d+d+j,1);
+      gsl_matrix_set((gsl_matrix *) &bigclJac, 2*i*d + j, 2*i*d+d+j,1);
+      gsl_matrix_set((gsl_matrix *) &bigclJac, 2*i*d + d + j, 2*i*d+d+j,1);
       dfdt[2*i*d + j] = 0;
       dfdt[2*i*d + j + d] = 0;
 /*      dfdt[2*i*d + j] = uy[2*i*d + d + j];
@@ -494,18 +494,18 @@ int jac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
   }
   for (i = 0; i < 2*d*ballnum; i += 1) {
     for (j = 0; j < 2*d*ballnum; j += 1) {
-      gsl_matrix_set((gsl_matrix *) &bigjac, i, j, 0);
+      gsl_matrix_set((gsl_matrix *) &bigclJac, i, j, 0);
     }
   }
-  for (i = 0; i < draSize(sbs4->subsys); i += 1) {
-    struct SBS3 *sbs3 = draGetValueAt(sbs4->subsys, i).ptr;
-    calculateJacobian(sbs3, (gsl_matrix *) &bigjac); /* TODO: ad sbs4, fix me */
+  for (i = 0; i < clDraSize(sbs4->subsys); i += 1) {
+    struct SBS3 *sbs3 = clDraGetValueAt(sbs4->subsys, i).ptr;
+    clCalculateJacobian(sbs3, (gsl_matrix *) &bigclJac); /* TODO: ad sbs4, fix me */
   }
   memcpy(sbs4->statear, sbs4->statebackj, (sizeof(double)*2*sbs4->d*ballnum));
   return GSL_SUCCESS;
 }
 
-int rjac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
+static int rclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   //double *y = (double *) &uy[0];
@@ -518,9 +518,9 @@ int rjac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
     printf("About to wig out..\n");
     havedone = 1;
     printf("About to wig out..A\n");
-    ajac(t, uy, &bigbuf[0][0], dfdt, params);
+    clAclJac(t, uy, &bigbuf[0][0], dfdt, params);
     printf("About to wig out..B\n");
-    jac(t, uy, &bigbuf[1][0], dfdt, params);
+    clJac(t, uy, &bigbuf[1][0], dfdt, params);
     printf("About to wig out..C\n");
     for (i = 0; i < (2*d*ballnum*2*d*ballnum); i += 1) {
       double absdist = fabs(bigbuf[0][i] - bigbuf[1][i]);
@@ -529,10 +529,10 @@ int rjac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
       printf("%d  ind %d: (%d,%d) [%d,%d]    a %f    j %f     %c (%3.3f)\n",(int) (absdist*1000), i, x, y, x%6, y%6, bigbuf[0][i], bigbuf[1][i], absdist > 1 ? '*' : ' ', absdist);
     }
   }
-  return ajac(t, uy, dfdy, dfdt, params);
+  return clAclJac(t, uy, dfdy, dfdt, params);
 }
 
-int func(double t, const double uy[], double f[], void *params)
+int clFunc(double t, const double uy[], double f[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   //double *y = (double *) &uy[0];
@@ -547,8 +547,8 @@ int func(double t, const double uy[], double f[], void *params)
     for (j = 0; j < 3; j += 1)
       f[6*i+j] = uy[6*i+3+j];
   //calculateForceOnBall1(sbs3, 1, f+3);
-  for (i = 0; i < draSize(sbs4->subsys); i += 1) {
-    struct SBS3 *sbs3 = draGetValueAt(sbs4->subsys, i).ptr;
+  for (i = 0; i < clDraSize(sbs4->subsys); i += 1) {
+    struct SBS3 *sbs3 = clDraGetValueAt(sbs4->subsys, i).ptr;
     int objball = sbs3->i;
     double *forcetarget = f + (6*objball + 3);
     gsl_vector_view gv = gsl_vector_view_array(forcetarget, 3);
@@ -558,14 +558,14 @@ int func(double t, const double uy[], double f[], void *params)
   return GSL_SUCCESS;
 }
 
-struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta) {
+struct SpringBallSystem *clSbsNew(struct TreeAdaptor *ta) {
   struct SpringBallSystem *sbs;
-  int howManyNodes = treeaNodeCount(ta);
+  int howManyNodes = clTreeaNodeCount(ta);
   sbs = clCalloc(sizeof(*sbs), 1);
 
-  sbs->sbs4 = sbsNew4(treeaClone(ta));
+  sbs->sbs4 = clSbsNew4(clTreeaClone(ta));
 
-  sbs->sys.function = func;
+  sbs->sys.function = clFunc;
   sbs->sys.jacobian = NULL;
   sbs->sys.dimension = howManyNodes * 2 * sbs->sbs4->d;
   sbs->sys.params = sbs->sbs4;
@@ -585,13 +585,13 @@ struct SpringBallSystem *sbsNew(struct TreeAdaptor *ta) {
   return sbs;
 }
 
-void sbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed)
+void clSbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed)
 {
   sbs->modelSpeed = modelSpeed;
   sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
 }
 
-void printSBS(struct SpringBallSystem *sbs)
+void clPrintSBS(struct SpringBallSystem *sbs)
 {
   int i;
   printf("t: %f, %d balls\n", (float) sbs->t, (int) sbs->sbs4->smoothk->size1);
@@ -601,15 +601,15 @@ void printSBS(struct SpringBallSystem *sbs)
 }
 
 
-void sbsEvolveForward(struct SpringBallSystem *sbs)
+void clSbsEvolveForward(struct SpringBallSystem *sbs)
 {
   double newt = sbs->modelSpeed * cldatetimeStaticTimer();
   if (newt <= sbs->t)
     return;
-  stepTowards(sbs->sbs4->smoothk, sbs->sbs4->targetk, newt - sbs->t, 0.1);
+  clStepTowards(sbs->sbs4->smoothk, sbs->sbs4->targetk, newt - sbs->t, 0.1);
   while (sbs->t < newt) {
 //    printf("t is now %f\n", sbs->t);
-//    printSBS(sbs);
+//    clPrintSBS(sbs);
     int status = gsl_odeiv_evolve_apply(sbs->e, sbs->c, sbs->s, &sbs->sys, &sbs->t, newt, &sbs->h, sbs->sbs4->statear);
     if (status != GSL_SUCCESS) {
       printf("Error evolving ODE..\n");
@@ -619,30 +619,30 @@ void sbsEvolveForward(struct SpringBallSystem *sbs)
   //updateMaxVal(clo);
 }
 
-void doSBS3Test(void)
+void clDoSBS3Test(void)
 {
-  struct TreeAdaptor *ta = treeaLoadUnrooted(4);
+  struct TreeAdaptor *ta = clTreeaLoadUnrooted(4);
   struct SpringBallSystem *sbs;
   int i;
-  sbs = sbsNew(ta);
+  sbs = clSbsNew(ta);
 //  printf("Got sbs %p\n", sbs);
   for (i = 0; i < 4; i += 1) {
-    sbsEvolveForward(sbs);
+    clSbsEvolveForward(sbs);
     sleep(1);
   }
 }
 
-double sbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j)
+double clSbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j)
 {
   return gsl_matrix_get(sbs->sbs4->smoothk, i, j);
 }
 
-int sbsNodeCount(struct SpringBallSystem *sbs)
+int clSbsNodeCount(struct SpringBallSystem *sbs)
 {
   return sbs->sbs4->smoothk->size1;
 }
 
-void sbsSet2DForce(struct SpringBallSystem *sbs, int newval)
+void clSbsSet2DForce(struct SpringBallSystem *sbs, int newval)
 {
   sbs->sbs4->twodforce = newval;
 }

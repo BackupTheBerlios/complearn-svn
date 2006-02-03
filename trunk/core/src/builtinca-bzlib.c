@@ -19,8 +19,8 @@
  * to tell them an error message.
  */
 
-static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src);
-static void bz2a_freecompfunc(struct CompAdaptor *ca);
+static double bz2a_compclFunc(struct CompAdaptor *ca, struct DataBlock *src);
+static void bz2a_freecompclFunc(struct CompAdaptor *ca);
 static char *bz2a_shortname(void);
 static char *bz2a_longname(void);
 static int bz2a_apiver(void);
@@ -50,7 +50,7 @@ static struct BZ2DynamicAdaptor bz2sda;
 static struct BZ2DynamicAdaptor bz2dda;
 static int haveTriedDL; /* Singleton */
 
-struct BZ2DynamicAdaptor *grabBZ2DA(void) {
+struct BZ2DynamicAdaptor *clGrabBZ2DA(void) {
   if (bz2sda.buftobufcompress)
     return &bz2sda;
   if (!haveTriedDL) {
@@ -92,7 +92,7 @@ struct BZ2CompInstance {
 
 /** \brief Initializes a BZIP2 CompAdaptor instance
  *
- *  builtin_BZIP() allocates memory to a BZIP2 CompAdaptor instance. The
+ *  clBuiltin_BZIP() allocates memory to a BZIP2 CompAdaptor instance. The
  *  BZIP2 CompAdaptor is required for use in computing NCDs with the bzip2
  *  compression library.
  *
@@ -100,20 +100,20 @@ struct BZ2CompInstance {
  *  workfactor, and verbosity.  By default, blocksize is set to 9, workfactor
  *  is set to 30, and verbosity is set to 0.
  *
- *  builtin_BZIP() will also read a CompLearn configuration file to override
+ *  clBuiltin_BZIP() will also read a CompLearn configuration file to override
  *  the option defaults. For details on how to create a configuration file, see
  *  http://www.complearn.org/config.html
  *
  *  \return pointer to newly initialized BZIP2 CompAdaptor instance
  */
-struct CompAdaptor *builtin_BZIP(void)
+struct CompAdaptor *clBuiltin_BZIP(void)
 {
 	struct CompAdaptor c =
 	{
     cptr: NULL,
 //    se:   bz2a_clsetenv,
-    cf:   bz2a_compfunc,
-    fcf:  bz2a_freecompfunc,
+    cf:   bz2a_compclFunc,
+    fcf:  bz2a_freecompclFunc,
     sn:   bz2a_shortname,
     ln:   bz2a_longname,
     apiv: bz2a_apiver,
@@ -121,30 +121,30 @@ struct CompAdaptor *builtin_BZIP(void)
   struct CompAdaptor *ca;
   struct BZ2CompInstance *bzci;
   struct BZ2DynamicAdaptor *bzlib;
-  bzlib = grabBZ2DA();
+  bzlib = clGrabBZ2DA();
   if (!bzlib)
     return NULL;
   ca = clCalloc(sizeof(*ca), 1);
   *ca = c;
   ca->cptr = clCalloc(sizeof(struct BZ2CompInstance), 1);
   bzci = (struct BZ2CompInstance *) ca->cptr;
-  compaInitParameters(ca);
+  clCompaInitParameters(ca);
 
   /* default compressor options */
-  compaPushParameter(ca, "blocksize", "9", PARAMINT);
-  compaPushParameter(ca, "workfactor", "30" , PARAMINT);
-  compaPushParameter(ca, "bzverbosity", "0", PARAMINT);
+  clCompaPushParameter(ca, "blocksize", "9", PARAMINT);
+  clCompaPushParameter(ca, "workfactor", "30" , PARAMINT);
+  clCompaPushParameter(ca, "bzverbosity", "0", PARAMINT);
 
-  compaSetValueForKey(ca, "blocksize", &bzci->blocksize);
-  compaSetValueForKey(ca, "workfactor", &bzci->workfactor);
-  compaSetValueForKey(ca, "bzverbosity", &bzci->verbosity);
+  clCompaSetValueForKey(ca, "blocksize", &bzci->blocksize);
+  clCompaSetValueForKey(ca, "workfactor", &bzci->workfactor);
+  clCompaSetValueForKey(ca, "bzverbosity", &bzci->verbosity);
 
   return ca;
 }
 
-static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
+static double bz2a_compclFunc(struct CompAdaptor *ca, struct DataBlock *src)
 {
-  struct BZ2DynamicAdaptor *bzlib = grabBZ2DA();
+  struct BZ2DynamicAdaptor *bzlib = clGrabBZ2DA();
 	struct BZ2CompInstance *bzci = (struct BZ2CompInstance *) ca->cptr;
 	int s;
 
@@ -154,9 +154,9 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
   if (bzlib == NULL) {
     clogError("Cannot do bzip2 compression: no bzip2 library available.");
   }
-	p = datablockSize(src)*1.02+600;
+	p = clDatablockSize(src)*1.02+600;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = (bzlib->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) datablockData(src),datablockSize(src),
+	s = (bzlib->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) clDatablockData(src),clDatablockSize(src),
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
 	if (s != 0) {
 		printf ("error code %d\n", s);
@@ -166,7 +166,7 @@ static double bz2a_compfunc(struct CompAdaptor *ca, struct DataBlock *src)
 	return (double) p*8.0;
 }
 
-static void bz2a_freecompfunc(struct CompAdaptor *ca)
+static void bz2a_freecompclFunc(struct CompAdaptor *ca)
 {
   clFreeandclear(ca->cptr);
   clFreeandclear(ca);

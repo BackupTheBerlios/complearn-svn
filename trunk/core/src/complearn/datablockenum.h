@@ -15,26 +15,26 @@ struct DataBlockEnumerationIterator;
 
 /** \brief Enumeration interface.
  *
- *  DataBlockEnumeration contains 6 pointers: of 5 functions and a private
+ *  DataBlockEnumeration contains 6 pointers: of 5 clFunctions and a private
  *  enumeration instance.
  */
 struct DataBlockEnumeration {
   void *eptr;                /*!< Pointer to a private enumeration instance */
-  t_newenumiter newenumiter; /*!< Pointer to function which returns a pointer
+  t_newenumiter newenumiter; /*!< Pointer to clFunction which returns a pointer
                                   to a new DataBlockEnumerationIterator
                                   object */
-  t_istep istep;             /*!< Pointer to function which advances the
+  t_istep istep;             /*!< Pointer to clFunction which advances the
                                   DataBlockEnumerationIterator object by 1 */
-  t_iterfree ifree;          /*!< Pointer to function which frees the
+  t_iterfree ifree;          /*!< Pointer to clFunction which frees the
                                   DataBlockEnumerationIterator object from
                                   memory */
-  t_enumfree efree;          /*!< Pointer to function which frees the
+  t_enumfree efree;          /*!< Pointer to clFunction which frees the
                                   DataBlockEnumeration object from memory */
-  t_istar istar;             /*!< Pointer to function which returns pointer to
+  t_istar istar;             /*!< Pointer to clFunction which returns pointer to
                                   current DataBlock of a DataBlockEnumeration
                                   object; when end of DataBlockEnumeration
                                   reached, NULL returned */
-  t_ilabel ilabel;           /*!< Pointer to a function which returns a label
+  t_ilabel ilabel;           /*!< Pointer to a clFunction which returns a label
                                   for the DataBlock indicated by an iterator */
 };
 /* TODO: wrap above */

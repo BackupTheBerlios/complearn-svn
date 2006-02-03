@@ -7,57 +7,57 @@
 
 static struct GeneralConfig *curEnv;
 
-struct EnvMap *getEnvMap(struct GeneralConfig *g)
+struct EnvMap *clGetEnvMap(struct GeneralConfig *g)
 {
   return g->em;
 }
 
-void printActiveEnvironment(void)
+void clPrintActiveEnvironment(void)
 {
-  struct EnvMap *em = loadDefaultEnvironment()->em;
+  struct EnvMap *em = clLoadDefaultEnvironment()->em;
   printf("The environment:\n");
-  envmapPrint(em);
+  clEnvmapPrint(em);
 }
 
-void freeDefaultEnvironment(struct GeneralConfig *g)
+void clFreeDefaultEnvironment(struct GeneralConfig *g)
 {
   assert(g == curEnv);
   if (curEnv->ptr && curEnv->freeappcfg)
     curEnv->freeappcfg(curEnv);
   clFreeifpresent(curEnv->compressor_name);
   if (curEnv->em) {
-    envmapFree(curEnv->em);
+    clEnvmapFree(curEnv->em);
     curEnv->em = NULL;
   }
   if (curEnv->ca) {
-    compaFree(curEnv->ca);
+    clCompaFree(curEnv->ca);
     curEnv->ca = NULL;
   }
   clFreeandclear(curEnv);
 }
 
-void updateEMToConfig(struct GeneralConfig *env)
+void clUpdateEMToConfig(struct GeneralConfig *env)
 {
   if (curEnv && curEnv->upappcfg)
     curEnv->upappcfg(curEnv);
-  if (envmapValueForKey(env->em, "compressor"))
-      env->compressor_name = strdup(envmapValueForKey(env->em, "compressor"));
+  if (clEnvmapValueForKey(env->em, "compressor"))
+      env->compressor_name = strdup(clEnvmapValueForKey(env->em, "compressor"));
 }
 
-void updateConfigToEM(struct GeneralConfig *env)
+void clUpdateConfigToEM(struct GeneralConfig *env)
 {
   if (curEnv && curEnv->upappem)
     curEnv->upappem(curEnv);
   if (env->compressor_name) {
-    envmapSetKeyVal(env->em, "compressor", env->compressor_name);
-    envmapSetKeyMarked(env->em, "compressor");
+    clEnvmapSetKeyVal(env->em, "compressor", env->compressor_name);
+    clEnvmapSetKeyMarked(env->em, "compressor");
   }
   if (env->config_filename) {
-    envmapSetKeyVal(env->em, "config-file", env->config_filename);
+    clEnvmapSetKeyVal(env->em, "config-file", env->config_filename);
   }
 }
 
-struct GeneralConfig *loadDefaultEnvironment()
+struct GeneralConfig *clLoadDefaultEnvironment()
 {
   struct GeneralConfig defaultConfig = {
     fVerbose:        0,
@@ -95,16 +95,16 @@ struct GeneralConfig *loadDefaultEnvironment()
   if (!curEnv) {
     curEnv = clMalloc(sizeof(*curEnv));
     *curEnv = defaultConfig;
-    curEnv->em = envmapNew();
-    curEnv->cmdKeeper = stringstackNew();
+    curEnv->em = clEnvmapNew();
+    curEnv->cmdKeeper = clStringstackNew();
     curEnv->compressor_name = clStrdup("blocksort");
-    readDefaultConfig(curEnv->em);
-    updateEMToConfig(curEnv);
+    clReadDefaultConfig(curEnv->em);
+    clUpdateEMToConfig(curEnv);
   }
   return curEnv;
 }
 
-void printOptionHelp(void)
+void clPrintOptionHelp(void)
 {
   char *s;
   s =
@@ -129,7 +129,7 @@ void printOptionHelp(void)
   printf("%s",s);
 }
 
-char *addNL(const char *inp)
+char *clAddNL(const char *inp)
 {
   char *out;
   out = clCalloc(strlen(inp) + 2, 1);
@@ -140,12 +140,12 @@ char *addNL(const char *inp)
 
 static void cleanupBeforeExit()
 {
-//  dbefactoryFree(curEnv->da.dbf);
-  freeDefaultEnvironment(curEnv);
+//  clDbefactoryFree(curEnv->da.dbf);
+  clFreeDefaultEnvironment(curEnv);
   curEnv = NULL;
 }
 
-void saveCmd(struct GeneralConfig *ev, int argc, char **argv)
+void clSaveCmd(struct GeneralConfig *ev, int argc, char **argv)
 {
   static char sbuf[16384];
   struct CLDateTime *cdt;
@@ -158,10 +158,10 @@ void saveCmd(struct GeneralConfig *ev, int argc, char **argv)
   ptr += sprintf(ptr, " # at %s", cldatetimeToHumString(cdt));
   cldatetimeFree(cdt);
   *ptr = '\0';
-  stringstackPush(ev->cmdKeeper, sbuf+1);
+  clStringstackPush(ev->cmdKeeper, sbuf+1);
 }
 
-int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
+int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstring,
                 const struct option *longopts, int *longindex, struct GeneralConfig *cfg)
 {
   static int fCmdSaved;
@@ -179,7 +179,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
     oldargv[i] = clStrdup(argv[i]);
   oldargv[i] = NULL;
   if (!fCmdSaved) {
-    saveCmd(cfg, oldargc, oldargv);
+    clSaveCmd(cfg, oldargc, oldargv);
     fCmdSaved = 1;
   }
   assert(cfg);
@@ -241,7 +241,7 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
 
     switch (result) {
       case 'h':
-        printOptionHelp();
+        clPrintOptionHelp();
         cleanupBeforeExit();
         exit(0);
       case 'v':
@@ -276,15 +276,15 @@ int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
         break;
       case 'c':
         curEnv->config_filename = clStrdup(optarg);
-        readSpecificFile(curEnv->em, curEnv->config_filename);
-        updateEMToConfig(curEnv);
+        clReadSpecificFile(curEnv->em, curEnv->config_filename);
+        clUpdateEMToConfig(curEnv);
         break;
       case 'r':
         curEnv->fSuppressVisibleDetails = 1;
         break;
       case 'U':
-        handleLine(curEnv->em,optarg);
-        updateEMToConfig(curEnv);
+        clHandleLine(curEnv->em,optarg);
+        clUpdateEMToConfig(curEnv);
         break;
       case 'P':
         curEnv->fSVD = 1;

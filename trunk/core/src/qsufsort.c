@@ -94,7 +94,7 @@ static int choose_pivot(int *p, int n) {
    (suffix numbers) of length n starting at p. The algorithm is a ternary-split
    quicksort taken from Bentley & McIlroy, "Engineering a Sort Function",
    Software -- Practice and Experience 23(11), 1249-1265 (November 1993). This
-   function is based on Program 7.*/
+   clFunction is based on Program 7.*/
 
 static void sort_split(int *p, int n)
 {
@@ -255,7 +255,7 @@ static int transform(int *x, int *p, int n, int k, int l, int q)
    contents of x[n] is disregarded, the n-th symbol being regarded as
    end-of-string smaller than all other symbols.*/
 
-void suffixsort(int *x, int *p, int n, int k, int l)
+void clSuffixsort(int *x, int *p, int n, int k, int l)
 {
    int *pi, *pk;
    int i, j, s, sl;

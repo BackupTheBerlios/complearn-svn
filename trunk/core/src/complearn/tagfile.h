@@ -10,14 +10,14 @@
 /** \brief Allows for easy parsing through DataBlocks in a DataBlock "package"
  *  \struct TagManager
  *
- *  A DataBlock "package" as created by package_DataBlocks() consists of
+ *  A DataBlock "package" as created by clPackage_DataBlocks() consists of
  *  sequential, dumped DataBlocks and can be accessed by a combination of
- *  calls to stepNextDataBlock() and getCurDataBlock().
+ *  calls to clStepNextDataBlock() and clGetCurDataBlock().
  *
  *  A TagManager must first be created, taking a DataBlock "package" as input,
- *  by calling newTagManager().  An immediate call to getCurDataBlock() will
- *  retrieve the first dumped DataBlock.  Use stepNextDataBlock() to move the
- *  DataBlock pointer forward, and subsequentally call getCurDataBlock() to
+ *  by calling clNewTagManager().  An immediate call to clGetCurDataBlock() will
+ *  retrieve the first dumped DataBlock.  Use clStepNextDataBlock() to move the
+ *  DataBlock pointer forward, and subsequentally call clGetCurDataBlock() to
  *  retrieve the next dumped DataBlock, and so on.
  *
  *  \sa tagfile.h
@@ -45,81 +45,81 @@ struct TagHdr {
 
 /** \brief Creates and returns a pointer to a new TagManager
  *
- *  newTagManager() takes as input a DataBlock "package" as created by
- *  package_DataBlocks(). Returns a pointer to the new TagManager which can
+ *  clNewTagManager() takes as input a DataBlock "package" as created by
+ *  clPackage_DataBlocks(). Returns a pointer to the new TagManager which can
  *  then be immediately used to retrieve the first dumped DataBlock in the
  *  package.
  *  \param db pointer to the DataBlock to "package"
  *  \return pointer to new TagManager
  */
-struct TagManager *newTagManager(struct DataBlock *db);
+struct TagManager *clNewTagManager(struct DataBlock *db);
 
 /** \brief Steps the DataBlock pointer forward to the next DataBlock
  *  \param tm pointer to TagManager
  */
-void stepNextDataBlock(struct TagManager *tm);
+void clStepNextDataBlock(struct TagManager *tm);
 
 /** \brief Retrieves current DataBlock of a DataBlock "package"
  *
- *  The DataBlock returned by getCurDataBlock() is an independent copy and must
- *  be freed using datablockFreePtr().
+ *  The DataBlock returned by clGetCurDataBlock() is an independent copy and must
+ *  be freed using clDatablockFreePtr().
  *
  *  \param tm pointer to TagManager
  *  \param cur pointer used for retrieved DataBlock
  *  \return 0 if no DataBlock to read; 1 if current DataBlock successfully read
  */
-struct DataBlock *getCurDataBlock(struct TagManager *tm);
+struct DataBlock *clGetCurDataBlock(struct TagManager *tm);
 
 /** \brief Retrieve the tagnum of the current DataBlock
  *  \param tm pointer to TagManager
  *  \return tagnum of current DataBlock
  */
-t_tagtype getCurTagNum(const struct TagManager *tm);
+t_tagtype clGetCurTagNum(const struct TagManager *tm);
 
 /** \brief Free TagManager from memory
  *  \param tm pointer to TagManager
  */
-void freeTagManager(struct TagManager *tm);
+void clFreeTagManager(struct TagManager *tm);
 
 /** \brief Serializes a set of dumped DataBlocks into a single DataBlock
  *
- *  package_DataBlocks() takes varionic args, a sequence of DataBlock pointers
+ *  clPackage_DataBlocks() takes varionic args, a sequence of DataBlock pointers
  *  and the last is NULL.
  *
  *  \param overalltag describing the set of DataBlocks
  *  \param ... sequence of pointers to DataBlocks ending with NULL
  *  \return pointer to serialized DataBlock encompassing a series of DataBlocks
  */
-struct DataBlock *package_DataBlocks(t_tagtype overalltag, ...);
+struct DataBlock *clPackage_DataBlocks(t_tagtype overalltag, ...);
 
 /** \brief Serializes a DRA of dumped DataBlocks into a singe DataBlock
  *
- *  package_dd_DataBlocks() is essentially the same as package_DataBlocks() but
+ *  clPackage_dd_DataBlocks() is essentially the same as clPackage_DataBlocks() but
  *  taking as an argument a DRA of pointers to dumped DataBlocks, rather
  *  than a varionic args list.
  *  \param overalltag describing the set of DataBlocks
  *  \param parts DRA of pointers to dumped DataBlocks
  *  \return serialized DataBlock encompassing a series of DataBlocks
  */
-struct DataBlock *package_dd_DataBlocks(t_tagtype tnum, struct DRA *parts);
+struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts);
 
 /** \brief Given a DataBlock package, returns a DRA of tagnums & DataBlocks
  *
- *  load_DataBlock_package() is a high level function which will take a
+ *  clLoad_DataBlock_package() is a high level clFunction which will take a
  *  DataBlock "package," sequentially retrieve each dumped DataBlock in the
  *  package, and return a DRA of IntDBPair objects which hold the \a tagnum
  *  of each DataBlock and a pointer to the dumped DataBlock.
- *  \param db DataBlock "package" as created by package_DataBlocks()
+ *  \param db DataBlock "package" as created by clPackage_DataBlocks()
  *  \return DRA of IntDBPair objects
  */
-struct DRA *load_DataBlock_package(struct DataBlock *db);
+struct DRA *clLoad_DataBlock_package(struct DataBlock *db);
 
 /** \brief Retrieves DataBlock from DRA of IntDBPairs
  *
- *  Another high level function, scanForTag() will, given a tagnum as defined
+ *  Another high level clFunction, clScanForTag() will, given a tagnum as defined
  *  in tagtypes.h, scan a DRA of IntDBPairs as produced by
- *  load_DataBlock_package(). This retrieved DataBlock is an independent copy
- *  any must be freed using datablockFree().
+ *  clLoad_DataBlock_package(). This retrieved DataBlock is an independent copy
+ *  any must be freed using clDatablockFree().
  *
  *  TODO: when switching db to db pointer, NULL should be returned if tagnum in
  *  question is not found.  Currently, a DataBlock is returned regardless, only
@@ -128,5 +128,5 @@ struct DRA *load_DataBlock_package(struct DataBlock *db);
  *  \param tnum tagnum of DataBlock in question
  *  \return DataBlock
  */
-struct DataBlock *scanForTag(struct DRA *dd, int tnum);
+struct DataBlock *clScanForTag(struct DRA *dd, int tnum);
 #endif

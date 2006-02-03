@@ -8,8 +8,8 @@
 #include <complearn/complearn.h>
 
 void clsetenv(struct CompAdaptor *ca, struct EnvMap *em);
-double art_compfunc(struct CompAdaptor *ca, struct DataBlock src);
-void art_freecompfunc(struct CompAdaptor *ca);
+double art_compclFunc(struct CompAdaptor *ca, struct DataBlock src);
+void art_freecompclFunc(struct CompAdaptor *ca);
 char *art_shortname(void);
 char *art_longname(void);
 char *art_compparam(struct CompAdaptor *ca);
@@ -34,8 +34,8 @@ struct CompAdaptor *newCompAdaptor(void)
 	const static struct CompAdaptor c =
 	{
     cptr: NULL,
-    cf:   art_compfunc,
-    fcf:  art_freecompfunc,
+    cf:   art_compclFunc,
+    fcf:  art_freecompclFunc,
     sn:   art_shortname,
     ln:   art_longname,
     cp:   art_compparam,
@@ -50,9 +50,9 @@ struct CompAdaptor *newCompAdaptor(void)
   double d;
   struct GeneralConfig *gconf;
   struct EnvMap *em;
-  gconf = loadDefaultEnvironment();
+  gconf = clLoadDefaultEnvironment();
   assert(gconf);
-  em = getEnvMap(gconf);
+  em = clGetEnvMap(gconf);
   assert(em);
 
   ca = calloc(sizeof(*ca), 1);
@@ -63,7 +63,7 @@ struct CompAdaptor *newCompAdaptor(void)
 
   aci->padding = 0;
 
-  val = envmapValueForKey(em, "padding");
+  val = clEnvmapValueForKey(em, "padding");
 
   if (val) {
     aci->padding = atoi(val);
@@ -74,7 +74,7 @@ struct CompAdaptor *newCompAdaptor(void)
   return ca;
 }
 
-double art_compfunc(struct CompAdaptor *ca, struct DataBlock src)
+double art_compclFunc(struct CompAdaptor *ca, struct DataBlock src)
 {
   int c[256];
 	int sum = 0;
@@ -98,7 +98,7 @@ double art_compfunc(struct CompAdaptor *ca, struct DataBlock src)
 	return codelen/log(2);
 }
 
-void art_freecompfunc(struct CompAdaptor *ca)
+void art_freecompclFunc(struct CompAdaptor *ca)
 {
   free(ca->cptr);
 	free(ca);

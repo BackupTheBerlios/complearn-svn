@@ -2,15 +2,15 @@
 #include <complearn/complearn.h>
 
 
-struct ParamList *paramlistNew()
+struct ParamList *clParamlistNew()
 {
    struct ParamList *pl;
    pl = clCalloc(sizeof(struct ParamList), 1);
-   pl->em = loadDefaultEnvironment()->em;
+   pl->em = clLoadDefaultEnvironment()->em;
    return pl;
 }
 
-char *paramlistValForKey(struct ParamList *pl, const char *key)
+char *clParamlistValForKey(struct ParamList *pl, const char *key)
 {
   int i;
   for ( i = 0; i < pl->size; i += 1) {
@@ -20,7 +20,7 @@ char *paramlistValForKey(struct ParamList *pl, const char *key)
   return NULL;
 }
 
-int paramlistParamType(struct ParamList *pl, const char *key)
+int clParamlistParamType(struct ParamList *pl, const char *key)
 {
   int i;
   for ( i = 0; i < pl->size; i += 1) {
@@ -30,44 +30,44 @@ int paramlistParamType(struct ParamList *pl, const char *key)
   return 0;
 }
 
-char *paramlistGetString(struct ParamList *pl, const char *key)
+char *clParamlistGetString(struct ParamList *pl, const char *key)
 {
-  return paramlistValForKey(pl, key);
+  return clParamlistValForKey(pl, key);
 }
 
-int paramlistGetInt(struct ParamList *pl, const char *key)
+int clParamlistGetInt(struct ParamList *pl, const char *key)
 {
   char *result;
-  if ((result = paramlistValForKey(pl, key)))
+  if ((result = clParamlistValForKey(pl, key)))
       return atoi(result);
   return -1;
 }
 
-double paramlistGetDouble(struct ParamList *pl, const char *key)
+double clParamlistGetDouble(struct ParamList *pl, const char *key)
 {
   char *result;
-  if ((result = paramlistValForKey(pl, key)))
+  if ((result = clParamlistValForKey(pl, key)))
       return atof(result);
   return -1;
 }
 
-int paramlistGetValue(struct ParamList *pl, const char *key, void *dest, int type)
+int clParamlistGetValue(struct ParamList *pl, const char *key, void *dest, int type)
 {
   switch (type) {
     case PARAMSTRING:
-      *((char **) dest) = paramlistGetString(pl, key);
+      *((char **) dest) = clParamlistGetString(pl, key);
       break;
     case PARAMINT:
-      *((int *) dest) = paramlistGetInt(pl, key);
+      *((int *) dest) = clParamlistGetInt(pl, key);
       break;
     case PARAMDOUBLE:
-      *((double *) dest) =  paramlistGetDouble(pl, key);
+      *((double *) dest) =  clParamlistGetDouble(pl, key);
       break;
   }
   return CL_OK;
 }
 
-char *paramlistToString(struct ParamList *pl)
+char *clParamlistToString(struct ParamList *pl)
 {
   char buff[1024];
   int incr = 0;
@@ -81,7 +81,7 @@ char *paramlistToString(struct ParamList *pl)
   return result;
 }
 
-struct FieldDesc *fielddescNew(const char *key, const char *value, int type)
+struct FieldDesc *clFielddescNew(const char *key, const char *value, int type)
 {
   struct FieldDesc *fd;
   fd = clCalloc(sizeof(struct FieldDesc), 1);
@@ -91,19 +91,19 @@ struct FieldDesc *fielddescNew(const char *key, const char *value, int type)
   return fd;
 }
 
-struct FieldDesc *fielddescClone(struct FieldDesc *fd)
+struct FieldDesc *clFielddescClone(struct FieldDesc *fd)
 {
-  return fielddescNew(fd->key, fd->value, fd->type);
+  return clFielddescNew(fd->key, fd->value, fd->type);
 }
 
-void fielddescFree(struct FieldDesc *fd)
+void clFielddescFree(struct FieldDesc *fd)
 {
   assert(fd);
   clFreeandclear(fd->key);
   clFreeandclear(fd->value);
   clFreeandclear(fd);
 }
-struct ParamList *paramlistClone(struct ParamList *pl)
+struct ParamList *clParamlistClone(struct ParamList *pl)
 {
    struct ParamList *result;
    int i;
@@ -111,14 +111,14 @@ struct ParamList *paramlistClone(struct ParamList *pl)
    result->em = pl->em;
    result->size = pl->size;
    for ( i = 0 ; i < pl->size ; i += 1)
-     result->fields[i] = fielddescClone(pl->fields[i]);
+     result->fields[i] = clFielddescClone(pl->fields[i]);
    return result;
 }
 
-void paramlistFree(struct ParamList *pl)
+void clParamlistFree(struct ParamList *pl)
 {
   int i;
   for (i = 0; i < pl->size ; i += 1)
-    fielddescFree(pl->fields[i]);
+    clFielddescFree(pl->fields[i]);
   clFreeandclear(pl);
 }

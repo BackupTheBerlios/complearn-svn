@@ -18,7 +18,7 @@ struct NCDConfig {
 /** \brief Loads the environment for the ncd command
  *
  *  The environment created by loadNCDEnvironment() will contain the same
- *  defaults created by loadDefaultEnvironment() but includes options specific
+ *  defaults created by clLoadDefaultEnvironment() but includes options specific
  *  only to the ncd command.
  *
  *  ncd options are set using command-line arguments or through the CompLearn

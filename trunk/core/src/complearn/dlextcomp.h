@@ -11,7 +11,7 @@
 
 /*! \file dlextcomp.h */
 
-/* These are the names of functions that a dynamic-library compression plugin
+/* These are the names of clFunctions that a dynamic-library compression plugin
  * must define in order to be compatible with this system.
  */
 
@@ -22,6 +22,6 @@
  * \param libraryname name of dynamic library
  * \returns CompAdaptor new compressor interface
  */
-struct CompAdaptor *compaLoadDynamicLib(const char *libraryname);
+struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname);
 
 #endif

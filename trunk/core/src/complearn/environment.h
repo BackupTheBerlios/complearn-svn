@@ -44,16 +44,16 @@ struct GeneralConfig {
   char *compressor_name; /*!< name of desired compressor */
   struct CompAdaptor *ca; /*!< loaded CompAdaptor to use */
   void *ptr;              /*!< pointer to application specific configuration */
-  t_freeappconfig freeappcfg; /*!< pointer to function which frees application
+  t_freeappconfig freeappcfg; /*!< pointer to clFunction which frees application
                                    specific config */
-  t_updateappemtoconfig upappcfg; /*!< pointer to function which moves the
+  t_updateappemtoconfig upappcfg; /*!< pointer to clFunction which moves the
                                        EnvMap environment to application
                                        configuration*/
-  t_updateappconfigtoem upappem;  /*!< pointer to function which moves
+  t_updateappconfigtoem upappem;  /*!< pointer to clFunction which moves
                                        application configure to EnvMap */
-  t_printapphelp printapphelp;    /*!< pointer to function which prints
+  t_printapphelp printapphelp;    /*!< pointer to clFunction which prints
                                        application specific help */
-  t_printappenvironment printappenv; /*!< pointer to function which prints
+  t_printappenvironment printappenv; /*!< pointer to clFunction which prints
                                           environment specific to an
                                           application */
 };
@@ -62,49 +62,49 @@ struct GeneralConfig {
 /** \brief provides a getopt_long() (GNU) like interface to command line
  * option parsing with a CompLearn specific configuration block.
  *
- * This function behaves exactly as getopt_long with the addition of a
+ * This clFunction behaves exactly as getopt_long with the addition of a
  * single parameter at the end.  This is a GeneralConfig struct pointer
  * that will be updated by the complearn option processing system each time
  * an option is unhandled by the user option processing and is handled
  * by the complearn generic option processing subsystem.  This means that
  * at the end of option processing cfg will contain the results of all
- * standard option settings.  For more details on this function see
+ * standard option settings.  For more details on this clFunction see
  * the getopt(3) and getopt_long(3) manpages.
  *
  * \param cfg pointer to a GeneralConfig struct to be updated
  */
-int complearn_getopt_long(int argc,  char * const argv[], const char *optstring,
+int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstring,
                 const struct option *longopts, int *longindex,
                 struct GeneralConfig *cfg);
 #endif
 
 /** \brief loads a default configuration environment based on the standard files
  *
- * This function is the normal interface to the configuration, parameter,
+ * This clFunction is the normal interface to the configuration, parameter,
  * and environment settings.  It loads the systemwide and user-specific
  * settings in $HOME/.complearn/config.yml and sets the GeneralConfig
  * fields accordingly.  These values will also be stored in the EnvMap.
  *
  * \return pointer to a GeneralConfig struct holding the loaded environment
  */
-struct GeneralConfig *loadDefaultEnvironment(void);
+struct GeneralConfig *clLoadDefaultEnvironment(void);
 
-/** \brief this is a wrapper function to isolate access to the EnvMap
+/** \brief this is a wrapper clFunction to isolate access to the EnvMap
  *
- * This function retrieves the EnvMap associated with a GeneralConfig.
+ * This clFunction retrieves the EnvMap associated with a GeneralConfig.
  * This EnvMap will be used in saving or loading operations involving the
  * GeneralConfig g.
  *
  * \param g pointer to a GeneralConfig struct
  * \return pointer to the EnvMap that contains the information
  */
-struct EnvMap *getEnvMap(struct GeneralConfig *g);
+struct EnvMap *clGetEnvMap(struct GeneralConfig *g);
 
 /** \brief loads the default environment and prints it
  *
- * There are no parameters nor return values for this function.
+ * There are no parameters nor return values for this clFunction.
  */
-void printActiveEnvironment(void);
+void clPrintActiveEnvironment(void);
 
 /** \brief deallocates memory for this GeneralConfig
  *
@@ -112,14 +112,14 @@ void printActiveEnvironment(void);
  *
  * \param g pointer to a GeneralConfig struct
  */
-void freeDefaultEnvironment(struct GeneralConfig *g);
+void clFreeDefaultEnvironment(struct GeneralConfig *g);
 
 /** \brief print generic option help string
  *
- * This function prints a generic help string.
+ * This clFunction prints a generic help string.
  * There are no parameters nor return values.
  */
-void printOptionHelp(void);
+void clPrintOptionHelp(void);
 
 /** \brief Adds a newline to an input string
  *
@@ -128,27 +128,27 @@ void printOptionHelp(void);
  *  \param inp string to copy
  *  \return pointer to new string with newline appended
  */
-char *addNL(const char *inp);
+char *clAddNL(const char *inp);
 
 /** \brief moves the configuration information in a GeneralConfig into the em
  *
- * This function serializes the configuration information and stores it in
+ * This clFunction serializes the configuration information and stores it in
  * a pointer to an EnvMap called em within the GeneralConfig struct.
  * There is no return value as the results go directly into the EnvMap
  * referenced by env->em.
  *
  * \param env pointer to the GeneralConfig struct to dump
  */
-void updateConfigToEM(struct GeneralConfig *env);
+void clUpdateConfigToEM(struct GeneralConfig *env);
 
 /** \brief deserializes the EnvMap at env->em into live config information
  *
- * This function deserializes the configuration information stored in em and
+ * This clFunction deserializes the configuration information stored in em and
  * updates the other fields in env (a GeneralConfig pointer) accordingly.
  * There is no return value as the results go directly into the GeneralConfig.
  *
  * \param env pointer to the GeneralConfig struct to load
  */
-void updateEMToConfig(struct GeneralConfig *env);
+void clUpdateEMToConfig(struct GeneralConfig *env);
 
 #endif

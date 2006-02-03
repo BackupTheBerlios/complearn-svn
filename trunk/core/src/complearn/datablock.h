@@ -17,42 +17,42 @@
 
 /** \brief Converts C string to CompLearn DataBlock.
  *
- *  The stringToDataBlockPtr() function takes a char *s string and
+ *  The clStringToDataBlockPtr() clFunction takes a char *s string and
  *  copies it to a new memory area without the terminating nul ('\\0'). A new
  *  DataBlock is returned.  \param s character string
  *  \return pointer to a new DataBlock
  */
-struct DataBlock *stringToDataBlockPtr(const char *s);
+struct DataBlock *clStringToDataBlockPtr(const char *s);
 
 /** \brief Converts file to a CompLearn DataBlock.
  *
- *  The fileToDataBlockPtr() function reads a file at the specified
+ *  The clFileToDataBlockPtr() clFunction reads a file at the specified
  *  path and returns a new DataBlock.
  *  \param path path to a file
  *  \return pointer to a new DataBlock
  */
-struct DataBlock *fileToDataBlockPtr(const char *path);
+struct DataBlock *clFileToDataBlockPtr(const char *path);
 
-struct DataBlock *filePtrToDataBlockPtr(FILE *fp);
+struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp);
 
-struct DataBlock *datablockClonePtr(struct DataBlock *db);
+struct DataBlock *clDatablockClonePtr(struct DataBlock *db);
 
 /** \brief Writes contents of DataBlock ptr if exists to stdout.
  *  \param db DataBlock
  */
-void datablockPrintPtr(struct DataBlock *db);
+void clDatablockPrintPtr(struct DataBlock *db);
 
 /** \brief Takes DataBlock db and returns string, including '\\0'.
  *  \param db pointer to DataBlock
  *  \return ptr to string
  */
-char *datablockToString(struct DataBlock *db);
+char *clDatablockToString(struct DataBlock *db);
 
 /** \brief Writes contents of DataBlock ptr to file path.
  *  \param db DataBlock
  *  \param path path to file
  */
-void datablockWriteToFile(struct DataBlock *db, const char *path);
+void clDatablockWriteToFile(struct DataBlock *db, const char *path);
 
 /** \brief Concatenates DataBlock b to end of DataBlock a and returns new
  * DataBlock.
@@ -63,7 +63,7 @@ void datablockWriteToFile(struct DataBlock *db, const char *path);
  * \param b DataBlock to be concatenated
  * \returns new DataBlock
  */
-struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b);
+struct DataBlock *clDatablockCatPtr(struct DataBlock *a, struct DataBlock *b);
 
 /** \brief Creates a new DataBlock given a pointer to an address and a
  * size in bytes.
@@ -72,13 +72,13 @@ struct DataBlock *datablockCatPtr(struct DataBlock *a, struct DataBlock *b);
  * \param size number of bytes of space to convert to the DataBlock
  * \return pointer to a new DataBlock containing the data in the block you gave
  */
-struct DataBlock *datablockNewFromBlock(const void *ptr, unsigned int size);
+struct DataBlock *clDatablockNewFromBlock(const void *ptr, unsigned int size);
 
 /** \brief Frees DataBlock from memory
  *
  *  \param db pointer to DataBlock
  */
-void datablockFreePtr(struct DataBlock *db);
+void clDatablockFreePtr(struct DataBlock *db);
 
 
 /** \brief Returns size of data buffer
@@ -86,12 +86,12 @@ void datablockFreePtr(struct DataBlock *db);
  *  \param pointer to DataBlock
  *  \return size of data buffer
  */
-int datablockSize(struct DataBlock *db);
+int clDatablockSize(struct DataBlock *db);
 
 /** \brief Returns pointer of data buffer
  *
  *  \param pointer to DataBlock
  *  \return pointer to data buffer
  */
-unsigned char *datablockData(struct DataBlock *db);
+unsigned char *clDatablockData(struct DataBlock *db);
 #endif
