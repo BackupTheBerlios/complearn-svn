@@ -17,3 +17,5 @@ clconfig.h
 .svnignore.swp
 stamp-h.in
 maketree
+reordertree
+improvetree
