@@ -2,7 +2,6 @@
 #define __TEXTSDL_H
 
 #include <complearn/complearn.h>
-#if HAVE_SDL_SDL_TTF_H
 
 #include <gsl/gsl_vector.h>
 #include <SDL/SDL.h>
@@ -30,7 +29,5 @@ void init_sdltext(void);
 void draw_sdltext(char *str, struct CLTexture *clt, gsl_vector *p);
 void setTextPos(double x, double y, double z);
 void draw_sdlhelp(void);
-
-#endif
 
 #endif

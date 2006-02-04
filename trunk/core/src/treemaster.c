@@ -141,8 +141,16 @@ struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted)
   struct TreeAdaptor *tra;
   struct TreeMaster *tm = clCalloc(sizeof(struct TreeMaster), 1);
   struct AdjAdaptor *aa;
+  clogWarning("Staring the cltmnew...\n");
   if (gsl == NULL) {
     clogError("NULL ptr in clTreemasterNew()\n");
+  }
+  clogWarning("Staring the B cltmnew...\n");
+  clogWarning("About to look at gsl=%p\n", gsl);
+  clogWarning("Staring the C cltmnew...\n");
+  clogWarning("And size %d\n", gsl->size1);
+  if (gsl->size1 < 4) {
+    clogError("Dist matrix needs at least 4 entries but has just %d.\n", gsl->size1);
   }
   assert(gsl);
   assert(gsl->size1 == gsl->size2);

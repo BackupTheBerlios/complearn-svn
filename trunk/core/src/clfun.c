@@ -6,26 +6,18 @@
 
 /*! \file sdlgl.c */
 
-#include <complearn/complearn.h>
-#include <complearn/springball.h>
 #include <assert.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
+#include <GL/gl.h>
 #include <glib.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
-#include <glib-object.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#endif
-
+#include <complearn/complearn.h>
+#include <complearn/springball.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,15 +25,12 @@
 
 #define MIDIBONUS 0
 
+#define SDL_TTF 1
+
 #if !LINUX
-#ifndef __APPLE__
 #include <windows.h>
-#endif
 #else
-#if HAVE_GTK_GTK_H
-#include <gtk/gtk.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
+#if GTK_RDY
 #endif
 #endif
 
@@ -58,9 +47,7 @@
 #define HMIDIOUT int
 #endif
 
-#if HAVE_SDL_SDL_TTF_H
 #include <complearn/textsdl.h>
-#endif
 
 #define SPRINGCYLRAD 0.16
 
@@ -68,23 +55,20 @@
 #define RADMAX 1000.0
 #define RADSPEED 10.0
 
-struct TransformAdaptor *clBuiltin_UNBZIP(void);
-struct TransformAdaptor *clBuiltin_UNGZ(void);
-struct TransformAdaptor *clBuiltin_UNZLIB(void);
+struct TransformAdaptor *builtin_UNBZIP(void);
+struct TransformAdaptor *builtin_UNGZ(void);
+struct TransformAdaptor *builtin_UNZLIB(void);
 
 struct DataBlock *testCompression(struct DataBlock *db, struct TransformAdaptor *t) {
   struct DataBlock *result = db;
   if (!t) return result;
   if (t->pf(db)) {
-//    result = calloc(sizeof(struct DataBlock), 1);
     result = t->tf(db);
-    assert(clDatablockSize(result) > 0);
-    assert(clDatablockData(result) != NULL);
-  } 
+//    assert(result->size > 0);
+//    assert(result->ptr != NULL);
+  } /* TODO: consider fixing the memory leak pattern here with incoming db */
   return result;
 }
-
-/* TODO: consider fixing the memory leak pattern here with incoming db */
 
 void addAndProcessDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *db) {
 
@@ -151,7 +135,7 @@ int countThreeSlashes(char *buf)
  *
  * \struct Camera
  *
- * This clFunction maintains all state associated with viewer position and
+ * This function maintains all state associated with viewer position and
  * orientation. The orientation is controlled by two angles, angle1 and
  * angle2.  angle1 represents horizontal heading (as on a horizontal compass)
  * and angle2 represents vertical pitch above or below the horizon.
@@ -359,7 +343,7 @@ static void doDroppedFiles(HANDLE dragDrop)
   char buf[16384];
   int fileCount;
   if (gc == NULL) {
-    gc = clLoadDefaultEnvironment();
+    gc = loadDefaultEnvironment();
     gc->ca = clCompaLoadBuiltin("blocksort");
   }
   fileCount = DragQueryFile(dragDrop, 0xffffffff, NULL, 0);
@@ -399,7 +383,6 @@ drag_data_received_handl
 {
         gboolean dnd_success = FALSE;
         gboolean delete_selection_data = FALSE;
-        printf("In the drag data received handler...\n");
         if((selection_data != NULL) && (selection_data-> length >= 0))
         {
           char *seldatastr = (char *) selection_data->data;
@@ -586,18 +569,16 @@ static void draw_screen(void)
     }
     glDisable(GL_COLOR_MATERIAL);
 //    glColor3f(1.0,1.0,1.0);
-  #if HAVE_SDL_SDL_TTF_H
     if (fShowLabels) {
       for (i = 0; i < clTreeaNodeCount(ta); i += 1) {
         gsl_vector *p = clSbsBallPosition(sbs, i);
-        if (clTreeaIsQuartettable(ta, i)) { // TODO: fix memleak with clTreeaLabelPerm here
+        if (clTreeaIsQuartettable(ta, i)) {
           int colind = clLabelpermColIndexForNodeID(clTreeaLabelPerm(ta), i);
           static struct CLTexture texLabels[MAXTEX];
           draw_sdltext(clStringstackReadAt(labels, colind), &texLabels[colind], p);
         }
       }
     }
-  #endif
   clSleepMillis(30);
   }
   if (fShowHelp || !ta )
@@ -928,7 +909,7 @@ static void realDoDroppedFile(char *buf)
       addAndProcessDataBlock(distmatglob, cur);
       clStringstackPush(labels, dbe->ilabel(dbe, dbi));
       dbe->istep(dbe, dbi);
-//      clDatablockFreePtr(cur);
+      clDatablockFree(cur);
     }
   } else {
     curFiles->db[curFiles->size++] =  clFileToDataBlockPtr(buf);
@@ -957,18 +938,14 @@ int main( int argc, char* argv[] )
   if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE ) < 0 ) {
 #endif
       /* Failed, exit. */
-      clogError( "Video initialization failed: %s\n",
+      fprintf( stderr, "Video initialization failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }
 #if LINUX
   gtk_window_set_default_size (GTK_WINDOW(window), win_xsize, win_ysize);
+
   initDragDropSubsystem(window);
-#else
-#ifdef __APPLE__
-  gtk_window_set_default_size (GTK_WINDOW(window), win_xsize, win_ysize);
-  initDragDropSubsystem(window);
-#endif
 #endif
   distmatglob = clIncrdmNew(NULL);
   myPI = atan(1.0)*4;
@@ -996,7 +973,7 @@ setRotParms(1, -1, -1, 1, 1);
 
   if( !info ) {
       /* This should probably never happen. */
-      clogError( "Video query failed: %s\n",
+      fprintf( stderr, "Video query failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }
@@ -1062,7 +1039,7 @@ setRotParms(1, -1, -1, 1, 1);
        * including DISPLAY not being set, the specified
        * resolution not being available, etc.
        */
-      clogError( "Video mode set failed: %s\n",
+      fprintf( stderr, "Video mode set failed: %s\n",
            SDL_GetError( ) );
       quit_tutorial( 1 );
   }
@@ -1077,7 +1054,7 @@ setRotParms(1, -1, -1, 1, 1);
   setup_opengl( width, height );
 
 
-#if HAVE_SDL_SDL_TTF_H
+#if SDL_TTF
   init_sdltext();
 #endif
 
@@ -1088,12 +1065,6 @@ setRotParms(1, -1, -1, 1, 1);
   setupDemo();
 //  drawHelpPane();
 #if LINUX
-  gtk_widget_show_all (window);
-  gtk_idle_add(process_idle_events, window);
-  gtk_main();
-  exit(0);
-#endif
-#ifdef __APPLE__
   gtk_widget_show_all (window);
   gtk_idle_add(process_idle_events, window);
   gtk_main();

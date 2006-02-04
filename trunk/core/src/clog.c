@@ -28,7 +28,9 @@ void clogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const 
   va_end( args );
   if (emitFunc)
     emitFunc(buf);
-  else
+  else {
     fprintf(outfp, buf);
+    fflush(outfp);
+  }
 }
 

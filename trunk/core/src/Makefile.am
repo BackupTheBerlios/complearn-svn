@@ -1,6 +1,7 @@
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo
 MPIPROGRAMS = partree
 GRAPHICSPROGRAMS = clfun
+GFXLIBS = @GFXLIBS@
 
 GENCPPFLAGS = -I complearn
 CLLDFLAGS = libcomplearn.a
@@ -13,10 +14,12 @@ else
 LEV2PROGRAMS = $(BASICPROGRAMS)
 endif
 
-if AMCGFX
-LEV3PROGRAMS = $(LEV2PROGRAMS) $(GRAPHICSPROGRAMS)
-clfun_SOURCES = clfun.c textsdl.c
 # TODO: Should not include NGDLIBS?? /alcruz
+
+if AMCGFX
+LEV3PROGRAMS = $(LEV2PROGRAMS) clfun
+
+clfun_SOURCES = clfun.c textsdl.c
 clfun_LDADD = $(CLLDFLAGS) $(NGDLIBS) $(GFXLIBS)
 else
 LEV3PROGRAMS = $(LEV2PROGRAMS)

@@ -32,4 +32,8 @@ struct TransformAdaptor {
                           TransformAdaptor instance */
 };
 
+struct TransformAdaptor *clBuiltin_UNBZIP(void);
+struct TransformAdaptor *clBuiltin_UNGZ(void);
+struct TransformAdaptor *clBuiltin_UNZLIB(void);
+
 #endif
