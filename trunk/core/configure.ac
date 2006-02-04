@@ -199,14 +199,14 @@ fi
 # poc: if up_mpi, then CC = MPICC
 
 # 3d demo dependencies
-#AC_ARG_ENABLE(gfx,
-#[  --enable-gfx      Build CompLearn 3D demo
-#],
-#[case "${enableval}" in
-#   yes) ua_gfx=true ;;
-#   no)  ua_gfx=false ;;
-#    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
-#esac], [ua_gfx=false])
+AC_ARG_ENABLE(gfx,
+[  --enable-gfx      Build CompLearn 3D demo
+],
+[case "${enableval}" in
+   yes) ua_gfx=true ;;
+   no)  ua_gfx=false ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
+esac], [ua_gfx=false])
 
 if test x$ua_gfx = xtrue ; then
 
