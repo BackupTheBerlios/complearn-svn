@@ -18,6 +18,7 @@
 #define MSG_NOBETTER 6
 #define MSG_ROGUE 7
 #define MSG_ALERT 8
+#define MSG_HISTOP 9
 
 struct MasterSlaveModel {
   int isFree;
@@ -36,7 +37,6 @@ struct MasterState {
   struct TreeAdaptor *ta;
 };
 
-
 struct SlaveState {
   struct DataBlock *dbdm;
   gsl_matrix *dm;
@@ -49,8 +49,14 @@ struct SlaveState {
   double shouldBeScore;
 };
 
+struct HistOpCommand {
+  char label[16];
+  double x, weight;
+};
+
 void doMasterLoop(void);
 void doSlaveLoop(void);
+void addToHistogram(const char *lab, double x, double weight);
 void sendExitEveryWhere(void);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
@@ -74,6 +80,19 @@ void bailer(int lameness)
   sendExitEveryWhere();
   MPI_Finalize();
   exit(0);
+}
+
+static void addToHistogram(const char *lab, double x, double weight)
+{
+  struct HistOpCommand hoc;
+  struct DataBlock *db;
+  memset(&hoc, 0, sizeof(hoc));
+  strncpy(hoc.label, lab, sizeof(hoc.label)-1);
+  hoc.x = x;
+  hoc.weight = weight;
+  db = clDatablockNewFromBlock(&hoc,sizeof(hoc));
+  sendBlock(0, db, MSG_HISTOP, 0.0);
+  clDatablockFreePtr(db);
 }
 
 static void sendAlertForEmit(char *str)

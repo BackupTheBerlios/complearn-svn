@@ -29,7 +29,11 @@ void clogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const 
   if (emitFunc)
     emitFunc(buf);
   else {
+    if (outfp == stderr || outfp == stdout)
+      fprintf(outfp, "\n");
     fprintf(outfp, buf);
+    if (outfp == stderr || outfp == stdout)
+      fprintf(outfp, "\n");
     fflush(outfp);
   }
 }
