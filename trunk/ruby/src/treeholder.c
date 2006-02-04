@@ -1,6 +1,5 @@
 #include "clrbcon.h"
 
-
 static VALUE rbth_tree(VALUE tree)
 {
   struct TreeHolder *th;
@@ -65,6 +64,8 @@ static VALUE rbth_distmatrix(VALUE self)
 
 static VALUE rbth_init(VALUE self)
 {
+  if (0) // avoid link errors
+    clTreehFree(NULL);
 }
 
 VALUE secretrbth_new(struct TreeHolder *tomakeruby)

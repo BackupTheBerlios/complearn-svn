@@ -4,7 +4,7 @@ VALUE convertCLDateTimeToTime(struct CLDateTime *cldt)
 {
   if (cldt) {
     unsigned long i = cldatetimeToInt(cldt);
-    return rb_clFuncall(cTime, rb_intern("at"), 1, UINT2NUM(i));
+    return rb_funcall(cTime, rb_intern("at"), 1, UINT2NUM(i));
   }
   else
     return Qnil;
@@ -19,7 +19,7 @@ VALUE convertgslvectorToRubyVector(gsl_vector *v)
   coords = clCalloc(size, sizeof(VALUE));
   for (i = 0; i < v->size; i += 1)
     coords[i] = rb_float_new(gsl_vector_get(v, i));
-  result = rb_clFuncall3(cVector, rb_intern("[]"), size, coords);
+  result = rb_funcall3(cVector, rb_intern("[]"), size, coords);
   clFreeandclear(coords);
   return result;
 }
@@ -39,7 +39,7 @@ VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm)
       rb_ary_push(currow, rval);
     }
   }
-  result = rb_clFuncall(cMatrix, rb_intern("rows"), 2, rows, Qnil);
+  result = rb_funcall(cMatrix, rb_intern("rows"), 2, rows, Qnil);
   return result;
 }
 
@@ -48,13 +48,13 @@ gsl_matrix *convertRubyMatrixTogsl_matrix(VALUE rbm)
   gsl_matrix *gslm;
   int i, j;
   int size1, size2;
-  size1 = NUM2INT(rb_clFuncall(rbm, rb_intern("row_size"), 0));
-  size2 = NUM2INT(rb_clFuncall(rbm, rb_intern("column_size"), 0));
+  size1 = NUM2INT(rb_funcall(rbm, rb_intern("row_size"), 0));
+  size2 = NUM2INT(rb_funcall(rbm, rb_intern("column_size"), 0));
   assert(size1==size2);
   gslm = gsl_matrix_alloc(size1, size2);
   for (i = 0; i < size1 ; i += 1) {
     for (j = 0; j < size2 ; j += 1) {
-      double value = NUM2DBL(rb_clFuncall(rbm, rb_intern("[]"), 2, INT2FIX(i), INT2FIX(j)));
+      double value = NUM2DBL(rb_funcall(rbm, rb_intern("[]"), 2, INT2FIX(i), INT2FIX(j)));
       gsl_matrix_set(gslm, i, j, value);
     }
   }

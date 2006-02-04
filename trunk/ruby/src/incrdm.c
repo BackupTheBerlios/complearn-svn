@@ -93,7 +93,7 @@ static VALUE rbincrdm_dump(VALUE self, VALUE depth) {
   rb_hash_aset(obj, ksDBK, dba);
   rb_hash_aset(obj, ksSSK, ssa);
   rb_hash_aset(obj, ksCAK, rb_ivar_get(self, rb_intern("ca")));
-  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, obj);
+  return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
 static VALUE rbincrdm_load(VALUE kl, VALUE str)
@@ -106,7 +106,7 @@ static VALUE rbincrdm_load(VALUE kl, VALUE str)
   VALUE rca, dba, ssa, tdata, dm;
   struct CompAdaptor *ca = NULL;
 
-  obj = rb_clFuncall(cMarshal, rb_intern("load"), 1, str);
+  obj = rb_funcall(cMarshal, rb_intern("load"), 1, str);
   rca = rb_hash_aref(obj, ksCAK);
   dba = rb_hash_aref(obj, ksDBK);
   ssa = rb_hash_aref(obj, ksSSK);

@@ -134,7 +134,7 @@ rbadja_clone(VALUE self)
 static VALUE
 rbadja_dump(VALUE self, VALUE depth) {
   VALUE obj = rbadja_tomatrix(self);
-  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, obj);
+  return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
 static VALUE
@@ -143,7 +143,7 @@ rbadja_load(VALUE kl, VALUE mat)
   int i, j;
   VALUE self;
   struct AdjAdaptor *adja;
-  mat = rb_clFuncall(cMarshal, rb_intern("load"), 1, mat);
+  mat = rb_funcall(cMarshal, rb_intern("load"), 1, mat);
   gsl_matrix *gslm = convertRubyMatrixTogsl_matrix(mat);
   adja = clAdjaLoadAdjList(gslm->size1);
   self = rbadja_secretnew(cAdjAdaptor, adja);

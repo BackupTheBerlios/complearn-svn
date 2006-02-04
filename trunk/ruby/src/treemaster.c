@@ -21,7 +21,7 @@ static void rbtmto_treesearchstarted(struct TreeObserver *tob)
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
   if (tos->obs != Qnil) {
     if (rb_obj_is_kind_of(tos->obs, cTreeObserver)) {
-      rb_clFuncall(tos->obs, rb_intern("treeSearchStarted"), 0);
+      rb_funcall(tos->obs, rb_intern("treeSearchStarted"), 0);
     }
     else
       fprintf(stderr, "Some kind of error, tos->obs is invalid.\n");
@@ -32,7 +32,7 @@ static void rbtmto_treerejected(struct TreeObserver *tob)
 {
   struct TreeObserverState *tos = (struct TreeObserverState *) tob->ptr;
   if (tos->obs != Qnil)
-    rb_clFuncall(tos->obs, rb_intern("treeRejected"), 0);
+    rb_funcall(tos->obs, rb_intern("treeRejected"), 0);
 }
 
 static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
@@ -41,7 +41,7 @@ static void rbtmto_treeimproved(struct TreeObserver *tob, struct TreeHolder *th)
   volatile VALUE vth = secretrbth_new(clTreehClone(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
-    rb_clFuncall(tos->obs, rb_intern("treeImproved"), 1, vth);
+    rb_funcall(tos->obs, rb_intern("treeImproved"), 1, vth);
     tos->th = Qnil;
   }
 }
@@ -52,7 +52,7 @@ static void rbtmto_treedone(struct TreeObserver *tob, struct TreeHolder *th)
   volatile VALUE vth = secretrbth_new(clTreehClone(th));
   if (tos->obs != Qnil) {
     tos->th = vth;
-    rb_clFuncall(tos->obs, rb_intern("treeDone"), 1, vth);
+    rb_funcall(tos->obs, rb_intern("treeDone"), 1, vth);
     tos->th = Qnil;
   }
 }
@@ -211,7 +211,7 @@ void doInitTreeMaster(void) {
   rb_define_singleton_method(cTreeMaster, "loadMatrix", rbtm_loadMatrix, 1);
   rb_define_singleton_method(cTreeMaster, "new", rbtm_new, 2);
   rb_define_method(cTreeMaster, "initialize", rbtm_init, 0);
-  rb_define_method(cTreeMaster, "clTreemasterFindTree", rbtm_findtree, 0);
+  rb_define_method(cTreeMaster, "findTree", rbtm_findtree, 0);
   rb_define_method(cTreeMaster, "startTime", rbtm_getstarttime, 0);
   rb_define_method(cTreeMaster, "endTime", rbtm_getendtime, 0);
   rb_define_method(cTreeMaster, "examinedcount", rbtm_examinedcount, 0);

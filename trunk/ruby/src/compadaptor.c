@@ -1,5 +1,5 @@
+#include <complearn/complearn.h>
 #include "clrbcon.h"
-
 
 static VALUE rbcompa_params(VALUE self) {
   struct CompAdaptor *ca;
@@ -24,7 +24,7 @@ static VALUE rbcompa_params(VALUE self) {
 }
 
 static VALUE rbcompa_dump(VALUE self) {
-  return rb_clFuncall(cMarshal, rb_intern("dump"), 1, rbcompa_params(self));
+  return rb_funcall(cMarshal, rb_intern("dump"), 1, rbcompa_params(self));
 }
 
 static VALUE rbcompa_load(VALUE cl, VALUE rdata)
@@ -37,9 +37,9 @@ static VALUE rbcompa_load(VALUE cl, VALUE rdata)
   volatile VALUE tdata;
   VALUE cname, rkeys, rsize;
 
-  rdata = rb_clFuncall(cMarshal, rb_intern("load"), 1, rdata);
-  rkeys = rb_clFuncall(rdata, rb_intern("keys"), 0);
-  rsize = rb_clFuncall(rdata, rb_intern("size"), 0);
+  rdata = rb_funcall(cMarshal, rb_intern("load"), 1, rdata);
+  rkeys = rb_funcall(rdata, rb_intern("keys"), 0);
+  rsize = rb_funcall(rdata, rb_intern("size"), 0);
   cname = rb_hash_aref(rdata, rb_str_new2("compressor"));
   for ( i = 0; i < NUM2INT(rsize) ; i += 1) {
     key = STR2CSTR(rb_ary_entry(rkeys, i));
