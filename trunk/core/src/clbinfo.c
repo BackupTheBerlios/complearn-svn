@@ -106,6 +106,6 @@ int main(int argc, char *argv[])
   gsl_matrix_free(dm);
   clDatablockFreePtr(db);
   clDatablockFreePtr(dbdm);
-  clDraFree(dd);
+  clFree_DataBlock_package(dd);
   exit(0);
 }

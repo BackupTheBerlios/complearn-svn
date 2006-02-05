@@ -43,7 +43,7 @@ struct StringStack *clLoadTaggedStringStack(struct DataBlock *db, int fmustbe, c
   dbss = clScanForTag(results, TAGNUM_STRINGSTACK);
   ss = clStringstackLoad(dbss, 1);
   clDatablockFreePtr(dbss);
-  clDraFree(results);
+  clFree_DataBlock_package(results);
   return ss;
 }
 

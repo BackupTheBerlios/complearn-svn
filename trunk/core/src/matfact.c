@@ -110,7 +110,7 @@ gsl_matrix *clDistmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
   dd = clLoad_DataBlock_package(ptrdb);
   dbdm = clScanForTag(dd, TAGNUM_GSLMATRIX );
   m = clGslmatrixLoad(dbdm, 1);
-  clDraFree(dd);
+  clFree_DataBlock_package (dd);
   clDatablockFreePtr(dbdm);
 
   return m;
@@ -145,7 +145,7 @@ struct DataBlock *clbDMDataBlock(char *fname) {
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
 
   clDatablockFreePtr(db);
-  clDraFree(dd);
+  clFree_DataBlock_package(dd);
   return dbdm;
 }
 

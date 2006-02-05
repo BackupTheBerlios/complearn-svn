@@ -1111,7 +1111,7 @@ void testALTagFile(void)
         break;
     }
   }
-  clDraFree(dd);
+  clFree_DataBlock_package(dd);
   clStringstackFree(ss);
   gsl_matrix_free(gm);
   clDatablockFreePtr(dbpkg_read);

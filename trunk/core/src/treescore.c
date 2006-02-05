@@ -94,6 +94,7 @@ void clFreeTreeScore(struct TreeScore *ts)
 {
   if (ts == NULL)
     clogError("tried to free NULL pointer in clFreeTreeScore");
+  clGslmatrixFree(ts->dm);
   clFreeandclear(ts);
 }
 

@@ -114,6 +114,12 @@ struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts);
  */
 struct DRA *clLoad_DataBlock_package(struct DataBlock *db);
 
+/** \brief Don't forget to free your DataBlock packages.
+ *
+ *  \param da DRA returned from clLoad_DataBlock_package
+ */
+void clFree_DataBlock_package ( struct DRA *da );
+
 /** \brief Retrieves DataBlock from DRA of IntDBPairs
  *
  *  Another high level clFunction, clScanForTag() will, given a tagnum as defined

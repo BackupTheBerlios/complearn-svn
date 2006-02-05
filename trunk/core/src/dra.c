@@ -46,6 +46,7 @@ static void callUserFunc(struct DRA *ptr)
 
 void clDraFree(struct DRA *ptr)
 {
+//  fprintf(stderr, "%p:%d ZFE DRA FREED\n", ptr, 0);
   assert(ptr);
   callUserFunc(ptr);
   assert(ptr->pc);
@@ -57,11 +58,20 @@ void clDraFree(struct DRA *ptr)
 
 struct DRA *clDraNew(void)
 {
+  static int counter=0;
+
   struct DRA *da = clCalloc(sizeof(struct DRA), 1);
+
+  counter += 1;
+  if (counter == -1) {
+    printf("Counter is %d, exitting..\n");
+    exit(1);
+  }
   da->alloc = 10;
   da->clFunc = NULL;
   da->elemsize = sizeof(union PCTypes);
   da->pc = clCalloc(da->elemsize, da->alloc);
+//  fprintf(stderr, "%p:%d NEW DRA RETURNED\n", da, counter);
   return da;
 }
 

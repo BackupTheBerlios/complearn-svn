@@ -104,12 +104,13 @@ struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
 
 }
 
-void clFree_DataBlock_package ( struct DRA *da, void *udata)
+void clFree_DataBlock_package ( struct DRA *da )
 {
   int i;
   for ( i = 0; i < clDraSize(da) ; i += 1) {
     clDatablockFreePtr(clDraGetValueAt(da,i).idbp.db);
   }
+  clDraFree(da);
 }
 
 struct DRA *clLoad_DataBlock_package(struct DataBlock *db)

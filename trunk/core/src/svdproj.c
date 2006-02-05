@@ -17,6 +17,7 @@ int main(int argc, char **argv)
   clDatablockFreePtr(dbdm);
   //printf("The matrix is %d by %d\n", dm->size1, dm->size2);
   sdm = clSvdProject(dm);
+  clFree_DataBlock_package(dd);
   clGslmatrixFree(dm);
   return 0;
 }

@@ -301,7 +301,7 @@ struct EnvMap *clbEnvMap(char *fname)
   clDatablockFreePtr(dbem);
 
   clDatablockFreePtr(db);
-  clDraFree(dd);
+  clFree_DataBlock_package(dd);
   return result;
 }
 
