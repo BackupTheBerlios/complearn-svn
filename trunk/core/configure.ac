@@ -43,6 +43,21 @@ case "${host}" in
   echo "Building for target: ${host}"
 esac
 
+AC_ARG_ENABLE(dmalloc,
+[  --enable-dmalloc  Enable dmalloc memory leak detection subsystem
+],
+[case "${enableval}" in
+   yes) ua_dmalloc=true ;;
+   no)  ua_dmalloc=false ;;
+    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-dmalloc) ;;
+esac], [ua_dmalloc=false])
+
+if test x$ua_dmalloc = xtrue ; then
+  CPPFLAGS="$CPPFLAGS -DNOGALLOC"
+  LDFLAGS="$LDFLAGS -ldmalloc"
+  echo "Enabling dmalloc subsystem."
+fi
+
 AC_ARG_ENABLE(optimize,
 [  --enable-optimize  Enable performance optimizations
 ],

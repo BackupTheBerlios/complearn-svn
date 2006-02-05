@@ -9,6 +9,7 @@
 
 #define clMalloc(x) malloc(x)
 #define clCalloc(x,y) calloc(x,y)
+#define clRealloc(x,y) realloc(x,y)
 #define clFree(x) free(x)
 #define clStrdup(x) strdup(x)
 
