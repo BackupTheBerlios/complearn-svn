@@ -14,5 +14,6 @@ struct TreeScore *clInitTreeScore(gsl_matrix *dm);
 double clScoreTree(struct TreeScore *ts, struct TreeAdaptor *ta);
 int clIsConsistent(struct AdjAdaptor *ad, struct Quartet q);
 void clFreeTreeScore(struct TreeScore *ts);
+struct TreeScore *clCloneTreeScore(struct TreeScore *ts);
 
 #endif

@@ -23,6 +23,7 @@ struct TreeHolder *clTreehClone(const struct TreeHolder *th)
   result =  clCalloc(sizeof(*th), 1);
   result->best = clTreeaClone(th->best);
   result->dm = clGslmatrixClone(th->dm);
+  result->ts = clCloneTreeScore(th->ts);
   result->bestscore = th->bestscore;
   result->totalCount = th->totalCount;
   result->failedCount = th->failedCount;
@@ -134,6 +135,8 @@ void clTreehFree(struct TreeHolder *th)
   }
   gsl_matrix_free(th->dm);
   th->dm = NULL;
+  clFreeTreeScore(th->ts);
+  th->ts = NULL;
   clFreeandclear(th);
 }
 

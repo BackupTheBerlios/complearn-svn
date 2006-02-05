@@ -4,11 +4,17 @@
 
 
 struct TreeScore {
-  struct TreeAdaptor *ta;
   gsl_matrix *dm;
-//  struct UnrootedBinary *tree;
   double penalty;
 };
+
+struct TreeScore *clCloneTreeScore(struct TreeScore *ts)
+{
+  struct TreeScore *newts = clCalloc(sizeof(struct TreeScore), 1);
+  newts->penalty = ts->penalty;
+  newts->dm = clGslmatrixClone(ts->dm);
+  return newts;
+}
 
 struct TreeScore *clInitTreeScore(gsl_matrix *dm)
 {
@@ -86,6 +92,8 @@ double clScoreTree(struct TreeScore *ts, struct TreeAdaptor *ta)
 
 void clFreeTreeScore(struct TreeScore *ts)
 {
+  if (ts == NULL)
+    clogError("tried to free NULL pointer in clFreeTreeScore");
   clFreeandclear(ts);
 }
 

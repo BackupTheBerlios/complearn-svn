@@ -325,9 +325,20 @@ void clTreemasterFree(struct TreeMaster *tm)
     clTreehFree(tm->best);
     tm->best=NULL;
   }
+  if (tm->endTime) {
+    cldatetimeFree(tm->endTime);
+    tm->endTime = NULL;
+  }
+  if (tm->startTime) {
+    cldatetimeFree(tm->startTime);
+    tm->startTime = NULL;
+  }
   gsl_matrix_free(tm->dm);
   tm->dm = NULL;
-  memset(tm, 0, sizeof(*tm));
+  if (tm->tob) {
+    clFree(tm->tob);
+    tm->tob = NULL;
+  }
   clFreeandclear(tm);
 }
 

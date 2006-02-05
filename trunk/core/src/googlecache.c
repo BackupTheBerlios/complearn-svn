@@ -83,6 +83,7 @@ struct DataBlock *clMakeCacheVal(double pg, struct DataBlock *lastdbval, const c
   if (lastdbval && clDatablockSize(lastdbval) > 0)
     memcpy(d.cknext, clDatablockData(lastdbval), clDatablockSize(lastdbval));
   strcpy(d.qorig, qorig);
+  cldatetimeFree(dt);
 
   return clDatablockNewFromBlock(&d, sizeof(d));
 }
@@ -97,7 +98,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
   static struct GoogleCache *gc;
   double result;
   char *daystr;
-  struct CLDateTime *dt;
+  struct CLDateTime *dt = NULL;
   if (udaystr == NULL) {
     dt = cldatetimeNow();
     daystr = clStrdup(cldatetimeToDayString(dt));
@@ -110,6 +111,8 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
     gc = clNewGC();
   clFetchsample(gc, daystr, terms, &result, gkey);
   clFreeandclear(daystr);
+  if (dt)
+    cldatetimeFree(dt);
   return result;
 }
 /** \brief Fetches a sample from the local count database with the help of the

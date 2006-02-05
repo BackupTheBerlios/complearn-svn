@@ -573,7 +573,9 @@ static void draw_screen(void)
       for (i = 0; i < clTreeaNodeCount(ta); i += 1) {
         gsl_vector *p = clSbsBallPosition(sbs, i);
         if (clTreeaIsQuartettable(ta, i)) {
-          int colind = clLabelpermColIndexForNodeID(clTreeaLabelPerm(ta), i);
+          struct LabelPerm *lpz = clTreeaLabelPerm(ta);
+          int colind = clLabelpermColIndexForNodeID(lpz, i);
+          clLabelpermFree(lpz);
           static struct CLTexture texLabels[MAXTEX];
           draw_sdltext(clStringstackReadAt(labels, colind), &texLabels[colind], p);
         }

@@ -5,13 +5,12 @@
 #include "complearn/maketreeapp.h"
 
 struct StringStack *labels;
-//struct CLNodeSet *dotflips;
 struct TreeHolder *dotth;
 struct TreeMaster *globtm;
 struct GeneralConfig *cur;
 gsl_matrix *dm;
 
-static void freedotth (struct TreeHolder *dotth)
+static void freedotth (void)
 {
   if (dotth) {
     clTreehFree(dotth);
@@ -52,8 +51,11 @@ static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
   printf("Just got new tree with score %f\n", clTreehScore(th));
-  writeDotFile(clTreehTreeAdaptor(th), clTreehScore(th), NULL);
-  freedotth(dotth);
+  struct TreeAdaptor *ta = clTreehTreeAdaptor(th);
+  double sc = clTreehScore(th);
+  writeDotFile(ta, sc, NULL);
+  freedotth();
+  clTreeaFree(ta);
   dotth = clTreehClone(th);
 }
 
@@ -238,11 +240,17 @@ int main(int argc, char **argv)
   clLabelpermFree(lph);
   printf("Done.\n");
   clDraFree(res);
-  freedotth(dotth);
+  freedotth();
   clTreemasterFree(tm);
+  clTreeaFree(ub);
   clGslmatrixFree(dm);
   if (labels) {
     clStringstackFree(labels);
   }
+  if (cur && cur->ptr) {
+    clFree(cur->ptr);
+    cur->ptr = NULL;
+  }
+  clFreeDefaultEnvironment(cur);
   return 0;
 }
