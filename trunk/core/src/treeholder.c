@@ -8,6 +8,7 @@
 struct TreeHolder {
   gsl_matrix *dm;
   struct TreeAdaptor *best;
+  struct TreeScore *ts;
   double bestscore;
   int totalCount;
   int failedCount;
@@ -32,10 +33,7 @@ struct TreeHolder *clTreehClone(const struct TreeHolder *th)
 static double calculateScore(struct TreeHolder *th, struct TreeAdaptor *ta)
 {
   double result;
-  struct TreeScore *ts;
-  ts = clInitTreeScore(ta);
-  result = clScoreTree(ts, th->dm);
-  clFreeTreeScore(ts);
+  result = clScoreTree(th->ts, ta);
   th->totalCount += 1;
   return result;
 }
@@ -53,6 +51,7 @@ struct TreeHolder *clTreehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra
   assert(th->best);
   assert(th->best->ptr);
   th->dm = clGslmatrixClone(distmat);
+  th->ts = clInitTreeScore(th->dm);
   th->bestscore = calculateScore(th, th->best);
   th->treeindex = -1;
   clLabelpermFree(lp);

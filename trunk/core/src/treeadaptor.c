@@ -35,7 +35,7 @@ struct TreeAdaptor *clTreeaClone(struct TreeAdaptor *tra)
 
 struct LabelPerm *clTreeaLabelPerm(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  assert(tra && "NULL TreeAdaptor in clTreeaLabelPerm");
   return tra->treegetlabelperm(tra);
 }
 

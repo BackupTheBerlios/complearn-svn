@@ -5,14 +5,15 @@
 
 struct TreeScore {
   struct TreeAdaptor *ta;
+  gsl_matrix *dm;
 //  struct UnrootedBinary *tree;
   double penalty;
 };
 
-struct TreeScore *clInitTreeScore(struct TreeAdaptor *ta)
+struct TreeScore *clInitTreeScore(gsl_matrix *dm)
 {
   struct TreeScore *ts = clCalloc(sizeof(struct TreeScore), 1);
-  ts->ta = ta;
+  ts->dm = clGslmatrixClone(dm);
   return ts;
 }
 
@@ -47,22 +48,23 @@ int clIsConsistent(struct AdjAdaptor *ad, struct Quartet q)
   return !pathsIntersect(nbuf1, p1length, nbuf2, p2length);
 }
 
-double clScoreTree(struct TreeScore *ts, gsl_matrix *dm)
+double clScoreTree(struct TreeScore *ts, struct TreeAdaptor *ta)
 {
   int i, j, k, m, p, x;
   double sum = 0;
   double maxtot = 0, mintot = 0;
-  struct LabelPerm *lp = clTreeaLabelPerm(ts->ta);
-  assert(dm->size1 == dm->size2);
-  assert(dm->size1 == clLabelpermSize(lp));
-  ALLQUARTETS(dm->size1, i, j, k, m) {
+  struct LabelPerm *lp = clTreeaLabelPerm(ta);
+  assert(lp);
+  assert(ts->dm->size1 == ts->dm->size2);
+  assert(ts->dm->size1 == clLabelpermSize(lp));
+  ALLQUARTETS(ts->dm->size1, i, j, k, m) {
     double mincur=0, maxcur=0;
     for (p = 0; p < 3; p += 1) {
       struct Quartet q = clPermuteLabelsDirect(i, j, k, m, p);
-      double c1a = gsl_matrix_get(dm,q.q[0],q.q[1]);
-      double c1b = gsl_matrix_get(dm,q.q[1],q.q[0]);
-      double c2a = gsl_matrix_get(dm,q.q[2],q.q[3]);
-      double c2b = gsl_matrix_get(dm,q.q[3],q.q[2]);
+      double c1a = gsl_matrix_get(ts->dm,q.q[0],q.q[1]);
+      double c1b = gsl_matrix_get(ts->dm,q.q[1],q.q[0]);
+      double c2a = gsl_matrix_get(ts->dm,q.q[2],q.q[3]);
+      double c2b = gsl_matrix_get(ts->dm,q.q[3],q.q[2]);
       double c1 = c1a < c1b ? c1a : c1b;
       double c2 = c2a < c2b ? c2a : c2b;
       double curcost = c1 + c2;
@@ -72,7 +74,7 @@ double clScoreTree(struct TreeScore *ts, gsl_matrix *dm)
         mincur = curcost;
       if (p == 0 || (curcost > maxcur))
         maxcur = curcost;
-      if (clIsConsistent(clTreeaAdjAdaptor(ts->ta), q))
+      if (clIsConsistent(clTreeaAdjAdaptor(ta), q))
         sum += curcost;
     }
     maxtot += maxcur;

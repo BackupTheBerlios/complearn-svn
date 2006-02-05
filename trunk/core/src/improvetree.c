@@ -27,8 +27,8 @@ int main(int argc, char **argv)
   matdb = clFileToDataBlockPtr(dmfname);
   dpt = clParseDotDB(db, matdb);
   th = clTreehNew(dpt->dm, dpt->tree);
-  ts = clInitTreeScore(dpt->tree);
-  score = clScoreTree(ts, dpt->dm);
+  ts = clInitTreeScore(dpt->dm);
+  score = clScoreTree(ts, dpt->tree);
   clFreeTreeScore(ts);
   ts = NULL;
   fprintf(stderr, "initial score:%lf\n", score);

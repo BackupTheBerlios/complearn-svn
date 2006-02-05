@@ -4,7 +4,7 @@ SCRIPTPATH=`dirname $CUR`
 COREDIR="$SCRIPTPATH/.."
 
 cd $COREDIR
-make clean
+#make clean
 rm distmatrix.clb
 rm treefile.dot
 make && ./src/ncd -b -d examples/10-mammals examples/10-mammals && \
