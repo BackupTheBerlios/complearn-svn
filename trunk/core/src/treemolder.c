@@ -10,17 +10,11 @@ struct TreeMolder {
   struct CLNodeSet *flips;
 };
 
-/*
-  if (tm->nodecount < 20)
-    tm->k = 24 - tm->nodecount;
-  int k;
-*/
-
 void clTreemolderFree(struct TreeMolder *tm)
 {
   clnodesetFree(tm->flips);
-  tm->flips = NULL;
-  memset(tm, 0, sizeof(*tm));
+  clTreeaFree(tm->ta);
+  clGslmatrixFree(tm->dm);
   clFreeandclear(tm);
 }
 
@@ -45,8 +39,8 @@ struct TreeMolder *clTreemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
   aa = clTreeaAdjAdaptor(ta);
   assert(aa);
   tm->nodecount = clAdjaSize(aa);
-  tm->ta = ta;
-  tm->dm = gm;
+  tm->ta = clTreeaClone(ta);
+  tm->dm = clGslmatrixClone(gm);
   tm->flips = clnodesetNew(tm->nodecount);
   tm->score = -1;
   calcRangesTM(tm);

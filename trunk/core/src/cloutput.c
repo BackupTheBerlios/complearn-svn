@@ -352,6 +352,7 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   for (i = 0; i < clStringstackSize(dotacc); i += 1)
     j += sprintf((char *) (dbuff + j), "%s\n", clStringstackReadAt(dotacc, i));
   result = clDatablockNewFromBlock(dbuff,tmpsize);
+  clFree(dbuff);
   clStringstackFree(dotacc);
   if (cur && params)
     clStringstackFree(params);

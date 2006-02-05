@@ -65,6 +65,8 @@ void *clRealloc(void *ptr, size_t size)
 void clFree(void *ptr)
 {
   assert(ptr);
+  if (ptr == NULL)
+    clogError("tried to free NULL pointer\n");
   free(ptr);
   ptr = NULL;
 }

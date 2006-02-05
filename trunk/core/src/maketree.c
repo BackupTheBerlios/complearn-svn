@@ -121,7 +121,7 @@ int main(int argc, char **argv)
   };
   double score;
   struct DRA *res;
-  struct TreeBlaster *tb;
+  struct TreeBlaster *tb = NULL;
   struct TreeHolder *th;
   struct TreeMaster *tm;
   struct CLNodeSet *clns = NULL;
@@ -215,6 +215,7 @@ int main(int argc, char **argv)
     printf("Got score %f\n", score);
     printf("And flipped node set:\n ");
     clnodesetPrint(clns);
+    clTreebFree(tb);
   }
   printf("\nNode ordering:\n");
   res = clSimpleWalkTree(ub, clns);
