@@ -56,8 +56,10 @@ struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
   ptr = partsbuf;
 
   for ( i = 0; i < clDraSize(parts); i += 1) {
-    memcpy(ptr, clDatablockData(clDraGetValueAt(parts,i).dbp), clDatablockSize(clDraGetValueAt(parts,i).dbp));
-    ptr += clDatablockSize(clDraGetValueAt(parts,i).dbp);
+    struct DataBlock *curdb = clDraGetValueAt(parts, i).dbp;
+    memcpy(ptr, clDatablockData(curdb), clDatablockSize(curdb));
+    ptr += clDatablockSize(curdb);
+    clDatablockFreePtr(curdb);
   }
 
   clDraFree(parts);
