@@ -2,6 +2,17 @@
 #include <string.h>
 #include <unistd.h>
 
+const char *getLikelyTmpPrefix()
+{
+  static const char *tmpFileDir;
+  if (tmpFileDir == NULL) {
+    tmpFileDir = getenv("TMPDIR");
+    if (tmpFileDir == NULL)
+      tmpFileDir = "/tmp";
+  }
+  return tmpFileDir;
+}
+
 static FILE *makeTmpCopyStdin(void)
 {
   static char tmpfile[128];
@@ -9,7 +20,7 @@ static FILE *makeTmpCopyStdin(void)
   FILE *fp;
   if (tmpfile[0] == 0) {
     struct DataBlock *db = clFilePtrToDataBlockPtr(stdin);
-    strcpy(tmpfile, "/tmp/clstdintmp-XXXXXX");
+    sprintf(tmpfile, "%s/clstdintmp-XXXXXX", getLikelyTmpPrefix());
     fd = mkstemp(tmpfile);
     close(fd);
     clDatablockWriteToFile(db, tmpfile);

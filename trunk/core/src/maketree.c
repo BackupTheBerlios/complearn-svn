@@ -29,6 +29,7 @@ static void maketree_printapphelp(struct GeneralConfig *cur) {
 "Usage: maketree [OPTION] ... FILE \n\n"
 
 "MAKETREE OPTIONS:\n"
+"  -d, --suppress-random-seed  do not use a random(time) seed for PRNG\n"
 "  -o, --outfile=treename      set the default tree output name\n"
 "  -R, --rooted                create rooted tree\n"
 "  -O, --ordered               create ordered tree\n"
@@ -95,6 +96,7 @@ struct GeneralConfig *loadMakeTreeEnvironment()
 {
   struct MakeTreeConfig defaultMakeTreeConfig = {
     output_tree_fname: NULL,
+    suppressRandomSeed: 0,
   };
 
   if (!cur) {
@@ -113,12 +115,13 @@ struct GeneralConfig *loadMakeTreeEnvironment()
 int main(int argc, char **argv)
 {
   int next_option;
-  const char *const short_options = "ROTFo:";
+  const char *const short_options = "ROTFo:d";
   static struct option long_options[] = {
       { "rooted", 0, NULL, 'R' },
       { "unordered", 0, NULL, 'u' },
       { "text", 0, NULL, 'T' },
       { "outfile", 1, NULL, 'o' },
+      { "suppress-random-seed", 0, NULL, 'd' },
       { NULL, 0, NULL, 0 },
   };
   double score;
@@ -152,6 +155,9 @@ int main(int argc, char **argv)
         isEnablingMaxFailCount = 1;
         clEnvmapSetKeyVal(cur->em, "selfAgreementTermination", "0");
         break;
+      case 'd':
+        maketreecfg->suppressRandomSeed = 1;
+        break;
       case 'u':
         isOrdered = 0;
         clEnvmapSetKeyVal(cur->em, "isOrdered", "0");
@@ -169,7 +175,8 @@ int main(int argc, char **argv)
     while (optind < argc)
        fname = argv[optind++];
   }
-  srand(time(NULL));
+  if (!maketreecfg->suppressRandomSeed)
+    srand(time(NULL));
   if (!fname) {
     printf("Usage: %s <distmatrix.clb>\n", argv[0]);
     exit(1);
@@ -209,14 +216,10 @@ int main(int argc, char **argv)
   j = clTreemasterTreeCount(tm);
   printf("Examined %d trees total\n", j);
   if (isOrdered) {
-    printf("Proceeding with ordering phase...\n");
     tb = clTreebNew(dm, ub);
-    printf("tb is %p\n", tb);
     clTreebSetTreeOrderObserver(tb, &too);
     clns = clTreebFindTreeOrder(tb, &score);
-    printf("Got score %f\n", score);
-    printf("And flipped node set:\n ");
-    clnodesetPrint(clns);
+   // clnodesetPrint(clns);
     clTreebFree(tb);
   }
   printf("\nNode ordering:\n");

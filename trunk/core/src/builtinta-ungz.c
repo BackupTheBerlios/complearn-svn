@@ -56,13 +56,14 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
 	char tmpfile[1024];
   char pbuf[1024];
 
+  dirs[0] = getLikelyTmpPrefix();
+
   for(i = 0; dirs[i]; i += 1) {
     sprintf(pbuf,"%s",dirs[i]);
      if (stat(pbuf, &sbuf) == 0)
        break;
   }
 
-//	tmpfile = (char*)clStrdup("/tmp/clgztmp-XXXXXX");
   sprintf(tmpfile, "%s/clgztmp-XXXXXX", pbuf);
   fd = mkstemp(tmpfile);
   close(fd);

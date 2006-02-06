@@ -9,6 +9,7 @@
  */
 struct MakeTreeConfig {
   char *output_tree_fname; /*!< name of file output by maketree command */
+  int suppressRandomSeed;
 };
 
 /** \brief Loads the environment for the maketree command

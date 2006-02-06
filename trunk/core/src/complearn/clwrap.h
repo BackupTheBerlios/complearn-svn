@@ -4,6 +4,7 @@
 /*! \file clwrap.h */
 
 FILE *clFopen(const char *fname, char *mode);
+const char *getLikelyTmpPrefix();
 void clFclose(FILE *fp);
 
 #endif
