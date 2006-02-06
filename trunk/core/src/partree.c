@@ -58,6 +58,7 @@ void doMasterLoop(void);
 void doSlaveLoop(void);
 void addToHistogram(const char *lab, double x, double weight);
 void sendExitEveryWhere(void);
+void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
@@ -82,7 +83,7 @@ void bailer(int lameness)
   exit(0);
 }
 
-static void addToHistogram(const char *lab, double x, double weight)
+void addToHistogram(const char *lab, double x, double weight)
 {
   struct HistOpCommand hoc;
   struct DataBlock *db;
@@ -151,8 +152,8 @@ double tsScore(struct TreeAdaptor *ta, gsl_matrix *gm)
 {
   struct TreeScore *ts;
   double s;
-  ts = clInitTreeScore(ta);
-  s = clScoreTree(ts, gm);
+  ts = clInitTreeScore(gm);
+  s = clScoreTree(ts, ta);
   clFreeTreeScore(ts);
   return s;
 }

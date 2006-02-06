@@ -197,20 +197,17 @@ esac], [ua_mpi=false])
 # pec: CC can be set explicitly, or left unset for mpicc scan
 
 if test x$ua_mpi = xtrue ; then
-  if test x$CC = x ; then
-    AC_CHECK_PROGS(MPICC, mpicc)
-    if test x$MPICC = x ; then
-      echo 1>2 "Error, cannot find mpicc"
-      exit 1
-    else
-      CC=$MPICC
-    fi
+  AC_CHECK_PROGS(MPICC, mpicc)
+  if test x$MPICC = x ; then
+    AC_PROG_CC
   else
-    MPICC=$CC
+    CC=$MPICC
+    CPP=$MPICC -E
   fi
 else
   AC_PROG_CC
 fi
+
 
 # poc: if up_mpi, then CC = MPICC
 
