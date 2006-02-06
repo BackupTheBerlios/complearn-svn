@@ -80,7 +80,7 @@ double clTreemolderScore(struct TreeMolder *tm)
 
 struct CLNodeSet *clTreemolderFlips(struct TreeMolder *tm)
 {
-  return tm->flips;
+  return clnodesetClone(tm->flips);
 }
 
 static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)

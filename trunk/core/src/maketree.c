@@ -219,7 +219,6 @@ int main(int argc, char **argv)
     tb = clTreebNew(dm, ub);
     clTreebSetTreeOrderObserver(tb, &too);
     clns = clTreebFindTreeOrder(tb, &score);
-   // clnodesetPrint(clns);
     clTreebFree(tb);
   }
   printf("\nNode ordering:\n");

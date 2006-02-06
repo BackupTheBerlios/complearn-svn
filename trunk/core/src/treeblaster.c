@@ -35,7 +35,7 @@ struct TreeBlaster *clTreebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
-  tm->ta = ta;
+  tm->ta = clTreeaClone(ta);
   tm->dm = clGslmatrixClone(gsl);
   tm->printedScore = -1;
   assert(tm->dm);
@@ -105,6 +105,8 @@ void clTreebFree(struct TreeBlaster *tm)
   int i;
   gsl_matrix_free(tm->dm);
   tm->dm = NULL;
+  clTreeaFree(tm->ta);
+  tm->ta = NULL;
   for (i = 0; i < tm->k; i += 1) {
     clTreemolderFree(tm->tm[i]);
   }

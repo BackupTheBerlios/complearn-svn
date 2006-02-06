@@ -3,6 +3,7 @@ AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
+AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
 
