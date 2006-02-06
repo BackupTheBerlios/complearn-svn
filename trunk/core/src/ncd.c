@@ -7,7 +7,7 @@
 
 #include <gsl/gsl_blas.h>
 
-#include "ncdapp.h"
+#include <complearn/ncdapp.h>
 
 static struct GeneralConfig *cur;
 

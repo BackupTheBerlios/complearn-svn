@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <string.h>
-#include "ncdapp.h"
+#include <complearn/ncdapp.h>
 
 #include <gsl/gsl_linalg.h>
 

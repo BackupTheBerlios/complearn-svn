@@ -1,6 +1,4 @@
-#include <complearn.h>
-
-
+#include <complearn/complearn.h>
 
 struct IncrementalDistMatrix *clIncrdmNew(struct CompAdaptor *ca)
 {

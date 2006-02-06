@@ -1,5 +1,6 @@
 SUBDIRS = src
-am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in
+#am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in config.status config.log
+DISTCLEAN_TARGETS = config.status config.log
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = complearn.pc

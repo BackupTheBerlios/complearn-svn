@@ -9,7 +9,6 @@
 
 #include <complearn/gdbmhelper.h>
 #include <stdlib.h>
-#include "clalloc.h"
 
 #include <gdbm.h>
 

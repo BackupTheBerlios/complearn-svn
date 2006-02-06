@@ -3,7 +3,7 @@ MPIPROGRAMS = partree
 GRAPHICSPROGRAMS = clfun
 GFXLIBS = @GFXLIBS@
 
-GENCPPFLAGS = -I complearn
+GENCPPFLAGS = -I complearn -I .
 CLLDFLAGS = libcomplearn.a
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
@@ -54,6 +54,7 @@ partree_LDADD = $(CLLDFLAGS)
 lib_LIBRARIES=libcomplearn.a
 lib_includedir=$(includedir)/complearn-1.0/complearn
 lib_include_HEADERS=\
+complearn/dlextcomp.h \
 complearn/complearn.h \
 complearn/aclconfig.h \
 complearn/uclconfig.h \
@@ -78,7 +79,6 @@ complearn/dbe-filelist.h \
 complearn/dbe-singleton.h \
 complearn/dbe-stringlist.h \
 complearn/dbe-windowed.h \
-complearn/dlextcomp.h \
 complearn/dotparser.h \
 complearn/dra.h \
 complearn/environment.h \

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include "clalloc.h"
 #include <complearn/complearn.h>
 
 struct AdjList {

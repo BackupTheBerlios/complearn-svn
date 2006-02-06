@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include "clalloc.h"
 #include <sys/time.h>
 
 #include <complearn/complearn.h>

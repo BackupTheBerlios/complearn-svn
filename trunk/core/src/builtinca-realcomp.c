@@ -3,7 +3,6 @@
 #include <sys/wait.h>
 #include <complearn/datablock.h>
 #include <complearn/complearn.h>
-#include "clalloc.h"
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
