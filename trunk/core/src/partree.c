@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <gsl/gsl_histogram.h>
 #include <complearn/complearn.h>
 #include <mpi.h>
 
@@ -49,14 +50,18 @@ struct SlaveState {
   double shouldBeScore;
 };
 
+#define HISTOLABEL_MUTGOOD
+#define HISTOLABEL_MUTBAD
+
 struct HistOpCommand {
-  char label[16];
+  int label;
+  int index;
   double x, weight;
 };
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
-void addToHistogram(const char *lab, double x, double weight);
+void addToHistogram(int lab, int index, double x, double weight);
 void sendExitEveryWhere(void);
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
@@ -83,12 +88,29 @@ void bailer(int lameness)
   exit(0);
 }
 
-void addToHistogram(const char *lab, double x, double weight)
+static gsl_histogram *gh[128];
+#define MAXHISTONUM 64
+
+static gsl_histogram *getHistoFor(int ind)
+{
+  if (gh[ind] == NULL) {
+    gh[ind] = gsl_histogram_alloc(MAXHISTONUM);
+  }
+  return gh[ind];
+}
+
+void handleHistogramMsg(int fromWho, int histolab, int index, double x, double weight)
+{
+
+}
+
+void addToHistogram(int histolab, int index, double x, double weight)
 {
   struct HistOpCommand hoc;
   struct DataBlock *db;
   memset(&hoc, 0, sizeof(hoc));
-  strncpy(hoc.label, lab, sizeof(hoc.label)-1);
+  hoc.label = histolab;
+  hoc.index = index;
   hoc.x = x;
   hoc.weight = weight;
   db = clDatablockNewFromBlock(&hoc,sizeof(hoc));
