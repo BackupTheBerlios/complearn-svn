@@ -4,9 +4,6 @@ AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(src/complearn/aclconfig.h)
-AM_CONFIG_HEADER(src/complearn/clconfig.h)
-
 AC_ARG_ENABLE(default-paths,
 [  --disable-default-paths  Disable default /usr and /usr/local search paths
 ],
@@ -227,6 +224,10 @@ if test x$ua_gfx = xtrue ; then
     [  --with-gtk=PREFIX       where gtk+ (version 2.0) is installed],
     [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"]
   )
+AC_ARG_WITH(fontfile,
+  [  --with-fontfile=PREFIX       where Arial.ttf or other .ttf font is installed (required for 3D graphical demo)],
+  [ gfxfontname="$withval" ]
+)
 
   fgfx_possible=true;
 
@@ -331,6 +332,34 @@ if test x$ua_gfx = xtrue ; then
     fi
   fi
 
+  if test x$fgfx_possible = xtrue ; then
+    ffontfile=false
+    for i in /usr/share/fonts/truetype/msttcorefonts/Arial.ttf \
+/var/lib/defoma/gs.d/dirs/fonts/Arial.ttf \
+/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType/Arial.ttf ; do
+      if test -f $i ; then
+        if test "x$gfxfontname" = x ; then
+          gfxfontname=$i
+        fi
+      fi
+    done
+    if test "x$gfxfontname" = x ; then
+      for i in `locate Arial.ttf | grep -v home` ; do
+        if test -f $i ; then
+          if test "x$gfxfontname" = x ; then
+            gfxfontname=$i
+          fi
+        fi
+      done
+    fi
+    if test "x$gfxfontname" = x ; then
+      fgfx_possible=false
+    else
+      FONTFILE="$gfxfontname"
+      ffontfile=true
+    fi
+  fi
+
   GFXLIBS=$LIBS
   LIBS=$OLDLIBS
 fi
@@ -339,6 +368,7 @@ AM_CONDITIONAL(AMCMPI, [test x$ua_mpi = xtrue])
 AM_CONDITIONAL(AMCGFX, [test x$fgfx_possible = xtrue])
 
 AC_SUBST(NGDLIBS)
+AC_SUBST(FONTFILE)
 AC_SUBST(GFXLIBS)
 
 echo "fgsl_lib      is $fgsl_lib"
@@ -360,6 +390,7 @@ if test x$ua_gfx = xtrue ; then
   echo "fgdk_lib      is $fgdk_lib"
   echo "fpango_lib    is $fpango_lib"
   echo "fatk_lib      is $fatk_lib"
+  echo "ffontfile     is ${ffontfile} (${gfxfontname})"
   echo "fgfx          is $fgfx_possible"
   echo "ua_gfx        is $ua_gfx"
 fi
@@ -369,4 +400,6 @@ echo "host          is $host"
 echo "target        is $target"
 echo "build         is $build"
 
+AM_CONFIG_HEADER(src/complearn/aclconfig.h)
+AM_CONFIG_HEADER(src/complearn/clconfig.h)
 AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile])

@@ -390,7 +390,7 @@ void testTransformBZ()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNBZIP();
 	struct DataBlock *db;
-	if (!fopen(testbzfile, "rb")) {
+	if (!clFopen(testbzfile, "rb")) {
 		printf("Can't find test bz2 file. Skipping transformBZ test...\n");
 		return;
 	}
@@ -434,7 +434,7 @@ void testTransformGZ()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNGZ();
 	struct DataBlock *db;
-	if (!fopen(testgzfile, "rb")) {
+	if (!clFopen(testgzfile, "rb")) {
 		printf("Can't find test gz file. Skipping transformGZ test...\n");
 		return;
 	}
@@ -456,7 +456,7 @@ void testTransformZLIB()
 {
   struct TransformAdaptor *t = (struct TransformAdaptor*)clBuiltin_UNZLIB();
 	struct DataBlock *db;
-	if (!fopen(testzlibfile, "rb")) {
+	if (!clFopen(testzlibfile, "rb")) {
 		printf("Can't find test zlib file. Skipping transformZLIB test...\n");
 		return;
 	}

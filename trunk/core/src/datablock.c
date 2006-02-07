@@ -20,7 +20,7 @@ struct DataBlock *clStringToDataBlockPtr(const char *s)
 struct DataBlock *clFileToDataBlockPtr(const char *path)
 {
   struct DataBlock *result;
-  FILE *fp = fopen(path, "rb");
+  FILE *fp = clFopen(path, "rb");
   if (fp == NULL) {
     clogError("fopen error reading <%s>", path);
   }
