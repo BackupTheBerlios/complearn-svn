@@ -1,4 +1,4 @@
-AC_INIT(libcomplearn,0.9.1,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,0.9.2,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
@@ -50,11 +50,10 @@ fi
 
 case "${host}" in
   *-*-linux*)
-  echo "Building for Linux"
   AC_DEFINE(LINUX, 1, "Linux")
 ;;
   *)
-  echo "Building for target: ${host}"
+  echo "Building for host: ${host}"
 esac
 
 AC_ARG_ENABLE(dmalloc,
@@ -225,25 +224,10 @@ fi
 # poc: if up_mpi, then CC = MPICC
 
 # 3d demo dependencies
-AC_ARG_ENABLE(gfx,
-[  --enable-gfx      Build CompLearn 3D demo
-],
-[case "${enableval}" in
-   yes) ua_gfx=true ;;
-   no)  ua_gfx=false ;;
-    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-gfx) ;;
-esac], [ua_gfx=false])
-
-if test x$ua_gfx = xtrue ; then
-
   AC_ARG_WITH(gtk,
     [  --with-gtk=PREFIX       where gtk+ (version 2.0) is installed],
     [ CPPFLAGS="$CPPFLAGS -I$withval/include/gtk-2.0 -I$withval/include/glib-2.0 -I$withval/lib/glib-2.0/include -I$withval/include/pango-1.0 -I$withval/lib/gtk-2.0/include -I$withval/include/atk-1.0" ; LDFLAGS="$LDFLAGS -L$withval/lib"]
   )
-AC_ARG_WITH(fontfile,
-  [  --with-fontfile=PREFIX       where Arial.ttf or other .ttf font is installed (required for 3D graphical demo)],
-  [ gfxfontname="$withval" ]
-)
 
   fgfx_possible=true;
 
@@ -350,7 +334,6 @@ AC_ARG_WITH(fontfile,
 
   GFXLIBS=$LIBS
   LIBS=$OLDLIBS
-fi
 
 AM_CONDITIONAL(AMCMPI, [test x$ua_mpi = xtrue])
 AM_CONDITIONAL(AMCGFX, [test x$fgfx_possible = xtrue])
@@ -368,7 +351,6 @@ echo "fcsoap_lib    is $fcsoap_lib"
 echo "fgdbm_lib     is $fgdbm_lib"
 echo "fngd          is $fngd_possible"
 echo "fdl_lib       is $fdl_lib"
-if test x$ua_gfx = xtrue ; then
   echo "fsdl_lib      is $fsdl_lib"
   echo "fsdlttf_lib   is $fsdlttf_lib"
   echo "fopengl_lib   is $fopengl_lib"
@@ -379,12 +361,9 @@ if test x$ua_gfx = xtrue ; then
   echo "fpango_lib    is $fpango_lib"
   echo "fatk_lib      is $fatk_lib"
   echo "fgfx          is $fgfx_possible"
-  echo "ua_gfx        is $ua_gfx"
-fi
 echo "ua_optimize   is $ua_optimize"
 echo "ua_mpi        is $ua_mpi"
 echo "host          is $host"
-echo "target        is $target"
 echo "build         is $build"
 
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
