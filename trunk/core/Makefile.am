@@ -8,6 +8,7 @@ pkgconfig_DATA = complearn.pc
 pkgdata_DATA = cldata/fonts/Arial.ttf
 
 EXTRA_DIST = \
+$(pkgdata_DATA) \
 $(src) \
 $(doc) \
 $(examples) \
