@@ -1,6 +1,6 @@
 #define SYSTEMDATAFILE ((const char *)("@DATA_DIR@" "/" "config.yml"))
 #define DEVTESTDIR (("@top_srcdir@" "/" "test" ))
-#define FONTFILE (("@FONTFILE@"))
+#define PKGDATADIR (("@PKGDATADIR@"))
 #define TESTPGDIR(x) ((TESTDIR "/" "pg" #x ))
 
 #if CSOAP_RDY

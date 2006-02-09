@@ -4,6 +4,22 @@ AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
+AC_DEFUN([AC_DEFINE_DIR], [
+  prefix_NONE=
+  exec_prefix_NONE=
+  test "x$prefix" = xNONE && prefix_NONE=yes && prefix=$ac_default_prefix
+  test "x$exec_prefix" = xNONE && exec_prefix_NONE=yes && exec_prefix=$prefix
+dnl In Autoconf 2.60, ${datadir} refers to ${datarootdir}, which in turn
+dnl refers to ${prefix}.  Thus we have to use `eval' twice.
+  eval ac_define_dir="\"[$]$2\""
+  eval ac_define_dir="\"$ac_define_dir\""
+  AC_SUBST($1, "$ac_define_dir")
+  AC_DEFINE_UNQUOTED($1, "$ac_define_dir", [$3])
+  test "$prefix_NONE" && prefix=NONE
+  test "$exec_prefix_NONE" && exec_prefix=NONE
+])
+pkgdatadir="${datadir}"
+AC_DEFINE_DIR([PKGDATADIR], [pkgdatadir], [where package data are placed])
 AC_ARG_ENABLE(default-paths,
 [  --disable-default-paths  Disable default /usr and /usr/local search paths
 ],
@@ -329,34 +345,6 @@ AC_ARG_WITH(fontfile,
                    fatk_lib=true]) ])
     if test x$fatk_lib = xfalse ; then
       fgfx_possible=false;
-    fi
-  fi
-
-  if test x$fgfx_possible = xtrue ; then
-    ffontfile=false
-    for i in /usr/share/fonts/truetype/msttcorefonts/Arial.ttf \
-/var/lib/defoma/gs.d/dirs/fonts/Arial.ttf \
-/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType/Arial.ttf ; do
-      if test -f $i ; then
-        if test "x$gfxfontname" = x ; then
-          gfxfontname=$i
-        fi
-      fi
-    done
-    if test "x$gfxfontname" = x ; then
-      for i in `locate Arial.ttf | grep -v home` ; do
-        if test -f $i ; then
-          if test "x$gfxfontname" = x ; then
-            gfxfontname=$i
-          fi
-        fi
-      done
-    fi
-    if test "x$gfxfontname" = x ; then
-      fgfx_possible=false
-    else
-      FONTFILE="$gfxfontname"
-      ffontfile=true
     fi
   fi
 
