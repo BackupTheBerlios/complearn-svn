@@ -102,6 +102,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
     dt = cldatetimeNow();
     daystr = clStrdup(cldatetimeToDayString(dt));
     cldatetimeFree(dt);
+    dt = NULL;
   }
   else {
     daystr = clStrdup(udaystr);

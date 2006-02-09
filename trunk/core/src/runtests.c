@@ -811,8 +811,8 @@ void testQuartet(void)
     assert(n);
     assert(clDraSize(n) == 2*dm->size1 - 2);
     assert(clDraSize(n) == 2*dm->size2 - 2);
-    ts = clInitTreeScore(ta);
-    score = clScoreTree(ts, dm);
+    ts = clInitTreeScore(dm);
+    score = clScoreTree(ts, ta);
 //    printf("Got score: %f\n", score);
     assert(score >= 0.0 && score <= 1.0);
   {
@@ -1180,7 +1180,7 @@ void testTreeMolder()
     }
     dbe = clDbeLoadArray(db, labelcount);
     dm = clGetNCDMatrix(dbe, dbe, gconf);
-    ts = clInitTreeScore(ta);
+    ts = clInitTreeScore(dm);
     {
       struct TreeMolder *tmolder;
       struct TreeAdaptor *tram = clTreeaNew(1,dm->size1);
