@@ -4,6 +4,8 @@ Welcome to CompLearn
 
 an open-source data mining package using data compression
 
+This software is released under the BSD license.
+
 This package supports NCD and quartet tree search as documented at
 
 http://complearn.org/
