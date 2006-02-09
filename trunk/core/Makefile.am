@@ -5,7 +5,7 @@ DISTCLEAN_TARGETS = config.status config.log
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = complearn.pc
 
-pkgdata_DATA = cldata/Arial.ttf
+pkgdata_DATA = cldata/fonts/Arial.ttf
 
 EXTRA_DIST = \
 $(src) \

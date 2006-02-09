@@ -1,0 +1,43 @@
+<div id="list">
+<% if @termlist.size < @maxterms %>
+<%= form_remote_tag( :update => "list",
+                     :complete => "clearaddform(); updateStatus()",
+                     :url => { :action => :add } ,
+                     :html => { :name => "addform" }
+) %>
+<%= text_field_tag :term %>
+<%= submit_tag "add" %>
+<%= end_form_tag %>
+<% else %>
+Term list is full.  You cannot add more terms.  Perhaps you would like to run an experiment?
+<% end %>
+<% if @termlist.size < 4 %>
+<strong>Please enter at least 4 words in order to run an experiment to find a tree.</strong>
+<% end %>
+<% if @termlist.size >= 4 && @termlist.size <= @maxterms %>
+<%= form_tag( :action => :doexperiment ) %>
+<%= submit_tag "run experiment" %>
+<%= end_form_tag %>
+<% end %>
+<h2>termlist</h2>
+<% if @termlist.size > 0 %>
+<%= @termlist.size %> terms defined.<br>
+<div id="terms">
+<ol>
+<%
+list = [ ]
+@termlist.terms.each_with_index { |i, ind|
+  z = link_to_remote( 'remove',
+                         :complete => "updateStatus()",
+                         :update => "list",
+                         :url =>{ :action => "del", :params => { :num => ind+1 } })
+#  z = link_to( i, { :action => "del", :params => { :num => ind+1 } } )
+
+list << "<li>#{i}&nbsp;&nbsp;#{z}</li>" }
+%>
+<%= list.join('') %>
+</div>
+<% else %>
+No terms yet defined.
+<% end %>
+</div>

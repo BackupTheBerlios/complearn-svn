@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta NAME="KEYWORDS" CONTENT="<%=@experiments.map { |i| i.title }.compact.sort.join(',') %>">
+    <meta NAME="DESCRIPTION" CONTENT="<%=@experiments.map { |i| i.termlist[-1] }.sort.join(',') %>">
+    <title>CompLearn Online Monthly Experiments Summary</title>
+    <link href="/stylesheets/clo.css" media="screen" rel="Stylesheet">
+  </head>
+  <body>
+<h2>CompLearn Online Experiments</h2>
+<div id="navbar"> <%= render_partial 'navigation' %> </div>
+<div id="info">
+<h3> Monthly Summary </h3><br>
+<h3> <%= "#{@experiments.size} experiments" %> </h3>
+<table border=2 border-style='groove' bordercolor='#705080'>
+<% curday = nil %>
+<% @experiments = @experiments.sort_by { |i| i.created_at } %>
+<% @experiments.each { |e| %>
+<tr><td nowrap>
+<% if curday != e.created_at.day
+     curday = e.created_at.day %>
+     <%= e.created_at.strftime("%D") %> <br>
+<% end %>
+</td>
+<td nowrap>
+<% if e.termlist.size > 4
+tt = e.termlist[0..4]
+tt.push '..'
+else
+tt = e.termlist
+end
+ if e.title && e.title.size > 2
+   d = e.title
+   r = tt.join(',')
+else
+   d = tt.join(',')
+   r = ''
+end
+ comstr = e.comments.empty? ? '' : "(#{e.comments.size} com.)" %>
+<b><%=  link_to d,  :id => e.codenum, :action=> 'showexpnum', :controller => 'clo' %></b> </td><td> &nbsp; &nbsp; &nbsp;
+<%= link_to "#{comstr} #{r}", :id => e.codenum, :action=> 'showexpnum', :controller => 'clo' %></b>
+</td></tr>
+<% } %>
+</table>
+</div>

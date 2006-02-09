@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>CompLearn Online Demo</title>
+    <%= javascript_include_tag "prototype" %>
+    <link href="/stylesheets/clo.css" media="screen" rel="Stylesheet">
+  </head>
+  <body onLoad="updateStatus()">
+<h1>CompLearn Online</h1>
+<div id="navbar"> <%= render_partial 'navigation' %> </div>
+<div id="info">
+<img src="/images/ajax.jpg" border="0" align="right">
+Welcome to the interactive demo.
+Here you may experiment with the CompLearn software by trying your own small
+experiments.  Simply think of 4-<%= @maxterms %> words (or compound words containing spaces)
+in a list.  Enter the words in the box below and then press "run experiment" to
+see the computer make a tree.  The computer will use the Google search engine
+page counts to compute NGD for each pair of words.  Then it will use the
+quartet method to find the best tree.  Give it a try!
+<a href="http://www.cwi.nl/~paulv/papers/amdug.pdf" class="readmore" target="_blank">Read more about NGD...</a></div>
+
+<div id="control">
+<script language="JavaScript" type="text/javascript">
+function updateStatus()
+{
+        var xmlHttpReq = false;
+        document.addform.term.focus();
+
+        // Mozilla/Safari
+        if (window.XMLHttpRequest) {
+                xmlHttpReq = new XMLHttpRequest();
+                xmlHttpReq.overrideMimeType('text/xml');
+        }
+        // IE
+        else if (window.ActiveXObject) {
+                xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+ xmlHttpReq.open('GET', '/clo/status', true);
+        xmlHttpReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xmlHttpReq.onreadystatechange = function() {
+                if (xmlHttpReq.readyState == 4) {
+    document.getElementById('status').innerHTML = xmlHttpReq.responseText;
+                }
+        }
+        xmlHttpReq.send(null);
+  //document.getElementById('status').innerHTML = "yahoo";
+}
+function clearaddform()
+{
+  //document.forms[0].reset();
+  document.addform.term.value = '';
+}
+</script>
+</div>
+<%= render_partial "list" %>
+<div id="dyn">
+</div>
+<%= render_partial "/clo/status" %>
+</body>
+</html>

@@ -1,0 +1,4 @@
+#!/home/webuser/mySoftware/ruby-1.8.2/bin/ruby
+require 'rubygems'
+require_gem 'rails'
+require 'breakpoint_client'

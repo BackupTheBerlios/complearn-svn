@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>CompLearn Online Monthly Experiments Summary</title>
+    <link href="/stylesheets/clo.css" media="screen" rel="Stylesheet">
+  </head>
+  <body>
+<h2>CompLearn Online Experiments</h2>
+<div id="navbar"> <%= render_partial 'navigation' %> </div>
+<div id="info">
+<h3> Please choose which month you would like to browse: </h3>
+<table border=2 border-style='groove' bordercolor='#705080'>
+<% @months.each { |m| %>
+<tr><td>
+<%= link_to "#{m.strftime("%B %Y")}", :controller => 'clo', :action => 'showmonth', :id => m.to_i  %>
+</td></tr>
+<% } %>
+</table>
+</body>
+</html>
