@@ -450,7 +450,6 @@ static void initDragDropSubsystem(GtkWidget *window)
 
 static int findXWindowID(GtkWidget *window) {
   int xwin = GDK_WINDOW_XWINDOW(GTK_WIDGET(window)->window);
-  printf("xwin is %d\n", xwin);
   return xwin;
 }
 
