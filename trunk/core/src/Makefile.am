@@ -27,6 +27,10 @@ endif
 
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
+check_PROGRAMS = runtests
+
+runtests_SOURCES = runtests.c
+runtests_LDADD = $(CLLDFLAGS) $(NGDLIBS)
 
 maketree_SOURCES = maketree.c
 maketree_LDADD = $(CLLDFLAGS)
