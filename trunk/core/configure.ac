@@ -18,7 +18,7 @@ dnl refers to ${prefix}.  Thus we have to use `eval' twice.
   test "$prefix_NONE" && prefix=NONE
   test "$exec_prefix_NONE" && exec_prefix=NONE
 ])
-pkgdatadir="${datadir}"
+pkgdatadir="${datadir}/${PACKAGE}"
 AC_DEFINE_DIR([PKGDATADIR], [pkgdatadir], [where package data are placed])
 AC_ARG_ENABLE(default-paths,
 [  --disable-default-paths  Disable default /usr and /usr/local search paths
@@ -378,7 +378,6 @@ if test x$ua_gfx = xtrue ; then
   echo "fgdk_lib      is $fgdk_lib"
   echo "fpango_lib    is $fpango_lib"
   echo "fatk_lib      is $fatk_lib"
-  echo "ffontfile     is ${ffontfile} (${gfxfontname})"
   echo "fgfx          is $fgfx_possible"
   echo "ua_gfx        is $ua_gfx"
 fi
