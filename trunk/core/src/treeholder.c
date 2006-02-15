@@ -39,7 +39,14 @@ struct TreeHolder {
   int totalCount;
   int failedCount;
   int treeindex;
+  int mutecount;
 };
+
+int clTreehMutationCount(struct TreeHolder *th)
+{
+  assert(th);
+  return th->mutecount;
+}
 
 struct TreeHolder *clTreehClone(const struct TreeHolder *th)
 {
@@ -122,6 +129,7 @@ int clTreehImprove(struct TreeHolder *th)
   struct TreeAdaptor *cand = clTreeaClone(th->best);
   clTreeaMutate(cand);
   candscore = calculateScore(th, cand);
+  th->mutecount = clTreeaMutationCount(cand);
 //  if (candscore == 1 || candscore > th->bestscore) {
   if (candscore > th->bestscore) {
     th->failedCount = 0;

@@ -1,8 +1,8 @@
 Source: libcomplearn
 Priority: optional
-Maintainer: Rudi <cilibrar@cilibrar.com>
+Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev
-Standards-Version: 3.6.1
+Standards-Version: 3.6.2.1
 Section: libs
 
 Package: libcomplearn-dev

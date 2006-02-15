@@ -76,18 +76,20 @@ struct SlaveState {
   double shouldBeScore;
 };
 
-#define HISTOLABEL_MUTGOOD
-#define HISTOLABEL_MUTBAD
+#define HISTOLABEL_MUTGOOD 0
+#define HISTOLABEL_MUTBAD 1
+#define HISTOLABEL_SCORETIME 2
+
+#define HISTOPERPERSON 5
 
 struct HistOpCommand {
   int label;
-  int index;
   double x, weight;
 };
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
-void addToHistogram(int lab, int index, double x, double weight);
+void addToHistogram(int lab, double x, double weight);
 void sendExitEveryWhere(void);
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
@@ -99,6 +101,13 @@ int my_rank;
 int p;
 int mustQuit;
 time_t quitTime;
+
+static gsl_histogram **globhist;
+static gsl_histogram *getGlobalHistogram( int hl);
+static gsl_histogram *getHistoFor( int per, int hl);
+static void applyHistoOp(gsl_histogram *gslh, double x, double weight);
+void addToHistogram(int histolab, double x, double weight);
+#define HISTOSLICES 64
 
 void ignorer(int lameness)
 {
@@ -114,29 +123,42 @@ void bailer(int lameness)
   exit(0);
 }
 
-static gsl_histogram *gh[128];
-#define MAXHISTONUM 64
+static gsl_histogram *getGlobalHistogram(int hl)
+{ return getHistoFor(-1, hl); }
 
-static gsl_histogram *getHistoFor(int ind)
+static gsl_histogram *getHistoFor(int per, int hl)
 {
-  if (gh[ind] == NULL) {
-    gh[ind] = gsl_histogram_alloc(MAXHISTONUM);
-  }
-  return gh[ind];
+  assert(per >= -1 && per < p);
+  assert(hl >= 0 && hl < HISTOPERPERSON);
+  int gi = HISTOPERPERSON*(per+1)+hl;
+  if (globhist == NULL)
+    globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*(p+1));
+  if (globhist[gi] == NULL)
+    globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
+  return globhist[gi];
 }
 
-void handleHistogramMsg(int fromWho, int histolab, int index, double x, double weight)
+void handleHistogramMsg(int fromWho, int histolab, double x, double weight)
 {
-
+  gsl_histogram *per = getHistoFor(fromWho, histolab);
+  static gsl_histogram *glob;
+  if (glob == NULL)
+    glob = getGlobalHistogram(histolab);
+  applyHistoOp(per,   x, weight);
+  applyHistoOp(glob,  x, weight);
 }
 
-void addToHistogram(int histolab, int index, double x, double weight)
+static void applyHistoOp(gsl_histogram *gslh, double x, double weight)
+{
+  gsl_histogram_accumulate(gslh, x, weight);
+}
+
+void addToHistogram(int histolab, double x, double weight)
 {
   struct HistOpCommand hoc;
   struct DataBlock *db;
   memset(&hoc, 0, sizeof(hoc));
   hoc.label = histolab;
-  hoc.index = index;
   hoc.x = x;
   hoc.weight = weight;
   db = clDatablockNewFromBlock(&hoc,sizeof(hoc));
@@ -263,6 +285,14 @@ void doMasterLoop(void) {
         if (mustQuit && (curt > quitTime))
           bailer(0);
         tag = receiveMessage(&db, &score, &who);
+        if (tag == MSG_HISTOP) {
+          struct HistOpCommand *hoc;
+          hoc = (struct HistOpCommand *) clDatablockData(db);
+          fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
+          handleHistogramMsg(who, hoc->label, hoc->x, hoc->weight);
+          clDatablockFreePtr(db);
+          continue;
+        }
         if (tag == MSG_ALERT) {
           char *alc = NULL;
           if (db)
@@ -342,19 +372,22 @@ void calculateTree(struct SlaveState *ss)
     ;
     }
   while (failCount < MAXTRIES) {
+    struct TreeAdaptor *ta = NULL;
     result = clTreehImprove(ss->th);
+    ta = clTreehTreeAdaptor(ss->th);
     if (result) {
-      struct TreeAdaptor *ta = NULL;
-      ta = clTreehTreeAdaptor(ss->th);
       struct DataBlock *db;
       double newScore =  clTreehScore(ss->th);
       db = clConvertTreeToDot(ta, newScore, ss->labels, NULL, ss->cfg, NULL, ss->dm);
       sendBlock(0, db, MSG_BETTER, newScore);
       clDatablockFreePtr(db);
+      addToHistogram(HISTOLABEL_MUTGOOD, clTreehMutationCount(ss->th), 1.0);
       clTreeaFree(ta);
       goto bail;
     }
     failCount += 1;
+    addToHistogram(HISTOLABEL_MUTBAD, clTreehMutationCount(ss->th), 1.0);
+    clTreeaFree(ta);
   }
 //  assert(clTreehScore(th) == ss->shouldBeScore);
   if (clTreehScore(ss->th) != ss->shouldBeScore) {
@@ -394,15 +427,11 @@ void doSlaveLoop(void) {
       case MSG_LOADCLB:
         ss.dbdm = db;
         srand(time(NULL) + my_rank * 107);
-//        printf("SLAVE: db ptr %p\n",db);
-//        printf("SLAVE: db size %d\n",clDatablockSize(db));
         ss.dm = clbDBDistMatrix(ss.dbdm);
         ss.labels = clbDBLabels(ss.dbdm);
-//        printf("SLAVE:dist matrix size %d\n",ss.dm->size1);
         break;
 
       case MSG_NEWASSIGNMENT:
-//        assert(score != ss.myLastScore);
         ss.shouldBeScore = score;
         ss.myLastScore = score;
         if (ss.bestdb) {
@@ -422,7 +451,6 @@ void doSlaveLoop(void) {
         }
         ss.th = clTreehNew(ss.dm, ss.ta);
         clFree(dpt);
-//        fprintf(stderr, "SLAVE %d got new assignment with score %f\n", my_rank, ss.myLastScore);
         calculateTree(&ss);
         break;
 

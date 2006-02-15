@@ -200,4 +200,6 @@ int clTreehGetTreeIndex(struct TreeHolder *th);
  */
 void clTreehFree(struct TreeHolder *th);
 
+int clTreehMutationCount(struct TreeHolder *th);
+
 #endif

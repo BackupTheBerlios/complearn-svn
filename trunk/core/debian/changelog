@@ -1,3 +1,9 @@
+libcomplearn (0.9.2-1) beta; urgency=medium
+
+  * Initial release with fixed packaging.  Closes old broken autoconf script.
+
+ -- Rudi <cilibrar@cilibrar.com>  Sun, 12 Feb 2006 20:09:16 +0200
+
 libcomplearn (0.8.17-1) unstable; urgency=low
 
   * Initial release Closes: #nnnn  (nnnn is the bug number of your ITP)
