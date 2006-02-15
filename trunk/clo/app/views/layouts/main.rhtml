@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <% @title 		||= 'CompLearn Online Demo' 
+       @metakeywords 	||= 'CompLearn, Online, Demo'
+       @metadescription	||= @title
+     %><%= '<meta name="keywords" content="' + @metakeywords + '">' if @metakeywords %>
+    <%= '<meta name="description" content="' + @metadescription + '">' if @metadescription %>
+    <%= stylesheet_link_tag 'clo' %>
+    <%= javascript_include_tag 'prototype' %>
+    <title><%= @title %></title>
+  </head>
+  <body<%= ' onLoad="' + @onload + '"' if @onload %>>
+    <h2><%= @title %></h2>
+    <div id="navbar">
+      <ul>
+	<li><%= link_to "New experiment", :controller => 'clo', :action => 'fun' %></li>
+	<li><%= link_to "Random experiment", :controller => 'clo', :action => 'getrandexp' %></li>
+	<li><%= link_to "All experiments", :controller => 'clo', :action => 'listmonths' %></li>
+	<li><a href="http://complearn.org/">CompLearn Home</a></li>
+      </ul>
+    </div>
+
+    <div id="content">
+      <% if flash[:notice] %><p style="notice"><%= flash[:notice] %></p><% end %>
+<%= @content_for_layout %>
+    </div>
+
+      <div id="footer">
+        <p id="copyright">
+          &copy; 2006 CompLearn. All rights reserved.
+        </p>
+      </div>
+
+    </div>
+
+  </body>
+</html>

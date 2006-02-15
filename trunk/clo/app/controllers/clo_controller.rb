@@ -24,7 +24,11 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CloController < ApplicationController
+  layout 'main'
+
   def fun
+    @title = 'Complearn Online Demo'
+    @onload = 'updateStatus()'
     loadAll
     @maxterms = @@MAXTERMS
   end
@@ -34,12 +38,19 @@ class CloController < ApplicationController
   end
 
   def getrandexp
+    @title = 'Random experiment'
     l = Lab.find_all
-    l = l[rand(l.size)]
-    redirect_to :action => 'showexpnum', :id => l.codenum
+    unless l.empty?
+      l = l[rand(l.size)]
+      redirect_to :action => 'showexpnum', :id => l.codenum
+    else
+      flash[:notice] = 'No experiments in Lab'
+      redirect_to :action => 'listmonths'
+    end
   end
 
   def showmonth
+    @title = 'Monthly Experiments Summary'
     ti = Time.now.to_i.to_f
     curi = (params['when'] || params['id'] || Time.now).to_i
     curtime = Time.at(curi)
@@ -47,9 +58,12 @@ class CloController < ApplicationController
     @experiments = Lab.find(:all, :conditions => ['created_at > ? and created_at < ?', curtime, Time.at(curtime.to_i + 3600*24*31)])
 #    @experiments = @experiments.sort_by { |i| i.created_at }
     @experiments = @experiments.sort_by { |i| -i.showcount / Math.exp((ti-i.created_at.to_f)/(3600*24*20)) }   # 20 days for 1/e decay
+    @metakeywords = @experiments.map { |i| i.title }.compact.sort.join(',')
+    @metadescription = @experiments.map { |i| i.termlist[-1] }.sort.join(',')
   end
 
   def listmonths
+    @title = 'CompLearn Online - All Experiments'
     @months = [ ]
     curtime = Time.gm(*[1, 0, 0, 1, 10, 2005, 0, 317, false, "CET"])
     now = Time.new
@@ -66,6 +80,7 @@ class CloController < ApplicationController
   end
 
   def listdays
+    @title = 'Experiments by day'
     l = Lab.find_all.sort_by { |i| i.created_at }
     days = l.map { |i| i = i.created_at
                    i.strftime "#{Date::MONTHNAMES[i.mon]}-%d" }.uniq
@@ -127,6 +142,7 @@ class CloController < ApplicationController
 
   def showexpnum
     @num=params["id"]
+    @title = 'CompLearn Online Experimental Results page for ' + @num.to_s
     @comments = [ ]
     @expid = 0
     @exptime = "(unknown)"

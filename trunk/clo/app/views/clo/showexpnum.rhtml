@@ -1,7 +1,4 @@
-<html>
-<head>
-<title> CompLearn Online Experimental Results page for #<%= @num %> </title>
- <script language="JavaScript">
+<script language="JavaScript">
 <!--
 var time = null
 function move() {
@@ -9,16 +6,15 @@ window.location = '<%= url_for :action=>"showexpnum", :id=>@num, :params=>{"delt
 }
 //-->
 </script>
- <link href="/stylesheets/clo.css" media="screen" rel="Stylesheet">
-</head>
-<% if @omitrefresh %>
-<body>
-<% else %>
-<body onload="timer=setTimeout('move()',<%= @deltime*1000 %>)">
-<% end %>
-<h1>CompLearn Online </h1>
+<%
+  unless @omitrefresh
+    @onload = "time=null;timer=setTimeout('window.location = "
+    @onload += url_for :action=>"showexpnum", :id=>@num, :params=>{"deltime"=>@deltime+1, "namechoice"=>@namechoice}
+    @onload += "'"
+    @onload += ",#{@deltime * 1000};)" 
+  end
+%>
 <h1>Title: <%= @title %> </h1>
-<div id="navbar"> <%= render_partial 'navigation' %> </div>
 <% if @starttime %>
   <h3> <%= link_to( "back to #{@starttime}", :controller => 'clo', :action => 'showmonth', :id => @starttime.to_i) %> </h3><br>
 <% end %>
@@ -50,5 +46,3 @@ Experiment made on <%= @exptime %> <br>
 <%= submit_tag "add comment" %>
 <%= end_form_tag %>
 </div>
-</body>
-</html>

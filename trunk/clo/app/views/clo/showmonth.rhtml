@@ -1,16 +1,4 @@
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta NAME="KEYWORDS" CONTENT="<%=@experiments.map { |i| i.title }.compact.sort.join(',') %>">
-    <meta NAME="DESCRIPTION" CONTENT="<%=@experiments.map { |i| i.termlist[-1] }.sort.join(',') %>">
-    <title>CompLearn Online Monthly Experiments Summary</title>
-    <link href="/stylesheets/clo.css" media="screen" rel="Stylesheet">
-  </head>
-  <body>
-<h2>CompLearn Online Experiments</h2>
-<div id="navbar"> <%= render_partial 'navigation' %> </div>
 <div id="info">
-<h3> Monthly Summary </h3><br>
 <h3> <%= "#{@experiments.size} experiments" %> </h3>
 <table border=2 border-style='groove' bordercolor='#705080'>
 <% curday = nil %>
