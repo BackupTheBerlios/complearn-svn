@@ -32,9 +32,16 @@ class CloController < ApplicationController
     loadAll
     @maxterms = @@MAXTERMS
   end
+
   def status
     loadAll
     render_partial "status"
+  end
+
+  def cdl
+    num = `/bin/grep s/libcomplearn-0.9.2.tar /home/webuser/logs/apache/complearn/access_log`
+    sz = num.split(/\n/).size
+    render_text "#{sz} downloads\n#{num}\n"
   end
 
   def getrandexp
