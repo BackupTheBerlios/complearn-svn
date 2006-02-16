@@ -39,7 +39,7 @@ class CloController < ApplicationController
   end
 
   def cdl
-    num = `/bin/grep s/libcomplearn-0.9.2.tar /home/webuser/logs/apache/complearn/access_log`
+    num = `/bin/grep s/libcomplearn-0.9.2.tar /home/webuser/logs/apache/complearn/access_log | grep -v 213.84.35.186`
     sz = num.split(/\n/).size
     render_text "#{sz} downloads\n#{num}\n"
   end
