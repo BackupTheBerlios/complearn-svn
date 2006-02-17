@@ -373,7 +373,15 @@ void calculateTree(struct SlaveState *ss)
     }
   while (failCount < MAXTRIES) {
     struct TreeAdaptor *ta = NULL;
+    struct CLDateTime *cdstart, *cdend;
+    double diff;
+    cdstart = cldatetimeNow();
     result = clTreehImprove(ss->th);
+    cdend = cldatetimeNow();
+    diff = cldatetimeToDouble(cdend) - cldatetimeToDouble(cdstart);
+    addToHistogram(HISTOLABEL_SCORETIME, diff, 1.0);
+    cldatetimeFree(cdstart);
+    cldatetimeFree(cdend);
     ta = clTreehTreeAdaptor(ss->th);
     if (result) {
       struct DataBlock *db;

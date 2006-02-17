@@ -143,6 +143,22 @@ unsigned long cldatetimeToInt(struct CLDateTime *c)
   return c->tv.tv_sec;
 }
 
+/** \brief Converts a CLDateTime to an double-precision floating-point number.
+ *
+ * This clFunction converts a CLDateTime into a double.  This double
+ * represents the number of seconds since the epoch (see man time(2)).  The
+ * clFunction returns the double directly.  Notice that this function does not
+ * translate the timezone information; this information is discarded when
+ * converting.
+ *
+ *  \param c pointer to the CLDateTime that must be converted to a double
+ *  \return a double representing the number of seconds since Jan 1, 1970
+ */
+double cldatetimeToDouble(struct CLDateTime *c)
+{
+  return c->tv.tv_sec * 1.0 + c->tv.tv_usec * 1.0e-6;
+}
+
 /** \brief Converts a CLDateTime to a daystring
  *
  * This clFunction converts a CLDateTime into a daystring.  A daystring is

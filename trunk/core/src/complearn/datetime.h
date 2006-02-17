@@ -38,6 +38,7 @@ const char *cldatetimeToString(struct CLDateTime *c);
 char *cldatetimePreviousDayString(const char *str);
 const char *cldatetimeToHumString(struct CLDateTime *c);
 unsigned long cldatetimeToInt(struct CLDateTime *c);
+double cldatetimeToDouble(struct CLDateTime *c);
 char *cldatetimeToDayString(struct CLDateTime *c);
 struct CLDateTime *cldatetimeAddDays(const struct CLDateTime *basis, int offset);
 void clSleepMillis(int howManyMillis);
