@@ -1,3 +1,5 @@
+# $Id$
+
 # Copyright (c) 2006 Rudi Cilibrasi, Rulers of the RHouse
 # All rights reserved.     cilibrar@cilibrar.com
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +29,6 @@ class CloController < ApplicationController
   layout 'main'
 
   def fun
-    @title = 'Complearn Online Demo'
     @onload = 'updateStatus()'
     loadAll
     @maxterms = @@MAXTERMS
@@ -45,7 +46,6 @@ class CloController < ApplicationController
   end
 
   def getrandexp
-    @title = 'Random experiment'
     l = Lab.find_all
     unless l.empty?
       l = l[rand(l.size)]
@@ -57,7 +57,6 @@ class CloController < ApplicationController
   end
 
   def showmonth
-    @title = 'Monthly Experiments Summary'
     ti = Time.now.to_i.to_f
     curi = (params['when'] || params['id'] || Time.now).to_i
     curtime = Time.at(curi)
@@ -70,7 +69,6 @@ class CloController < ApplicationController
   end
 
   def listmonths
-    @title = 'CompLearn Online - All Experiments'
     @months = [ ]
     curtime = Time.gm(*[1, 0, 0, 1, 10, 2005, 0, 317, false, "CET"])
     now = Time.new
@@ -87,7 +85,6 @@ class CloController < ApplicationController
   end
 
   def listdays
-    @title = 'Experiments by day'
     l = Lab.find_all.sort_by { |i| i.created_at }
     days = l.map { |i| i = i.created_at
                    i.strftime "#{Date::MONTHNAMES[i.mon]}-%d" }.uniq
@@ -149,7 +146,6 @@ class CloController < ApplicationController
 
   def showexpnum
     @num=params["id"]
-    @title = 'CompLearn Online Experimental Results page for ' + @num.to_s
     @comments = [ ]
     @expid = 0
     @exptime = "(unknown)"
@@ -219,7 +215,7 @@ class CloController < ApplicationController
       begin
       File.open(filename, 'r') { |f| render_text f.read }
       rescue
-      render_text "Sorry, no matrix yet for #{whichnum} yet, please refresh"
+      render_text "Sorry, no matrix for #{whichnum} yet, please refresh"
       end
     end
   end

@@ -1,13 +1,16 @@
+<% @title = 'New experiment' %>
 <div id="info">
-<img src="/images/ajax.jpg" border="0" align="right">
-Welcome to the interactive demo.
-Here you may experiment with the CompLearn software by trying your own small
-experiments.  Simply think of 4-<%= @maxterms %> words (or compound words containing spaces)
-in a list.  Enter the words in the box below and then press "run experiment" to
-see the computer make a tree.  The computer will use the Google search engine
-page counts to compute NGD for each pair of words.  Then it will use the
-quartet method to find the best tree.  Give it a try!
-<a href="http://www.cwi.nl/~paulv/papers/amdug.pdf" class="readmore" target="_blank">Read more about NGD...</a></div>
+
+  <img id="ajax" src="/images/ajax.jpg" alt="ajax" />
+  <p>Simply think of 4-<%= @maxterms %> words (or compound words containing spaces)
+  in a list.  Enter the words in the box below and then press "run experiment" to
+  see the computer make a tree.</p>
+  <p>The computer will use the Google search engine page counts to compute NGD for each pair of words.  Then it will use the quartet method to find the best tree.</p>
+  <p>Give it a try!</p>
+
+  <a href="http://www.cwi.nl/~paulv/papers/amdug.pdf" class="readmore" target="_blank">Read more about NGD...</a>
+
+</div>
 
 <div id="control">
 <script language="JavaScript" type="text/javascript">

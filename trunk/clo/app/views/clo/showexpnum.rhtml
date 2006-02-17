@@ -1,22 +1,9 @@
-<script language="JavaScript">
-<!--
-var time = null
-function move() {
-window.location = '<%= url_for :action=>"showexpnum", :id=>@num, :params=>{"deltime"=>@deltime+1, "namechoice"=>@namechoice } %>'
-}
-//-->
-</script>
 <%
-  unless @omitrefresh
-    @onload = "time=null;timer=setTimeout('window.location = "
-    @onload += url_for :action=>"showexpnum", :id=>@num, :params=>{"deltime"=>@deltime+1, "namechoice"=>@namechoice}
-    @onload += "'"
-    @onload += ",#{@deltime * 1000};)" 
-  end
+  @title = 'Results for experiment ' + @num.to_s
+  @metarefresh = 60
 %>
-<h1>Title: <%= @title %> </h1>
 <% if @starttime %>
-  <h3> <%= link_to( "back to #{@starttime}", :controller => 'clo', :action => 'showmonth', :id => @starttime.to_i) %> </h3><br>
+  <h3> <%= link_to( "back to #{@starttime}", :controller => 'clo', :action => 'showmonth', :id => @starttime.to_i) %></h3>
 <% end %>
 <% if @admin %>
 <p><%= link_to "Delete", :action=>"delexpnow", :id=>@num %></p>
@@ -31,18 +18,21 @@ window.location = '<%= url_for :action=>"showexpnum", :id=>@num, :params=>{"delt
 <% end %>
 <% end %>
 <div id="matrix">
-<%= @distmatrix %>
+  <%= @distmatrix %>
 </div>
+
 <div id="tree">
-<img alt='Please wait for your tree to be calculated...' src='<%= url_for :action=>'grabfile', :id=>@num, :params=>{:filename=>'treefile.png', :nonce=>@deltime} %>' >
-<br>
-Experiment made on <%= @exptime %> <br>
+  <img src="<%= url_for :action=>'grabfile', :id=>@num, :params=>{:filename=>'treefile.png', :nonce=>@deltime} %>" alt="Tree" />
+</div>
+
+<div>
+Experiment made on <%= @exptime %>
 <% @comments.each { |c| %>
   <%= c.str %> <em>--<%= c.username %> on <%= c.created_at %></em><br>
 <% } %>
-<h2>Add your own comment</h2>
+<h3>Add your own comment</h3>
 <%= form_tag( :action => :addcomment, :id => @expid ) %>
 <%= text_field_tag :str %>
-<%= submit_tag "add comment" %>
+<%= submit_tag "Add comment" %>
 <%= end_form_tag %>
 </div>
