@@ -37,7 +37,7 @@
  *
  *  \struct CompAdaptor
  *
- *  CompAdaptor contains pointers to 5 clFunctions which are defined in an
+ *  CompAdaptor contains pointers to 5 functions which are defined in an
  *  external compression module.  There is also a user opaque pointer for
  *  custom extensions.
  *
@@ -45,17 +45,17 @@
  */
 struct CompAdaptor {
   void *cptr;
-	t_compclFunc cf;      /*!< Pointer to clFunction which returns the compressed
+	t_compclFunc cf;      /*!< Pointer to function which returns the compressed
 												   size of a DataBlock in bits*/
-	t_freecompclFunc fcf; /*!< Pointer to clFunction which frees a compressor
+	t_freecompclFunc fcf; /*!< Pointer to function which frees a compressor
 												   instance from memory */
-	t_shortname sn;     /*!< Pointer to clFunction which returns string shortname of
+	t_shortname sn;     /*!< Pointer to function which returns string shortname of
 										       CompAdaptor object */
-	t_longname ln;      /*!< Pointer to clFunction which returns string longname of
+	t_longname ln;      /*!< Pointer to function which returns string longname of
 											     CompAdaptor object */
-  t_apiver apiv;      /*!< Pointer to clFunction which returns int api version
+  t_apiver apiv;      /*!< Pointer to function which returns int api version
 												   of CompAdaptor interface */
-  t_getparams params; /*!< Pointer to clFunction which returns a paramlist
+  t_getparams params; /*!< Pointer to function which returns a paramlist
 												   of CompAdaptor interface */
   struct ParamList *pl;
 };

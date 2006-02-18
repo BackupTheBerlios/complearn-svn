@@ -54,8 +54,8 @@ struct StringStack;
  * is to support k leaves, then it must have k-2 kernel nodes, for a total
  * of 2 * k - 2 nodes.  When a new tree is created, it is made by a simple
  * caterpillar-style pattern.  To get random variation, use the
- * clUnrootedbinaryDoComplexMutation clFunction with the clUnclRootedbinaryClone clFunction.
- * This clFunction allocates memory which must eventually be freed with
+ * clUnrootedbinaryDoComplexMutation function with the clUnclRootedbinaryClone function.
+ * This function allocates memory which must eventually be freed with
  * rootedbinaryFree.
  *
  *  \param howManyLeaves an integer >=4 indicating how many leaves the tree
@@ -70,11 +70,11 @@ struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
 
 /** \brief Applies a complex mutation to a tree.
  *
- * This clFunction is the most convenient source of variation in trees.
+ * This function is the most convenient source of variation in trees.
  * It uses a coin flip to determine how many simple mutations to do, as
  * specified in the Quartet Tree paper by Cilibrasi and Vitanyi.
  * It then applies the requisite number of simple mutations, using the
- * builtin random-number generator rand().  This clFunction may be used
+ * builtin random-number generator rand().  This function may be used
  * in combination with clUnclRootedbinaryClone to allow several different tries from
  * the same tree starting point.  It may also be used with the TreeScore
  * module which can allow for quartet-based hill-climbing algorithms.
@@ -86,9 +86,9 @@ void clRootedbinaryComplexMutation(struct RootedBinary *ub);
 
 /** \brief Clones an RootedBinary tree, allocating new memory for the copy
  *
- * This clFunction copies an RootedBinary tree object.  This can be used
+ * This function copies an RootedBinary tree object.  This can be used
  * in conjunction with clUnrootedbinaryDoComplexMutation for hill-climbing search.
- * This clFunction allocates memory which must eventually be freed with
+ * This function allocates memory which must eventually be freed with
  * rootedbinaryFree.
  * \param ub pointer to the RootedBinary that must be cloned
  * \return pointer to the new copy of the original tree
@@ -98,7 +98,7 @@ struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *ub);
 /** \brief Indicates whether a given node identifier is a place for
  * a quartet-leaf object-label.
  *
- * This clFunction allows the user to determine if a given node identifier
+ * This function allows the user to determine if a given node identifier
  * needs to have a label attached or not.  It returns a true value != 0
  * if a label should be placed at this node.
  *
@@ -110,7 +110,7 @@ int clRootedbinaryIsQuartetableNode(const struct RootedBinary *ub, qbase_t which
 
 /** \brief Indicates whether a given node has orderable children.
  *
- * This clFunction allows the user to determine if a given node identifier
+ * This function allows the user to determine if a given node identifier
  * has at least 2 children that can be flipped in more than one order.
  * This bit may be adjusted using unrootedbinaryFlipNodeLayout
  * Leaf nodes are thus not flippable, but kernel nodes are.
@@ -123,8 +123,8 @@ int clRootedbinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
 
 /** \brief Returns the first node returned in tree traversals
  *
- * This clFunction allows the user to determine the starting node for
- * tree traversals on this tree.  This applies to the clWalkTree clFunction.
+ * This function allows the user to determine the starting node for
+ * tree traversals on this tree.  This applies to the clWalkTree function.
  *
  * \param ub pointer to the RootedBinary that must be reordered
  * \return qbase_t indicating which node is first traversed in this tree
@@ -134,13 +134,13 @@ qbase_t clRootedbinaryStartingNode(const struct RootedBinary *ub);
 /** \brief Returns a DRA contained an ordered traversal of all
  * the nodes in the tree.
  *
- * This clFunction allows the user to get a dynamically-allocated list of
+ * This function allows the user to get a dynamically-allocated list of
  * all the nodes in this tree.  They are returned in depth first order.
- * This is equivalent to the clWalkTree clFunction with a 0 breadthFirst
+ * This is equivalent to the clWalkTree function with a 0 breadthFirst
  * parameter; thus the order returned by clUnclRootedbinaryNodes will be affected
  * by the node child order flip bits.
  *
- * The DRA returned by this clFunction use the .i field of PCTypes:
+ * The DRA returned by this function use the .i field of PCTypes:
  *
  * struct DRA *da = clUnclRootedbinaryNodes(ub);
  * int i;
@@ -161,7 +161,7 @@ struct DRA *clRootedbinaryNodes(const struct RootedBinary *ub);
  * all kernel nodes, leaving only a list of leaf-nodes.  In an unrooted
  * binary tree, this list may be thought of as a circle comprised of
  * leaf nodes.  For a tree with k leaves, there are k leaf-node pairs
- * formed in this way.  This clFunction allows the user to retrieve a list
+ * formed in this way.  This function allows the user to retrieve a list
  * of node identifier pairs along the entire tree perimeter.
  *
  * The node identifiers are accessed using the .ip.x and .ip.y members of
@@ -181,8 +181,8 @@ struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct C
 
 /** \brief tests to determine if two trees are identical
  *
- * This clFunction returns 0 to indicdate that two trees are different, and
- * 1 to indicate that they are identical.  This clFunction is order insensitive.
+ * This function returns 0 to indicdate that two trees are different, and
+ * 1 to indicate that they are identical.  This function is order insensitive.
  * It will only compare neighbor connectivity.
  *
  * \param ad1 pointer to one of the AdjAdaptor to compare
@@ -195,9 +195,9 @@ struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct C
 
 /** \brief Frees the memory associated with an RootedBinary
  *
- * This clFunction frees the memory associated with an RootedBinary.
- * After calling this clFunction it is safest to set the pointer to NULL,
- * as you shouldn't try to use it after deallocation.  This clFunction must
+ * This function frees the memory associated with an RootedBinary.
+ * After calling this function it is safest to set the pointer to NULL,
+ * as you shouldn't try to use it after deallocation.  This function must
  * be called for every time clRootedbinaryNew, clUnclRootedbinaryClone, or loadTree is called.
  *
  * \param ub pointer to the RootedBinary that must be freed.
@@ -220,7 +220,7 @@ void rootedbinaryFree(struct RootedBinary *ub);
  */
 struct DRA *clRootedbinaryLeafLabels(const struct RootedBinary *ub);
 
-/** \brief This clFunction returns the number of simple mutations used in
+/** \brief This function returns the number of simple mutations used in
  * the most recent complex mutation step taken with clUnrootedbinaryDoComplexMutation
  *
  * \param ub pointer to the RootedBinary to be path queried
@@ -230,7 +230,7 @@ int clRootedbinaryLastMutationCount(const struct RootedBinary *ub);
 
 /** \brief Indicates whether or not a given pair of nodes are connected.
  *
- * This clFunction returns a true value if and only if the two nodes with the
+ * This function returns a true value if and only if the two nodes with the
  * given node identifiers are connected.  A node may not connect to itself.
  *
  * \param ub pointer to the RootedBinary to be path queried

@@ -131,7 +131,7 @@ struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts);
 
 /** \brief Given a DataBlock package, returns a DRA of tagnums & DataBlocks
  *
- *  clLoad_DataBlock_package() is a high level clFunction which will take a
+ *  clLoad_DataBlock_package() is a high level function which will take a
  *  DataBlock "package," sequentially retrieve each dumped DataBlock in the
  *  package, and return a DRA of IntDBPair objects which hold the \a tagnum
  *  of each DataBlock and a pointer to the dumped DataBlock.
@@ -148,7 +148,7 @@ void clFree_DataBlock_package ( struct DRA *da );
 
 /** \brief Retrieves DataBlock from DRA of IntDBPairs
  *
- *  Another high level clFunction, clScanForTag() will, given a tagnum as defined
+ *  Another high level function, clScanForTag() will, given a tagnum as defined
  *  in tagtypes.h, scan a DRA of IntDBPairs as produced by
  *  clLoad_DataBlock_package(). This retrieved DataBlock is an independent copy
  *  any must be freed using clDatablockFree().

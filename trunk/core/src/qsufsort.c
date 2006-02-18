@@ -120,7 +120,7 @@ static int choose_pivot(int *p, int n) {
    (suffix numbers) of length n starting at p. The algorithm is a ternary-split
    quicksort taken from Bentley & McIlroy, "Engineering a Sort Function",
    Software -- Practice and Experience 23(11), 1249-1265 (November 1993). This
-   clFunction is based on Program 7.*/
+   function is based on Program 7.*/
 
 static void sort_split(int *p, int n)
 {

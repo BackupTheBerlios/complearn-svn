@@ -43,7 +43,7 @@ struct AdjImplementation;
  * necessarily affect the connectivity read back both at this location (i,j) as
  * well as the transposed location, (j,i).
  *
- *  AdjAdaptor contains pointers to 9 clFunctions which are defined in an
+ *  AdjAdaptor contains pointers to 9 functions which are defined in an
  *  external adclJacency module.
  *
  * \sa adjadaptor.h
@@ -54,30 +54,30 @@ struct AdjAdaptor {
 };
 
 struct AdjImplementation {
-  t_adjaprint adjaprint;  /*!< Pointer to clFunction which prints a binary matrix
+  t_adjaprint adjaprint;  /*!< Pointer to function which prints a binary matrix
                                representing the connectivity of all nodes */
-  t_adjasize adjasize;    /*!< Pointer to clFunction which returns the size of
+  t_adjasize adjasize;    /*!< Pointer to function which returns the size of
                                one side of the square matrix */
-  t_adjafree adjafree;    /*!< Pointer to clFunction which frees adclJacency module
+  t_adjafree adjafree;    /*!< Pointer to function which frees adclJacency module
                                instance from memory */
-  t_adclJaclone adclJaclone;  /*!< Pointer to clFunction which returns a pointer to
+  t_adclJaclone adclJaclone;  /*!< Pointer to function which returns a pointer to
                                a duplicate instance of this adclJacency module */
-  t_adjagetconstate adjagetconstate; /*!< Pointer to clFunction which returns the
+  t_adjagetconstate adjagetconstate; /*!< Pointer to function which returns the
                                           connectivity state of 2 given nodes */
-  t_adjasetconstate adjasetconstate; /*!< Pointer to clFunction which sets the
+  t_adjasetconstate adjasetconstate; /*!< Pointer to function which sets the
                                           connectivity state of 2 given nodes */
-  t_adjagetneighborcount adjagetneighborcount; /*!< Pointer to clFunction which
+  t_adjagetneighborcount adjagetneighborcount; /*!< Pointer to function which
                                                   returns the number of
                                                   neighbors a given node
                                                   contains */
-  t_adjagetneighbors adjagetneighbors; /*!< Pointer to clFunction which retrieves
+  t_adjagetneighbors adjagetneighbors; /*!< Pointer to function which retrieves
                                          a list of neighbors for a given node
                                          */
   t_adjaspmmap adjaspmmap;
 };
 
 /** \brief Prints a binary matrix representing the connectivity of all nodes
- *  This clFunction prints to stdout a square matrix of 0s and 1s, where 0
+ *  This function prints to stdout a square matrix of 0s and 1s, where 0
  *  indicates a non-connected state between two nodes and 1 represents a
  *  connected state.
  *
@@ -86,7 +86,7 @@ struct AdjImplementation {
 void clAdjaPrint(struct AdjAdaptor *aa);
 
 /** \brief Returns the size of one side of the square matrix
- *  This clFunction returns the size of a dimension the binary matrix.  This
+ *  This function returns the size of a dimension the binary matrix.  This
  *  number is the same value passed when AdjAdaptor instance was initialized
  *
  *  \param aa a pointer to the AdjAdaptor
@@ -95,7 +95,7 @@ int clAdjaSize(struct AdjAdaptor *aa);
 
 /** \brief Deallocates memory used for an AdjAdaptor
  *
- *  This clFunction frees memory used to store an AdjAdaptor.
+ *  This function frees memory used to store an AdjAdaptor.
  *  Do not use this pointer after the AdjAdaptor has been freed.
  *
  *  \param aa a pointer to the AdjAdaptor that must be deallocated
@@ -104,7 +104,7 @@ int clAdjaSize(struct AdjAdaptor *aa);
 void clAdjaFree(struct AdjAdaptor *aa);
 
 /** \brief Clones an AdjAdaptor to make an independent copy
- * This clFunction simply clones an AdjAdaptor and returns a pointer to a new copy.
+ * This function simply clones an AdjAdaptor and returns a pointer to a new copy.
  *
  * \param aa a pointer to the AdjAdaptor to be cloned
  * \return a pointer to a new copy of the input AdjAdaptor
@@ -113,7 +113,7 @@ struct AdjAdaptor *clAdjaClone(struct AdjAdaptor *aa);
 
 /** \brief Queries the connected status between two numbered nodes
  *
- * This clFunction can be used to quickly determine if node i and node
+ * This function can be used to quickly determine if node i and node
  * j are connected.  It will return 1 if they are connected, 0 if they
  * are not.
  *
@@ -127,7 +127,7 @@ int clAdjaGetConState(struct AdjAdaptor *aa, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
- * This clFunction connects or disconnects two nodes, depending on if
+ * This function connects or disconnects two nodes, depending on if
  * the third parameter is 1 or 0, respectively.
  *
  * \param aa a pointer to the AdjAdaptor to be adjusted
@@ -139,7 +139,7 @@ void clAdjaSetConState(struct AdjAdaptor *aa, int i, int j, int which);
 
 /** \brief Counts the number of neighbors a given node contains
  *
- * This clFunction counts the number of neighbors a given node has
+ * This function counts the number of neighbors a given node has
  * within an AdjAdaptor.  It will return a number between 0 and the
  * full size of one side of the AdjAdaptor.
  *
@@ -151,7 +151,7 @@ int clAdjaNeighborCount(struct AdjAdaptor *aa, int i);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
- * This clFunction stores, into a given buffer, the integer labels for each
+ * This function stores, into a given buffer, the integer labels for each
  * neighbor of the given node.
  *
  * \param aa pointer to the AdjAdaptor to be queried

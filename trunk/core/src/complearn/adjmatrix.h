@@ -49,7 +49,7 @@ struct DRA;
 
 /** \brief Create a new AdjMatrix with a given size
  *
- * This clFunction creates a new AdjMatrix with the given dimension on a side.
+ * This function creates a new AdjMatrix with the given dimension on a side.
  * This memory should be freed using clAdjmatrixFree when it is no longer needed.
  * An AdjMatrix of size n supports node-labels in the range 0 to n-1, inclusive.
  *
@@ -59,7 +59,7 @@ struct DRA;
 struct AdjMatrix *clAdjmatrixNew(int howbig);
 
 /** \brief Clones an AdjMatrix to make an independent copy
- * This clFunction simply clones an AdjMatrix and returns a new copy.
+ * This function simply clones an AdjMatrix and returns a new copy.
  *
  * \param inp a pointer to the AdjMatrix to be cloned
  * \return a pointer to a new copy of the input AdjMatrix
@@ -68,7 +68,7 @@ struct AdjMatrix *clAdjmatrixClone(const struct AdjMatrix *inp);
 
 /** \brief Deallocates memory used for an AdjMatrix
  *
- * This clFunction frees memory used to store an AdjMatrix.
+ * This function frees memory used to store an AdjMatrix.
  * Do not use this pointer after the AdjMatrix has been freed.
  *
  * \param adj a pointer to the AdjMatrix that must be deallocated
@@ -78,7 +78,7 @@ void clAdjmatrixFree(struct AdjMatrix *adj);
 
 /** \brief Queries the connected status between two numbered nodes
  *
- * This clFunction can be used to quickly determine if node i and node
+ * This function can be used to quickly determine if node i and node
  * j are connected.  It will return 1 if they are connected, 0 if they
  * are not.
  *
@@ -93,7 +93,7 @@ int clAdjmatrixGetConState(const struct AdjMatrix *adj, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
- * This clFunction connects or disconnects two nodes, depending on if
+ * This function connects or disconnects two nodes, depending on if
  * the third parameter is 1 or 0, respectively.
  *
  * \param adj a pointer to the AdjMatrix to be adjusted
@@ -105,7 +105,7 @@ void clAdjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
- * This clFunction stores, into a given buffer, the integer labels for each
+ * This function stores, into a given buffer, the integer labels for each
  * neighbor of the given node.
  *
  * \param adj a pointer to the AdjMatrix to be queried
@@ -121,7 +121,7 @@ int clAdjmatrixNeighbors(const struct AdjMatrix *adj, int from, int *nbuf, int *
 
 /** \brief Counts the number of neighbors a given node contains
  *
- * This clFunction counts the number of neighbors a given node has
+ * This function counts the number of neighbors a given node has
  * within an AdjMatrix.  It will return a number between 0 and the
  * full size of one side of the AdjMatrix.
  *
@@ -133,7 +133,7 @@ int clAdjmatrixNeighborCount(const struct AdjMatrix *adj, int from);
 
 /** \brief Returns the size of a given AdjMatrix
  *
- *  This clFunction returns the size of a dimension of an AdjMatrix.  This
+ *  This function returns the size of a dimension of an AdjMatrix.  This
  *  number is the same value passed to clAdjmatrixNew() when a newly initialized
  *  AdjMatrix object is created.
  *
@@ -144,7 +144,7 @@ int clAdjmatrixSize(const struct AdjMatrix *adj);
 
 /** \brief Prints a visual representation of an AdjMatrix to stdout
  *
- * This clFunction prints an AdjMatrix where 1's represent a state of connection
+ * This function prints an AdjMatrix where 1's represent a state of connection
  * between nodes, and 0's represent a state of disconnection.
  *
  * \param adj a pointer to the AdjMatrix to be printed

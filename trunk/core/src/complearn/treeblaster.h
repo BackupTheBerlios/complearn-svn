@@ -51,7 +51,7 @@ struct TreeBlaster;
 
 /** \brief creates a new TreeBlaster
  *
- * This clFunction creates a new TreeBlaster for determining an optimal
+ * This function creates a new TreeBlaster for determining an optimal
  * child traversal ordering for the given tree topology.  It is normally
  * called after clTreemasterFindTree() has determined a best-matching topology.
  * The result of an order-search is a CLNodeSet of internal node numbers.
@@ -72,7 +72,7 @@ struct TreeBlaster *clTreebNew(gsl_matrix *gsl, struct TreeAdaptor *ta);
 
 /** \brief finds a best traversal ordering for the given tree
  *
- * This clFunction first determines which nodes in the given TreeAdaptor are
+ * This function first determines which nodes in the given TreeAdaptor are
  * flippable.  Then it randomly mutates a set of flippable nodes to try to
  * find the optimal child-order for traversal.  The resultant ordering is
  * represented in the returned flips CLNodeSet.  Only flippable node numbers
@@ -89,7 +89,7 @@ struct CLNodeSet *clTreebFindTreeOrder(struct TreeBlaster *tbl, double *s);
 
 /** \brief deallocates a TreeBlaster
  *
- * This clFunction deallocates the memory associated with a TreeBlaster.
+ * This function deallocates the memory associated with a TreeBlaster.
  * There is no return value.
  *
  * \param tbl pointer to the TreeBlaster to be freed
@@ -98,8 +98,8 @@ void clTreebFree(struct TreeBlaster *tbl);
 
 /** \brief provides realtime feedback callbacks for tree order search
  *
- * This structure supports the clTreebSetTreeOrderObserver() clFunction of TreeBlaster.
- * There are analogous clFunctions in the TreeObserver for TreeMaster.
+ * This structure supports the clTreebSetTreeOrderObserver() function of TreeBlaster.
+ * There are analogous functions in the TreeObserver for TreeMaster.
  *
  * \sa TreeObserver
  */
@@ -112,7 +112,7 @@ struct TreeOrderObserver {
 
 /** \brief sets the TreeBlaster order observer to allow realtime feedback
  *
- * This clFunction is only useful for multithreaded applications that want
+ * This function is only useful for multithreaded applications that want
  * to calculate in one thread and display the intermediate results in
  * realtime in another thread.
  *
@@ -124,7 +124,7 @@ void clTreebSetTreeOrderObserver(struct TreeBlaster *tbl, struct TreeOrderObserv
 
 /** \brief returns the number of trees used in orderwise agreement testing
  *
- * This clFunction returns the "k" count of trees for orderwise search
+ * This function returns the "k" count of trees for orderwise search
  * agreement termination condition.
  *
  * \param tbl pointer to the TreeBlaster to inspect
@@ -134,7 +134,7 @@ int clTreebK(struct TreeBlaster *tbl);
 
 /** \brief returns the number of labelled nodes in this TreeBlaster
  *
- * This clFunction returns the number of labelled nodes in the TreeAdaptor
+ * This function returns the number of labelled nodes in the TreeAdaptor
  * contained within the given TreeBlaster.
  *
  * \param tbl pointer to the TreeBlaster to inspect

@@ -38,7 +38,7 @@
  * It does this by way of a CLNodeSet containing a set of inverted nodes.
  * Nodes are inverted if their children are visitted in reversed order.
  *
- * The order fitness clFunction is defined as the sum of the distance matrix
+ * The order fitness function is defined as the sum of the distance matrix
  * entries for each adclJacent pair of labelled leaf nodes.  Thus, for n
  * leaves arranged in an unrooted binary tree there will be n elements in
  * the sum coming from n different places in the distance matrix.
@@ -94,7 +94,7 @@ double clTreemolderScoreScaled(struct TreeMolder *tm);
 /** \brief returns the current best ordering for this TreeMolder
  *
  * At any time a TreeMolder is working with a given candidate best ordering.
- * This clFunction queries that ordering.
+ * This function queries that ordering.
  *
  * The CLNodeSet returned contains entries for each flipped node.  This is
  * used to determine the order of child visitting.

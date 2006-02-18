@@ -140,7 +140,7 @@ gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnume
   return gres;
 }
 
-/* TODO: NCD only clFunction; move to a better location */
+/* TODO: NCD only function; move to a better location */
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur)
 {
   int n1c, n2c;

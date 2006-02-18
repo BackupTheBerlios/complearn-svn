@@ -62,7 +62,7 @@ struct TreeAdaptor {
 
 /** \brief mutates a tree using a complex mutation
  *
- * This clFunction performs a complex mutation, changing the connections in
+ * This function performs a complex mutation, changing the connections in
  * the tree in some amount that is usually small.  This is composed of 1 or
  * more steps of a random simple mutation.  There is no return value.
  *
@@ -72,7 +72,7 @@ void clTreeaMutate(struct TreeAdaptor *tra);
 
 /** \brief frees memory associated with the TreeAdaptor
  *
- * This clFunction frees the memory allocated from clTreeaNew() or clTreeaClone().
+ * This function frees the memory allocated from clTreeaNew() or clTreeaClone().
  * There is no return.
  *
  * \param tra pointer to a TreeAdaptor to be deallocated
@@ -81,7 +81,7 @@ void clTreeaFree(struct TreeAdaptor *tra);
 
 /** \brief constructs a new (unrooted = 0, rooted = 1) simple TreeAdaptor
  *
- * This clFunction constructs a basic "starting tree" in the shape of a
+ * This function constructs a basic "starting tree" in the shape of a
  * catterpillar of the given number of leaf nodes.
  *
  * \param isRooted integer indicating unrooted (0) or rooted (nonzero) tree
@@ -92,7 +92,7 @@ struct TreeAdaptor *clTreeaNew(int isRooted, int howbig);
 
 /** \brief create an exact duplicate copy of a TreeAdaptor
  *
- * This clFunction clones a TreeAdaptor.  It is useful in conjunction with
+ * This function clones a TreeAdaptor.  It is useful in conjunction with
  * clTreeaMutate() in order to conditionally keep a random mutation.
  *
  * \param tra pointer to a TreeAdaptor to be copied
@@ -102,7 +102,7 @@ struct TreeAdaptor *clTreeaClone(struct TreeAdaptor *tra);
 
 /** \brief fetch a LabelPerm indicating current leaf label-placement
  *
- * This clFunction provides access to the permutation that places each
+ * This function provides access to the permutation that places each
  * distance-matrix leaf-index number at a given node-number in the tree.
  * Although the indices in a distance matrix are 0 through n - 1 for n
  * different labels, this does not mean that they are placed on tree nodes
@@ -115,7 +115,7 @@ struct LabelPerm *clTreeaLabelPerm(struct TreeAdaptor *tra);
 
 /** \brief retrieves the underlying adclJacency adaptor for the TreeAdaptor
  *
- * This clFunction allows the user to fetch the underlying AdjAdaptor (or adclJacency
+ * This function allows the user to fetch the underlying AdjAdaptor (or adclJacency
  * adaptor) for this TreeAdaptor.  This provides the ability to find out
  * whether any pair of nodes is connected or disconnected in the tree.
  *
@@ -126,7 +126,7 @@ struct AdjAdaptor *clTreeaAdjAdaptor(struct TreeAdaptor *tra);
 
 /** \brief tests whether a given node is "quartettable", e.g. a labellable node
  *
- * This clFunction tests whether a given node is "quartettable" or not.
+ * This function tests whether a given node is "quartettable" or not.
  * For unrooted binary trees this is the same as asking if a node is a leaf
  * node.  For rooted binary trees this asks if the node is a leaf or the
  * root, as the root receives a label in these cases.  Quartettable is
@@ -142,7 +142,7 @@ struct AdjAdaptor *clTreeaAdjAdaptor(struct TreeAdaptor *tra);
 int clTreeaIsQuartettable(struct TreeAdaptor *tra, int which);
 /** \brief tests whether a given node is "flippable" with left-right ordering
  *
- * This clFunction tests whether a given node is "flippable" in a left-right
+ * This function tests whether a given node is "flippable" in a left-right
  * child ordering sense or not.  This is used in the best order search for
  * trees after the best topology is determinedl.
  *
@@ -154,7 +154,7 @@ int clTreeaIsQuartettable(struct TreeAdaptor *tra, int which);
 int clTreeaIsFlippable(struct TreeAdaptor *tra, int which);
 /** \brief tests whether a given node is the root node or not
  *
- * This clFunction tests whether a given node is the root or not.
+ * This function tests whether a given node is the root or not.
  * For unrooted binary trees this always returns 0.
  * For rooted binary trees this returns nonzero only for the root node and
  * 0 everywhere else.
@@ -180,8 +180,8 @@ int clTreeaMutationCount(struct TreeAdaptor *tra);
 
 /** \brief returns the number of (both leaf and kernel) nodes in this tree
  *
- * This clFunction indicates how many node numbers there are in this tree.
- * Thus, the nodes are numbered from 0 to 1 less than this clFunction's return
+ * This function indicates how many node numbers there are in this tree.
+ * Thus, the nodes are numbered from 0 to 1 less than this function's return
  * value.
  *
  * \param tra pointer to a TreeAdaptor to be inspected
@@ -191,7 +191,7 @@ int clTreeaNodeCount(struct TreeAdaptor *tra);
 
 /** \brief returns a quartet-difference coefficient between two trees
  *
- * This clFunction can be used to determine if two trees are the same or
+ * This function can be used to determine if two trees are the same or
  * not.  It computes the percentage of quartet groupings that disagree
  * in their quartet topologies between the two trees.  If two trees are
  * identical then the value will be 0.  Any nonzero value indicates that
@@ -205,14 +205,14 @@ double clTreeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
 
 /** \brief Walks the tree perimeter in the depth-first order specified by the CLNodeSet
  *
- * This clFunction allows for customized tree-walk ordering.  It uses an array
+ * This function allows for customized tree-walk ordering.  It uses an array
  * of node numbers to control its ordering.  By default node children are
  * visitted in ascending order, but if a node number is within the flips
  * object, then instead its children are visitted in reverse order.  Only
  * nodes who are true with regards to clTreeaIsFlippable() should ever appear
  * in the flips CLNodeSet object.  If no customized ordering is necessary,
  * NULL may be passed in for flips and will result in the same traversal
- * as an empty flips set would obtain.  This clFunction is only useful for
+ * as an empty flips set would obtain.  This function is only useful for
  * obtaining the set of tree perimeter pair nodes going all the way around.
  * It will not provide you with kernel nodes.
  *

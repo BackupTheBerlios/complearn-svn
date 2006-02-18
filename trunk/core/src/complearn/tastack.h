@@ -95,22 +95,22 @@ int clSizeTS(struct TransformAdaptorStack *ts);
 
 /** \brief Searchs a TransformAdaptorStack and returns pointer to TransformAdaptor object.
  *
- *  s is the search term, and searchclFunc is a pointer to a clFunction which
+ *  s is the search term, and searchclFunc is a pointer to a function which
  *  matches s against TransformAdaptorStack ts. A pointer to the matching TransformAdaptor object
  *  is returned.
  *  \param ts TransformAdaptorStack
  *  \param s search term
- *  \param searchclFunc search clFunction
+ *  \param searchclFunc search function
  *  \return pointer to TransformAdaptor object
  */
 struct TransformAdaptor *clSearchTS(void *ts, void *s, t_searchclFunc searchclFunc);
 
-/** \brief Searches a TransformAdaptorStack using the return value of the shortname clFunction
+/** \brief Searches a TransformAdaptorStack using the return value of the shortname function
  *  as a search term.
  *
  *  sequentialSearchTS() takes string s as a parameter and searches each
  *  element of the TransformAdaptorStack, starting at element 0, where s matches the
- *  return value of the TransformAdaptor object's shortname clFunction.  A pointer to
+ *  return value of the TransformAdaptor object's shortname function.  A pointer to
  *  the first matching TransformAdaptor object is returned.
  *  \param ts TransformAdaptorStack
  *  \param s string

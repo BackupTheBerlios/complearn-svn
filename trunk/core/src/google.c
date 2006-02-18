@@ -64,7 +64,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
   int trynum = 0;
   int isDone = 0;
   double estDouble = -1;
-  xmlNodePtr clFunction, node;
+  xmlNodePtr function, node;
   method = "doGoogleSearch";
   urn = "urn:GoogleSearch";
   url = "http://api.google.com/search/beta2";
@@ -91,8 +91,8 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
       sleep(trynum*trynum+5);
       continue;
     }
-    clFunction = soap_env_get_method(ctx2->env);
-    node = soap_xml_get_children(clFunction);
+    function = soap_env_get_method(ctx2->env);
+    node = soap_xml_get_children(function);
     node = soap_xml_get_children(node);
 
     while (node) {

@@ -34,16 +34,16 @@ struct CLNodeSet;
 
 /** \brief finds a path between any two nodes in the tree
  *
- * This clFunction uses an SPMMap DRA to find the path quickly between
+ * This function uses an SPMMap DRA to find the path quickly between
  * two nodes in a tree.
  *
- * To use this clFunction, you must first have an array of integers
+ * To use this function, you must first have an array of integers
  * preallocated with space enough for the path.  For a tree of n nodes,
  * a buffer of size N integers will be sufficient for any path.  You
  * must also have space for one more integer to store the buffer size and
- * path length; prior to calling this clFunction, set this integer to
+ * path length; prior to calling this function, set this integer to
  * indicate the size, measured in int-sized (4-byte) units, of the buffer
- * you have passed in.  If the clFunction is successful, it will return
+ * you have passed in.  If the function is successful, it will return
  * CL_OK and adjust the integer pointed to by bufsize to indicate the
  * size of the resultant path.  If the buffer was too small to hold the
  * path, the CL_ERRFULL will be returned and the value pointed to by
@@ -60,8 +60,8 @@ int clPathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, 
 
 /** \brief tests to determine if two trees are identical
  *
- * This clFunction returns 0 to indicdate that two trees are different, and
- * 1 to indicate that they are identical.  This clFunction is order insensitive.
+ * This function returns 0 to indicdate that two trees are different, and
+ * 1 to indicate that they are identical.  This function is order insensitive.
  * It will only compare neighbor connectivity.
  *
  * \param ad1 pointer to one of the AdjAdaptor to compare
@@ -86,7 +86,7 @@ struct AdjAdaptor;
 
 /** \brief Create a new PathKeeper with a given size
  *
- * This clFunction creates a new PathKeeper with the given dimension on a side.
+ * This function creates a new PathKeeper with the given dimension on a side.
  * This memory should be freed using freePathKeeper when it is no longer needed.
  * An PathKeeper of size n supports node-labels in the range 0 to n-1, inclusive.
  *
@@ -98,7 +98,7 @@ struct AdjAdaptor *clNewPathKeeper(struct AdjAdaptor *basis);
 /** \brief Calculates a Shortest Path Map for the given binary tree and
  * starting from the given node
  *
- * This clFunction calculates a Shortest Path Tree from a given starting
+ * This function calculates a Shortest Path Tree from a given starting
  * node and on a given tree.  A Shortest Path Tree is a set of paths
  * going to the given node, termed "from".  These paths are calculated
  * using the Dijktra-Prim shortest path tree algorithm.  The results are
@@ -107,7 +107,7 @@ struct AdjAdaptor *clNewPathKeeper(struct AdjAdaptor *basis);
  * holds the node-identifier that one must move starting at node n in
  * order to get to the specified node "from".  For all node identifiers in
  * the tree i, clDraGetValueAt(result, i) will be defined.  Thus, this allows for
- * rapid path calculations during quartet scoring later.  This clFunction is
+ * rapid path calculations during quartet scoring later.  This function is
  * used by clPathFinder.
  *
  * \param ub pointer to the UnrootedBinary to be path mapped
@@ -118,10 +118,10 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t from);
 
 /** \brief Calculates an All Points Shortest Path Map for the given binary tree
  *
- * This clFunction computes an SPM using clMakeSPMFor for each node in this
+ * This function computes an SPM using clMakeSPMFor for each node in this
  * tree.  The SPM for node i is stored in clDraGetValueAt(result, i).ar
  *
- * This clFunction uses the .ar field in the PCTypes DRA to store a
+ * This function uses the .ar field in the PCTypes DRA to store a
  * nested set of SPM's, one for each node.  This is used in the clPathFinder.
  *
  * \param ub pointer to the UnrootedBinary to be path mapped
@@ -131,7 +131,7 @@ struct DRA *clMakeSPMMap(struct AdjAdaptor *aa);
 
 /** \brief Frees the memory associated with a full set of SPM Maps
  *
- * This clFunction is useful in conjunction with clMakeSPMMap.
+ * This function is useful in conjunction with clMakeSPMMap.
  *
  * \param spmmap pointer to the DRA containing nested DRA
  * \return nothing

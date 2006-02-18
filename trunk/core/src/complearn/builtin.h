@@ -34,7 +34,7 @@
 
 /** \brief Returns pointer to a builtin compressor interface.
  *
- * The clCompaLoadBuiltin() clFunction takes a char *name and matches it against a
+ * The clCompaLoadBuiltin() function takes a char *name and matches it against a
  * list of builtin compressor interfaces which are available.  Availability of
  * an interface is dependent on whether its corresponding compression library
  * is installed during compile time.  Currently, CompLearn has 2 builtin
@@ -89,7 +89,7 @@ struct CompAdaptor *clCompaLoadZlib(void);
  */
 void clCompaPrintBuiltin(void);
 
-/* TODO:  Following clFunctions belong somewhere else.  They are not true
+/* TODO:  Following functions belong somewhere else.  They are not true
  * builtin compressors.  Must also rename the files builtinca-realcomp.c,
  * builtinca-virtcomp.c, and builtinca-soap.c */
 
@@ -120,7 +120,7 @@ struct CompAdaptor *clCompaLoadVirtual(const char *cmd);
  *
  *  The SOAP compressor server interace requires a url of the form
  *  "http://localhost:2000/" and urn of the form "urn:hws". The CompLearn
- *  system will connect to the specified SOAP server and call a single clFunction
+ *  system will connect to the specified SOAP server and call a single function
  *  called compclFunc and pass it one string. The compression server is expected
  *  to return a double precision floating-point value indicating the compressed
  *  size, in bits, of the string.

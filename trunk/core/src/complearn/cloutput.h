@@ -52,12 +52,12 @@ void clPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration 
 
 /** \brief outputs a tree into a .dot format DataBlock
  *
- * This clFunction writes a DataBlock representation of the given tree in
+ * This function writes a DataBlock representation of the given tree in
  * the .dot file format.  This is the tree format used by dot and neato
  * of the popular AT&T graphviz package.  This is often used before
  * laying out a tree for visual representation by another program.
  *
- * To use this clFunction, you must first have a tree.  You may optionally
+ * To use this function, you must first have a tree.  You may optionally
  * pass in a StringStack holding an ordered list of leaf-labels.
  * This list must be in the same order that columns were given for the
  * distance matrix that led to this tree.  If NULL is passed in

@@ -84,21 +84,21 @@ gsl_matrix *clAdjaToGSLMatrix(struct AdjAdaptor *aa);
  * allow for a smooth morphing from one tree to the next.  A decaying average
  * is used in combination with a duration parameter dt to adjust the smooth
  * matrix towards the adclJacency matrix of the tree.  The dt represents the
- * amount of time elapsed since the last call to this clFunction so that it
+ * amount of time elapsed since the last call to this function so that it
  * may know how far to tend towards the new tree at this point.
  *
  * \param smooth the old "smoothed" k gsl_matrix from which to adjust
  * \param ta a new TreeAdaptor to tend towards
  * \param dt the amount of time since the last clStepTowardsTree() call
  *
- * This clFunction does not return any values.  It simply modifies the smooth
+ * This function does not return any values.  It simply modifies the smooth
  * matrix in place.
  */
 void clStepTowardsTree(gsl_matrix *smooth, struct TreeAdaptor *ta, double dt);
 
 /** \brief Allocates a new SpringBallSystem big enough for the given tree
  *
- * This clFunction allocates a new SpringBallSystem with a number of nodes equal
+ * This function allocates a new SpringBallSystem with a number of nodes equal
  * to the number of nodes in the TreeAdaptor.  It returns a pointer to the
  * new SpringBallSystem.
  *
@@ -109,7 +109,7 @@ struct SpringBallSystem *clSbsNew(struct TreeAdaptor *ta);
 
 /** \brief frees a SpringBallSystem
  *
- * This clFunction has no return value.
+ * This function has no return value.
  *
  * \param sbs pointer to the SpringBallSystem to be freed
  */
@@ -133,7 +133,7 @@ void clSbsSet2DForce(struct SpringBallSystem *sbs, int newval);
 /** \brief returns the 3 dimensional position of a given ball
  *
  * The main purpose of the SpringBallSystem is to smoothly track the
- * position of these charged balls over time.  This clFunction is the window
+ * position of these charged balls over time.  This function is the window
  * into their position at any point in time.  The balls are indexed by
  * consecutive integers starting at 0.
  *
@@ -147,7 +147,7 @@ gsl_vector *clSbsBallPosition(struct SpringBallSystem *sbs, int whichBall);
  *
  * The SpringBallSystem evolves forward by using the realtime clock from
  * the operating system.  This starts from the moment of construction.  In
- * order to control the speed of simulation this clFunction may be used.  The
+ * order to control the speed of simulation this function may be used.  The
  * modelSpeed is a multiplicative speed parameter; higher values make it go
  * faster, and the value 1 makes it go at "realtime" speed.  There is no
  * return value.
@@ -162,7 +162,7 @@ void clSbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed);
  * At any point in time, the SpringBallSystem is tending towards a given
  * "target" tree via an exponential decay path.  This tree is initially
  * that one that it is constructed with, but may be changed only with this
- * clFunction.  Once this is called, over time, the springs will adjust to
+ * function.  Once this is called, over time, the springs will adjust to
  * match the most recently changed-to tree.
  *
  * \param sbs pointer to a SpringBallSystem to retarget
@@ -175,7 +175,7 @@ void clSbsChangeTargetTree(struct SpringBallSystem *sbs, struct TreeAdaptor *ta)
  * At any point in time, the SpringBallSystem is tending towards a given
  * "target" tree via an exponential decay path, and each spring in the
  * system is represented by a single double-precision floating point number
- * within a matrix.  This clFunction allows you to find the value of that
+ * within a matrix.  This function allows you to find the value of that
  * number between 0 and 1.   0 means fully disconnected, 1 means fully
  * connected, and as the tree changes you may find many values in between.
  *
@@ -188,7 +188,7 @@ double clSbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
 
 /** \brief Steps the system forward some small amount of time
  *
- * This clFunction should be called for each frame of animation.  It will
+ * This function should be called for each frame of animation.  It will
  * get the current time from the OS and step the SpringBallSystem forward
  * as much as is appropriate to catch up with realtime.
  *
@@ -196,7 +196,7 @@ double clSbsGetSpringSmooth(struct SpringBallSystem *sbs, int i, int j);
  * balls in the system.  There is no return value.
  *
  * Be careful!  If there are too many balls in the system (or they are in
- * an unsolveable tangle) this clFunction may infinite loop.
+ * an unsolveable tangle) this function may infinite loop.
  *
  * \param sbs pointer to a SpringBallSystem to evolve
  */

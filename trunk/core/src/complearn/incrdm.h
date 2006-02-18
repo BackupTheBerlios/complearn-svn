@@ -59,7 +59,7 @@ struct IncrementalDistMatrix {
 
 /** \brief creates a new IncrementalDistMatrix using a given CompAdaptor
  *
- * This clFunction is the basic constructor for an IncrementalDistMatrix.
+ * This function is the basic constructor for an IncrementalDistMatrix.
  * The user must supply a CompAdaptor to use for compression.
  *
  * \param ca pointer to the CompAdaptor to be used in this distance matrix

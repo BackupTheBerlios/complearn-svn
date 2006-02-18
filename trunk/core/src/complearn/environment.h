@@ -70,16 +70,16 @@ struct GeneralConfig {
   char *compressor_name; /*!< name of desired compressor */
   struct CompAdaptor *ca; /*!< loaded CompAdaptor to use */
   void *ptr;              /*!< pointer to application specific configuration */
-  t_freeappconfig freeappcfg; /*!< pointer to clFunction which frees application
+  t_freeappconfig freeappcfg; /*!< pointer to function which frees application
                                    specific config */
-  t_updateappemtoconfig upappcfg; /*!< pointer to clFunction which moves the
+  t_updateappemtoconfig upappcfg; /*!< pointer to function which moves the
                                        EnvMap environment to application
                                        configuration*/
-  t_updateappconfigtoem upappem;  /*!< pointer to clFunction which moves
+  t_updateappconfigtoem upappem;  /*!< pointer to function which moves
                                        application configure to EnvMap */
-  t_printapphelp printapphelp;    /*!< pointer to clFunction which prints
+  t_printapphelp printapphelp;    /*!< pointer to function which prints
                                        application specific help */
-  t_printappenvironment printappenv; /*!< pointer to clFunction which prints
+  t_printappenvironment printappenv; /*!< pointer to function which prints
                                           environment specific to an
                                           application */
 };
@@ -88,13 +88,13 @@ struct GeneralConfig {
 /** \brief provides a getopt_long() (GNU) like interface to command line
  * option parsing with a CompLearn specific configuration block.
  *
- * This clFunction behaves exactly as getopt_long with the addition of a
+ * This function behaves exactly as getopt_long with the addition of a
  * single parameter at the end.  This is a GeneralConfig struct pointer
  * that will be updated by the complearn option processing system each time
  * an option is unhandled by the user option processing and is handled
  * by the complearn generic option processing subsystem.  This means that
  * at the end of option processing cfg will contain the results of all
- * standard option settings.  For more details on this clFunction see
+ * standard option settings.  For more details on this function see
  * the getopt(3) and getopt_long(3) manpages.
  *
  * \param cfg pointer to a GeneralConfig struct to be updated
@@ -106,7 +106,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
 
 /** \brief loads a default configuration environment based on the standard files
  *
- * This clFunction is the normal interface to the configuration, parameter,
+ * This function is the normal interface to the configuration, parameter,
  * and environment settings.  It loads the systemwide and user-specific
  * settings in $HOME/.complearn/config.yml and sets the GeneralConfig
  * fields accordingly.  These values will also be stored in the EnvMap.
@@ -115,9 +115,9 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
  */
 struct GeneralConfig *clLoadDefaultEnvironment(void);
 
-/** \brief this is a wrapper clFunction to isolate access to the EnvMap
+/** \brief this is a wrapper function to isolate access to the EnvMap
  *
- * This clFunction retrieves the EnvMap associated with a GeneralConfig.
+ * This function retrieves the EnvMap associated with a GeneralConfig.
  * This EnvMap will be used in saving or loading operations involving the
  * GeneralConfig g.
  *
@@ -128,7 +128,7 @@ struct EnvMap *clGetEnvMap(struct GeneralConfig *g);
 
 /** \brief loads the default environment and prints it
  *
- * There are no parameters nor return values for this clFunction.
+ * There are no parameters nor return values for this function.
  */
 void clPrintActiveEnvironment(void);
 
@@ -142,7 +142,7 @@ void clFreeDefaultEnvironment(struct GeneralConfig *g);
 
 /** \brief print generic option help string
  *
- * This clFunction prints a generic help string.
+ * This function prints a generic help string.
  * There are no parameters nor return values.
  */
 void clPrintOptionHelp(void);
@@ -158,7 +158,7 @@ char *clAddNL(const char *inp);
 
 /** \brief moves the configuration information in a GeneralConfig into the em
  *
- * This clFunction serializes the configuration information and stores it in
+ * This function serializes the configuration information and stores it in
  * a pointer to an EnvMap called em within the GeneralConfig struct.
  * There is no return value as the results go directly into the EnvMap
  * referenced by env->em.
@@ -169,7 +169,7 @@ void clUpdateConfigToEM(struct GeneralConfig *env);
 
 /** \brief deserializes the EnvMap at env->em into live config information
  *
- * This clFunction deserializes the configuration information stored in em and
+ * This function deserializes the configuration information stored in em and
  * updates the other fields in env (a GeneralConfig pointer) accordingly.
  * There is no return value as the results go directly into the GeneralConfig.
  *

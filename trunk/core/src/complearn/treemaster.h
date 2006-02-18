@@ -69,7 +69,7 @@ struct TreeMasterConfig;
 
 /** \brief allocates a new TreeMaster with default options and an explicit rootedness flag
  *
- * This clFunction returns a pointer to a newly allocated TreeMaster that
+ * This function returns a pointer to a newly allocated TreeMaster that
  * searches for either unrooted (0) or rooted (nonzero) binary trees.
  * The tree scores will be computed based on the given distance matrix.
  *
@@ -80,7 +80,7 @@ struct TreeMasterConfig;
 struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted);
 /** \brief allocates a new TreeMaster with custom options and an explicit rootedness flag
  *
- * This clFunction returns a pointer to a newly allocated TreeMaster that
+ * This function returns a pointer to a newly allocated TreeMaster that
  * searches for either unrooted (0) or rooted (nonzero) binary trees.
  * The tree scores will be computed based on the given distance matrix.
  * Advanced parameters may be passed in using the EnvMap provided.
@@ -106,10 +106,10 @@ struct TreeMaster *clTreemasterNewEz(gsl_matrix *gsl);
 
 /** \brief inspects the random "starting" tree before clTreemasterFindTree is called
  *
- * This clFunction allows visualization display layers and other users to
+ * This function allows visualization display layers and other users to
  * query the initial random starting configuration for one of the starting
  * TreeHolder instances used in the given TreeMaster.  There is no way to
- * specify which one is queried using this clFunction; if you need to explicitly
+ * specify which one is queried using this function; if you need to explicitly
  * control this, use clTreemasterTreeAtIndex() instead.
  *
  * \param tm pointer to the TreeMaster to inspect
@@ -133,10 +133,10 @@ struct TreeHolder *clTreemasterFindTree(struct TreeMaster *tm);
 
 /** \brief inspects the tree at a given TreeHolder index 0 <= i < k
  *
- * This clFunction allows the user to query the fine-grained structure in
+ * This function allows the user to query the fine-grained structure in
  * the k-tree search.  Each TreeMaster contains k distinct TreeHolder
  * instances which evolve seperately and may be queried through this
- * clFunction.
+ * function.
  *
  * \sa clTreemasterK()
  *
@@ -148,7 +148,7 @@ struct TreeHolder *clTreemasterTreeAtIndex(struct TreeMaster *tm, int i);
 
 /** \brief counts the total number of trees examined so far in this search
  *
- * This clFunction returns the total number of random trees examined so far in
+ * This function returns the total number of random trees examined so far in
  * this search.
  *
  * \param tm pointer to the TreeMaster to inspect
@@ -158,7 +158,7 @@ int clTreemasterTreeCount(struct TreeMaster *tm);
 
 /** \brief returns the number of distinct TreeHolder instances in a TreeMaster
  *
- * This clFunction returns the "k" parameter determining the number of distinct
+ * This function returns the "k" parameter determining the number of distinct
  * concurrent TreeHolder searches are going to occur in dovetail fashion.
  * This number counts the number of distinct threads.  For smaller node sizes
  * larger k values must be used to get similar accuracies.  This number
@@ -181,11 +181,11 @@ void clTreemasterSetUserData(struct TreeMaster *tm, void *udata);
 
 /** \brief simple opaque data pointer tunnel system reader for your use
  *
- * This is the clFunction to retrieve your "tunneled" data.  In this way
+ * This is the function to retrieve your "tunneled" data.  In this way
  * you can attach arbitrary bits of your own code or state to a given
  * TreeMaster and run several different TreeMaster instances in different
  * threads at the same time.  clTreemasterSetUserData() must be called before
- * calling this clFunction.
+ * calling this function.
  *
  * \param tm pointer to the TreeMaster where an opaque pointer was stored
  * \return the pointer that was stored earlier with clTreemasterSetUserData()
@@ -194,7 +194,7 @@ void *clTreemasterGetUserData(struct TreeMaster *tm);
 
 /** \brief frees a TreeMaster
  *
- * This clFunction deallocates memory association with the given TreeMaster .
+ * This function deallocates memory association with the given TreeMaster .
  * There is no return value.
  *
  * \param tm pointer to the TreeMaster to be freed
@@ -205,14 +205,14 @@ void clTreemasterFree(struct TreeMaster *tm);
  *
  * \struct TreeObserver
  *
- * This struct contains four callback clFunctions for use in multithreaded
+ * This struct contains four callback functions for use in multithreaded
  * programming.
  *
  * treesearchstarted is called when a new search first begins with clTreemasterFindTree()
- * in another thread.  This clFunction will be called just once per clTreemasterFindTree().
+ * in another thread.  This function will be called just once per clTreemasterFindTree().
  *
  * treeimproved is called each time a better tree is found in the search
- * this clFunction may be called very many times.
+ * this function may be called very many times.
  *
  * treerejected is called after each new random tree is rejected because its
  * score is worse than the current best score.
@@ -232,16 +232,16 @@ struct TreeObserver {
 
 /** \brief attaches a TreeObserver to a TreeMaster prior to clTreemasterFindTree()
  *
- * This clFunction must be called before clTreemasterFindTree is called in order to
+ * This function must be called before clTreemasterFindTree is called in order to
  * enable realtime feedback of tree progress before clTreemasterFindTree returns in
  * the main computation thread.
  *
- * Before using this clFunction, you must set unused clFunction pointers in
+ * Before using this function, you must set unused function pointers in
  * the TreeObserver tob to 0 or NULL and set at least one of these to a custom
- * clFunction of your choosing.  You may also choose to use the ptr opaque
+ * function of your choosing.  You may also choose to use the ptr opaque
  * pointer.
  *
- * There is no return value for this clFunction.
+ * There is no return value for this function.
  *
  * \param tm pointer to the TreeMaster instance to observe
  * \param tob pointer to an already filled-in TreeObserver structure
@@ -257,7 +257,7 @@ struct TreeObserver *clTreemasterGetTreeObserver(struct TreeMaster *tm);
 
 /** \brief returns the time when the most recent clTreemasterFindTree() call finished
  *
- * This clFunction may be used to determine the saved time when the last
+ * This function may be used to determine the saved time when the last
  * tree search ended.  This is for historical purposes.
  *
  * \param tm pointer to the TreeMaster instance to inspect
@@ -267,7 +267,7 @@ struct CLDateTime *clTreemasterEndTime(struct TreeMaster *tm);
 
 /** \brief returns the time when the most recent clTreemasterFindTree() call started
  *
- * This clFunction may be used to determine the saved time when the last
+ * This function may be used to determine the saved time when the last
  * tree search began.  This is for statistical and verification purposes.
  *
  * \param tm pointer to the TreeMaster instance to inspect
@@ -286,7 +286,7 @@ void clTreemasterAbortSearch(struct TreeMaster *tm);
 
 /** \brief returns the number of labelled nodes in this TreeMaster
  *
- * This clFunction may be used to determine the number of labelled objects
+ * This function may be used to determine the number of labelled objects
  * in the TreeMaster.
  *
  * \param tm pointer to the TreeMaster instance to inspect

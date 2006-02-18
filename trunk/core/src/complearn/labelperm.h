@@ -47,7 +47,7 @@ struct LabelPerm;
 
 /** \brief create a new LabelPerm
  *
- * the clLabelpermNew clFunction creates a new LabelPerm object given a list of
+ * the clLabelpermNew function creates a new LabelPerm object given a list of
  * labelled nodes as DRA of integers (.i) .  These integers are supposed
  * to represent node numbers as used in the TreeAdaptor.  The initial
  * permutation will map the column indexes in order to these integers in order.
@@ -65,7 +65,7 @@ void clLabelpermFree(struct LabelPerm *lph);
 
 /** \brief mutate a LabelPerm randomly
  *
- * This clFunction applies a mutation step on the given LabelPerm.
+ * This function applies a mutation step on the given LabelPerm.
  * There is no return value.
  *
  * \param lph pointer to the LabelPerm to mutate
@@ -104,7 +104,7 @@ int clLabelpermColIndexForNodeID(struct LabelPerm *lph, int which);
 
 /** \brief compares two LabelPerm to see if they are the same or different
  *
- * This clFunction compares to label placement assignments, lpa and lpb.
+ * This function compares to label placement assignments, lpa and lpb.
  * If they are identical it returns a nonzero value.  If they differ
  * at all, 0 is returned.
  *
@@ -116,7 +116,7 @@ int clLabelpermIdentical(struct LabelPerm *lpa, struct LabelPerm *lpb);
 
 /** \brief verifies that a LabelPerm is self-consistent
  *
- * This clFunction verifies that the LabelPerm passes internal consistency
+ * This function verifies that the LabelPerm passes internal consistency
  * checks.  There is no return value.
  *
  * \param pointer to LabelPerm to verify
@@ -125,7 +125,7 @@ void clLabelpermVerify(struct LabelPerm *lp);
 
 /** \brief Sets a given column index indicator to point at a specific node
  *
- * This clFunction simply sets an entry in the label permutation table.
+ * This function simply sets an entry in the label permutation table.
  * It is the user's responsibility to ensure that the permutation remains
  * consistent before further use. \sa clLabelpermVerify
  *

@@ -49,7 +49,7 @@ struct DRA;
 
 /** \brief Create a new AdjList with a given size
  *
- * This clFunction creates a new AdjList with the given dimension on a side.
+ * This function creates a new AdjList with the given dimension on a side.
  * This memory should be freed using clAdjlistFree when it is no longer needed.
  * An AdjList of size n supports node-labels in the range 0 to n-1, inclusive.
  *
@@ -59,7 +59,7 @@ struct DRA;
 struct AdjList *clAdjlistNew(int howbig);
 
 /** \brief Clones an AdjList to make an independent copy
- * This clFunction simply clones an AdjList and returns a new copy.
+ * This function simply clones an AdjList and returns a new copy.
  *
  * \param inp a pointer to the AdjList to be cloned
  * \return a pointer to a new copy of the input AdjList
@@ -68,7 +68,7 @@ struct AdjList *clAdjlistClone(const struct AdjList *inp);
 
 /** \brief Deallocates memory used for an AdjList
  *
- * This clFunction frees memory used to store an AdjList.
+ * This function frees memory used to store an AdjList.
  * Do not use this pointer after the AdjList has been freed.
  *
  * \param adj a pointer to the AdjList that must be deallocated
@@ -78,7 +78,7 @@ void clAdjlistFree(struct AdjList *adj);
 
 /** \brief Queries the connected status between two numbered nodes
  *
- * This clFunction can be used to quickly determine if node i and node
+ * This function can be used to quickly determine if node i and node
  * j are connected.  It will return 1 if they are connected, 0 if they
  * are not.
  *
@@ -93,7 +93,7 @@ int clAdjlistGetConState(const struct AdjList *adj, int i, int j);
 
 /** \brief Adjusts the connected status between two numbered nodes
  *
- * This clFunction connects or disconnects two nodes, depending on if
+ * This function connects or disconnects two nodes, depending on if
  * the third parameter is 1 or 0, respectively.
  *
  * \param adj a pointer to the AdjList to be adjusted
@@ -105,7 +105,7 @@ void clAdjlistSetConState(struct AdjList *adj, int i, int j, int conState);
 
 /** \brief Retrieves a list of neighbors for a given node
  *
- * This clFunction stores, into a given buffer, the integer labels for each
+ * This function stores, into a given buffer, the integer labels for each
  * neighbor of the given node.
  *
  * \param adj a pointer to the AdjList to be queried
@@ -121,7 +121,7 @@ int clAdjlistNeighbors(const struct AdjList *adj, int from, int *nbuf, int *nsiz
 
 /** \brief Counts the number of neighbors a given node contains
  *
- * This clFunction counts the number of neighbors a given node has
+ * This function counts the number of neighbors a given node has
  * within an AdjList.  It will return a number between 0 and the
  * full size of one side of the AdjList.
  *
@@ -133,7 +133,7 @@ int clAdjlistNeighborCount(const struct AdjList *adj, int from);
 
 /** \brief Returns the size of a given AdjList)
  *
- *  This clFunction returns the size of a dimension of an AdjList.  This
+ *  This function returns the size of a dimension of an AdjList.  This
  *  number is the same value passed to clAdjlistNew() when a newly initialized
  *  AdjList object is created.
  *
@@ -144,9 +144,9 @@ int clAdjlistSize(const struct AdjList *adj);
 
 /** \brief Prints a visual representation of an AdjList to stdout
  *
- * This clFunction prints an AdjList where 1's represent a state of connection
+ * This function prints an AdjList where 1's represent a state of connection
  * between nodes, and 0's represent a state of disconnection.
- * This clFunction will print a number of lines equal to the number of nodes.
+ * This function will print a number of lines equal to the number of nodes.
  *
  * \param adj a pointer to the AdjList to be printed
  */
@@ -154,7 +154,7 @@ void clAdjlistPrint(const struct AdjList *which);
 
 /** \brief Allocates a new AdjList and wraps it within an AdjAdaptor
  *
- * This clFunction allocates a new AdjList structure of the given size.  It
+ * This function allocates a new AdjList structure of the given size.  It
  * wraps this struct in an AdjAdaptor (adclJacency adaptor) structure and returns
  * a pointer to this newly allocated AdjAdaptor.  The caller owns this AdjAdaptor and
  * should free it using adjafree(aa).

@@ -43,7 +43,7 @@
 
 /** \brief Converts C string to CompLearn DataBlock.
  *
- *  The clStringToDataBlockPtr() clFunction takes a char *s string and
+ *  The clStringToDataBlockPtr() function takes a char *s string and
  *  copies it to a new memory area without the terminating nul ('\\0'). A new
  *  DataBlock is returned.  \param s character string
  *  \return pointer to a new DataBlock
@@ -52,7 +52,7 @@ struct DataBlock *clStringToDataBlockPtr(const char *s);
 
 /** \brief Converts file to a CompLearn DataBlock.
  *
- *  The clFileToDataBlockPtr() clFunction reads a file at the specified
+ *  The clFileToDataBlockPtr() function reads a file at the specified
  *  path and returns a new DataBlock.
  *  \param path path to a file
  *  \return pointer to a new DataBlock

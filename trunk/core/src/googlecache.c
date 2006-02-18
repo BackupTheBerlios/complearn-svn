@@ -144,7 +144,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
 /** \brief Fetches a sample from the local count database with the help of the
  * caching agent, GoogleCache.
  *
- * The clFetchsample clFunction is the primary interface to the GoogleCache
+ * The clFetchsample function is the primary interface to the GoogleCache
  * database, and is expected to be sufficient for most uses.  It supports a
  * GDBM-based query mechanism that allows efficient retrieval of count
  * information for any given day.  In order to fetch a sample, a user must
@@ -157,7 +157,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
  * you after applying with Google online.
  *
  * The search terms supplied in the terms StringStack are expected to be
- * unquoted.  The clFetchsample clFunction will add double-quotes around these
+ * unquoted.  The clFetchsample function will add double-quotes around these
  * strings as well as preceding each of them with + and joining them with
  * spaces.  This will form one large string query to send to Google from
  * the passed-in array.

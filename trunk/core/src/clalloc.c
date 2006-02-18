@@ -32,7 +32,7 @@
 
 #if NOGALLOC
 
-/* Macros are used in the .h instead of clFunctions with NOGALLOC enabled */
+/* Macros are used in the .h instead of functions with NOGALLOC enabled */
 
 #else
 

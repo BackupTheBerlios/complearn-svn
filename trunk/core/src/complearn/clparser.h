@@ -34,7 +34,7 @@
 
 struct StringStack *clGetDefaultFileList(void);
 
-/* These clFunctions assume you have already created your own EnvMap to
+/* These functions assume you have already created your own EnvMap to
  * hold accumulated configuration parameters.
  */
 int clReadDefaultConfig(struct EnvMap *dest);

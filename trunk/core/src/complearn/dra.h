@@ -53,7 +53,7 @@ struct DRA;
  *  \struct DRAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
- *  clFunctions clDraDump() and clDraDeepDump(), both of which
+ *  functions clDraDump() and clDraDeepDump(), both of which
  *  are used to write a DRA to file. DRAHdr contains information necessary
  *  for the conversion of a "dumped" DataBlock, using clDraLoad(),
  *  back into a DRA.
@@ -134,12 +134,12 @@ void clDraFree(struct DRA *ptr);
 /** \brief Converts a "dumped" DRA DataBlock back into a DRA
  *
  *  clDraLoad() will take as an argument a DataBlock, which was created
- *  by the clDraDump() or the clDraDeepDump() clFunction, and
+ *  by the clDraDump() or the clDraDeepDump() function, and
  *  convert the DataBlock into a DRA, even if originally a multi-level
  *  DRA. A pointer to the DRA is returned.
  *
  *  An option to clDraLoad() is the fmustbe flag, which, if set to 1,
- *  forces the clFunction to exit when check for the special DRA tag created
+ *  forces the function to exit when check for the special DRA tag created
  *  by clDraDump() or clDraDeepDump() fails.  If the tag is not
  *  found, an error message is printed to stdout.  Set fmustbe to 0 to return
  *  NULL instead.
@@ -154,12 +154,12 @@ struct DRA *clDraLoad(struct DataBlock *d, int fmustbe);
 /** \brief Serializes a single-level DRA into a DataBlock
  *
  *  clDraDump() returns a DataBlock which then can be
- *  written to a file using the clFunction clDatablockWriteToFile().  This
- *  resulting DataBlock is also appropriate when using the clFunction
+ *  written to a file using the function clDatablockWriteToFile().  This
+ *  resulting DataBlock is also appropriate when using the function
  *  clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
- *  clDraLoad() clFunction.
+ *  clDraLoad() function.
  *
  *  Same as using clDraDeepDump(da,0).
  *  \param d pointer to DRA
@@ -170,12 +170,12 @@ struct DataBlock *clDraDump(const struct DRA *d);
 /** \brief Serializes a multi-level DRA into a DataBlock
  *
  *  clDraDeepDump() returns a DataBlock which then can be
- *  written to a file using the clFunction clDatablockWriteToFile().  This
- *  resulting DataBlock is also appropriate when using the clFunction
+ *  written to a file using the function clDatablockWriteToFile().  This
+ *  resulting DataBlock is also appropriate when using the function
  *  clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
- *  clDraLoad() clFunction.
+ *  clDraLoad() function.
  *  \param em pointer to DRA
  *  \param level number of levels starting at 0; 0 indicates a single level, 1
  *  indicates a 2-level and so on
@@ -193,7 +193,7 @@ void clDraDeepFree(struct DRA *ptr, int lvl);
 
 /** \brief Returns a double, for a DRA of doubles, at a given index
  *
- *  This clFunction is a shortcut used for a DRA of doubles.  Same as
+ *  This function is a shortcut used for a DRA of doubles.  Same as
  *  using clDraGetValueAt(da, where).d
  *  \param da pointer to DRA
  *  \param where index
@@ -290,18 +290,18 @@ int clDraSwapAt(struct DRA *da, int inda, int indb);
  */
 void clDraPrintIntList(const struct DRA *da);
 
-/* TODO: following 2 clFunctions, clStringDump() and clStringLoad() obviously belong
+/* TODO: following 2 functions, clStringDump() and clStringLoad() obviously belong
  * somewhere else.
  */
 
 /** \brief Converts a character string to a file-writable DataBlock
  *
  *  clStringDump() returns a DataBlock which then can be written to a file using
- *  the clFunction clDatablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the clFunction clPackage_DataBlocks().
+ *  the function clDatablockWriteToFile().  This resulting DataBlock is also
+ *  appropriate when using the function clPackage_DataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use
- *  clStringLoad() clFunction.
+ *  clStringLoad() function.
  *
  *  \param s pointer to character string
  *  \return a pointer to a DataBlock which can be written to file
@@ -311,12 +311,12 @@ struct DataBlock *clStringDump(const char *s);
 /** \brief Converts a "dumped" string DataBlock back into a string
  *
  *  clStringLoad() will take as an argument a pointer to a DataBlock,
- *  which was created by the clStringDump() clFunction
+ *  which was created by the clStringDump() function
  *  and convert the DataBlock into a chracter string. A pointer to the string
  *  is returned.
  *
  *  An option to clStringLoad() is the fmustbe flag, which, if set to 1,
- *  forces the clFunction to exit when the check for the special string tag
+ *  forces the function to exit when the check for the special string tag
  *  created by clStringDump() fails.  If the tag is not found, an error message
  *  is printed to stdout.  Set fmustbe to 0 to return NULL instead.
  *
@@ -327,7 +327,7 @@ struct DataBlock *clStringDump(const char *s);
  */
 char *clStringLoad(struct DataBlock *d, int fmustbe);
 
-/** \brief Consistency clFunction, to ensure a DRA is memory safe
+/** \brief Consistency function, to ensure a DRA is memory safe
  *
  *  If input DRA is memory corrupt in any way, program will exit and an
  *  error message will be printed to stdout.

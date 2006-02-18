@@ -45,7 +45,7 @@
  * bits.  This resultant length is returned to the CompLearn system.
  * A real compressor is often the most convenient interface with which to
  * use a custom compressor, as often a simple one-line shell script is
- * sufficient to make a real compressor out of any clFunctional compression
+ * sufficient to make a real compressor out of any functional compression
  * program.
  */
 struct RealCompInstance {

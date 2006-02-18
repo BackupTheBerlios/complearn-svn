@@ -34,7 +34,7 @@
 /** \brief Transform interface.
  *  \struct TransformAdaptor
  *
- *  TransformAdaptor contains pointers to 3 clFunctions which are defined in an
+ *  TransformAdaptor contains pointers to 3 functions which are defined in an
  *  external transform module.
  *
  *  CompLearn comes with 3 builtin tranform adaptors:
@@ -45,14 +45,14 @@
  *
  */
 struct TransformAdaptor {
-  t_shortname sn;    /*!< Pointer to clFunction which returns string shortname of
+  t_shortname sn;    /*!< Pointer to function which returns string shortname of
                           TransformAdaptor object */
-  t_transfree tfree; /*!  Pointer to clFunction frees the TransformAdaptor object
+  t_transfree tfree; /*!  Pointer to function frees the TransformAdaptor object
                           from memory */
-  t_predicate pf;    /*!< Pointer to clFunction which evaluates a DataBlock and
+  t_predicate pf;    /*!< Pointer to function which evaluates a DataBlock and
                           returns a true value if DataBlock needs to be
                           transformed */
-  t_transform tf;    /*!< Pointer to clFunction receives a DataBlock and returns
+  t_transform tf;    /*!< Pointer to function receives a DataBlock and returns
                           a transformed DataBlock */
   void *tptr;        /*!< Pointer which can be used to save the state of a
                           TransformAdaptor instance */

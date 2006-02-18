@@ -101,9 +101,9 @@ static SoapCtx *invokeMethod(struct SOAPCompInstance *sci, SoapCtx *inp)
 static double getValue(struct SOAPCompInstance *sci)
 {
   double compsize = -2.0;
-  xmlNodePtr clFunction, node;
-  clFunction = soap_env_get_method(sci->ctx2->env);
-  node = soap_xml_get_children(clFunction);
+  xmlNodePtr function, node;
+  function = soap_env_get_method(sci->ctx2->env);
+  node = soap_xml_get_children(function);
 
   while (node) {
     char *str;
@@ -124,7 +124,7 @@ static SoapCtx *prepareSOAPEnvForMethod(struct SOAPCompInstance *sci)
   SoapCtx *ctx;
   const char *urn;
   herror_t err;
-  //xmlNodePtr clFunction, node;
+  //xmlNodePtr function, node;
 
   urn = sci->urn;
   err = soap_ctx_new_with_method(urn, sci->method, &ctx);
@@ -140,7 +140,7 @@ SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method)
 {
   SoapCtx *ctx;
   herror_t err;
-  //xmlNodePtr clFunction, node;
+  //xmlNodePtr function, node;
 
   err = soap_ctx_new_with_method(urn, method, &ctx);
   if (err != H_OK) {

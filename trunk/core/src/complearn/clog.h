@@ -34,7 +34,7 @@
  *
  * This structure maintain CompLearn log information.  It may direct
  * output to a file, to stderr, or through a user-defined error
- * clFunction depending on how it is used.
+ * function depending on how it is used.
  */
 struct Clog;
 
