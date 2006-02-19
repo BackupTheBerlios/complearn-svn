@@ -39,6 +39,8 @@
 
 #define PROTOTAG 50
 
+#define MAXRANGE 900
+
 #define FLOATFMT "%f"
 
 #define MSG_NONE 0
@@ -93,6 +95,9 @@ struct SlaveState {
 char *histostr[] = { "mutgood", "mutbad", "scoretime" };
 
 #define HISTOPERPERSON 5
+
+#define ALLTREESFNAME "alltrees.log"
+
 
 struct HistOpCommand {
   int label;
@@ -158,7 +163,7 @@ static gsl_histogram *getHistoFor(struct MasterState *ms, int per, int hl)
 
   if (ms->globhist[gi] == NULL) {
     ms->globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
-    gsl_histogram_set_ranges_uniform(ms->globhist[gi], 0, 500);
+    gsl_histogram_set_ranges_uniform(ms->globhist[gi], 0, MAXRANGE);
   }
   return ms->globhist[gi];
 }
@@ -289,13 +294,41 @@ double tsScore(struct TreeAdaptor *ta, gsl_matrix *gm)
   return s;
 }
 
+int getCountForMute(gsl_histogram *gh, int whichval)
+{
+    size_t binnum;
+    double x = whichval;
+    if (GSL_SUCCESS == gsl_histogram_find(gh, x, &binnum)) {
+      return gsl_histogram_get(gh, binnum);
+    }
+    else {
+      fprintf(stderr, "hmm, cannot find bin for val %f\n", x);
+      return 0;
+    }
+}
+
+void writeMutationCounts(struct MasterState *ms)
+{
+  const char *mutfname = "mutcounts.dat";
+  int i;
+  FILE *fp = clFopen(mutfname, "wb");
+  for (i = 1; i < MAXRANGE; i += 1) {
+    int gm, bm;
+    gm = getCountForMute(getGlobalHistogram(ms, HISTOLABEL_MUTGOOD), i);
+    bm = getCountForMute(getGlobalHistogram(ms, HISTOLABEL_MUTBAD), i);
+    fprintf(fp, "%d %d %d\n", i, gm, bm);
+  }
+  clFclose(fp);
+}
+
 void writeBestToFile(struct MasterState *ms)
 {
   struct DataBlock *db;
+  writeMutationCounts(ms);
   printf("score %f\n", ms->bestscore);
   db = clConvertTreeToDot(ms->ta, ms->bestscore, ms->labels, NULL, ms->cfg, NULL, ms->dm);
   clDatablockWriteToFile(db, ms->outfname);
-  ms->tlog = clFopen("alltrees.log", "ab");
+  ms->tlog = clFopen(ALLTREESFNAME, "ab");
   fprintf(ms->tlog, "\nBETTER TREE FOUND AT %d TREES SEARCHED WITH SCORE %f\n", treesexamined(ms), ms->bestscore);
 	fwrite(clDatablockData(db),1,clDatablockSize(db),ms->tlog);
   struct CLDateTime *cldt = cldatetimeNow();
@@ -322,6 +355,9 @@ void doMasterLoop(void) {
   struct DataBlock *db;
   double score;
   const char *fname = "distmatrix.clb";
+  ms.tlog = clFopen(ALLTREESFNAME, "wb");
+  clFclose(ms.tlog);
+  ms.tlog = NULL;
   ms.workers = clCalloc(sizeof(struct MasterSlaveModel), p);
   ms.cfg = clLoadDefaultEnvironment();
   ms.nodecount = p;
