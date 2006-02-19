@@ -53,7 +53,7 @@ double tryNumAdjustment(struct TreeHolder *th)
 }
 */
 
-#define MAXMUT 1000
+#define MAXMUT 30
 int clHowManyMutationsWeirdLogFormula(void)
 {
   static gsl_ran_discrete_t *d;
