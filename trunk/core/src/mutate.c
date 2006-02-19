@@ -72,7 +72,7 @@ int clHowManyMutationsWeirdLogFormula(void)
     r = gsl_rng_alloc(gsl_rng_taus);
     clFreeifpresent(p);
   }
-  return gsl_ran_discrete(r, d) + 2;
+  return gsl_ran_discrete(r, d) + 1;
  // + tryNumAdjustment();
 }
 
