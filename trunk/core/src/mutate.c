@@ -64,7 +64,7 @@ int clHowManyMutationsWeirdLogFormula(void)
     double *p = clCalloc(sizeof(*d), MAXMUT);
     double k;
     for (i = 0; i < MAXMUT; i += 1) {
-      k = i + 2;
+      k = i + 4; /* to make single-mutations somewhat less common */
       curp = 1.0 / (k * (log(k) / log(2.0)) * (log(k)/log(2.0)));
       p[i] = curp;
     }
