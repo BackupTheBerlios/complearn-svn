@@ -107,7 +107,7 @@ esac], [ua_optimize=false])
 
 if test x$ua_optimize = xtrue ; then
   CPPFLAGS="$CPPFLAGS -DNDEBUG"
-  CFLAGS="$CFLAGS -O3"
+  CFLAGS="$CFLAGS -O3 -DNDEBUG"
   echo "Enabling performance optimizations."
 else
   CFLAGS="$CFLAGS -g"
@@ -239,7 +239,7 @@ if test x$ua_mpi = xtrue ; then
     AC_PROG_CC
   else
     CC=$MPICC
-    CPP=$MPICC -E
+    CPP="$MPICC -E"
   fi
 else
   AC_PROG_CC

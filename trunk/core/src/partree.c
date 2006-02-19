@@ -64,6 +64,7 @@ struct MasterState {
   struct DataBlock *clbdb;
   struct DataBlock *bestTree;
   struct TreeAdaptor *ta;
+  gsl_histogram **globhist;
 };
 
 struct SlaveState {
@@ -82,6 +83,8 @@ struct SlaveState {
 #define HISTOLABEL_MUTBAD 1
 #define HISTOLABEL_SCORETIME 2
 
+char *histostr[] = { "mutgood", "mutbad", "scoretime" };
+
 #define HISTOPERPERSON 5
 
 struct HistOpCommand {
@@ -93,7 +96,8 @@ void doMasterLoop(void);
 void doSlaveLoop(void);
 void addToHistogram(int lab, double x, double weight);
 void sendExitEveryWhere(void);
-static void dumpStats(void);
+static void dumpStats(struct MasterState *ms);
+void handleHistogramMsg(struct MasterState *ms, int fromWho, int histolab, double x, double weight);
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
@@ -105,12 +109,11 @@ int p;
 int mustQuit;
 time_t quitTime;
 
-static gsl_histogram **globhist;
-static gsl_histogram *getGlobalHistogram( int hl);
-static gsl_histogram *getHistoFor( int per, int hl);
+static gsl_histogram *getGlobalHistogram(struct MasterState *ms,  int hl);
+static gsl_histogram *getHistoFor(struct MasterState *ms, int per, int hl);
 static void applyHistoOp(gsl_histogram *gslh, double x, double weight);
 void addToHistogram(int histolab, double x, double weight);
-#define HISTOSLICES 1024
+#define HISTOSLICES 4096
 
 void ignorer(int lameness)
 {
@@ -126,47 +129,59 @@ void bailer(int lameness)
   exit(0);
 }
 
-static gsl_histogram *getGlobalHistogram(int hl)
+static gsl_histogram *getGlobalHistogram(struct MasterState *ms, int hl)
 {
   gsl_histogram *g;
-  g = getHistoFor(0, hl);
+  g = getHistoFor(ms, 0, hl);
   return g;
 }
 
-static gsl_histogram *getHistoFor(int per, int hl)
+static gsl_histogram *getHistoFor(struct MasterState *ms, int per, int hl)
 {
+  fprintf(stderr, "About to GHF %p %d %d  on %d/%d...\n", ms, per, hl, my_rank, p);
   assert(per >= 0 && per < p);
   assert(hl >= 0 && hl < HISTOPERPERSON);
+  fprintf(stderr, "Did it...\n");
   int gi = HISTOPERPERSON*per+hl;
   if (my_rank != 0) {
     fprintf(stderr, "Error: slave %d trying to allocate histograms.\n", my_rank);
     exit(1);
   }
-  if (globhist == NULL) {
-    globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*p);
-  }
+  fprintf(stderr, "firstpart %d\n", gi);
 
-  if (globhist[gi] == NULL) {
-    globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
-    gsl_histogram_set_ranges_uniform(globhist[gi], 0, 50);
+  fprintf(stderr, "secondpart %p\n", ms->globhist);
+  if (ms->globhist[gi] == NULL) {
+    ms->globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
+    fprintf(stderr, "parta: %p\n", ms->globhist[gi]);
+    gsl_histogram_set_ranges_uniform(ms->globhist[gi], 0, 500);
   }
-  return globhist[gi];
+  fprintf(stderr, "thirdpart\n");
+  return ms->globhist[gi];
 }
 
-void handleHistogramMsg(int fromWho, int histolab, double x, double weight)
+void handleHistogramMsg(struct MasterState *ms, int fromWho, int histolab, double x, double weight)
 {
-  gsl_histogram *per = getHistoFor(fromWho, histolab);
+  fprintf(stderr, "Handling histomessage %s for slave %d\n", histostr[histolab], fromWho);
+  gsl_histogram *per = getHistoFor(ms, fromWho, histolab);
   gsl_histogram *glob;
-  glob = getGlobalHistogram(histolab);
+  glob = getGlobalHistogram(ms, histolab);
   applyHistoOp(per,   x, weight);
   applyHistoOp(glob,  x, weight);
 }
 
-static void dumpStats(void)
+static void dumpStats(struct MasterState *ms)
 {
   FILE *fp = clFopen("stats.txt", "w");
-  gsl_histogram *g = getGlobalHistogram(HISTOLABEL_SCORETIME);
-  fprintf(fp, "Average score %p time: "FLOATFMT", sd="FLOATFMT"\n", g, (double) gsl_histogram_mean(g), (double) gsl_histogram_sigma(g));
+  gsl_histogram *g = getGlobalHistogram(ms, HISTOLABEL_SCORETIME);
+  gsl_histogram *mg = getGlobalHistogram(ms, HISTOLABEL_MUTGOOD);
+  gsl_histogram *mb = getGlobalHistogram(ms, HISTOLABEL_MUTBAD);
+  double goodtrees = gsl_histogram_sum(mg);
+  double badtrees = gsl_histogram_sum(mb);
+  double treesexamined = goodtrees + badtrees;
+  fprintf(fp, "Calculated tree with %d leaves.\n", ms->dm->size1);
+  fprintf(fp, "Average score time: "FLOATFMT", sd="FLOATFMT"\n", (double) gsl_histogram_mean(g), (double) gsl_histogram_sigma(g));
+  fprintf(fp, "%f trees examined.\n", treesexamined);
+  fprintf(fp, "%f improvements found.\n", goodtrees);
   fclose(fp);
 }
 
@@ -258,7 +273,7 @@ void writeBestToFile(struct MasterState *ms)
   db = clConvertTreeToDot(ms->ta, ms->bestscore, ms->labels, NULL, ms->cfg, NULL, ms->dm);
   clDatablockWriteToFile(db, outfname);
   clDatablockFreePtr(db);
-  dumpStats();
+  dumpStats(ms);
 }
 
 void sendExitEveryWhere(void)
@@ -278,6 +293,8 @@ void doMasterLoop(void) {
   ms.workers = clCalloc(sizeof(struct MasterSlaveModel), p);
   ms.cfg = clLoadDefaultEnvironment();
   ms.nodecount = p;
+  ms.globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*p);
+  fprintf(stderr, "Allocated space for %d nodes\n", p);
   for (i = 0; i < ms.nodecount; i += 1) {
     ms.workers[i].isFree = 1;
     ms.workers[i].lastScore = 0;
@@ -311,8 +328,8 @@ void doMasterLoop(void) {
         if (tag == MSG_HISTOP) {
           struct HistOpCommand *hoc;
           hoc = (struct HistOpCommand *) clDatablockData(db);
-          //fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
-          handleHistogramMsg(who, hoc->label, hoc->x, hoc->weight);
+          fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
+          handleHistogramMsg(&ms, who, hoc->label, hoc->x, hoc->weight);
           clDatablockFreePtr(db);
           continue;
         }
@@ -322,7 +339,7 @@ void doMasterLoop(void) {
             alc = (char *) clDatablockData(db);
           if (!alc)
             alc = "NULL";
-          //fprintf(stderr, "ALERT %03d: %s\n", who, alc);
+          fprintf(stderr, "ALERT %03d: %s\n", who, alc);
           clDatablockFreePtr(db);
           continue;
         }
@@ -578,8 +595,10 @@ int main(int argc, char **argv)
       quitTime = time(NULL) + atoi(argv[i+1]);
       break;
     }
+
   MPI_Init(&argc, &argv);
-    setMPIGlobals();
+
+  setMPIGlobals();
 
   if (my_rank == 0) {
     doMasterLoop();
