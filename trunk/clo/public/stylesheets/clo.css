@@ -6,29 +6,31 @@
 body, p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size:   13px;
-  line-height: 18px;
 }
 
 body {
-  margin: 10px 25px;
-  padding: 0px;
-}
-
-h2 {
-  background: #ffff99;
-  font-size: 18px;
-  margin-left: -10px;
-  padding-left: 10px;
-  width: 400px;
+  margin: 7px 25px;
+  text-align: center;
 }
 
 #container {
   margin: 0 auto;
   width: 620px;
+  text-align: left;
 }
 
 #header {
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid silver;
+}
+
+#header h2 {
+  background-color: #ff9;
+  font-size: 18px;
+  padding: 3px;
+}
+
+input {
+  border: 1px solid black;
 }
 
 #footer {
@@ -39,15 +41,9 @@ h2 {
 /* navigation */
 /**************/
 
-#navbar {
-  margin: 0px 0px 10px 0px;
-}
-
 #navbar ul {
-  font-size: 13px;
-  margin: 0px; 
+  margin: 0px;
   padding: 0px;
-  white-space: nowrap;
 }
 
 #navbar li {
@@ -57,31 +53,29 @@ h2 {
 }
 
 #navbar li a {
-  margin: 0px; padding: 0px;
   text-decoration: none;
 }
+
 #navbar li a:link {
   color: #a52a2a;
-  margin: 0px; padding: 0px;
 }
+
 #navbar li a:visited {
   color: #a52a2a;
-  margin: 0px; padding: 0px;
 }
+
 #navbar li a:hover {
-  margin: 0px; padding: 0px;
   text-decoration: underline;
 }
 
 /* content */
 /***********/
 
-#content td.name {
-  font-weight: bolder;
-  padding: 3px 5px;
+#content ul li {
+  list-style-type: square;
 }
 
-#content table.matrix {
+#content td.name {
   font-weight: bolder;
   padding: 3px 5px;
 }
@@ -101,14 +95,13 @@ h2 {
   margin: 10px;
 }
 
-#control {
-  margin: 20px 0px; padding: 0px;
+#matrix table td {
+  background-color: #ccc;
 }
 
 #terms {
-  border: 1px black dashed;
-  background: #d6d6d6;
-  font-size: 14px;
+  background-color: silver;
+  border: 1px dashed black;
   margin: 10px 5px 5px 5px;
   padding: 5px;
   width: 200px;
@@ -119,7 +112,8 @@ h2 {
 }
 
 #terms ol {
-  margin: 0px; padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 #terms li {
