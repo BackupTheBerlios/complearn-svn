@@ -29,6 +29,9 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <gsl/gsl_histogram.h>
 #include <complearn/complearn.h>
@@ -59,8 +62,12 @@ struct MasterState {
   struct MasterSlaveModel *workers;
   struct GeneralConfig *cfg;
   double bestscore;
+  double startingscore;
+  long goodtreec, badtreec;
   gsl_matrix *dm;
   struct StringStack *labels;
+  FILE *tlog;
+  char *outfname;
   struct DataBlock *clbdb;
   struct DataBlock *bestTree;
   struct TreeAdaptor *ta;
@@ -94,6 +101,9 @@ struct HistOpCommand {
 
 void doMasterLoop(void);
 void doSlaveLoop(void);
+static long badtrees(struct MasterState *ms);
+static long goodtrees(struct MasterState *ms);
+static long treesexamined(struct MasterState *ms);
 void addToHistogram(int lab, double x, double weight);
 void sendExitEveryWhere(void);
 static void dumpStats(struct MasterState *ms);
@@ -138,50 +148,64 @@ static gsl_histogram *getGlobalHistogram(struct MasterState *ms, int hl)
 
 static gsl_histogram *getHistoFor(struct MasterState *ms, int per, int hl)
 {
-  fprintf(stderr, "About to GHF %p %d %d  on %d/%d...\n", ms, per, hl, my_rank, p);
   assert(per >= 0 && per < p);
   assert(hl >= 0 && hl < HISTOPERPERSON);
-  fprintf(stderr, "Did it...\n");
   int gi = HISTOPERPERSON*per+hl;
   if (my_rank != 0) {
     fprintf(stderr, "Error: slave %d trying to allocate histograms.\n", my_rank);
     exit(1);
   }
-  fprintf(stderr, "firstpart %d\n", gi);
 
-  fprintf(stderr, "secondpart %p\n", ms->globhist);
   if (ms->globhist[gi] == NULL) {
     ms->globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
-    fprintf(stderr, "parta: %p\n", ms->globhist[gi]);
     gsl_histogram_set_ranges_uniform(ms->globhist[gi], 0, 500);
   }
-  fprintf(stderr, "thirdpart\n");
   return ms->globhist[gi];
 }
 
 void handleHistogramMsg(struct MasterState *ms, int fromWho, int histolab, double x, double weight)
 {
-  fprintf(stderr, "Handling histomessage %s for slave %d\n", histostr[histolab], fromWho);
   gsl_histogram *per = getHistoFor(ms, fromWho, histolab);
   gsl_histogram *glob;
   glob = getGlobalHistogram(ms, histolab);
   applyHistoOp(per,   x, weight);
   applyHistoOp(glob,  x, weight);
+  switch (histolab) {
+    case HISTOLABEL_MUTGOOD:
+      ms->goodtreec += 1;
+      break;
+    case HISTOLABEL_MUTBAD:
+      ms->badtreec += 1;
+      break;
+    default:
+      break;
+  }
+}
+
+static long treesexamined(struct MasterState *ms)
+{
+  return goodtrees(ms) + badtrees(ms);
+}
+
+static long badtrees(struct MasterState *ms)
+{
+  return ms->badtreec;
+}
+
+static long goodtrees(struct MasterState *ms)
+{
+  return ms->goodtreec;
 }
 
 static void dumpStats(struct MasterState *ms)
 {
   FILE *fp = clFopen("stats.txt", "w");
   gsl_histogram *g = getGlobalHistogram(ms, HISTOLABEL_SCORETIME);
-  gsl_histogram *mg = getGlobalHistogram(ms, HISTOLABEL_MUTGOOD);
-  gsl_histogram *mb = getGlobalHistogram(ms, HISTOLABEL_MUTBAD);
-  double goodtrees = gsl_histogram_sum(mg);
-  double badtrees = gsl_histogram_sum(mb);
-  double treesexamined = goodtrees + badtrees;
   fprintf(fp, "Calculated tree with %d leaves.\n", ms->dm->size1);
   fprintf(fp, "Average score time: "FLOATFMT", sd="FLOATFMT"\n", (double) gsl_histogram_mean(g), (double) gsl_histogram_sigma(g));
-  fprintf(fp, "%f trees examined.\n", treesexamined);
-  fprintf(fp, "%f improvements found.\n", goodtrees);
+  fprintf(fp, "Starting S(T) = "FLOATFMT", ending S(T) = "FLOATFMT"\n", (double) ms->startingscore, ms->bestscore);
+  fprintf(fp, "%d trees examined.\n", treesexamined(ms));
+  fprintf(fp, "%d improvements found.\n", goodtrees(ms));
   fclose(fp);
 }
 
@@ -267,11 +291,18 @@ double tsScore(struct TreeAdaptor *ta, gsl_matrix *gm)
 
 void writeBestToFile(struct MasterState *ms)
 {
-  const char *outfname = "treefile.dot";
   struct DataBlock *db;
   printf("score %f\n", ms->bestscore);
   db = clConvertTreeToDot(ms->ta, ms->bestscore, ms->labels, NULL, ms->cfg, NULL, ms->dm);
-  clDatablockWriteToFile(db, outfname);
+  clDatablockWriteToFile(db, ms->outfname);
+  ms->tlog = clFopen("alltrees.log", "ab");
+  fprintf(ms->tlog, "\nBETTER TREE FOUND AT %d TREES SEARCHED WITH SCORE %f\n", treesexamined(ms), ms->bestscore);
+	fwrite(clDatablockData(db),1,clDatablockSize(db),ms->tlog);
+  struct CLDateTime *cldt = cldatetimeNow();
+  fprintf(ms->tlog, "\nTREE WRITTEN AT time %s which is %d sec\n-----------------------\n", cldatetimeToHumString(cldt), cldatetimeToInt(cldt));
+  clFclose(ms->tlog);
+  ms->tlog = NULL;
+  cldatetimeFree(cldt);
   clDatablockFreePtr(db);
   dumpStats(ms);
 }
@@ -287,12 +318,14 @@ void sendExitEveryWhere(void)
 void doMasterLoop(void) {
   struct MasterState ms;
   int i, dest;
+  struct stat sb;
   struct DataBlock *db;
   double score;
   const char *fname = "distmatrix.clb";
   ms.workers = clCalloc(sizeof(struct MasterSlaveModel), p);
   ms.cfg = clLoadDefaultEnvironment();
   ms.nodecount = p;
+  ms.goodtreec = ms.badtreec = 0;
   ms.globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*p);
   fprintf(stderr, "Allocated space for %d nodes\n", p);
   for (i = 0; i < ms.nodecount; i += 1) {
@@ -305,9 +338,27 @@ void doMasterLoop(void) {
   printf("Read file: %s\n", fname);
   ms.dm = clbDBDistMatrix(ms.clbdb);
   ms.labels = clbDBLabels(ms.clbdb);
+  ms.outfname = "treefile.dot";
   printf("Loaded distmatrix with %d entries.\n", (int) ms.dm->size1);
-  ms.ta = clTreeaNew(0, ms.dm->size1);
+
+  if (stat(ms.outfname, &sb) == 0) {
+    struct DotParseTree *dpt;
+    printf("Reading old tree from %s.\n", ms.outfname);
+    struct DataBlock *dboldtree = clFileToDataBlockPtr(ms.outfname);
+        dpt = clParseDotDB(dboldtree, ms.clbdb);
+        if (dpt->labels) {
+          clStringstackFree(dpt->labels);
+          dpt->labels = NULL;
+        }
+        ms.ta = dpt->tree;
+        clFree(dpt);
+        clDatablockFreePtr(dboldtree);
+  } else {
+    printf("Writing new tree to %s\n", ms.outfname);
+    ms.ta = clTreeaNew(0, ms.dm->size1);
+  }
   ms.bestscore = tsScore(ms.ta, ms.dm);
+  ms.startingscore = ms.bestscore;
   ms.bestTree = clConvertTreeToDot(ms.ta, ms.bestscore, ms.labels, NULL, ms.cfg, NULL, ms.dm);
   writeBestToFile(&ms);
   for (dest = 1; dest < ms.nodecount ; dest += 1) {
@@ -328,7 +379,6 @@ void doMasterLoop(void) {
         if (tag == MSG_HISTOP) {
           struct HistOpCommand *hoc;
           hoc = (struct HistOpCommand *) clDatablockData(db);
-          fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
           handleHistogramMsg(&ms, who, hoc->label, hoc->x, hoc->weight);
           clDatablockFreePtr(db);
           continue;
@@ -339,7 +389,7 @@ void doMasterLoop(void) {
             alc = (char *) clDatablockData(db);
           if (!alc)
             alc = "NULL";
-          fprintf(stderr, "ALERT %03d: %s\n", who, alc);
+          //fprintf(ms->tlog, "ALERT:%04d: %s\n", who, alc);
           clDatablockFreePtr(db);
           continue;
         }
@@ -463,11 +513,11 @@ void doSlaveLoop(void) {
   ss.th = NULL;
   for (;;) {
     tag = receiveMessage(&db, &score, &dum);
-    clogSendAlert("got tag %d with db %08x", tag, (unsigned int) db);
+//    clogSendAlert("got tag %d with db %08x", tag, (unsigned int) db);
     switch (tag) {
 
       case MSG_EXIT:
-        fprintf(stderr, "Slave %d exitting...\n", my_rank);
+//        fprintf(stderr, "Slave %d exitting...\n", my_rank);
         MPI_Finalize();
         exit(0);
         return;
