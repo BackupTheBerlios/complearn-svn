@@ -94,6 +94,8 @@ struct SlaveState {
 
 char *histostr[] = { "mutgood", "mutbad", "scoretime" };
 
+struct MasterState *gms;
+
 #define HISTOPERPERSON 5
 
 #define ALLTREESFNAME "alltrees.log"
@@ -138,6 +140,7 @@ void ignorer(int lameness)
 
 void bailer(int lameness)
 {
+  dumpStats(gms);
   fprintf(stderr, "Closing down all slaves...\n");
   sendExitEveryWhere();
   MPI_Finalize();
@@ -374,6 +377,7 @@ void doMasterLoop(void) {
   printf("Read file: %s\n", fname);
   ms.dm = clbDBDistMatrix(ms.clbdb);
   ms.labels = clbDBLabels(ms.clbdb);
+  gms = &ms;
   ms.outfname = "treefile.dot";
   printf("Loaded distmatrix with %d entries.\n", (int) ms.dm->size1);
 
