@@ -36,6 +36,8 @@
 
 #define PROTOTAG 50
 
+#define FLOATFMT "%f"
+
 #define MSG_NONE 0
 #define MSG_LOADCLB 1
 #define MSG_EXIT 2
@@ -91,6 +93,7 @@ void doMasterLoop(void);
 void doSlaveLoop(void);
 void addToHistogram(int lab, double x, double weight);
 void sendExitEveryWhere(void);
+static void dumpStats(void);
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
@@ -107,7 +110,7 @@ static gsl_histogram *getGlobalHistogram( int hl);
 static gsl_histogram *getHistoFor( int per, int hl);
 static void applyHistoOp(gsl_histogram *gslh, double x, double weight);
 void addToHistogram(int histolab, double x, double weight);
-#define HISTOSLICES 64
+#define HISTOSLICES 1024
 
 void ignorer(int lameness)
 {
@@ -124,28 +127,47 @@ void bailer(int lameness)
 }
 
 static gsl_histogram *getGlobalHistogram(int hl)
-{ return getHistoFor(-1, hl); }
+{
+  gsl_histogram *g;
+  g = getHistoFor(0, hl);
+  return g;
+}
 
 static gsl_histogram *getHistoFor(int per, int hl)
 {
-  assert(per >= -1 && per < p);
+  assert(per >= 0 && per < p);
   assert(hl >= 0 && hl < HISTOPERPERSON);
-  int gi = HISTOPERPERSON*(per+1)+hl;
-  if (globhist == NULL)
-    globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*(p+1));
-  if (globhist[gi] == NULL)
+  int gi = HISTOPERPERSON*per+hl;
+  if (my_rank != 0) {
+    fprintf(stderr, "Error: slave %d trying to allocate histograms.\n", my_rank);
+    exit(1);
+  }
+  if (globhist == NULL) {
+    globhist = clCalloc(sizeof(gsl_histogram *), HISTOPERPERSON*p);
+  }
+
+  if (globhist[gi] == NULL) {
     globhist[gi] = gsl_histogram_alloc(HISTOSLICES);
+    gsl_histogram_set_ranges_uniform(globhist[gi], 0, 50);
+  }
   return globhist[gi];
 }
 
 void handleHistogramMsg(int fromWho, int histolab, double x, double weight)
 {
   gsl_histogram *per = getHistoFor(fromWho, histolab);
-  static gsl_histogram *glob;
-  if (glob == NULL)
-    glob = getGlobalHistogram(histolab);
+  gsl_histogram *glob;
+  glob = getGlobalHistogram(histolab);
   applyHistoOp(per,   x, weight);
   applyHistoOp(glob,  x, weight);
+}
+
+static void dumpStats(void)
+{
+  FILE *fp = clFopen("stats.txt", "w");
+  gsl_histogram *g = getGlobalHistogram(HISTOLABEL_SCORETIME);
+  fprintf(fp, "Average score %p time: "FLOATFMT", sd="FLOATFMT"\n", g, (double) gsl_histogram_mean(g), (double) gsl_histogram_sigma(g));
+  fclose(fp);
 }
 
 static void applyHistoOp(gsl_histogram *gslh, double x, double weight)
@@ -236,6 +258,7 @@ void writeBestToFile(struct MasterState *ms)
   db = clConvertTreeToDot(ms->ta, ms->bestscore, ms->labels, NULL, ms->cfg, NULL, ms->dm);
   clDatablockWriteToFile(db, outfname);
   clDatablockFreePtr(db);
+  dumpStats();
 }
 
 void sendExitEveryWhere(void)
@@ -288,7 +311,7 @@ void doMasterLoop(void) {
         if (tag == MSG_HISTOP) {
           struct HistOpCommand *hoc;
           hoc = (struct HistOpCommand *) clDatablockData(db);
-          fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
+          //fprintf(stderr, "HISTOP: %d %d %f %f\n",who, hoc->label, hoc->x, hoc->weight);
           handleHistogramMsg(who, hoc->label, hoc->x, hoc->weight);
           clDatablockFreePtr(db);
           continue;
@@ -299,7 +322,7 @@ void doMasterLoop(void) {
             alc = (char *) clDatablockData(db);
           if (!alc)
             alc = "NULL";
-          fprintf(stderr, "ALERT %03d: %s\n", who, alc);
+          //fprintf(stderr, "ALERT %03d: %s\n", who, alc);
           clDatablockFreePtr(db);
           continue;
         }
