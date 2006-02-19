@@ -28,11 +28,13 @@
 <div>
 Experiment made on <%= @exptime %>
 <% @comments.each { |c| %>
-  <%= c.str %> <em>--<%= c.username %> on <%= c.created_at %></em><br>
+  <p><%= c.str %> <em>--<%= c.username %> on <%= c.created_at %></em></p>
 <% } %>
 <h3>Add your own comment</h3>
 <%= form_tag( :action => :addcomment, :id => @expid ) %>
+<p>
 <%= text_field_tag :str %>
 <%= submit_tag "Add comment" %>
+</p>
 <%= end_form_tag %>
 </div>

@@ -26,7 +26,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CloController < ApplicationController
-  layout 'main'
+  layout 'main', :except => :grabfile
 
   def fun
     @onload = 'updateStatus()'

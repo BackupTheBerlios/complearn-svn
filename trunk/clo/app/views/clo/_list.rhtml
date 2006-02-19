@@ -5,8 +5,10 @@
                      :url => { :action => :add } ,
                      :html => { :name => "addform" }
 ) %>
+<p>
 <%= text_field_tag :term %>
-<%= submit_tag "add" %>
+<%= submit_tag "Add" %>
+</p>
 <%= end_form_tag %>
 <% else %>
 Term list is full.  You cannot add more terms.  Perhaps you would like to run an experiment?
@@ -16,12 +18,11 @@ Term list is full.  You cannot add more terms.  Perhaps you would like to run an
 <% end %>
 <% if @termlist.size >= 4 && @termlist.size <= @maxterms %>
 <%= form_tag( :action => :doexperiment ) %>
-<%= submit_tag "run experiment" %>
+<%= submit_tag "Run experiment" %>
 <%= end_form_tag %>
 <% end %>
-<h2>termlist</h2>
 <% if @termlist.size > 0 %>
-<%= @termlist.size %> terms defined.<br>
+<h3>Terms</h3>
 <div id="terms">
 <ol>
 <%
@@ -38,6 +39,6 @@ list << "<li>#{i}&nbsp;&nbsp;#{z}</li>" }
 <%= list.join('') %>
 </div>
 <% else %>
-No terms yet defined.
+<p>No terms defined yet.</p>
 <% end %>
 </div>
