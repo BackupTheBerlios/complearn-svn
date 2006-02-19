@@ -110,6 +110,7 @@ void doMasterLoop(void);
 void doSlaveLoop(void);
 static long badtrees(struct MasterState *ms);
 static long goodtrees(struct MasterState *ms);
+static int isMessageWaiting(void);
 static long treesexamined(struct MasterState *ms);
 void addToHistogram(int lab, double x, double weight);
 void sendExitEveryWhere(void);
@@ -501,7 +502,7 @@ void calculateTree(struct SlaveState *ss)
 //    fprintf(stderr, "verified for %d at  %9.9f\n", my_rank, ss->shouldBeScore);
     ;
     }
-  while (failCount < MAXTRIES) {
+  while (failCount < MAXTRIES && !isMessageWaiting()) {
     struct TreeAdaptor *ta = NULL;
     struct CLDateTime *cdstart, *cdend;
     double diff;
@@ -602,6 +603,13 @@ void doSlaveLoop(void) {
         exit(1);
     }
   }
+}
+
+int isMessageWaiting(void) {
+  MPI_Status status;
+  int flag = 0;
+  MPI_Iprobe(MPI_ANY_SOURCE, PROTOTAG, MPI_COMM_WORLD, &flag, &status);
+  return flag != 0;
 }
 
 int receiveMessage(struct DataBlock **ptr, double *score, int *fromWhom) {
