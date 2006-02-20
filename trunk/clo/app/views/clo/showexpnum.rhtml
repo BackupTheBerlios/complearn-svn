@@ -10,6 +10,7 @@
 <% if @title && @title.size > 2 %>
 <%= link_to "Delete title", :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>'' } %></li>
 <% else %>
+Choose a term to set as title:
 <ul>
 <% @choices.each { |c| %>
 <li><%= link_to c, :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>c } %></li>
