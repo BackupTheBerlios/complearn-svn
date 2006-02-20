@@ -33,6 +33,9 @@
 
 #include <gsl/gsl_linalg.h>
 
+#define PWD_RDY 1
+#define UTS_RDY 1
+
 #if PWD_RDY
 #include <pwd.h>
 #endif
