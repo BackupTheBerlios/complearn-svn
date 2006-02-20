@@ -24,8 +24,8 @@
     r = ''
   end
   comstr = e.comments.empty? ? '' : "(#{e.comments.size} com.)"
-%><%= d %></td>
-    <td><%= link_to "#{comstr} #{r}", :id => e.codenum, :action=> 'showexpnum', :controller => 'clo' %></td>
+%><%= link_to d, :id => e.codenum, :action=> 'showexpnum', :controller => 'clo' %></td>
+    <td><%= "#{comstr} #{r}" %></td>
   </tr>
 <% } %>
 </table>
