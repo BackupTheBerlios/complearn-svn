@@ -1,5 +1,5 @@
 <%
-  @title = 'Results for experiment ' + @num.to_s
+  @page_title = "Results for experiment #@title, #@num"
   @metarefresh = 60
 %>
 <% if @starttime %>
@@ -8,7 +8,7 @@
 <% if @admin %>
 <p><%= link_to "Delete", :action=>"delexpnow", :id=>@num %></p>
 <% if @title && @title.size > 2 %>
-<%= link_to "deltitle", :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>'' } %></li>
+<%= link_to "Delete title", :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>'' } %></li>
 <% else %>
 <ul>
 <% @choices.each { |c| %>

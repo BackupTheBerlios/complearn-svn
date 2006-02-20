@@ -2,15 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
-    <% @title 		||= 'CompLearn Online Demo' 
+    <% @page_title	||= 'CompLearn Online Demo' 
        @metakeywords 	||= 'CompLearn, Online, Demo'
-       @metadescription	||= @title
+       @metadescription	||= @page_title
      %><%= '<meta name="keywords" content="' + @metakeywords + '" />' if @metakeywords %>
     <%= '<meta name="description" content="' + @metadescription + '" />' if @metadescription %><% if @metarefresh %>
     <meta http-equiv="refresh" content="<%= @metarefresh %>" /><% end %>
     <%= stylesheet_link_tag 'clo' %>
     <%= javascript_include_tag 'prototype' %>
-    <title><%= @title %></title>
+    <title><%= @page_title %></title>
   </head>
   <body<%= ' onload="' + @onload + '"' if @onload %>>
     <div id="container">
@@ -25,7 +25,7 @@
 	    <li><a href="http://complearn.org/">CompLearn Home</a></li>
 	  </ul>
 	</div>
-	<h2><%= @title %></h2>
+	<h2><%= @page_title %></h2>
       </div>
 
       <div id="content">
