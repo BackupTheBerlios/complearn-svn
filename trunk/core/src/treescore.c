@@ -27,6 +27,8 @@
 #include <assert.h>
 #include <complearn/complearn.h>
 
+#define MAXPATHPI 16384
+#define MAXPATHTS 16384
 
 struct TreeScore {
   gsl_matrix *dm;
@@ -50,7 +52,6 @@ struct TreeScore *clInitTreeScore(gsl_matrix *dm)
 
 static int pathsIntersect(int *path1, int len1, int *path2, int len2)
 {
-#define MAXPATHPI 1024
   static int pathWatcher[MAXPATHPI];
   int i;
   int retval = 0;
@@ -68,7 +69,6 @@ static int pathsIntersect(int *path1, int len1, int *path2, int len2)
 
 int clIsConsistent(struct AdjAdaptor *ad, struct Quartet q)
 {
-#define MAXPATHTS 1024
   static int nbuf1[MAXPATHTS], nbuf2[MAXPATHTS];
   int p1length = MAXPATHTS, p2length = MAXPATHTS;
   int pathretval;
