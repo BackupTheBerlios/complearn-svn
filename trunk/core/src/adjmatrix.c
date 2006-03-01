@@ -32,7 +32,7 @@
 
 struct AdjMatrix {
   int size;
-  unsigned char *adj;
+  qbase_t *adj;
 };
 
 static void ajam_free(struct AdjAdaptor *aa);

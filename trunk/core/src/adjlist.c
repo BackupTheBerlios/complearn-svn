@@ -32,7 +32,7 @@
 struct AdjList {
   int size;
   int rowsize;
-  unsigned char *adj;
+  qbase_t *adj;
 };
 
 static void ajal_free(struct AdjAdaptor *aa);
@@ -63,7 +63,7 @@ struct AdjList *clAdjlistNew(int howbig)
                                (sizeof(adj->adj[0]) * howbig * MAXDEGREE*2));
   adj->size = howbig;
   adj->rowsize = MAXDEGREE*2;
-  adj->adj = (unsigned char *) ( adj + 1 );
+  adj->adj = (qbase_t *) ( adj + 1 );
   for (i = 0; i < adj->size; i += 1)
     adj->adj[i*adj->rowsize] = 0;
   return adj;
@@ -85,7 +85,7 @@ struct AdjList *clAdjlistClone(const struct AdjList *inp)
   struct AdjList *adj = clMalloc(sizeof(struct AdjList) + inp->size * inp->rowsize * sizeof(adj->adj[0]));
   adj->size = inp->size;
   adj->rowsize = inp->rowsize;
-  adj->adj = (unsigned char *) (adj + 1);
+  adj->adj = (qbase_t *) (adj + 1);
   memcpy(adj->adj, inp->adj, sizeof(adj->adj[0]) * inp->size * inp->rowsize);
   return adj;
 }
@@ -93,7 +93,7 @@ struct AdjList *clAdjlistClone(const struct AdjList *inp)
 
 void clAdjlistFree(struct AdjList *adj)
 {
-  if (adj->adj && adj->adj != (unsigned char *) (adj + 1))
+  if (adj->adj && adj->adj != (qbase_t *) (adj + 1))
     clFreeandclear(adj->adj);
   clFreeandclear(adj);
 }

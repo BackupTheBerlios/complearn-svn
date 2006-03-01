@@ -80,16 +80,23 @@ int main(int argc, char *argv[])
   FILE *fp;
   char *outfile = "treestats.txt";
   double start, finish;
+  struct StringStack *labels;
 
   gsl_matrix *dm;
 
   if (argc != 3) {
-    printf("Usage: %s <DISTMATRIX> <MAXTRIALS>\n", argv[0]);
+    printf("Usage: %s distmatrix.txt distmatrix.clb\n", argv[0]);
     exit(1);
   }
 
-  db = clFileToDataBlockPtr(argv[1]);
+//  db = clFileToDataBlockPtr(argv[1]);
   printf("opening %s\n", argv[1]);
+  dm = cltxtDistMatrix(argv[1]);
+  labels = cltxtLabels(argv[1]);
+  db = makeCLBDistMatrix(dm, labels, NULL, NULL);
+  printf("writing CLB file %s\n", argv[2]);
+  clDatablockWriteToFile(db, argv[2]);
+  /*
   dd = clLoad_DataBlock_package(db);
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clDistmatrixLoad(dbdm, 1);
@@ -118,7 +125,8 @@ int main(int argc, char *argv[])
   }
   finish = cldatetimeStaticTimer();
 
-  fp = clFopen(outfile,"a+");
+  */
+/*  fp = clFopen(outfile,"a+");
   fprintf(fp, "%d %d %f %f %f %f %f\n",
       (int) dm->size1, (int) maxtrials, (double) matched / (double) maxtrials,
       finish - start, (finish - start) / (2.0 * maxtrials), log((finish-start)/(2.0*maxtrials))/log(2.0), log(finish-start)/log(2.0));
@@ -133,5 +141,6 @@ int main(int argc, char *argv[])
   clDatablockFreePtr(db);
   clDatablockFreePtr(dbdm);
   clFree_DataBlock_package(dd);
+  */
   exit(0);
 }

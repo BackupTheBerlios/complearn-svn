@@ -143,6 +143,67 @@ gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnume
   return gres;
 }
 
+struct DataBlock *makeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em)
+{
+  struct EnvMap *myenv = NULL;
+  struct StringStack *mycmds = NULL, *mylabels = NULL;
+  struct DataBlock *dbdmtagged, *dblabelstagged, *dbcommandstagged, *dbenvmap=NULL, *db;
+  if (em == NULL) {
+    em = clEnvmapNew();
+    clEnvmapSetKeyVal(em, "defaults", "1");
+    myenv = em;
+  }
+  if (cmds == NULL) {
+    cmds = clStringstackNew();
+    clStringstackPush(cmds, "# (no commands given)");
+    mycmds = cmds;
+  }
+  if (labels == NULL) {
+    int i;
+    labels = clStringstackNew();
+    for (i = 0; i < gres->size1; i += 1) {
+      char buf[16];
+      sprintf(buf, "%d", i+1);
+      clStringstackPush(labels, buf);
+    }
+    mylabels = labels;
+  }
+  int i;
+  for (i = 0; i < clEnvmapSize(em); i += 1) {
+    union PCTypes p;
+    p = clEnvmapKeyValAt(em, i);
+    if (clEnvmapIsMarkedAt(em, i) && !clEnvmapIsPrivateAt(em, i) )
+      clEnvmapSetKeyVal(em, p.sp.key, p.sp.val);
+  }
+  if (clEnvmapSize(em) > 0)
+    dbenvmap = clEnvmapDump(em);
+  dbdmtagged = clDistmatrixDump(gres);
+  assert(labels);
+  dblabelstagged = clLabelsDump(labels);
+  dbcommandstagged = clCommandsDump(cmds);
+  db = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
+//  clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
+//  clDatablockFreePtr(db);
+  clDatablockFreePtr(dblabelstagged);
+  clDatablockFreePtr(dbdmtagged);
+  if (myenv) {
+    clEnvmapFree(myenv);
+    myenv = NULL;
+    em = NULL;
+  }
+  if (mylabels) {
+    clStringstackFree(mylabels);
+    mylabels = NULL;
+    labels = NULL;
+  }
+  if (mycmds) {
+    clStringstackFree(mycmds);
+    mycmds = NULL;
+    cmds = NULL;
+  }
+  return db;
+}
+
 /* TODO: NCD only function; move to a better location */
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur)
 {
@@ -164,26 +225,10 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
     gres = clSvdProject(gres);
   }
   if (cur->fBinary) {
-    struct DataBlock *dbdmtagged, *dblabelstagged, *dbcommandstagged, *dbenvmap=NULL, *db;
-    struct EnvMap *em = clEnvmapNew();
-    int i;
-    for (i = 0; i < clEnvmapSize(cur->em); i += 1) {
-      union PCTypes p;
-      p = clEnvmapKeyValAt(cur->em, i);
-      if (clEnvmapIsMarkedAt(cur->em, i) && !clEnvmapIsPrivateAt(cur->em, i) )
-        clEnvmapSetKeyVal(em, p.sp.key, p.sp.val);
-    }
-    if (clEnvmapSize(em) > 0)
-      dbenvmap = clEnvmapDump(em);
-    dbdmtagged = clDistmatrixDump(gres);
-    assert(labels);
-    dblabelstagged = clLabelsDump(labels);
-    dbcommandstagged = clCommandsDump(cur->cmdKeeper);
-    db = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
+    struct DataBlock *db;
+    db = makeCLBDistMatrix(gres, labels, cur->cmdKeeper, cur->em);
     clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
     clDatablockFreePtr(db);
-    clDatablockFreePtr(dblabelstagged);
-    clDatablockFreePtr(dbdmtagged);
   }
   for (n1c = 0; n1c < gres->size1; n1c++) {
     printf(rowBegin);

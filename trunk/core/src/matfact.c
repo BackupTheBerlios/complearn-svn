@@ -153,6 +153,28 @@ int clbIsCLBFile(struct DataBlock *db)
   return *v == TAGNUM_TAGMASTER;
 }
 
+struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
+{
+  if (clbIsCLBFile(db))
+    return clbDBLabels(db);
+  else {
+    printf("error not implemented 3 yet\n");
+    exit(1);
+  }
+//    return cltxtLabels(db);
+}
+
+gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
+{
+  if (clbIsCLBFile(db))
+    return clbDBDistMatrix(db);
+  else {
+    printf("error not implemented 4 yet\n");
+    exit(1);
+  }
+//    return cltxtDistMatrix(db);
+}
+
 gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
 {
   struct DataBlock *dbdm;
@@ -203,7 +225,7 @@ gsl_matrix *clbDistMatrix(char *fname)
 
 
 #define DELIMS " ,\t\r\n"
-#define MAXLINESIZE 1024
+#define MAXLINESIZE 10240
 
 static struct DRA *get_dm_row_from_txt(char *linebuf, int isLabeled)
 {
@@ -226,7 +248,7 @@ int cltxtRowSize(char *fname)
 {
   FILE *fp;
   int rows = 0;
-  char linebuf[MAXLINESIZE];
+  static char linebuf[MAXLINESIZE];
   fp = clFopen(fname, "r");
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     rows += 1;
@@ -263,6 +285,10 @@ gsl_matrix *cltxtDistMatrix(char *fname)
   gsl_matrix *result;
 
   rows = cltxtRowSize(fname);
+  if (rows < 4) {
+    fprintf(stderr, "Error, only %d rows in matrix %s.\n", rows, fname);
+    exit(1);
+  }
   cols = cltxtColSize(fname);
 
   if (cols > rows) isLabeled = 1;

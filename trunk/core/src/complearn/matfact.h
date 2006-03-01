@@ -212,4 +212,14 @@ int cltxtToCLB(char *source, char *dest);
  */
 int clbIsCLBFile(struct DataBlock *db);
 
+/** \brief Reads any format distance matrix using autodetect * and returns
+ * labels.
+ */
+struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db);
+
+/** \brief Reads any format distance matrix using autodetect * and returns
+ * a pointer to the gsl_matrix.
+ */
+gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db);
+
 #endif

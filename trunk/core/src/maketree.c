@@ -153,6 +153,7 @@ int main(int argc, char **argv)
   double score;
   struct DRA *res;
   struct TreeBlaster *tb = NULL;
+  struct DataBlock *dmdb;
   struct TreeHolder *th;
   struct TreeMaster *tm;
   struct CLNodeSet *clns = NULL;
@@ -207,10 +208,12 @@ int main(int argc, char **argv)
     printf("Usage: %s <distmatrix.clb>\n", argv[0]);
     exit(1);
   }
-
-  if (isText) {
-    dm = cltxtDistMatrix(fname);
-    labels = cltxtLabels(fname);
+  dmdb = clFileToDataBlockPtr(fname);
+  printf("Read file: %s\n", fname);
+  dm = clReadAnyDistMatrix(dmdb);
+  labels = clReadAnyDistMatrixLabels(dmdb);
+  if (!clbIsCLBFile(dmdb)) {
+    ;
   } else {
     struct EnvMap *em = clbEnvMap(fname);
     struct StringStack *ss = clbCommands(fname);
@@ -225,8 +228,8 @@ int main(int argc, char **argv)
     if (cmd)
       clStringstackPush(cur->cmdKeeper, cmd);
     clEnvmapMerge(cur->em, em);
-    dm = clbDistMatrix(fname);
-    labels = clbLabels(fname);
+    //dm = clbDistMatrix(fname);
+    //labels = clbLabels(fname);
     clEnvmapFree(em);
     clFreeandclear(cmd);
   }

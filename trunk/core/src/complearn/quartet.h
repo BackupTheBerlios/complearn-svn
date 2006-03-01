@@ -39,7 +39,7 @@ struct DRA;
  * The basic type for node labels.
  * In this system, node labels are just unsigned chars to save memory space
  */
-typedef unsigned char qbase_t;
+typedef unsigned short qbase_t;
 
 /**
  * The basic cost accumulator type, used for weighting quartets.
