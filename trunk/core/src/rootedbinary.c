@@ -111,7 +111,7 @@ static int verifyTree(struct RootedBinary *rb)
 static void mutateSubtreeTransfer(struct RootedBinary *rb)
 {
   qbase_t k1, k2, i1, m1, m2, m3;
-#define MAXPATHNODES 128
+#define MAXPATHNODES 16384
   static int pbuf[MAXPATHNODES];
   int pathlen, retval;
   int nbufms[MAXNEIGHBORS], nsizems;
@@ -165,7 +165,7 @@ static void mutateSubtreeInterchange(struct RootedBinary *rb)
 {
   qbase_t i1, i2;
   qbase_t n1, n2;
-  int pathbuf[MAXPATHNODES];
+  static int pathbuf[MAXPATHNODES];
   int pathlen;
   int retval;
 tryagain:
