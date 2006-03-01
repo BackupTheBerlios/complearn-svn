@@ -376,8 +376,13 @@ void doMasterLoop(void) {
 
   ms.clbdb = clFileToDataBlockPtr(fname);
   printf("Read file: %s\n", fname);
-  ms.dm = clbDBDistMatrix(ms.clbdb);
-  ms.labels = clbDBLabels(ms.clbdb);
+  if (clbIsCLBFile(ms.clbdb)) {
+    printf("It is a CLB binary file.\n");
+    ms.dm = clbDBDistMatrix(ms.clbdb);
+    ms.labels = clbDBLabels(ms.clbdb);
+} else {
+    printf("It is a text distance matrix.\n");
+}
   gms = &ms;
   ms.outfname = "treefile.dot";
   printf("Loaded distmatrix with %d entries.\n", (int) ms.dm->size1);

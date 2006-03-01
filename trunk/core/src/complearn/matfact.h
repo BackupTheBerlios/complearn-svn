@@ -206,4 +206,10 @@ void clGslmatrixPrint(gsl_matrix *m, char *delim);
  */
 int cltxtToCLB(char *source, char *dest);
 
+/** \brief Checks if a datablock is CLB format, returns 0 or 1 accordingly
+ *
+ *  NOT READY FOR PRIMETIME YET
+ */
+int clbIsCLBFile(struct DataBlock *db);
+
 #endif

@@ -147,6 +147,12 @@ void clGslmatrixFree(gsl_matrix *m)
   gsl_matrix_free(m);
 }
 
+int clbIsCLBFile(struct DataBlock *db)
+{
+  int *v = (int *) clDatablockData(db);
+  return *v == TAGNUM_TAGMASTER;
+}
+
 gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
 {
   struct DataBlock *dbdm;
