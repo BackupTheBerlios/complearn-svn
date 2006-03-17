@@ -41,13 +41,13 @@ char *art_longname(void);
 char *art_compparam(struct CompAdaptor *ca);
 int art_apiver(void);
 /** \brief The arithmetic coder instance information
- *  \struct artCompInstance
  *
  *  This structure holds all persistant instance information for an arithmetic
  *  coder.  There is only one example parameter, padding, which is ignored; it
  *  is only used for testing and demonstration.  For examples of a real
  *  parameter utilization as well, see the builtin zlib (builtinca-zlib.c)
  *  adaptor.
+ *  \struct artCompInstance
  */
 struct artCompInstance {
 	int padding;

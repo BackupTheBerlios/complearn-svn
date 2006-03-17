@@ -31,8 +31,6 @@
 
 /** \brief holds a single candidate tree and tries to improve it monotonically
  *
- * \struct TreeHolder
- *
  * A TreeHolder stores a TreeAdaptor as well as a distance matrix for scoring
  * the tree.  It uses this to try to step the tree towards progressively better
  * trees until finally reaching some maximum.  The maximum value is impossible
@@ -47,6 +45,7 @@
  * automatically retain the best improvements.
  *
  * \sa treeholder.h
+ * \struct TreeHolder
  */
 struct TreeHolder;
 

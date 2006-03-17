@@ -35,7 +35,6 @@ struct GoogleCache {
 };
 
 /** \brief All saved data from a single sample of the Google indexing database
- *  \struct GCSample
  *
  *  Every search request to Google returns numerous results, most of which are
  *  thrown away.  The saved information is stored in a GCSample.
@@ -44,6 +43,7 @@ struct GoogleCache {
  *  (normalized) search term, and a copy of the original (non-normalized)
  *  query string.
  *
+ *  \struct GCSample
  */
 struct GCSample {
   double pagecount;  /*!< Number of pages returned */

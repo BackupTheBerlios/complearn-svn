@@ -39,9 +39,9 @@
 
 /** \brief Contains a single texture bitmap
  *
- * \struct CLTexture
- *
  * This structure is used each time a new texture bitmap is needed.
+ *
+ * \struct CLTexture
  */
 struct CLTexture {
   SDL_Surface *initial;

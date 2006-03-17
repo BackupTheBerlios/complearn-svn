@@ -93,11 +93,12 @@ struct ZlibDynamicAdaptor *clGrabZlibDA(void) {
 }
 
 /** \brief zlib compression state information
- * \struct ZlibCompInstance
  *
  * This structure holds all zlib compression information.  At this time
  * it only allows for the adjustment of the compression level, which
  * is defaulted to the maximum level of 9.
+ *
+ * \struct ZlibCompInstance
  */
 struct ZlibCompInstance {
   int level; // 0 - 9

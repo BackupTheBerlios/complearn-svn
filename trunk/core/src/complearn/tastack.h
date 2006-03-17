@@ -30,13 +30,13 @@
 /*! \file tastack.h */
 
 /** \brief Container of TransformAdaptors.
- *  \struct TransformAdaptorStack
  *
  *  Elements are pushed onto top of a TransformAdaptorStack and either pulled
  *  from bottom (element 0 is removed and rest move down 1) or popped from top
  *  (element size-1 is removed).
  *
  *  TransformAdaptorStack is a dynamically resizing container.
+ *  \struct TransformAdaptorStack
  */
 struct TransformAdaptorStack;
 

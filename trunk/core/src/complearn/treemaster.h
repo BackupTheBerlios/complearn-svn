@@ -36,8 +36,6 @@
 
 /** \brief searches for best-matching tree given a distance matrix
  *
- * \struct TreeMaster
- *
  * TreeMaster provides a way to search for best-fitting trees given a
  * predefined distance matrix.  The distance matrix must be in the gsl_matrix
  * format.  There are two variations in the type of trees to be searched;
@@ -56,14 +54,16 @@
  * clTreemasterNew() , clTreemasterNewEx(), or clTreemasterNewEz()
  *
  * \sa treemaster.h
+ * \struct TreeMaster
  */
 struct TreeMaster;
 
 /** \brief Contains persistent configuration options to TreeMaster
  *
- * \struct TreeMasterConfig
+ * The TreeMasterConfig keep parameters specific to tree searching.
  *
  * \sa treemaster.h
+ * \struct TreeMasterConfig
  */
 struct TreeMasterConfig;
 

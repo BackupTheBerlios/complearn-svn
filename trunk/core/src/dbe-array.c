@@ -32,6 +32,7 @@
 #include <complearn/complearn.h>
 
 /** \brief Private enumeration instance for an array enumeration.
+ *
  *  \struct DBEArrayEnumeration
  */
 struct DBEArrayEnumeration
@@ -41,6 +42,7 @@ struct DBEArrayEnumeration
 };
 
 /** \brief Iterator for a DBEArrayEnumeration.
+ *
  *  \struct DBEArrayEnumerationIterator
  */
 struct DBEArrayEnumerationIterator

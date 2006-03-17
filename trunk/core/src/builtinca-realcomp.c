@@ -34,7 +34,6 @@
 #include <signal.h>
 
 /** \brief a structure containing instance information for a real compressor
- * \struct RealCompInstance
  *
  * This structure holds all information relevant for a real compressor.
  * A real compressor is invoked in a way similar to the virtual compressor.
@@ -47,6 +46,8 @@
  * use a custom compressor, as often a simple one-line shell script is
  * sufficient to make a real compressor out of any functional compression
  * program.
+ *
+ * \struct RealCompInstance
  */
 struct RealCompInstance {
 	char *cmd;

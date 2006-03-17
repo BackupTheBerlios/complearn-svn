@@ -43,9 +43,10 @@ struct SBS4;
 
 /** \brief ODE for charged spring ball system evolving over time
  *
- * \struct SpringBallSystem
+ * The physical simulation for the SpringBall system.
  *
  * \sa springball.h
+ * \struct SpringBallSystem
  */
 struct SpringBallSystem {
   struct SBS4 *sbs4;

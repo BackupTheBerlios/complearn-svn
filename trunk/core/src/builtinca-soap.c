@@ -27,10 +27,11 @@
 #include <complearn/complearn.h>
 
 /** \brief SOAP-specific instancing information is kept in this structure.
- * \struct SOAPCompInstance
  *
  * In order to connect to a SOAP adaptor, a url and urn string must be
  * provided.  This information is stored here.
+ *
+ * \struct SOAPCompInstance
  */
 struct SOAPCompInstance;
 

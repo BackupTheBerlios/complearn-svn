@@ -32,12 +32,13 @@
 /*! \file datablock.h */
 
 /** \brief The basic data object of CompLearn.
- *  \struct DataBlock
  *
  *  For each data object to be compressed or transformed in CompLearn,  there
  *  must exist a DataBlock. A DataBlock consists of two elements:
  *  a const char *ptr which points to a data buffer, and a int size to
  *  indicate length of the buffer in bytes.
+ *
+ *  \struct DataBlock
  */
   struct DataBlock;
 

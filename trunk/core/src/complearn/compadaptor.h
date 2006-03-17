@@ -35,13 +35,12 @@
 
 /** \brief Compressor interface to CompLearn.
  *
- *  \struct CompAdaptor
- *
  *  CompAdaptor contains pointers to 5 functions which are defined in an
  *  external compression module.  There is also a user opaque pointer for
  *  custom extensions.
  *
  *  \sa compadaptor.h
+ *  \struct CompAdaptor
  */
 struct CompAdaptor {
   void *cptr;

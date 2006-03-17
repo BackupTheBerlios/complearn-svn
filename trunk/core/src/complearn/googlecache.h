@@ -32,7 +32,6 @@
 /*! \file googlecache.h */
 
 /** \brief Cache of Google count samples over time
- *  \struct GoogleCache
  *
  *  A database or cache is kept of all Google search counts returned.  The
  *  count, date, and time are all retained.  This allows for programs to be
@@ -40,6 +39,7 @@
  *  server, and also can cut down on total server requests substantially.
  *
  *  \sa googlecache.h
+ *  \struct GoogleCache
  */
 struct GoogleCache;
 

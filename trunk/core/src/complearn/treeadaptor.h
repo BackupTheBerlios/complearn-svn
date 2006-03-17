@@ -33,8 +33,6 @@
 
 /** \brief holds adclJacency information and label placement information for trees
  *
- * \struct TreeAdaptor
- *
  * The TreeAdaptor holds the basic tree topology and allows for manipulation.
  *
  * The adaptor provides a simple direct polymorphism capability to extend
@@ -43,7 +41,7 @@
  * its basic rooted or unrooted tree implementations.
  *
  * \sa treeadaptor.h
- *
+ * \struct TreeAdaptor
  */
 struct TreeAdaptor {
   void *ptr;

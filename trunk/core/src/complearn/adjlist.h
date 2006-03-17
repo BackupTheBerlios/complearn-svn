@@ -31,8 +31,6 @@
 
 /** \brief AdjList represents a symmetric, undirected adclJacency matrix
  *
- * \struct AdjList
- *
  * An AdjList is a simple, fast data structure that allows for efficient
  * adclJacency information tracking.  It represents a diagonally-symmetric
  * binary matrix where 0 means the nodes are disconnected, and 1 means they
@@ -42,6 +40,7 @@
  * This structure does not change size after it is created.
  *
  *  \sa adjlist.h
+ * \struct AdjList
  */
 struct AdjList;
 struct AdjAdaptor;

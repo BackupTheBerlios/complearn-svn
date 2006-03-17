@@ -37,12 +37,13 @@
 
 
 /** \brief The generic date / time structure in CompLearn
- *  \struct CLDateTime
  *
  *  The CLDateTime struct encapsulates the interface to the system clock.
  *  It provides a way to query the current time, or convert to an integer,
  *  string, or daystring.  A daystring is a string that is unique for every
  *  day.  It also provides simple day-based arithmetic.
+ *
+ *  \struct CLDateTime
  */
 struct CLDateTime {
   struct timeval tv; /*!< The time as a POSIX timeval struct
@@ -204,12 +205,10 @@ char *cldatetimePreviousDayString(const char *str)
 }
 
 /** \brief Allows for simple day-based addition and subtraction of CLDateTime
- *
  * This function adds or subtracts an integer number of days from a CLDateTime.
  * It returns the results of the displacement applied to the basis as a
  * new CLDateTime object that is newly allocated.  This returned CLDateTime
  * should be freed when it is no longer needed.
- *
  * \param basis A pointer to the basis CLDateTime, from which to displace
  * \param offset An integer representing a signed offset from basis;
  * Positive indicates times in the future, negative is in the past.

@@ -32,7 +32,6 @@
 /*! \file transadaptor.h */
 
 /** \brief Transform interface.
- *  \struct TransformAdaptor
  *
  *  TransformAdaptor contains pointers to 3 functions which are defined in an
  *  external transform module.
@@ -43,6 +42,7 @@
  *    unzlib: uncompresses DataBlocks in the zlib compression format
  *    ungz: uncompresses DataBlocks in the gzip file format
  *
+ *  \struct TransformAdaptor
  */
 struct TransformAdaptor {
   t_shortname sn;    /*!< Pointer to function which returns string shortname of

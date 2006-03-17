@@ -34,7 +34,6 @@
 /*! \file dra.h */
 
 /** \brief a dynamically resizing, doubling polymorphic array
- * \struct DRA
  *
  * This structure represents the primary mode of dynamic allocation in
  * the CompLearn system.  It keeps track of its highest-referenced
@@ -46,40 +45,48 @@
  * value types that may be used within this dynamic container class.
  *
  * \sa dra.h
+ * \struct DRA
  */
 struct DRA;
 
 /** \brief Tag added to a "dump" of a DRA.
- *  \struct DRAHdr
  *
  *  This structure is embedded within the resulting DataBlock returned by the
  *  functions clDraDump() and clDraDeepDump(), both of which
  *  are used to write a DRA to file. DRAHdr contains information necessary
  *  for the conversion of a "dumped" DataBlock, using clDraLoad(),
  *  back into a DRA.
+ *
+ *  \struct DRAHdr
  */
 struct DRAHdr;
 
 /** \brief a basic key, value pair
+ *
+ * This structure holds a key and an associated value as two associated pointers
+ *
  * \struct StringPair
- * This structure holds a key and an associated value as two associated pointers */
+ */
 struct StringPair { char *key; char *val; };
 
 /** \brief a integer pair
- * \struct IntPair
+ *
  * This structure holds two integers.
+ *
+ * \struct IntPair
  */
 struct IntPair { int x; int y; };
 
 /** \brief holds the tagnum and a pointer to a DataBlock
- * \struct IntDBPair
+ *
  * This structure holds a tagnum and a pointer to a "dumped" DataBlock whose
  * type is described by tagnum.
+ *
+ * \struct IntDBPair
  */
 struct IntDBPair { int tnum ; struct DataBlock *db; };
 
 /** \brief the basic polymorphic types supported by DRA
- * \union PCTypes
  *
  * a DRA can hold any number of different objects.  The choices include
  * a double <b>d</b> <br>
@@ -96,6 +103,8 @@ struct IntDBPair { int tnum ; struct DataBlock *db; };
  * store one of the above types (excepting the StringPair, wherein the pair
  * counts as a single object).  If you store using one type then attempt
  * to retrieve using a different type, then an uncertain future awaits.
+ *
+ * \union PCTypes
  */
 union PCTypes {
   double d;

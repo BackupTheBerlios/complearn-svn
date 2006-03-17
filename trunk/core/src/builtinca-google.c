@@ -44,10 +44,10 @@ static int goog_apiver(void);
 
 /** \brief The Google compression adaptor instance
  *
- *  \struct GoogleCompInstance
- *
  *  This structure holds all the persistent configuration information
  *  necessary for the Google compressor to work.
+ *
+ *  \struct GoogleCompInstance
  */
 struct GoogleCompInstance {
   char *gkey;    /*!< GoogleKey which must be obtained by Google */

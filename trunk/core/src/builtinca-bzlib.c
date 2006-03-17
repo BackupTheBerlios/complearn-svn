@@ -97,11 +97,11 @@ struct BZ2DynamicAdaptor *clGrabBZ2DA(void) {
 /* bzip2 compression interface */
 
 /** \brief The BZIP2 compression adaptor instance
- *  \struct BZ2CompInstance
- *
  *  This structure holds all the persistent configuration information
  *  governing how the block-sorting compressor behaves.  Several parameters
  *  that effect the behavior are listed as fields below.
+ *
+ *  \struct BZ2CompInstance
  */
 struct BZ2CompInstance {
   int blocksize;  /*!< the size of each block, in multiples of 100K; this must

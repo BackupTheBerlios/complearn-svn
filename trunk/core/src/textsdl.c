@@ -52,9 +52,11 @@
 /*! \file textsdl.c */
 
 /** \brief contains an SDL Text Rendering style with a given color and font
- * \struct CLTextStyle
+ *
+ * The Simple DirectMedia Layer text rendering subroutines use this for styling.
  *
  * \sa textsdl.c
+ * \struct CLTextStyle
  */
 struct CLTextStyle {
   SDL_Color *color;

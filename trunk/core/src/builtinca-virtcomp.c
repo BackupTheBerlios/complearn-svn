@@ -33,7 +33,6 @@
 #include <stdlib.h>
 
 /** \brief A structure containing the instance state for a virtual compressor
- * \struct VirtualCompInstance
  *
  * This structure holds all status information necessary to perform the
  * virtual compression interface.  This includes forking a new process,
@@ -42,6 +41,8 @@
  * for an ASCII decimal formatted floating-point number indicating the
  * compressed size, in bits, of the imaginary compressed file.  Note that,
  * unlike the real compressor instance, no actual compression is necessary.
+ *
+ * \struct VirtualCompInstance
  */
 struct VirtualCompInstance {
 	char *cmd;

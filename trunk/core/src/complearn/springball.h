@@ -34,8 +34,6 @@
 
 /** \brief Charged ball and spring physical simulation for animation effect
  *
- *  \struct SpringBallSystem
- *
  * The SpringBallSystem evolves a multibody phsyical simulation over time
  * using a numerical approximation of the differential equations due to
  * Newton's Law of Acceleration, Coulomb's Law of Electrostatic Repulsion,
@@ -51,7 +49,7 @@
  * them within proximity of one another.
  *
  * \sa springball.h
- *
+ *  \struct SpringBallSystem
  */
 struct SpringBallSystem;
 

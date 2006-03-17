@@ -40,9 +40,11 @@
 
 /** \brief Where configuration details are stored.
  *
- *  \struct GeneralConfig
+ * This holds all generic configuration options for the CompLearn system
+ * in an easily-usable (binary) structure at runtime.
  *
  *  \sa environment.h
+ *  \struct GeneralConfig
  */
 struct GeneralConfig {
   int fVerbose; /*!< flag indicating verbosity (1) or silence (0) */

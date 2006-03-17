@@ -43,9 +43,10 @@
 
 /** \brief blocksort compressor instance
  *
- * \struct BlockSortCompInstance
+ * Provides simple BlockSort compression.
  *
  * \sa builtinca-blocksort.c
+ * \struct BlockSortCompInstance
  */
 struct BlockSortCompInstance {
   int code2state[256];

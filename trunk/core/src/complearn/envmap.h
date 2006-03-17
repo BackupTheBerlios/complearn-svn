@@ -32,7 +32,6 @@
 /*! \file envmap.h */
 
 /** \brief Container of key-value pairs which set the compression environment.
- *  \struct EnvMap
  *
  *  EnvMap contains a stack of key-value pairs which are used to set the
  *  options for a compressor instance.
@@ -53,6 +52,7 @@
  *  EnvMap.
  *
  * \sa envmap.h
+ *  \struct EnvMap
  */
 struct EnvMap;
 

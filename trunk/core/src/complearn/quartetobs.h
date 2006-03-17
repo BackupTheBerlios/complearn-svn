@@ -31,11 +31,11 @@
 
 /** \brief a QuartetObserver allows for an ordered traversal of quartets
  *
- * \struct QuartetObserver
- *
  * The QuartetObserver interface provides for a method-pointer callback
  * external iteration over quartet groupings or topologies.  The inside of
  * the iteration loop is a Visitor-style pattern.
+ *
+ * \struct QuartetObserver
  */
 
 #include <complearn/quartet.h>

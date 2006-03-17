@@ -34,8 +34,6 @@ struct AdjImplementation;
 
 /** \brief AdclJacency matrix interface to CompLearn.
  *
- * \struct AdjAdaptor
- *
  * An AdjAdaptor is the interface for adclJacency module implementations such as
  * AdjMatrix and AdjList.  It represents a diagonally-symmetric binary matrix
  * where 0 means the nodes are disconnected, and 1 means they are connected.
@@ -47,6 +45,7 @@ struct AdjImplementation;
  *  external adclJacency module.
  *
  * \sa adjadaptor.h
+ * \struct AdjAdaptor
  */
 struct AdjAdaptor {
   void *ptr;

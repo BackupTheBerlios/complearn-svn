@@ -31,6 +31,10 @@
 #include <complearn/complearn.h>
 
 /** \brief Private enumeration instance for windowed enumeration.
+ *
+ * This DBE enumerates through successive (possibly overlapping) windows
+ * of regular stepsize, adjustable stride, beginpoint, and endpoint.
+ *
  *  \struct DBEWindowedEnumeration
  */
 struct DBEWindowedEnumeration
@@ -40,6 +44,9 @@ struct DBEWindowedEnumeration
 };
 
 /** \brief Iterator for a DBEWindowedEnumeration.
+ *
+ * This iterator goes through successive windows of data.
+ *
  *  \struct DBEWindowedEnumerationIterator
  */
 struct DBEWindowedEnumerationIterator

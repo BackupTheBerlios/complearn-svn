@@ -38,14 +38,14 @@
 
 /** \brief An undirected, unrooted binary tree
  *
- *  \struct UnrootedBinary
- *
  * \sa unrootedbinary.h
  *
  * An UnrootedBinary holds the connection information associated with a
  * particular tree.  Each node has either 1 or 3 neighbors; leaves have only
  * 1, and the rest are kernel nodes with 3 neighbors each.  There is no
  * root.
+ *
+ *  \struct UnrootedBinary
  */
 struct UnrootedBinary;
 struct LabelPerm;

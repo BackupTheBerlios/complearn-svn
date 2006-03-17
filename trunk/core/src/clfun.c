@@ -159,8 +159,6 @@ int countThreeSlashes(char *buf)
 
 /** \brief viewer (camera) settings and parameters
  *
- * \struct Camera
- *
  * This function maintains all state associated with viewer position and
  * orientation. The orientation is controlled by two angles, angle1 and
  * angle2.  angle1 represents horizontal heading (as on a horizontal compass)
@@ -171,7 +169,7 @@ int countThreeSlashes(char *buf)
  * origin of the coordinate system.
  *
  * \sa sdlgl.c
- *
+ * \struct Camera
  */
 struct Camera {
   double angle1, angle2;

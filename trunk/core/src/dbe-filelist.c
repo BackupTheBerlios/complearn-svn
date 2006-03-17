@@ -37,6 +37,9 @@
 #include <complearn/complearn.h>
 
 /** \brief Private enumeration instance for filelist enumeration.
+ *
+ * This DBE enumerates through a list of filenames.
+ *
  *  \struct DBEFileListEnumeration
  */
 struct DBEFileListEnumeration
@@ -45,6 +48,9 @@ struct DBEFileListEnumeration
 };
 
 /** \brief Iterator for a DBEFileListEnumeration.
+ *
+ * This DBE iterator enumerates through a list of filenames.
+ *
  *  \struct DBEFileListEnumerationIterator
  */
 struct DBEFileListEnumerationIterator

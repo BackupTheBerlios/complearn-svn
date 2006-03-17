@@ -34,7 +34,6 @@
 /*! \file tagfile.h */
 
 /** \brief Allows for easy parsing through DataBlocks in a DataBlock "package"
- *  \struct TagManager
  *
  *  A DataBlock "package" as created by clPackage_DataBlocks() consists of
  *  sequential, dumped DataBlocks and can be accessed by a combination of
@@ -47,6 +46,7 @@
  *  retrieve the next dumped DataBlock, and so on.
  *
  *  \sa tagfile.h
+ *  \struct TagManager
 */
 struct TagManager;
 

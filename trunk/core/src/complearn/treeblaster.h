@@ -35,8 +35,6 @@
 
 /** \brief searches for an optimal order for traversing a given TreeAdaptor
  *
- * \struct TreeBlaster
- *
  * The TreeBlaster permutes child-ordering in the nodes of a TreeAdaptor
  * randomly and searches for the lowest perimiter-pair NCD sum.  For a given
  * traversal, the leaf nodes will form a ring and every adclJacent pair of
@@ -45,7 +43,7 @@
  * order.
  *
  * \sa treeblaster.h
- *
+ * \struct TreeBlaster
  */
 struct TreeBlaster;
 

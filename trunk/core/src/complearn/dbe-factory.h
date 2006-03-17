@@ -30,7 +30,6 @@
 /*! \file dbe-factory.h */
 
 /** \brief Determines the mode in which a new DataBlockEnumeration is created.
- *  \struct DBEFactory
  *
  *  A DBEFactory can be set to one of 5 different modes:
  *
@@ -41,6 +40,8 @@
  *    windowed - for converting a single DataBlock into a set of DataBlocks
  *
  *  By default, the factory is set to file mode.
+ *
+ *  \struct DBEFactory
  */
 struct DBEFactory;
 

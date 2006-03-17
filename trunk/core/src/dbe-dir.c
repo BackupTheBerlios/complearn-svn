@@ -42,6 +42,7 @@
 static char *fname;
 
 /** \brief Private enumeration instance for directory enumeration.
+ *
  *  \struct DBEDirEnumeration
  */
 struct DBEDirEnumeration
@@ -50,6 +51,7 @@ struct DBEDirEnumeration
 };
 
 /** \brief Iterator for a DBEDirEnumeration.
+ *
  *  \struct DBEDirEnumerationIterator
  */
 struct DBEDirEnumerationIterator

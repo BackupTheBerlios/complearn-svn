@@ -39,9 +39,8 @@
  * The LabelPerm supports a simple and generic label permutation operation
  * in clLabelpermMutate() to support nondeterministic searches.
  *
- * \struct LabelPerm
- *
  * \sa labelperm.h
+ * \struct LabelPerm
  */
 struct LabelPerm;
 

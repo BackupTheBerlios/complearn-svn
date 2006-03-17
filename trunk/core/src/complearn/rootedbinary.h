@@ -33,13 +33,13 @@
 
 /** \brief An undirected, rooted binary tree
  *
- *  \struct RootedBinary
- *
  * \sa rootedbinary.h
  *
  * A RootedBinary holds the connection information associated with a
  * particular tree.  Each node has either 1 or 3 neighbors; leaves have only
  * 1, and the rest are kernel nodes with 3 neighbors each.
+ *
+ *  \struct RootedBinary
  */
 struct RootedBinary;
 struct LabelPerm;

@@ -29,11 +29,12 @@
 /*! \file clnodeset.h */
 
 /** \brief A dynamically resizing set of integers
- * \struct CLNodeSet
  *
  * This structure represents a set of nodes commonly, or more generally,
  * a set of integers.  The set is not ordered.  Each integer is either
  * in or out of a given CLNodeSet.
+ *
+ * \struct CLNodeSet
  */
 struct CLNodeSet;
 

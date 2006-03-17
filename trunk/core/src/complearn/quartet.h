@@ -56,8 +56,6 @@ typedef double dist_t;
 /** \brief a labelled undirected binary tree with four leaf labels in a
  * particular one of three possible configurations
  *
- * \struct Quartet
- *
  * This structure holds an array of four elements.  The quartet is
  * arranged like so:
  *
@@ -78,6 +76,8 @@ typedef double dist_t;
  * If q[0] < q[1] and q[0] < q[2] and q[2] < q[3], then we say that the
  * Quartet is in normal form.  Every quartet may be converted to a normal
  * form without changing its meaning by swaps.
+ *
+ * \struct Quartet
  */
 struct Quartet {
   qbase_t q[4]; /*!< The quartet labels as an array of four elements */

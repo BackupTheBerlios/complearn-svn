@@ -35,6 +35,7 @@
 
 /** \brief The DataBlockEnumerationIterator indicates the current position of
  *   the DataBlock in a private enumeration instance.
+ *
  *  \struct DataBlockEnumerationIterator
  */
 struct DataBlockEnumerationIterator;

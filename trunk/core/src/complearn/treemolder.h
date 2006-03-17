@@ -45,10 +45,9 @@
  *
  * This structure is analogous to the TreeHolder.
  *
- * \struct TreeMolder
- *
  * \sa treemolder.h
  * \sa TreeHolder
+ * \struct TreeMolder
  */
 struct TreeMolder;
 

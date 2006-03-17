@@ -37,6 +37,9 @@
 #include <complearn/complearn.h>
 
 /** \brief Private enumeration instance for filelist enumeration.
+ * 
+ * This DBE enumerates through a list of files.
+ *
  *  \struct DBEStringListEnumeration
  */
 struct DBEStringListEnumeration
@@ -45,6 +48,9 @@ struct DBEStringListEnumeration
 };
 
 /** \brief Iterator for a DBEStringListEnumeration.
+ *
+ * This DBE enumerates through a list of literal strings.
+ *
  *  \struct DBEStringListEnumerationIterator
  */
 #define MAXLABELSIZE 32
