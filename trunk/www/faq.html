@@ -191,6 +191,14 @@ cat infile.pmd
 rm infile infile.pmd
 </pre>
 
+<B>Note: if you are analyzing DNA, you should add two <i>very</i> important
+options to ppmd in order to get the best results like this:</b>
+<pre>
+/ufs/cilibrar/bin/ppmd e -o15 -m255 infile &gt;/dev/null &lt;/dev/null 2&gt;/dev/null
+</pre>
+This means "use 15th order instead of the default 4th order" and "use 255 megs of memory instead of the default of 10".  If you don't do this, you will have terrible results because the ppmd will be restricted to a very narrow range of contexts.
+
+
 If you install that script in <b>$HOME/bin/catppmd</b> and don't forget to
 chmod it executable (using <b> chmod a+rx $HOME/bin/catppmd </b> for instance)
 then you can use it with the following option to ncd:
