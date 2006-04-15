@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo
+BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 MPIPROGRAMS = partree
 GRAPHICSPROGRAMS = clfun
 GFXLIBS = @GFXLIBS@
@@ -68,6 +68,9 @@ svdproj_LDADD = $(CLLDFLAGS)
 
 clbinfo_SOURCES = clbinfo.c
 clbinfo_LDADD = $(CLLDFLAGS)
+
+splittree_SOURCES = splittree.c
+splittree_LDADD = $(CLLDFLAGS)
 
 ncd_SOURCES = ncd.c
 ncd_LDADD = $(CLLDFLAGS) $(NGDLIBS)
