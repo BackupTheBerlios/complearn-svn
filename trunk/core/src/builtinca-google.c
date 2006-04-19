@@ -97,15 +97,16 @@ struct CompAdaptor *clBuiltin_GOOG(void)
 
 static const char *refWords[] = {
   "ten",
-  "most",
   "important",
   "words",
-  "are",
   "just",
   "typical",
   "among",
   "everyday",
+  "internet",
   "people",
+  "city",
+  "wolf",
   NULL
 };
 
@@ -120,7 +121,9 @@ double clCalculateMbase(const char *daystr, const char *gkey)
   int i;
   for (i = 0; refWords[i]; i += 1) {
     struct StringStack *terms = clStringstackNewSingle(refWords[i]);
-    acc += clFetchSampleSimple(terms, gkey, daystr);
+    double val;
+    val = clFetchSampleSimple(terms, gkey, daystr);
+    acc += val;
     clStringstackFree(terms);
   }
   return acc;

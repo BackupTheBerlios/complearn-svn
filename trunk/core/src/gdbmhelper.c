@@ -114,8 +114,9 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
   result = gdbm_fetch(db, clConvertDataBlockToDatum(key));
 //  clogWarning("KEY<%s:%d>FETCH to %p:%d\n", clDatablockToString(key), clDatablockSize(key),  result.dptr, result.dsize);
   gdbm_close(db);
-  if (result.dptr)
+  if (result.dptr) {
     return clDatablockNewFromBlock(result.dptr, result.dsize);
+  }
   return NULL;
 }
 

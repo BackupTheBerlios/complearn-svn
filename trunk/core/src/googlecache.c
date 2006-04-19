@@ -124,6 +124,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
   double result;
   char *daystr;
   struct CLDateTime *dt = NULL;
+  int err;
   if (udaystr == NULL) {
     dt = cldatetimeNow();
     daystr = clStrdup(cldatetimeToDayString(dt));
@@ -135,7 +136,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
   }
   if (gc == NULL)
     gc = clNewGC();
-  clFetchsample(gc, daystr, terms, &result, gkey);
+  err = clFetchsample(gc, daystr, terms, &result, gkey);
   clFreeandclear(daystr);
   if (dt)
     cldatetimeFree(dt);
@@ -170,18 +171,20 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
 int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
 {
   struct StringStack *normed;
-  char *daystrcachekey;
+  char *daystrcachekey, *lastkeystr;
   struct DataBlock *dblastkey, *lastdbval;
   struct DataBlock *db, *oldlast;
   struct DataBlock *dbdaystrkey;
 
   normed = clStringstackClone(terms);                    /* FSA02 */
   clNormalizeSearchTerms(normed);
-  dblastkey = clStringToDataBlockPtr(makeCacheKey(NULL, normed));
+  lastkeystr = makeCacheKey(NULL, normed);
+  dblastkey = clStringToDataBlockPtr(lastkeystr);
 
   daystrcachekey = clStrdup(makeCacheKey(daystr, normed));
 
   dbdaystrkey = clStringToDataBlockPtr(daystrcachekey);      /* FSA03 */
+
   db = cldbfetch(gc->samp, dbdaystrkey);
 
   lastdbval = cldbfetch(gc->samp, dblastkey);  /* may be NULL */
