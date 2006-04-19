@@ -260,6 +260,8 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
     union PCTypes p;
     p = clEnvmapKeyValAt(em, i);
     if (clEnvmapIsMarkedAt(em, i) && !clEnvmapIsPrivateAt(em, i) ) {
+      if (strcmp(p.sp.key,"GoogleKey")==0)
+        continue;
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
       clStringstackPush(ss, param);
     }
