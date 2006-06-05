@@ -1,1 +1,1 @@
-usr/lib/libcs*.so.*
+libcsoap/.libs/libcs*.so.* usr/lib
