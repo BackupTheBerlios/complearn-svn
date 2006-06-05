@@ -15,6 +15,6 @@ deploy:
 	scp *.deb *.dsc *.changes libcomp*gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf libcomplearn-0.93 libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc && cd core && fakeroot ./debian/rules clean
+	rm -rf libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc && cd core && fakeroot ./debian/rules clean
 
 

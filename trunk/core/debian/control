@@ -28,3 +28,16 @@ Description: machine-learning with data compression core library runtime files
  .
  Homepage: http://complearn.org/
 
+Package: complearn-tools
+Section: sci
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcomplearn0
+Description: complearn machine-learning command-line utilities
+ complearn makes artificial intelligence easy.  By using the powerful
+ statistical analysis already built within data compression programs,
+ this library delivers high-quality results with very low effort.  This
+ package includes the popular ncd and maketree commands as well as many other
+ convenient utilities
+ .
+ Homepage: http://complearn.org/
+
