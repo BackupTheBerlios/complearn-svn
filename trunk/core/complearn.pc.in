@@ -1,7 +1,7 @@
 prefix=/usr
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
-includedir=${prefix}/complearn-1.0/include
+includedir=${prefix}/include/complearn-1.0
 
 Name: complearn
 Description: CompLearn Machine Learning Library
