@@ -44,7 +44,7 @@ build-stamp:  config.status
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	$(MAKE) -C libcsoap
 
 	touch build-stamp
 
@@ -72,7 +72,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C libcsoap install DESTDIR=$(CURDIR)/debian/tmp
 
 
 # Build architecture-independent files here.
