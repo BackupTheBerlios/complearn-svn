@@ -1,2 +1,2 @@
 nanohttp/*.h usr/include/nanohttp-1.0/nanohttp
-nanohttp/.libs/libnanohttp1*.so usr/lib
+nanohttp/.libs/libnanohttp*.so usr/lib
