@@ -5,16 +5,30 @@ Build-Depends: debhelper (>= 4.0.0), autotools-dev
 Standards-Version: 3.6.2
 Section: libs
 
-Package: libcsoap-dev
+Package: libcsoap1-dev
 Section: libdevel
 Architecture: any
 Depends: libcsoap1 (= ${Source-Version})
 Description: development header files for CSOAP library
  This package contains files needed to compile libcsoap applications.
 
+Package: libnanohttp1-dev
+Section: libs
+Architecture: any
+Depends: libcsoap1 (= ${Source-Version})
+Description: shared nanohttp header files for SOAP server apps in C
+ This project provides a small SOAP server in C
+
+Package: libnanohttp1
+Section: libs
+Architecture: any
+Depends: libxml2-dev, libtool
+Description: shared nanohttp library from CSOAP pacakge
+ This project in ANSI C provides a small SOAP server framework
+
 Package: libcsoap1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libxml2-dev, libnanohttp1-dev (= ${Source-Version})
 Description: shared CSOAP library for SOAP client/server in C
  This project in ANSI C provides a convenient SOAP API for clients and servers

@@ -12,6 +12,8 @@ libnanohttp_la_HEADERS=nanohttp-common.h nanohttp-socket.h nanohttp-client.h    
                            nanohttp-request.h nanohttp-response.h                \
                            nanohttp-base64.h nanohttp-ssl.h
 
-libnanohttp_la_LDFLAGS= -version-info @nanohttp_version@ -release @nanohttp_release@
+libnanohttp_la_LDFLAGS= -version-info @nanohttp_version@ -release @nanohttp_release@ -lpthread
 libnanohttp_la_CFLAGS=-I${top_srcdir}
 
+install:
+	install -d $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; for i in $(libnanohttp_la_HEADERS) ; do install $$i $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; done

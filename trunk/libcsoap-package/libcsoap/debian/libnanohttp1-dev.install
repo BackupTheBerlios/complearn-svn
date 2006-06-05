@@ -1,0 +1,12 @@
+nanohttp/nanohttp-base64.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-client.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-common.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-mime.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-request.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-response.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-server.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-socket.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-ssl.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/nanohttp-stream.h usr/include/nanohttp-1.0/nanohttp
+nanohttp.so usr/lib
+nanohttp.pc usr/lib/pkgconfig
