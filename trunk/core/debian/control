@@ -29,7 +29,7 @@ Description: machine-learning with data compression core library runtime files
  Homepage: http://complearn.org/
 
 Package: complearn-tools
-Section: sci
+Section: science
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libcomplearn0
 Description: complearn machine-learning command-line utilities
