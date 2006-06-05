@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+all: debs
+
+addkey:
+	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
+
+debs:
+	cp -rv core libcomplearn-0.93 && cd libcomplearn-0.93 && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
+
+# && fakeroot ./debian/rules clean
+
+deploy:
+	scp *.deb *.dsc *.changes libcomp*gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
+
+clean:
+	rm -rf libcomplearn-0.93 libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc && cd core && fakeroot ./debian/rules clean
+
+
