@@ -50,6 +50,27 @@
 
 <h3>Pre-Compiled Binaries and Packages</h3>
 
+<p><h2>Debian binaries (.deb)</h2> are available for direct download from
+<a href="http://debian.cilibrar.com/debian/dists/pkgarc/main/binary-i386/">
+this area</a>, however it is easiest to fetch these packages automatically.
+
+<h2> Debian apt-get auto-installation </h2>
+
+<p>All files are available for automatic download by adding the following two
+lines to your <b>/etc/apt/sources.list</b> file:<br>
+<tt><br>
+deb http://debian.cilibrar.com/debian/ pkgarc main<br>
+deb-src http://debian.cilibrar.com/debian/ pkgarc main<br>
+</tt><br>
+Once these are added, an <b>apt-get update</b> will enable easy installation
+with just one command:
+<p>
+<tt>
+apt-get install complearn-tools libcomplearn0-dev
+</tt>
+<p>
+Please note that these .deb's are unsigned, and so you must confirm installation of the unauthenticated archives when prompted.  You must also allow the apt-get system to fetch several required dependencies.
+<br><p>
 <p><a href="downloads/cldemo-0.3.10.exe">3D Visualisation Demo,
 cldemo-0.3.10</a> (August 23, 2005, 4.1MB, Windows XP/98/2000 only) - you can
 drag-and-drop files and folders to generate a best-fitting unrooted binary tree
