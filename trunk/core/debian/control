@@ -31,7 +31,7 @@ Description: machine-learning with data compression core library runtime files
 Package: complearn-tools
 Section: science
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcomplearn0
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: complearn machine-learning command-line utilities
  complearn makes artificial intelligence easy.  By using the powerful
  statistical analysis already built within data compression programs,
