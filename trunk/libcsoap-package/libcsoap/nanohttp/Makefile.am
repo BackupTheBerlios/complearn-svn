@@ -16,4 +16,4 @@ libnanohttp_la_LDFLAGS= -version-info @nanohttp_version@ -release @nanohttp_rele
 libnanohttp_la_CFLAGS=-I${top_srcdir}
 
 install:
-	install -d $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; for i in $(libnanohttp_la_HEADERS) ; do install $$i $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; done
+	install -d $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; for i in $(libnanohttp_la_HEADERS) ; do install $$i $(DESTDIR)/usr/include/nanohttp-1.0/nanohttp ; done ; install -d $(DESTDIR)/usr/lib ; install .libs/libnanohttp*so* $(DESTDIR)/usr/lib

@@ -11,6 +11,6 @@ libcsoap_la_HEADERS=soap-xml.h soap-fault.h soap-env.h soap-service.h    \
                     soap-router.h soap-client.h soap-server.h soap-ctx.h \
                     soap-admin.h
 
-libcsoap_la_LDFLAGS= -version-info @csoap_version@ -release @csoap_release@ ../nanohttp/libnanohttp.la -lpthread
+libcsoap_la_LDFLAGS= -version-info @csoap_version@ -release @csoap_release@ -L../nanohttp -lnanohttp -lpthread
 libcsoap_la_CFLAGS=-I${top_srcdir}
 

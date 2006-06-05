@@ -3,7 +3,7 @@ SUBDIRS=nanohttp libcsoap examples
 bin_SCRIPTS=csoap-config
 
 pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA=libcsoap.pc
+pkgconfig_DATA=libcsoap.pc nanohttp.pc
 
 m4datadir=$(datadir)/aclocal
 m4data_DATA=libcsoap.m4
@@ -30,6 +30,8 @@ win32_env=win32/MinGW/Makefile    \
           win32/MinGW/readme.txt  \
           win32/include/wsockcompat.h
 
-EXTRA_DIST=$(documentation) $(win32_env) libcsoap.pc.in libcsoap.m4 \
+EXTRA_DIST=$(documentation) $(win32_env) libcsoap.pc.in nanohttp.pc.in libcsoap.m4 \
            $(broken_examples)
+
+distclean: clean
 

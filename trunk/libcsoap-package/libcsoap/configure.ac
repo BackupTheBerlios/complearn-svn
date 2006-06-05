@@ -116,5 +116,6 @@ examples/Makefile
 examples/nanohttp/Makefile
 examples/csoap/Makefile
 libcsoap.pc
+nanohttp.pc
 csoap-config)
 
