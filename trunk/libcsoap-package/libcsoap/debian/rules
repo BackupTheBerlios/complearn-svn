@@ -36,7 +36,7 @@ major=2
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	export CFLAGS="$(CFLAGS) -Wl,-z,defs" ; aclocal -I . ; automake --add-missing ; ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	export CFLAGS="$(CFLAGS) -Wl,-z,defs" ; aclocal -I . ; automake --add-missing ; autoconf ; ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
 
 build: build-stamp

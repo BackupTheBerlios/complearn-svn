@@ -29,7 +29,6 @@ AC_LANG_C
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-
 AC_HEADER_STDC
 AC_HEADER_TIME
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h malloc.h netdb.h netinet/in.h stdint.h stdlib.h signal.h pthread.h string.h sys/socket.h sys/time.h unistd.h io.h stdio.h stdarg.h errno.h ctype.h openssl/rand.h openssl/err.h])

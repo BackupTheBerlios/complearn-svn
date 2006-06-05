@@ -12,7 +12,7 @@ libnanohttp_la_HEADERS=nanohttp-common.h nanohttp-socket.h nanohttp-client.h    
                            nanohttp-request.h nanohttp-response.h                \
                            nanohttp-base64.h nanohttp-ssl.h
 
-libnanohttp_la_LDFLAGS= -version-info @nanohttp_version@ -lpthread -soname libnanohttp.so.1
+libnanohttp_la_LDFLAGS= -version-info @nanohttp_version@ -lpthread
 libnanohttp_la_CFLAGS=-I${top_srcdir}
 
 install:
