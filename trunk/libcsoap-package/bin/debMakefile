@@ -7,12 +7,12 @@ addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
 debs:
-	cp -rv libcsoap libcsoaptmp && cd libcsoaptmp && cp ../extern/*orig.tar.gz .. && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
+	cp -rv libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
 
 deploy: debs
-	scp *.deb *.diff.gz *.dsc *.changes cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcsoap && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
+	scp *.deb *.tar.gz *.dsc *.changes cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcsoap && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf *.deb libcsoaptmp libcsoap_* libcsoap-* libcsoap_1.047.orig.tar.gz libcso*.diff.gz libcsoap*dsc libcsoap*.changes  && cd libcsoap && fakeroot ./debian/rules clean && cd ../libcsoap && fakeroot ./debian/rules clean
+	rm -rf *.deb libcsoap-1.047 libcsoap_* libcsoap-* libcsoap_1.047.orig.tar.gz libcso*.diff.gz libcsoap*dsc libcsoap*.changes  && cd libcsoap && fakeroot ./debian/rules clean && cd ../libcsoap && fakeroot ./debian/rules clean
 
 
