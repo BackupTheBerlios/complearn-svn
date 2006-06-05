@@ -7,5 +7,5 @@ Name: complearn
 Description: CompLearn Machine Learning Library
 Requires: gsl
 Version: @VERSION@
-Libs: -L${exec_prefix}/lib -lcomplearn @LIBS@
+Libs: -L${exec_prefix}/lib -lcomplearn @LIBS@ @NGDLIBS@
 Cflags: -I${includedir} @CPPFLAGS@

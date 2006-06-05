@@ -54,6 +54,8 @@ endif
 bin_PROGRAMS = $(LEV3PROGRAMS)
 check_PROGRAMS = runtests
 
+EXTRA_PROGRAMS=
+
 runtests_SOURCES = runtests.c
 runtests_LDADD = $(CLLDFLAGS) $(NGDLIBS)
 
@@ -214,4 +216,7 @@ clparser.c
 
 lib_LTLIBRARIES= libcomplearn.la
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
-libcomplearn_la_LDADD= --shared $(NGDLIBS)
+libcomplearn_la_LIBADD= $(NGDLIBS)
+
+distclean:
+	rm -rf Makefile *.o .libs libcomple*
