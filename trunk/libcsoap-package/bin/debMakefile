@@ -9,7 +9,7 @@ addkey:
 debs:
 	cp -rv libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
 
-deploy: debs
+deploy:
 	scp *.deb *.tar.gz *.dsc *.changes cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcsoap && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
