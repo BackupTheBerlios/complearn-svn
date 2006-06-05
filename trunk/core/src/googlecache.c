@@ -173,12 +173,12 @@ int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack
   struct StringStack *normed;
   char *daystrcachekey, *lastkeystr;
   struct DataBlock *dblastkey, *lastdbval;
-  struct DataBlock *db, *oldlast;
+  struct DataBlock *db;
   struct DataBlock *dbdaystrkey;
 
   normed = clStringstackClone(terms);                    /* FSA02 */
   clNormalizeSearchTerms(normed);
-  lastkeystr = makeCacheKey(NULL, normed);
+  lastkeystr = (char *) makeCacheKey(NULL, normed);
   dblastkey = clStringToDataBlockPtr(lastkeystr);
 
   daystrcachekey = clStrdup(makeCacheKey(daystr, normed));

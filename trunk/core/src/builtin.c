@@ -25,6 +25,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <stdio.h>
+#include <string.h>
 #include <complearn/complearn.h>
 
 struct CompAdaptor *clBuiltin_BZIP(void);

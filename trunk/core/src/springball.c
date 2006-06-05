@@ -532,7 +532,7 @@ int clJac(double t, const double uy[], double *dfdy, double dfdt[], void *params
   return GSL_SUCCESS;
 }
 
-static int rclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
+int rclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   //double *y = (double *) &uy[0];

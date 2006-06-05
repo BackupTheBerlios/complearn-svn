@@ -26,6 +26,7 @@
 */
 #include <complearn/complearn.h>
 #include <string.h>
+#include <zlib.h>
 
 #include <complearn/transadaptor.h>
 

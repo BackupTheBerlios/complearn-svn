@@ -34,9 +34,7 @@
 /*! \file environment.h */
 
 #include <complearn/datablockenum.h>
-#if GETOPT_RDY
 #include <getopt.h>
-#endif
 
 /** \brief Where configuration details are stored.
  *
@@ -86,7 +84,6 @@ struct GeneralConfig {
                                           application */
 };
 
-#if GETOPT_RDY
 /** \brief provides a getopt_long() (GNU) like interface to command line
  * option parsing with a CompLearn specific configuration block.
  *
@@ -104,7 +101,6 @@ struct GeneralConfig {
 int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstring,
                 const struct option *longopts, int *longindex,
                 struct GeneralConfig *cfg);
-#endif
 
 /** \brief loads a default configuration environment based on the standard files
  *

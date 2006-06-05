@@ -5,7 +5,7 @@ Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool
 Standards-Version: 3.6.2
 Section: libs
 
-Package: libcomplearn-dev
+Package: libcomplearn1-dev
 Section: libdevel
 Architecture: any
 Depends: libcomplearn1 (= ${Source-Version})

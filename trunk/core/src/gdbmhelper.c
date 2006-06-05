@@ -83,7 +83,6 @@ static void printclFunc(const char *str)
 
 struct GDBMHelper *cldbopen(const char *userfilename)
 {
-  char *filename;
   struct GDBMHelper *gh;
   struct stat buf;
   gh = clCalloc(sizeof(struct GDBMHelper), 1);

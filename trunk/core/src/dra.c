@@ -90,7 +90,7 @@ struct DRA *clDraNew(void)
 
   counter += 1;
   if (counter == -1) {
-    printf("Counter is %d, exitting..\n");
+    printf("Counter is %d, exitting..\n", counter);
     exit(1);
   }
   da->alloc = 10;

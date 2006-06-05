@@ -47,7 +47,7 @@ LEV3PROGRAMS = $(LEV2PROGRAMS) clfun
 clfun_SOURCES = clfun.c textsdl.c
 clfun_LDADD = $(CLLDFLAGS) $(NGDLIBS) $(GFXLIBS)
 else
-LEV3PROGRAMS = $(LEV2PROGRAMS)
+LEV3PROGRAMS = $(LEV2PROGRAMS) $(NGDLIBS)
 endif
 
 
@@ -214,5 +214,4 @@ clparser.c
 
 lib_LTLIBRARIES= libcomplearn.la
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
-libcomplearn_la_LDFLAGS= --shared
-
+libcomplearn_la_LDADD= --shared $(NGDLIBS)
