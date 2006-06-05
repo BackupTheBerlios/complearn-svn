@@ -1,6 +1,12 @@
-usr/include/*
-usr/lib/lib*.a
-usr/lib/lib*.so
-usr/lib/pkgconfig/*
-usr/lib/*.la
-usr/share/pkgconfig/*
+svm.h usr/include/libsvm-1.0/libsvm
+libcsoap/soap-admin.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-client.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-ctx.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-env.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-fault.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-router.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-server.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-service.h usr/include/libcsoap-1.0/libcsoap
+libcsoap/soap-xml.h usr/include/libcsoap-1.0/libcsoap
+libcsoap.so usr/lib
+libcsoap.pc usr/lib/pkgconfig
