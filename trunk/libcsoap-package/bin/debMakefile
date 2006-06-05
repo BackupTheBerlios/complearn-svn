@@ -7,12 +7,12 @@ addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
 debs:
-	cp -rv libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../extern/*orig.tar.gz .. && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
+	cp -rv libcsoap libcsoaptmp && cd libcsoaptmp && cp ../extern/*orig.tar.gz .. && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
 
 deploy: debs
 	scp *.deb *.diff.gz *.dsc *.changes cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcsoap && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf libsvm-ruby1.8-0.44 libsvm-ruby1.8_0.44-1.tar.gz libcsoap-1.047 libcsoap_1.047.orig.tar.gz libsvm0_2.82_*.deb libsvm0-dev_2.82_*.deb libsvm0-tools_2.82_*.deb libcsoap_1.047.diff.gz libcsoap_1.047.dsc libcsoap_1.047_*.changes libsvm-doc_2.82_all.deb libsvm-ruby1.*.dsc libsvm-ruby1.*.changes libsvm-ruby1.*.deb libsvm-ruby1.*.tar.gz && cd libcsoap && fakeroot ./debian/rules clean && cd ../libcsoap && fakeroot ./debian/rules clean
+	rm -rf *.deb libcsoaptmp libcsoap_* libcsoap-* libcsoap_1.047.orig.tar.gz libcso*.diff.gz libcsoap*dsc libcsoap*.changes  && cd libcsoap && fakeroot ./debian/rules clean && cd ../libcsoap && fakeroot ./debian/rules clean
 
 
