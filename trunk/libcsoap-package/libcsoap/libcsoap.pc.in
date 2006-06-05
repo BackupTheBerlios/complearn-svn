@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: csoap
 Description: C API for SOAP applications
 Version: @csoap_version_dotted@
-Libs: -L${libdir} -lcsoap-@csoap_release@ -lnanohttp-@nanohttp_release@ @XML_LIBS@
-Cflags: @XML_CPPFLAGS@ -I${includedir}/libcsoap-@csoap_release@ -I${includedir}/nanohttp-@nanohttp_release@
+Libs: -L${libdir} -lcsoap -lnanohttp @XML_LIBS@
+Cflags: @XML_CPPFLAGS@ -I${includedir}/libcsoap-1.0 -I${includedir}/nanohttp-1.0
 

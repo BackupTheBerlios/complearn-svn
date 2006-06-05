@@ -190,7 +190,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fnanohttp_lib=false
   AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [
-    AC_CHECK_LIB(nanohttp-1.0,log_error, [LIBS="-lnanohttp-1.0 $LIBS";
+    AC_CHECK_LIB(nanohttp,log_error, [LIBS="-lnanohttp $LIBS";
                  fnanohttp_lib=true]) ])
   if test x$fnanohttp_lib = xfalse ; then
     fngd_possible=false;
@@ -200,7 +200,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fcsoap_lib=false
   AC_CHECK_HEADERS([libcsoap/soap-client.h], [
-    AC_CHECK_LIB(csoap-1.0,soap_client_init_args, [LIBS="-lcsoap-1.0 $LIBS";
+    AC_CHECK_LIB(csoap,soap_client_init_args, [LIBS="-lcsoap $LIBS";
                  fcsoap_lib=true]) ])
   if test x$fcsoap_lib = xfalse ; then
     fngd_possible=false;
