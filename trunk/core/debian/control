@@ -1,0 +1,20 @@
+Source: libcomplearn
+Priority: optional
+Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Standards-Version: 3.6.2
+Section: libs
+
+Package: libcomplearn-dev
+Section: libdevel
+Architecture: any
+Depends: libcomplearnBROKEN (= ${Source-Version})
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: libcomplearnBROKEN
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
