@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: csoap
 Description: NanoHTTP (C API) for SOAP applications
 Version: @nanohttp_version_dotted@
-Libs: -L${libdir} -lnanohttp-@nanohttp_release@ @XML_LIBS@
-Cflags: @XML_CPPFLAGS@ -I${includedir}/nanohttp-@nanohttp_release@
+Libs: -L${libdir} -lnanohttp @XML_LIBS@
+Cflags: @XML_CPPFLAGS@ -I${includedir}/nanohttp-1.0
 
