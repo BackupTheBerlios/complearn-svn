@@ -29,7 +29,7 @@ GRAPHICSPROGRAMS = clfun
 GFXLIBS = @GFXLIBS@
 
 GENCPPFLAGS = -I complearn -I .
-CLLDFLAGS = libcomplearn.a
+CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
@@ -83,7 +83,7 @@ partree_LDADD = $(CLLDFLAGS)
 
 #include target.mk
 
-lib_LIBRARIES=libcomplearn.a
+#lib_LIBRARIES=libcomplearn.a
 lib_includedir=$(includedir)/complearn-1.0/complearn
 lib_include_HEADERS=\
 complearn/dlextcomp.h \
@@ -211,4 +211,8 @@ treeparser.c \
 clog.c \
 clwrap.c \
 clparser.c
+
+lib_LTLIBRARIES= libcomplearn.la
+libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
+libcomplearn_la_LDFLAGS= --shared
 

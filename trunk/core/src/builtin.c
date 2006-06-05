@@ -35,6 +35,7 @@ struct CompAdaptor *clBuiltin_blocksort(void);
 struct CompAdaptor *clBuiltin_RealComp(const char *cmd);
 struct CompAdaptor *builtin_VirtComp(const char *cmd);
 
+struct TransformAdaptor *clBuiltin_UNGZ(void);
 
 struct CompAdaptor *clCompaLoadGoogle(void)
 {
@@ -64,9 +65,6 @@ struct CompAdaptor *clCompaLoadBlockSort(void)
   return clBuiltin_blocksort();
 }
 
-#if HAVE_ZLIB_H
-#include "builtinta-ungz.c"
-#endif
 
 struct CompAdaptor *clCompaLoadZlib(void)
 {
