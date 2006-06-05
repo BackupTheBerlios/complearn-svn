@@ -1,4 +1,4 @@
-libcsoap (1.047-1) unstable; urgency=low
+libcsoap (1.1-1) unstable; urgency=low
 
   * Initial release of libcsoap package of CSOAP library:
   * from http://csoap.sourceforge.net/ and used in CompLearn at
