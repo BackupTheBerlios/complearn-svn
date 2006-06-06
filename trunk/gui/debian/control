@@ -1,0 +1,14 @@
+Source: complearn-gui
+Section: unknown
+Priority: optional
+Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Standards-Version: 3.6.2
+
+Package: complearn-gui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, msttcorefonts
+Build-Depends: libsdl1.2-dev, libsdl-ttf1.2-dev, libglut3-dev, libgtk2.0-dev
+Description: A 3D GUI toy drag and drop interface to complearn
+ This is the easiest way to get started with data compression based machine
+ learning.

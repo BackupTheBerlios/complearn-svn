@@ -35,7 +35,9 @@ man_MANS = \
 doc/man/clfun.1
 
 src = \
-src/clfun.c
+src/clfun.c \
+src/textsdl.c \
+src/textsdl.h
 
 doc = \
 doc/man/clfun.1
