@@ -73,7 +73,7 @@
 #define HMIDIOUT int
 #endif
 
-#include <complearn/textsdl.h>
+#include "textsdl.h"
 
 #define SPRINGCYLRAD 0.16
 

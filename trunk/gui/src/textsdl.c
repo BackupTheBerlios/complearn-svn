@@ -44,7 +44,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
-#include <complearn/textsdl.h>
+#include "textsdl.h"
 
 #define GL_BGR 0x80E0
 #define GL_BGRA 0x80E1

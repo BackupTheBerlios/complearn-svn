@@ -1,0 +1,34 @@
+
+/* Define to 1 if you have the <atk/atk.h> header file. */
+#undef HAVE_ATK_ATK_H
+
+/* Define to 1 if you have the <gdk/gdk.h> header file. */
+#undef HAVE_GDK_GDK_H
+
+/* Define to 1 if you have the <GL/glut.h> header file. */
+#undef HAVE_GL_GLUT_H
+
+/* Define to 1 if you have the <GL/glu.h> header file. */
+#undef HAVE_GL_GLU_H
+
+/* Define to 1 if you have the <GL/gl.h> header file. */
+#undef HAVE_GL_GL_H
+
+/* Define to 1 if you have the <SDL/SDL.h> header file. */
+#undef HAVE_SDL_SDL_H
+
+/* Define to 1 if you have the <SDL/SDL_ttf.h> header file. */
+#undef HAVE_SDL_SDL_TTF_H
+
+/* Define to 1 if you have the <gtk/gtk.h> header file. */
+#undef HAVE_GTK_GTK_H
+
+/* Define to 1 if you have the <OpenGL/glut.h> header file. */
+#undef HAVE_OPENGL_GLUT_H
+
+/* Define to 1 if you have the <OpenGL/glu.h> header file. */
+#undef HAVE_OPENGL_GLU_H
+
+/* Define to 1 if you have the <OpenGL/gl.h> header file. */
+#undef HAVE_OPENGL_GL_H
+
