@@ -217,5 +217,8 @@ lib_LTLIBRARIES= libcomplearn.la
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
 libcomplearn_la_LIBADD= $(NGDLIBS)
 
+clean:
+	rm *.o *.lo $(BASICPROGRAMS)
+
 distclean:
 	rm -rf Makefile *.o .libs libcomple*
