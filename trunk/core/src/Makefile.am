@@ -25,8 +25,6 @@
 
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 MPIPROGRAMS = partree
-GRAPHICSPROGRAMS = clfun
-GFXLIBS = @GFXLIBS@
 
 GENCPPFLAGS = -I complearn -I .
 CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
@@ -41,15 +39,17 @@ endif
 
 # TODO: Should not include NGDLIBS?? /alcruz
 
-if AMCGFX
-LEV3PROGRAMS = $(LEV2PROGRAMS) clfun
+#GFXLIBS = @GFXLIBS@
+#if AMCGFX
+#LEV3PROGRAMS = $(LEV2PROGRAMS) clfun
 
-clfun_SOURCES = clfun.c textsdl.c
-clfun_LDADD = $(CLLDFLAGS) $(NGDLIBS) $(GFXLIBS)
-else
+#clfun_SOURCES = clfun.c textsdl.c
+#clfun_LDADD = $(CLLDFLAGS) $(NGDLIBS) $(GFXLIBS)
+#else
+#endif
+
+
 LEV3PROGRAMS = $(LEV2PROGRAMS) $(NGDLIBS)
-endif
-
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
 check_PROGRAMS = runtests
@@ -138,7 +138,6 @@ complearn/stringstack.h \
 complearn/tagfile.h \
 complearn/tagtypes.h \
 complearn/tastack.h \
-complearn/textsdl.h \
 complearn/transadaptor.h \
 complearn/treeadaptor.h \
 complearn/treeholder.h \
