@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-all: gdebs
+all: debs
+
+debs: cldebs gdebs csdebs
 
 addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
@@ -9,7 +11,13 @@ addkey:
 gdebs:
 	cp -rv gui complearn-gui-0.93 && cd complearn-gui-0.93 && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
 
-debs:
+cldebs:
+	cp -rv core libcomplearn-0.93 && cd libcomplearn-0.93 && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
+
+csdebs:
+	cp -rv libcsoap-package/libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../libcsoap-package/extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
+
+cldebs:
 	cp -rv core libcomplearn-0.93 && cd libcomplearn-0.93 && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
 
 # && fakeroot ./debian/rules clean
@@ -18,6 +26,6 @@ deploy:
 	scp *.deb *.dsc *.changes libcomp*gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf complearn-gui-0.93 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc && cd core && fakeroot ./debian/rules clean
+	rm -rf complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes && cd core && fakeroot ./debian/rules clean
 
 
