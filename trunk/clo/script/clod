@@ -14,7 +14,7 @@ skelmakestr = <<EOF
 all: treefile.dot treefile.png
 
 distmatrix.clb: termlist.txt
-	echo "Please wait a moment for your distance matrix to be computed." >distmatrix.html ; touch treefile.png ; /home/webuser/bin/ncd -H -b -g -t $< $< >d2.html ; mv d2.html distmatrix.html
+	echo "Please wait a moment for your distance matrix to be computed." >distmatrix.html ; touch treefile.png ; /usr/bin/ncd -H -b -g -t $< $< >d2.html ; mv d2.html distmatrix.html
 
 treefile.dot: distmatrix.clb
 	/home/webuser/bin/safemaketree distmatrix.clb
