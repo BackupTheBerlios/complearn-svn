@@ -142,6 +142,16 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
     cldatetimeFree(dt);
   return result;
 }
+static void showStatusMsg(struct StringStack *terms, const char *daystr)
+{
+  int i;
+  printf("fetchss-%s-%d:", daystr ? daystr : "(null-daystr)", clStringstackSize(terms));
+  for (i = 0; i < clStringstackSize(terms); i += 1) {
+    if (i > 0) printf(",");
+      printf("%s", clStringstackReadAt(terms, i));
+  }
+  printf("\n");
+}
 /** \brief Fetches a sample from the local count database with the help of the
  * caching agent, GoogleCache.
  *
@@ -175,7 +185,8 @@ int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack
   struct DataBlock *dblastkey, *lastdbval;
   struct DataBlock *db;
   struct DataBlock *dbdaystrkey;
-
+//  printf("In the clFetchsample function...\n");
+//  showStatusMsg(terms, daystr);
   normed = clStringstackClone(terms);                    /* FSA02 */
   clNormalizeSearchTerms(normed);
   lastkeystr = (char *) makeCacheKey(NULL, normed);

@@ -60,20 +60,27 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
   herror_t err;
   SoapCtx *ctx, *ctx2;
   char *method, *urn, *url;
+  struct StringStack *mterms;
   char *estStr = NULL;
   int trynum = 0;
   int isDone = 0;
   double estDouble = -1;
+  mterms = clStringstackClone(terms);
+  clStringstackPush(mterms, "141"); // to cut back number of pages returned
+  // temporary hack around google server search api bug
   xmlNodePtr function, node;
   method = "doGoogleSearch";
   urn = "urn:GoogleSearch";
   url = "http://api.google.com/search/beta2";
+  //printf("In rGetPageCount...");
+  //clStringstackPrint(terms);
+  //printf("About to loop in rGetPageCount...\n");
   while (!isDone) {
     trynum += 1;
 
     ctx = clSimplePrepareSOAPEnvForMethod(urn, method);
     soap_env_add_item(ctx->env, "xsd:string", "key", gkey);
-    soap_env_add_item(ctx->env, "xsd:string", "q",clMakeQueryString(terms));
+    soap_env_add_item(ctx->env, "xsd:string", "q",clMakeQueryString(mterms));
     soap_env_add_item(ctx->env, "xsd:int", "start","0");
     soap_env_add_item(ctx->env, "xsd:int", "maxResults","1");
     soap_env_add_item(ctx->env, "xsd:boolean", "filter","true");
@@ -86,7 +93,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
     err = soap_client_invoke(ctx, &ctx2, url, method);
 //    printf("Done: %d,%d\n", err,trynum);
     if (err != H_OK) {
-      //log_error4("%s():%s [%d]", herror_clFunc(err), herror_message(err), herror_code(err));
+      printf("error:%s():%s [%d]\n", herror_func(err), herror_message(err), herror_code(err));
       herror_release(err);
       sleep(trynum*trynum+5);
       continue;
@@ -135,6 +142,7 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
 //  soap_ctx_free(sci->ctx2);
 //  soap_ctx_free(sci->ctx);
 
+  clStringstackFree(mterms);
   return estDouble;
 }
 
