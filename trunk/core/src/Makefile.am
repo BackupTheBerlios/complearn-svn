@@ -24,20 +24,16 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
-MPIPROGRAMS = partree
 
 GENCPPFLAGS = -I complearn -I .
 CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
-if AMCMPI
-LEV2PROGRAMS = $(BASICPROGRAMS) $(MPIPROGRAMS)
-else
 LEV2PROGRAMS = $(BASICPROGRAMS)
-endif
-
 # TODO: Should not include NGDLIBS?? /alcruz
+
+
 
 #GFXLIBS = @GFXLIBS@
 #if AMCGFX
@@ -79,9 +75,6 @@ ncd_LDADD = $(CLLDFLAGS) $(NGDLIBS)
 
 reordertree_SOURCES = reordertree.c
 reordertree_LDADD = $(CLLDFLAGS)
-
-partree_SOURCES = partree.c
-partree_LDADD = $(CLLDFLAGS)
 
 #include target.mk
 

@@ -224,36 +224,7 @@ fi
 NGDLIBS=$LIBS
 LIBS=$OLDLIBS
 
-# partree dependencies
-
-AC_ARG_ENABLE(mpi,
-[  --enable-mpi  Enable MPI compilation using mpicc
-],
-[case "${enableval}" in
-   yes) ua_mpi=true ;;
-   no)  ua_mpi=false ;;
-    *) AC_MSG_ERROR(bad value "${enableval}" for --enable-mpi) ;;
-esac], [ua_mpi=false])
-
-# pec: CC can be set explicitly, or left unset for mpicc scan
-
-if test x$ua_mpi = xtrue ; then
-  AC_CHECK_PROGS(MPICC, mpicc)
-  if test x$MPICC = x ; then
-    AC_PROG_CC
-  else
-    CC=$MPICC
-    CPP="$MPICC -E"
-  fi
-else
-  AC_PROG_CC
-fi
-
-
-# poc: if up_mpi, then CC = MPICC
-
-AM_CONDITIONAL(AMCMPI, [test x$ua_mpi = xtrue])
-
+AC_PROG_CC
 AC_SUBST(NGDLIBS)
 AC_SUBST(FONTFILE)
 
@@ -267,7 +238,6 @@ echo "fgdbm_lib     is $fgdbm_lib"
 echo "fngd          is $fngd_possible"
 echo "fdl_lib       is $fdl_lib"
 echo "ua_optimize   is $ua_optimize"
-echo "ua_mpi        is $ua_mpi"
 echo "host          is $host"
 echo "build         is $build"
 
