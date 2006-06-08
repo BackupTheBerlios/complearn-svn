@@ -31,19 +31,6 @@ CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
 LEV2PROGRAMS = $(BASICPROGRAMS)
-# TODO: Should not include NGDLIBS?? /alcruz
-
-
-
-#GFXLIBS = @GFXLIBS@
-#if AMCGFX
-#LEV3PROGRAMS = $(LEV2PROGRAMS) clfun
-
-#clfun_SOURCES = clfun.c textsdl.c
-#clfun_LDADD = $(CLLDFLAGS) $(NGDLIBS) $(GFXLIBS)
-#else
-#endif
-
 
 LEV3PROGRAMS = $(LEV2PROGRAMS) $(NGDLIBS)
 
@@ -211,7 +198,7 @@ libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
 libcomplearn_la_LIBADD= $(NGDLIBS)
 
 clean:
-	rm *.o *.lo $(BASICPROGRAMS)
+	rm -rf *.o *.lo $(BASICPROGRAMS) .libs
 
 distclean:
 	rm -rf Makefile *.o .libs libcomple*
