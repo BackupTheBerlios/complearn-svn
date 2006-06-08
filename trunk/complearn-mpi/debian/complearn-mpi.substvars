@@ -1,0 +1,1 @@
+shlibs:Depends=libbz2-1.0, libc6 (>= 2.3.6-6), libcomplearn0, libcsoap1, libgdbm3, libgsl0 (>= 1.4), libnanohttp1, libxml2 (>= 2.6.24), zlib1g (>= 1:1.2.1)

@@ -1,0 +1,13 @@
+Source: complearn-mpi
+Section: unknown
+Priority: optional
+Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libmpich1.0-dev, libcomplearn0-dev
+Standards-Version: 3.6.2
+
+Package: complearn-mpi
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmpich1.0c2
+Description: A 3D GUI toy drag and drop interface to complearn
+ This is the easiest way to get started with data compression based machine
+ learning.
