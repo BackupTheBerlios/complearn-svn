@@ -27,18 +27,11 @@ SUBDIRS = src
 
 DISTCLEAN_TARGETS = config.status config.log
 
-EXTRA_DIST = \
-$(src) \
-$(doc)
+EXTRA_DIST = $(src) $(doc)
 
-man_MANS = \
-doc/man/clfun.1
+man_MANS = doc/man/partree.1
 
-src = \
-src/clfun.c \
-src/textsdl.c \
-src/textsdl.h
+src = src/partree.c
 
-doc = \
-doc/man/clfun.1
+doc = doc/man/partree.1
 
