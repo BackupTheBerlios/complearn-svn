@@ -12,10 +12,10 @@ mdebs:
 	cd complearn-mpi && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz complearn-mpi/complearn-mpi-0.9.3.tar.gz && cd complearn-mpi-0.9.3 && cp -rv ../complearn-mpi/debian . && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && cd ..
 
 gdebs:
-	cp -rv gui complearn-gui-0.93 && cd complearn-gui-0.93 && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
+	cd gui && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz gui/complearn-gui-0.9.3.tar.gz && cd complearn-gui-0.9.3 && cp -rv ../gui/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
 
 cldebs:
-	cd core && make dist && cd .. && tar xvfz core/libcomplearn-0.9.2.tar.gz && cd libcomplearn-0.9.2 && cp -rv ../core/debian . && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot
+	cd core && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz core/libcomplearn-0.9.2.tar.gz && cd libcomplearn-0.9.2 && cp -rv ../core/debian . && cd .. && dpkg-source -b -isvn/ libcomplearn-0.9.2 core/libcomplearn-0.9.2.tar.gz && cd libcomplearn-0.9.2 && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot
 
 csdebs:
 	cp -rv libcsoap-package/libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../libcsoap-package/extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
@@ -24,6 +24,6 @@ deploy:
 	scp *.deb *.dsc *.changes libcomp*gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf complearn-mpi-0.9.3 complearn-mpi-0.9.3* libcomplearn-0.9.2 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc && cd core && fakeroot ./debian/rules clean
+	rm -rf complearn-mpi-0.9.3 complearn-mpi_0* complearn-mpi-1* complearn-mpi-0.9.3* libcomplearn-0.9.2 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc && cd core && fakeroot ./debian/rules clean
 
 
