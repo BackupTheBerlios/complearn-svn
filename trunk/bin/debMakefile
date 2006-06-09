@@ -15,7 +15,7 @@ gdebs:
 	cd gui && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz gui/complearn-gui-0.9.3.tar.gz && cd complearn-gui-0.9.3 && cp -rv ../gui/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
 
 cldebs:
-	cd core && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && cp core/libcomplearn-0.9.3.tar.gz libcomplearn_0.9.3.tar.gz && tar xvfz libcomplearn_0.9.3.tar.gz && cd libcomplearn-0.9.3 && cp -rv ../core/debian . && cd .. && dpkg-source -b -isvn/ libcomplearn-0.9.3 libcomplearn_0.9.3.tar.gz && cd libcomplearn-0.9.3 && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf libcomplearn-0.9.3
+	cd core && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && cp core/libcomplearn-0.9.3.tar.gz libcomplearn_0.93.orig.tar.gz && tar xvfz libcomplearn_0.93.orig.tar.gz && cd libcomplearn-0.9.3 && cp -rv ../core/debian . && cd .. && dpkg-source -b -isvn/ libcomplearn-0.9.3 libcomplearn_0.93.orig.tar.gz && cd libcomplearn-0.9.3 && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf libcomplearn-0.9.3
 
 csdebs:
 	cp -rv libcsoap-package/libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../libcsoap-package/extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
