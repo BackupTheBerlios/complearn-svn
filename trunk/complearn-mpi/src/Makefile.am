@@ -39,3 +39,7 @@ clean:
 
 distclean:
 	rm -rf Makefile *.o .libs
+
+install:
+	install -d $(DESTDIR)/usr/bin && install partree $(DESTDIR)/usr/bin
+

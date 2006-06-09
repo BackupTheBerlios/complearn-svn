@@ -45,8 +45,8 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
-	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	rm -rf debian/complearn-mpi
+	if test -f Makefile; then $(MAKE) distclean; fi
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	rm config.sub
 	cp -f /usr/share/misc/config.sub config.sub
@@ -55,8 +55,6 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	rm config.guess
 	cp -f /usr/share/misc/config.guess config.guess
 endif
-
-
 	dh_clean 
 
 install: build

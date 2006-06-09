@@ -35,3 +35,5 @@ src = src/partree.c
 
 doc = doc/man/partree.1
 
+distclean:
+	make -C src distclean

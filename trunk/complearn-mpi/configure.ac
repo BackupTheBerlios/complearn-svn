@@ -55,7 +55,7 @@ esac], [ua_defpaths=true])
 
 if test x$ua_defpaths = xtrue ; then
   CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/include"
-  LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/lib -L/lib -L/usr/X11R6/lib"
+  LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/lib -L/lib"
 else
   echo -n
 fi
