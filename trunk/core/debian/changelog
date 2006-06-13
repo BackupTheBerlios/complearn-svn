@@ -1,4 +1,4 @@
-libcomplearn (0.93-1) unstable; urgency=low
+libcomplearn (0.93-1) UNRELEASED; urgency=low
 
   * The first packaging of complearn in .deb files for public release
 
