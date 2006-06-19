@@ -1,6 +1,6 @@
-complearn-gui (0.9.3-1) UNRELEASED; urgency=low
+complearn-gui (0.93-1) UNRELEASED; urgency=low
 
-  * Initial release Closes: #nnnn  (nnnn is the bug number of your ITP)
+  * The first packaging of 3D demo complearn-gui in .deb for public release
 
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Tue,  6 Jun 2006 16:39:44 +0200
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  19 Jun 2006 07:30:53 +0200
 
