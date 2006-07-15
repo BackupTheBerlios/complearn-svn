@@ -31,12 +31,14 @@ EXTRA_DIST = \
 $(src) \
 $(doc)
 
-man_MANS =
+man_MANS = doc/man/clfun.1
 
 src = \
 src/clfun.c \
 src/textsdl.c \
 src/textsdl.h
 
-doc =
+doc = doc/man/clfun.1
 
+distclean:
+	make -C src distclean
