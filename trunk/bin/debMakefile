@@ -9,11 +9,10 @@ addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
 mdebs:
-	cd complearn-mpi && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && cp complearn-mpi/complearn-mpi-0.9.3.tar.gz complearn-mpi_0.9.3.orig.tar.gz && tar xvfz complearn-mpi_0.9.3.orig.tar.gz && cd complearn-mpi-0.9.3 && cp -rv ../complearn-mpi/debian . && cd .. && dpkg-source -b -isvn/ complearn-mpi-0.9.3 complearn-mpi_0.9.3.orig.tar.gz && cd complearn-mpi-0.9.3 && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && cd ..
+	SRCDIRNAME=complearn-mpi ; BUILDDIRNAME=complearn-mpi-0.9.3 ; TARNAME=$${BUILDDIRNAME}.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz $${SRCDIRNAME}/$${TARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
 
 gdebs:
 	SRCDIRNAME=gui ; BUILDDIRNAME=complearn-gui-0.9.3 ; TARNAME=$${BUILDDIRNAME}.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz $${SRCDIRNAME}/$${TARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
-#	cd gui && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz gui/complearn-gui-0.9.3.tar.gz && cd complearn-gui-0.9.3 && cp -rv ../gui/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
 
 cldebs:
 	cd core && aclocal && automake && autoconf && ./configure --enable-optimize && make dist && cd .. && cp core/libcomplearn-0.9.3.tar.gz libcomplearn_0.93.orig.tar.gz && tar xvfz libcomplearn_0.93.orig.tar.gz && cd libcomplearn-0.9.3 && cp -rv ../core/debian . && cd .. && dpkg-source -b -isvn/ libcomplearn-0.9.3 libcomplearn_0.93.orig.tar.gz && cd libcomplearn-0.9.3 && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf libcomplearn-0.9.3
