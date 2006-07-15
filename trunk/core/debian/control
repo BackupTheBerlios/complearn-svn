@@ -1,7 +1,7 @@
 Source: libcomplearn
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, automake1.8, zlib1g-dev, libbz2-dev, libgsl0-dev
 Standards-Version: 3.6.2
 Section: libs
 
@@ -20,7 +20,7 @@ Description: machine-learning through data compression development files
 Package: libcomplearn0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcsoap1-dev, zlib1g-dev, libbz2-dev, libgsl0-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: machine-learning with data compression core library runtime files
  complearn makes artificial intelligence easy.  By using the powerful
  statistical analysis already built within data compression programs,
