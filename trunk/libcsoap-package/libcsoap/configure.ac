@@ -64,6 +64,10 @@ AC_CHECK_LIB(nsl, inet_ntoa, [LIBNSL="-lnsl"])
 AC_CHECK_LIB(nsl, gethostbyname, [LIBNSL="-lnsl"])
 AC_SUBST(LIBNSL)
 
+if test -x /usr/bin/xml2-config; then
+  XML2_CONFIG="/usr/bin/xml2-config"
+fi
+
 AM_PATH_XML2(2.6.0,CFLAGS="$CFLAGS $XML_CPPFLAGS"; LDFLAGS="$LDFLAGS $XML_LIBS",exit 1)
 
 # ------------------------------------------
