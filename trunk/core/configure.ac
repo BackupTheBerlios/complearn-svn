@@ -64,11 +64,13 @@ fi
 
 #glib-2.0 gdk-pixbuf-xlib-2.0 cairo pango 
 #gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0 
+fgsl_lib=false
 
 AC_CHECK_PROGS(PKGCONFIG, pkg-config)
 if ! test "x$PKGCONFIG" = "x" ; then
 for i in gsl libxml-2.0 nanohttp libcsoap ; do
   if $PKGCONFIG --exists $i ; then
+    if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
     CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
     LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
   else
@@ -118,22 +120,23 @@ else
 fi
 
 # base dependencies
+AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 echo "Checking BASE DEPENDENCIES"
+if test "x$fgsl_lib" = "xfalse" ; then
 AC_ARG_WITH(gsl,
   [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
 AC_CHECK_HEADERS([gsl/gsl_matrix.h math.h])
-AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 
-fgsl_lib=false
 AC_CHECK_LIB(gslcblas,cblas_sdot,
   [LIBS="-lgslcblas $LIBS"
 
 AC_CHECK_LIB(gsl,gsl_hypot,
     [ LIBS="-lgsl $LIBS" ; fgsl_lib=true])
 ])
+fi
 
 if test $fgsl_lib = false ; then
   echo "#################################################"
@@ -150,7 +153,7 @@ AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
 fbz2_lib=false
 AC_CHECK_HEADERS([bzlib.h], [
   AC_CHECK_LIB(bz2, BZ2_blockSort, [LIBS="$LIBS -lbz2" ; fbz2_lib=true],
-                   [ AC_MSG_ERROR([bzlib.h header found but no bz2 library]) ])
+                   [ tail -100 config.log ; AC_MSG_ERROR([bzlib.h header found but no bz2 library]) ])
 ]
 )
 
