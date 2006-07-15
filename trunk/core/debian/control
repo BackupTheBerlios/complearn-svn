@@ -1,14 +1,14 @@
 Source: libcomplearn
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, automake1.8, pkg-config, zlib1g-dev, libbz2-dev, libgsl0-dev, libcsoap1-dev, libnanohttp1-dev
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, automake1.8, pkg-config, zlib1g-dev, libbz2-dev, libgsl0-dev, libcsoap1-dev, libnanohttp1-dev, libgdbm-dev
 Standards-Version: 3.6.2
 Section: libs
 
 Package: libcomplearn0-dev
 Section: libdevel
 Architecture: any
-Depends: libcomplearn0 (= ${Source-Version})
+Depends: libcomplearn0 (= ${Source-Version}), libgdbm-dev
 Description: machine-learning through data compression development files
  complearn is a library for parameter-free universal learning.  Using this
  library, developers can access a wealth of powerful and general techniques
@@ -20,7 +20,7 @@ Description: machine-learning through data compression development files
 Package: libcomplearn0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgdbm3
 Description: machine-learning with data compression core library runtime files
  complearn makes artificial intelligence easy.  By using the powerful
  statistical analysis already built within data compression programs,

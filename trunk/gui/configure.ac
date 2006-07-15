@@ -60,18 +60,26 @@ else
   echo -n
 fi
 
+fcomplearn_lib=false
+fgsl_lib=false
 
 AC_PROG_CC()
 AC_CHECK_PROGS(PKGCONFIG, pkg-config)
 if ! test "x$PKGCONFIG" = "x" ; then
+echo "Consulting pkg-config database"
 for i in complearn gsl glib-2.0 gdk-pixbuf-xlib-2.0 cairo pango gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0 ; do
   if $PKGCONFIG --exists $i ; then
+    if test x$i = xcomplearn ; then fcomplearn_lib=true ; fi
+    if test x$i = xgsl ; then fgsl_lib=true ; fi
     CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
     LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
   else
     echo -n
   fi
 done
+echo "CPPFLAGS=$CPPFLAGS"
+echo "LDFLAGS=$LDFLAGS"
+echo "Done with pkg-config database"
 fi
 
 case "${host}" in
@@ -101,18 +109,22 @@ fi
 
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 
-fgsl_lib=false
+if test x$fgsl_lib = xfalse ; then
 AC_CHECK_LIB(gslcblas,cblas_sdot,
   [LIBS="-lgslcblas $LIBS"
 
 AC_CHECK_LIB(gsl,gsl_hypot,
     [ LIBS="-lgsl $LIBS" ; fgsl_lib=true])
 ])
+fi
 
-fcomplearn_lib=false
+echo "fcomplearn_lib is $fcomplearn_lib"
+if test x$fcomplearn_lib = xfalse ; then
 AC_CHECK_HEADERS([complearn/complearn.h], [
   AC_CHECK_LIB(complearn,clDraNew, [LIBS="-lcomplearn $LIBS"; fcomplearn_lib=true]
    ) ])
+fi
+
 if test x$fcomplearn_lib = xfalse ; then
   echo "Sorry, cannot find complearn header or library, exitting."
   exit 1
@@ -133,16 +145,25 @@ fi
   fgfx_possible=true;
 
   OLDLIBS=$LIBS
-  LIBS=""
 
   if test x$fgfx_possible = xtrue ; then
     fsdl_lib=false
+    if test x$fsdl_lib = xfalse ; then
+      AC_CHECK_PROGS(SDLCONFIG, sdl-config)
+      if ! test "x$SDLCONFIG" = "x" ; then
+        CPPFLAGS="$CPPFLAGS `sdl-config --cflags`"
+        LDFLAGS="$LDFLAGS `sdl-config --libs`"
+        fsdl_lib=true
+      fi
+    fi
+    if test x$fsdl_lib = xfalse ; then
     AC_CHECK_HEADERS([SDL/SDL.h], [
       AC_CHECK_LIB(SDL,SDL_Init, [LIBS="-lSDL $LIBS"; fsdl_lib=true]
        ) ])
+    fi
     if test x$fsdl_lib = xfalse ; then
       fgfx_possible=false;
-      echo "Error, cannot use glut library" ; exit 1
+      echo "Error, cannot use SDL library"
     fi
   fi
   if test x$fgfx_possible = xtrue ; then
@@ -152,7 +173,9 @@ fi
                    fsdlttf_lib=true]) ])
     if test x$fsdlttf_lib = xfalse ; then
       fgfx_possible=false;
-      echo "Error, cannot use glut library" ; exit 1
+      echo "Error, cannot use SDL_ttf library"
+      tail -100 config.log
+      exit 1
     fi
   fi
 
