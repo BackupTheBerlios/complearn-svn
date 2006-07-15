@@ -31,6 +31,16 @@ AC_PROG_CC
 #AC_PROG_LIBTOOL
 AC_PROG_RANLIB
 AC_CHECK_PROG(MKTEMP, mktemp, mktemp)
+AC_CHECK_PROG(RUBY, ruby, ruby)
+
+if test -z "$RUBY"; then
+  AC_CHECK_PROG(RUBY, ruby1.8, ruby1.8)
+fi
+
+if test -z "$RUBY"; then
+  echo "Cannot find ruby nor ruby1.8, exitting..."
+  exit 1
+fi
 
 AC_CHECK_PROGS(PKGCONFIG, pkg-config)
 if ! test "x$PKGCONFIG" = "x" ; then
@@ -102,17 +112,11 @@ if test ${fcomplearn_lib} -eq 0; then
   exit 1
 fi
 
-if test ${fusrruby} -eq 0; then
-  rubypath="ruby"
-else
-  rubypath=`which ruby`
-fi
-
-
 export CFLAGS
+export CPPFLAGS
 export LDFLAGS
 
-( cd src ; $rubypath extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
+( cd src ; $RUBY extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
 cat <<EOF >>Makefile
 
 distdir:
