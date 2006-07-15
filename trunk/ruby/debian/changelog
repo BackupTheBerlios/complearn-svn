@@ -1,0 +1,7 @@
+libcomplearn-ruby1.8 (0.5.4-1) unstable; urgency=low
+
+  * Initial release ... trial version of Ruby binding
+  * Closes: #1111  (nnnn is the bug number of your ITP (pending))
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sun,  4 Jun 2006 15:38:48 +0200
+

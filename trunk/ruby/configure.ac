@@ -32,6 +32,18 @@ AC_PROG_CC
 AC_PROG_RANLIB
 AC_CHECK_PROG(MKTEMP, mktemp, mktemp)
 
+AC_CHECK_PROGS(PKGCONFIG, pkg-config)
+if ! test "x$PKGCONFIG" = "x" ; then
+for i in complearn gsl ; do
+  if $PKGCONFIG --exists $i ; then
+    CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
+    LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
+  else
+    echo -n
+  fi
+done
+fi
+
 CURTMPDIR=`mktemp -d`
 
 case "${target}" in

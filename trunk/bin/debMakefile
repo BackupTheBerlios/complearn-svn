@@ -8,7 +8,11 @@ debs: mdebs cldebs gdebs csdebs
 addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
+rdebs:
+	SRCDIRNAME=ruby ; BUILDDIRNAME=libcomplearn-ruby1.8-0.5.4 ; TARNAME=$${BUILDDIRNAME}.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz $${SRCDIRNAME}/$${TARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
+
 mdebs:
+
 	SRCDIRNAME=complearn-mpi ; BUILDDIRNAME=complearn-mpi-0.9.3 ; TARNAME=$${BUILDDIRNAME}.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && tar xvfz $${SRCDIRNAME}/$${TARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && dpkg-buildpackage -isvn/ -us -uc -rfakeroot
 
 gdebs:
@@ -24,6 +28,6 @@ deploy:
 	scp *.deb *.dsc *.changes *gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf complearn-mpi-0.9.3 complearn-mpi_0* complearn-mpi-1* complearn-mpi-0.9.3* libcomplearn-0.9.3 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc && cd core && fakeroot ./debian/rules clean
+	rm -rf complearn-mpi-0.9.3 complearn-mpi_0* complearn-mpi-1* complearn-mpi-0.9.3* libcomplearn-0.9.3 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc libcomplearn-ruby1.8* && cd core && fakeroot ./debian/rules clean
 
 
