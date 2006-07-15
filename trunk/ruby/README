@@ -1,0 +1,10 @@
+libcomplearn-ruby1.8
+
+complearn4r
+
+a Ruby binding of the CompLearn machine learning library at
+
+http://complearn.org/
+
+written by Rudi Cilibrasi (cilibrar@cilibrar.com)
+

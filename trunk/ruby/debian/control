@@ -8,5 +8,5 @@ Standards-Version: 3.6.2
 Package: libcomplearn-ruby1.8
 Architecture: any
 Depends: pkg-config, ruby1.8, ruby1.8-dev, libcomplearn0-dev, ${shlibs:Depends}, ${misc:Depends}
-Description: Ruby binding to CompLearn, a machine-learning library.
+Description: a Ruby binding to CompLearn machine-learning library
  This is a Ruby binding for the popular and robust CompLearn learning package.
