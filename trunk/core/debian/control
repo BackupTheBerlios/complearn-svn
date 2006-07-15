@@ -2,7 +2,7 @@ Source: libcomplearn
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, automake1.8, pkg-config, zlib1g-dev, libbz2-dev, libbz2-1.0, libgsl0-dev, libgsl0, libcsoap1-dev, libcsoap1, libnanohttp1-dev, libnanohttp1, libgdbm-dev, libgdbm3, libxml2-dev, libxml2
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 Section: libs
 
 Package: libcomplearn0-dev

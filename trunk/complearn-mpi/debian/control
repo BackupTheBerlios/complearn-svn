@@ -3,7 +3,7 @@ Section: science
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libmpich1.0-dev, libcomplearn0-dev, libcomplearn0, libsdl1.2-dev, libsdl-ttf2.0-dev, libglut3-dev, libgtk2.0-dev, pkg-config, libcomplearn0-dev, automake1.8, libgsl0-dev, libgdbm-dev, libbz2-dev, libbz2-1.0, libcomplearn0, libcsoap1, libcsoap1-dev, libnanohttp1, libnanohttp1-dev, libxml2-dev, libxml2
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 
 Package: complearn-mpi
 Architecture: any

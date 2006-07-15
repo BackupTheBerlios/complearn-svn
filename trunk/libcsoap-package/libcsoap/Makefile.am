@@ -14,6 +14,7 @@ documentation=doc/Doxyfile.api \
               doc/footer.html  \
               doc/header.html  \
               doc/tutorial.xml \
+              NOTES \
               doc/images/logo02.gif
 
 broken_examples=examples/nanohttp/client_get.c   \

@@ -1,7 +1,7 @@
 dnl
 dnl release information
 dnl
-AC_INIT(csoap, 1.1.0)
+AC_INIT(libcsoap, 1.047)
 
 dnl
 dnl version information
