@@ -18,7 +18,7 @@ addkey:
 	source $< ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; pushd . ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && popd && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME}
 
 .%.debstamp: %.dsc
-	source `basename $< .dsc`.pkgpak && BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} && dpkg-source -x $< && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME} && touch $@
+	SMALLNAME=`basename $< .dsc` ; source $${SMALLNAME}.pkgpak && sudo pbuilder build $< && sudo cp $${SMALLNAME}.diff.gz $< /var/cache/pbuilder/result && touch $@
 
 rdebs: libcomplearn-ruby1.8_0.5.4-1.dsc
 
@@ -31,7 +31,7 @@ cldebs: libcomplearn_0.9.3-1.dsc
 csdebs: libcsoap_1.047-1.dsc
 
 deploy:
-	scp *.deb *.dsc *.changes *gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
+	scp *.dsc *.tar.gz *.diff.gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
 	echo "Removing $(DSCS)" ; \
