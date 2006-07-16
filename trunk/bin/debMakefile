@@ -1,33 +1,37 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+PKGPAKS=$(wildcard *.pkgpak)
+DSCS=$(patsubst %.pkgpak,%.dsc, $(PKGPAKS))
+DIFFS=$(patsubst %.pkgpak,%.diff.gz, $(PKGPAKS))
+
 all: debs
 
-debs: mdebs cldebs gdebs csdebs rdebs
+debs: $(DSCS)
+	echo "Trying to make $(DSCS) from $(PKGPAKS)"
 
 addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
-rdebs:
-	PACKAGENAME=libcomplearn-ruby1.8 ; VERSION=0.5.4 ; SRCDIRNAME=ruby ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
+%.dsc: %.pkgpak
+	source $< ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
 
-mdebs:
-	PACKAGENAME=complearn-mpi ; VERSION=0.9.3 ; SRCDIRNAME=complearn-mpi ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
+rdebs: libcomplearn-ruby1.8_0.5.4-1.dsc
 
-gdebs:
-	PACKAGENAME=complearn-gui ; VERSION=0.9.3 ; SRCDIRNAME=gui ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
+mdebs: complearn-mpi_0.9.3-1.dsc
 
-cldebs:
-	PACKAGENAME=libcomplearn ; VERSION=0.9.3 ; SRCDIRNAME=core ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd .. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
+gdebs: complearn-gui_0.9.3-1.dsc
 
-csdebs:
-	PACKAGENAME=libcsoap ; VERSION=1.047 ; SRCDIRNAME=libcsoap-package/libcsoap ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && cd ../.. && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
-#	cp -rv libcsoap-package/libcsoap libcsoap-1.047 && cd libcsoap-1.047 && cp ../libcsoap-package/extern/*orig.tar.gz ../libcsoap-1.047.orig.tar.gz && dpkg-buildpackage -isvn/ -us -uc -sa -rfakeroot && fakeroot ./debian/rules clean
+cldebs: libcomplearn_0.9.3-1.pkgpak
+
+csdebs: libcsoap_1.047-1.pkgpak
 
 deploy:
 	scp *.deb *.dsc *.changes *gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
 
 clean:
-	rm -rf complearn-mpi-0.9.3 complearn-mpi_0* complearn-mpi-1* complearn-mpi-0.9.3* libcomplearn-0.9.3 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc libcomplearn-ruby1.8* && cd core && fakeroot ./debian/rules clean
+	echo "Removing $(DSCS)" ; \
+	for i in $(PKGPAKS) ; do source $$i ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; rm -rf $${BUILDDIRNAME} $${ORIGTARNAME} $${PACKAGENAME}_$${VERSION}-*.changes *_$${VERSION}-*.deb ; done ; rm -f $(DSCS) $(DIFFS)
+#	rm -rf complearn-mpi-0.9.3 complearn-mpi_0* complearn-mpi-1* complearn-mpi-0.9.3* libcomplearn-0.9.3 complearn-gui-0.93 libcsoap-1.047 complearn-gui* libcomplearn-0.93 comp*.deb libcomp*.deb libcomp*.dsc libcomp*gz libcomp*.changes libcomp.*.dsc libcs*.deb libcs*gz libcs*changes libna*deb libcs*dsc && cd core && fakeroot ./debian/rules clean
 
 
