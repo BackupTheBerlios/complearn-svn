@@ -4,17 +4,21 @@
 PKGPAKS=$(wildcard *.pkgpak)
 DSCS=$(patsubst %.pkgpak,%.dsc, $(PKGPAKS))
 DIFFS=$(patsubst %.pkgpak,%.diff.gz, $(PKGPAKS))
+DBSTAMPS=$(patsubst %.pkgpak,.%.debstamp, $(PKGPAKS))
 
 all: debs
 
-debs: $(DSCS)
+debs: $(DBSTAMPS)
 	echo "Trying to make $(DSCS) from $(PKGPAKS)"
 
 addkey:
 	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
 
 %.dsc: %.pkgpak
-	source $< ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; pushd . ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && popd && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME} && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME}
+	source $< ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; pushd . ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && popd && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME}
+
+.%.debstamp: %.dsc
+	source `basename $< .dsc`.pkgpak && BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} && dpkg-source -x $< && cd $${BUILDDIRNAME} && dpkg-buildpackage -isvn/ -us -uc -b -rfakeroot && rm -rf $${BUILDDIRNAME} && touch $@
 
 rdebs: libcomplearn-ruby1.8_0.5.4-1.dsc
 
@@ -31,6 +35,6 @@ deploy:
 
 clean:
 	echo "Removing $(DSCS)" ; \
-	for i in $(PKGPAKS) ; do source $$i ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; rm -rf $${BUILDDIRNAME} $${ORIGTARNAME} $${PACKAGENAME}_$${VERSION}-*.changes *_$${VERSION}-*.deb ; done ; rm -f $(DSCS) $(DIFFS)
+	for i in $(PKGPAKS) ; do source $$i ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; rm -rf $${BUILDDIRNAME} $${ORIGTARNAME} $${PACKAGENAME}_$${VERSION}-*.changes *_$${VERSION}-*.deb ; done ; rm -f $(DSCS) $(DIFFS) $(DBSTAMPS)
 
 
