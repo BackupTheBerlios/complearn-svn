@@ -1,4 +1,4 @@
-complearn-gui (0.9.3-1) UNRELEASED; urgency=low
+complearn-gui (0.9.3-1) unstable; urgency=low
 
   * The first packaging of 3D demo complearn-gui in .deb for public release
 
