@@ -1,4 +1,4 @@
-libcomplearn-ruby1.8 (0.5.4-1) unstable; urgency=low
+libcomplearn-ruby1.8 (0.5.4-1) dapper etch; urgency=low
 
   * Initial release ... trial version of Ruby binding
   * Closes: #1111  (nnnn is the bug number of your ITP (pending))
