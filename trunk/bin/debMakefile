@@ -28,7 +28,7 @@ gdebs: complearn-gui_0.9.3-1.dsc
 
 cldebs: libcomplearn_0.9.3-1.dsc
 
-csdebs: libcsoap_1.047-1.dsc
+csdebs: libcsoap_1.0.4-1.dsc
 
 deploy:
 	scp *.dsc *.tar.gz *.diff.gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
