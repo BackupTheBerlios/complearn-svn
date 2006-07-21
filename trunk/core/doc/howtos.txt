@@ -7,14 +7,13 @@ Command Names
 
 QuickStart
 
-ncd, by default, uses the bzip compressor and file input format.  Two filenames
-are passed in as command-line arguments. The contents of the files are then
-compressed and the NCD between two files is returned.
+ncd, by default, uses the blocksort compressor and file input format.  Two
+filenames are passed in as command-line arguments. The contents of the files
+are then compressed and the NCD between two files is returned.
 
 Example:
 
   ncd filename1 filename2
-
 
 Selecting a Compressor
 
