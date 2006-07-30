@@ -1,3 +1,0 @@
-debian/tmp/usr/bin/ncd usr/bin/
-debian/tmp/usr/bin/maketree usr/bin/
-debian/tmp/usr/share/man/man1/* usr/share/man/man1
