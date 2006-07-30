@@ -1,8 +1,0 @@
-libcsoap (1.0.4-1) dapper etch; urgency=low
-
-  * Initial release of libcsoap package of CSOAP library:
-  * from http://csoap.sourceforge.net/ and used in CompLearn at
-  * http://complearn.org/
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  5 Jun 2006 04:43:48 +0200
-
