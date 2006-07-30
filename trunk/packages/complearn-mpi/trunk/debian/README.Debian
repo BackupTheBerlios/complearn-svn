@@ -1,0 +1,8 @@
+complearn-mpi for Debian
+------------------------
+
+This package contains all MPI (Message Passing Interface) parallel search
+routines such as partree, the parallel quartet tree search engine for grid
+and supercomputers.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>, Thu,  8 Jun 2006 16:19:12 +0200

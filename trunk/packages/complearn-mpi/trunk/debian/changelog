@@ -1,0 +1,6 @@
+complearn-mpi (0.9.3-1) dapper etch; urgency=low
+
+  * Initial release of parallel tree search system package.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Tue,  6 Jun 2006 16:39:44 +0200
+
