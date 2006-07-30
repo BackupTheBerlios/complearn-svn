@@ -20,7 +20,7 @@ addkey:
 .%.debstamp: %.dsc
 	SMALLNAME=`basename $< .dsc` ; source $${SMALLNAME}.pkgpak && sudo pbuilder build $< && sudo cp $${SMALLNAME}.diff.gz $< /var/cache/pbuilder/result && touch $@
 
-rdebs: libcomplearn-ruby1.8_0.5.4-1.dsc
+rdebs: libcomplearn-ruby_0.5.4-1.dsc
 
 mdebs: complearn-mpi_0.9.3-1.dsc
 

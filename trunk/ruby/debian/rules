@@ -50,11 +50,11 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/libcomplearn-ruby1.8.
-	#$(MAKE) install DESTDIR=$(CURDIR)/debian/libcomplearn-ruby1.8
+	# Add here commands to install the package into debian/libcomplearn-ruby.
+	#$(MAKE) install DESTDIR=$(CURDIR)/debian/libcomplearn-ruby
 
-	install -d $(CURDIR)/debian/libcomplearn-ruby1.8/usr/lib/ruby/1.8
-	install src/complearn4r.so $(CURDIR)/debian/libcomplearn-ruby1.8/usr/lib/ruby/1.8
+	install -d $(CURDIR)/debian/libcomplearn-ruby/usr/lib/ruby/1.8
+	install src/complearn4r.so $(CURDIR)/debian/libcomplearn-ruby/usr/lib/ruby/1.8
 
 # Build architecture-independent files here.
 binary-indep: build install
