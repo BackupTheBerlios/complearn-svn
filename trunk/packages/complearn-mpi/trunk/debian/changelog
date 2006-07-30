@@ -1,4 +1,4 @@
-complearn-mpi (0.9.3-1) dapper etch; urgency=low
+complearn-mpi (0.9.3-1) UNRELEASED; urgency=low
 
   * Initial release of parallel tree search system package.
 
