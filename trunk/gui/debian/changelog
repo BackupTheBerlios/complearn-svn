@@ -1,6 +1,0 @@
-complearn-gui (0.9.3-1) dapper etch; urgency=low
-
-  * The first packaging of 3D demo complearn-gui in .deb for public release
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  19 Jun 2006 07:30:53 +0200
-
