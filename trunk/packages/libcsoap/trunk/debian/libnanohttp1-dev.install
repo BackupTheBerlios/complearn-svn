@@ -1,0 +1,3 @@
+nanohttp/*.h usr/include/nanohttp-1.0/nanohttp
+nanohttp/.libs/libnanohttp*.so usr/lib
+nanohttp.pc usr/lib/pkgconfig

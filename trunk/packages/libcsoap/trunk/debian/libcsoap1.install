@@ -1,0 +1,2 @@
+libcsoap/.libs/libcs*.so.* usr/lib
+libcsoap/.libs/libcs*.so.1 usr/lib
