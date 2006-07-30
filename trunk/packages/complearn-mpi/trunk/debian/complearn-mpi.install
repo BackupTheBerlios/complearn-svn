@@ -1,1 +1,1 @@
-debian/complearn-mpi/usr/bin/partree usr/bin
+src/partree usr/bin
