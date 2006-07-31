@@ -32,6 +32,7 @@ $CPPFLAGS += " #{ENV['CPPFLAGS']}" || ''
 $LDFLAGS += " #{ENV['LDFLAGS']}" || ''
 dir_config 'complearn'
 dir_config 'gsl'
+pkg_config('complearn')
 have_library('gslcblas', 'cblas_sspr') || find_library('gslcblas', 'cblas_sspr', '/lib' , '/usr/lib', '/usr/local/lib')
 have_library('gsl', 'gsl_matrix_get') || find_library('gsl', 'gsl_matrix_get', '/lib' , '/usr/lib', '/usr/local/lib')
 have_library('bz2', 'BZ2_bzBuffToBuffCompress') || find_library('bz2', 'BZ2_bzBuffToBuffCompress', '/lib' , '/usr/lib', '/usr/local/lib')
