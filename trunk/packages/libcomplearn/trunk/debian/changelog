@@ -1,4 +1,4 @@
-libcomplearn (0.9.3-1) dapper etch; urgency=low
+libcomplearn (0.9.3-1) UNRELEASED; urgency=low
 
   * The first packaging of complearn in .deb files for public release
 
