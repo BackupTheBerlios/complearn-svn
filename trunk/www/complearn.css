@@ -20,14 +20,22 @@ body, p, ul {
 #logo {
   position: absolute;
   margin: 0px; padding: 0px;
-  top: 20px; left: 30px;
+  top: 30px; left: 30px;
+}
+#advert {
+  position: absolute;
+  margin: 0px; padding: 0px;
+  top: 10px; right: 30px;
 }
 #logo img {
   border: 0px;
 }
+#advert img {
+  border: 0px;
+}
 
 #navbar {
-  margin: 55px 0px 5px 0px;
+  margin: 75px 0px 5px 0px;
   padding: 0px;
   float: right;
 }

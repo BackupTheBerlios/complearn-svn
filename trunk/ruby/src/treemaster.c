@@ -31,8 +31,9 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   char *fname = STR2CSTR(rfname);
   volatile VALUE result;
   gsl_matrix *dm = clbDistMatrix(fname);
+  struct StringStack *labels = clbLabels(fname);
   assert(dm);
-  result = convertgslmatrixToRubyMatrix(dm);
+  result = convertgslmatrixToRubyMatrix(dm, labels);
   gsl_matrix_free(dm);
   return result;
 }

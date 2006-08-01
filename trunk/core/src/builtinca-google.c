@@ -97,15 +97,15 @@ struct CompAdaptor *clBuiltin_GOOG(void)
 
 static const char *refWords[] = {
   "ten",
-  "important",
+//  "important",
   "words",
-  "just",
+//  "just",
   "typical",
   "among",
   "everyday",
-  "internet",
-  "people",
-  "city",
+//  "internet",
+//  "people",
+//  "city",
   "wolf",
   NULL
 };
