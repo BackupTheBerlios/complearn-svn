@@ -130,7 +130,8 @@ static SoapCtx *prepareSOAPEnvForMethod(struct SOAPCompInstance *sci)
   urn = sci->urn;
   err = soap_ctx_new_with_method(urn, sci->method, &ctx);
   if (err != H_OK) {
-    log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
+    /*log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err)); */
+    printf("ERROR A\n");
     herror_release(err);
     return NULL;
   }
@@ -145,7 +146,8 @@ SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method)
 
   err = soap_ctx_new_with_method(urn, method, &ctx);
   if (err != H_OK) {
-    log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
+    printf("ERROR B\n");
+    /*log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err)); */
     herror_release(err);
     return NULL;
   }
