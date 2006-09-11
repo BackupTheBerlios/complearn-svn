@@ -22972,7 +22972,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile libcsoap/Makefile nanohttp/Makefile examples/Makefile examples/nanohttp/Makefile examples/csoap/Makefile libcsoap.pc csoap-config"
+ac_config_files="$ac_config_files Makefile libcsoap/Makefile nanohttp/Makefile examples/Makefile examples/nanohttp/Makefile examples/csoap/Makefile libcsoap.pc libnanohttp.pc csoap-config"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -23553,6 +23553,7 @@ do
     "examples/nanohttp/Makefile") CONFIG_FILES="$CONFIG_FILES examples/nanohttp/Makefile" ;;
     "examples/csoap/Makefile") CONFIG_FILES="$CONFIG_FILES examples/csoap/Makefile" ;;
     "libcsoap.pc") CONFIG_FILES="$CONFIG_FILES libcsoap.pc" ;;
+    "libnanohttp.pc") CONFIG_FILES="$CONFIG_FILES libnanohttp.pc" ;;
     "csoap-config") CONFIG_FILES="$CONFIG_FILES csoap-config" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5

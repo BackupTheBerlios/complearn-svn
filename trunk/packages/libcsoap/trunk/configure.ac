@@ -371,6 +371,7 @@ examples/Makefile
 examples/nanohttp/Makefile
 examples/csoap/Makefile
 libcsoap.pc
+libnanohttp.pc
 csoap-config)
 
 echo "Configured cSOAP $csoap_major.$csoap_minor.$csoap_patch for installation in $prefix";
