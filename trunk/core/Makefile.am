@@ -25,7 +25,10 @@
 
 SUBDIRS = src
 #am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in config.status config.log
-DISTCLEAN_TARGETS = config.status config.log
+DISTCLEAN_TARGETS = config.status config.log libcomplearn-0.9.3.tar.gz configure Makefile.in Doxyfile config.log depcomp config.guess config.sub Makefile complearn.pc config.status autom4te.cache libtool missing aclocal.m4 install-sh
+
+distclean: clean
+	rm -rf $(DISTCLEAN_TARGETS) ; make -C src distclean
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = complearn.pc
