@@ -1,6 +1,13 @@
-complearn-mpi (0.9.3-1) UNRELEASED; urgency=low
+complearn-mpi (0.9.3-2) unstable; urgency=low
 
-  * Initial release of parallel tree search system package.
+  * Minor packaging improvements and simplifications.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 16:37:48 +0200
+
+complearn-mpi (0.9.3-1) unstable; urgency=low
+
+  * Initial release of parallel tree search system package. (Closes: #379104)
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Tue,  6 Jun 2006 16:39:44 +0200
+
 
