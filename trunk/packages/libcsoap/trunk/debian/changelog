@@ -1,7 +1,13 @@
+libcsoap (1.1.0-2) unstable; urgency=low
+
+  * Adjusted libcsoap.pc.in to be correct for new Debian packaging.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 15:37:14 +0200
+
 libcsoap (1.1.0-1) unstable; urgency=low
 
   * New upstream version.
-  * Added examples
+  * Added examples.
   * Made small packaging fixes.
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 10:23:10 +0200
