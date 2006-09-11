@@ -4,4 +4,4 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
 DEB_MAKE_MAKEFILE                 := extraMakefile
-DEB_INSTALL_EXAMPLES_libcsoap-dev  = examples/*
+DEB_INSTALL_EXAMPLES_libcsoap-dev  = examples/* -X.libs -X.o
