@@ -1,7 +1,7 @@
 Source: libcsoap
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, pkg-config, libxml2-dev, libxml2, cdbs
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, libxml2-dev, cdbs
 Standards-Version: 3.7.2
 Section: libs
 
