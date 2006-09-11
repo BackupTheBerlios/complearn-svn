@@ -371,9 +371,13 @@ examples/Makefile
 examples/nanohttp/Makefile
 examples/csoap/Makefile
 libcsoap.pc
-nanohttp.pc
 csoap-config)
 
 echo "Configured cSOAP $csoap_major.$csoap_minor.$csoap_patch for installation in $prefix";
 
+# cilibrar added the following lines to avoid Debian packaging problems
+chmod a-x examples/xsd2c/ex4/ex4.xml
+chmod a-x examples/csoap/echoattachments-client.c
+chmod a-x examples/csoap/echoattachments-server.c
+chmod a-x examples/nanohttp/client_mime.c
 
