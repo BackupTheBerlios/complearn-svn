@@ -89,9 +89,9 @@ static SoapCtx *invokeMethod(struct SOAPCompInstance *sci, SoapCtx *inp)
   url = sci->url;
   err = soap_client_invoke(sci->ctx, &sci->ctx2, url, sci->method);
   if (err != H_OK) {
-    log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err));
+/*    log_error4("%s():%s [%d]", herror_func(err), herror_message(err), herror_code(err)); */
+    printf("Error invoking method %s in %s, leading to %s:%s\n", sci->method, sci->url, herror_func(err), herror_message(err));
     herror_release(err);
-    printf("Error invoking method %s in %s\n", sci->method, sci->url);
     printf("Is SOAP server running?\n");
     exit(1);
     return NULL;
