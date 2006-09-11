@@ -10,4 +10,5 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libmpich1.0c2
 Description: A MPI-based parallel quartet tree search system
  This is the easiest way to get started with data compression based machine
- learning for large data sets on clusters.
+ learning for large data sets on clusters through grid or supercomputer
+ based quartet tree search.
