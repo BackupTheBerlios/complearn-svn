@@ -1,5 +1,7 @@
 SUBDIRS=nanohttp libcsoap
 
+#another test
+
 bin_SCRIPTS=csoap-config
 
 pkgconfigdir=$(libdir)/pkgconfig
