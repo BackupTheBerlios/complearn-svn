@@ -39,9 +39,9 @@ host_triplet = @host@
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/csoap-config.in $(srcdir)/libcsoap.pc.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO compile config.guess config.sub depcomp install-sh \
-	ltmain.sh missing mkinstalldirs
+	$(srcdir)/nanohttp.pc.in $(top_srcdir)/configure AUTHORS \
+	COPYING ChangeLog INSTALL NEWS TODO compile config.guess \
+	config.sub depcomp install-sh ltmain.sh missing mkinstalldirs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -51,7 +51,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = libcsoap.pc csoap-config
+CONFIG_CLEAN_FILES = libcsoap.pc nanohttp.pc csoap-config
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(m4datadir)" "$(DESTDIR)$(pkgconfigdir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
@@ -153,8 +153,6 @@ am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
-am__tar = @am__tar@
-am__untar = @am__untar@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -283,6 +281,8 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 libcsoap.pc: $(top_builddir)/config.status $(srcdir)/libcsoap.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+nanohttp.pc: $(top_builddir)/config.status $(srcdir)/nanohttp.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 csoap-config: $(top_builddir)/config.status $(srcdir)/csoap-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -713,8 +713,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall uninstall-am uninstall-binSCRIPTS uninstall-info-am \
 	uninstall-m4dataDATA uninstall-pkgconfigDATA
 
-
-AC_OUTPUT(Makefile nanohttp.pc)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
