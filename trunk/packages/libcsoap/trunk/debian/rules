@@ -3,4 +3,5 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 DEB_MAKE_MAKEFILE        := extraMakefile
-DEB_INSTALL_EXAMPLES     := examples
+# TODO: figure out how to make this work
+#DEB_INSTALL_EXAMPLES     := examples
