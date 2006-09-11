@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT(libcomplearn,0.9.3,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,0.9.4,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
@@ -197,7 +197,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fnanohttp_lib=false
   AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [
-    AC_CHECK_LIB(nanohttp,log_error, [LIBS="-lnanohttp $LIBS";
+    AC_CHECK_LIB(nanohttp,httpd_run, [LIBS="-lnanohttp $LIBS";
                  fnanohttp_lib=true]) ])
   if test x$fnanohttp_lib = xfalse ; then
     fngd_possible=false;
