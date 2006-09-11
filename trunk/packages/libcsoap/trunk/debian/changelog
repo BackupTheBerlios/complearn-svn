@@ -1,3 +1,9 @@
+libcsoap (1.1.0-1) unstable; urgency=low
+
+  * New upstream version.
+  * Added examples
+  * Made small packaging fixes.
+
 libcsoap (1.0.4-1) unstable; urgency=low
 
   * Initial release of libcsoap package of CSOAP library. (Closes: #379048)
@@ -5,4 +11,3 @@ libcsoap (1.0.4-1) unstable; urgency=low
     http://complearn.org/
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  5 Jun 2006 04:43:48 +0200
-
