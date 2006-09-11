@@ -32,5 +32,3 @@ win32_env=win32/MinGW/Makefile    \
 
 EXTRA_DIST=$(documentation) $(win32_env) libcsoap.pc.in libcsoap.m4 \
            $(broken_examples)
-
-AC_OUTPUT(Makefile nanohttp.pc)
