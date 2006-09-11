@@ -1,9 +1,17 @@
+libcomplearn (0.9.4-1) unstable; urgency=low
+
+  * Updated configure.ac to check for new nanohttp lib function.
+    This packaging bug was preventing Google (ncd -g) search from working.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 15:53:30 +0200
+
 libcomplearn (0.9.3-2) unstable; urgency=low
 
   * Many small packaging fixes, including renaming -dev packages
     without numerals.
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 15:53:30 +0200
+
 
 libcomplearn (0.9.3-1) unstable; urgency=low
 
