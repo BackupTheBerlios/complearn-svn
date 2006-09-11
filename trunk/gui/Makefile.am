@@ -25,7 +25,11 @@
 
 SUBDIRS = src
 
-DISTCLEAN_TARGETS = config.status config.log
+DISTCLEAN_TARGETS = config.status config.log configure Makefile.in config.log depcomp config.guess config.sub Makefile config.status autom4te.cache missing aclocal.m4 install-sh
+
+distclean: clean
+	make -C src distclean ; rm -rf $(DISTCLEAN_TARGETS)
+
 
 EXTRA_DIST = \
 $(src) \
