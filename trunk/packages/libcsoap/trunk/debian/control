@@ -5,14 +5,14 @@ Build-Depends: debhelper (>= 4.0.0), autotools-dev, libtool, automake1.8, pkg-co
 Standards-Version: 3.7.2
 Section: libs
 
-Package: libcsoap1-dev
+Package: libcsoap-dev
 Section: libdevel
 Architecture: any
 Depends: libcsoap1
 Description: development header files for CSOAP library
  This package contains files needed to compile libcsoap applications.
 
-Package: libnanohttp1-dev
+Package: libnanohttp-dev
 Section: libs
 Architecture: any
 Depends: libnanohttp1
