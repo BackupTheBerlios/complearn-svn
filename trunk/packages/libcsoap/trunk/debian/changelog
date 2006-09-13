@@ -1,3 +1,9 @@
+libcsoap (1.1.0-3) unstable; urgency=low
+
+  * Removed extra docs.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Wed, 13 Sep 2006 14:35:26 +0200
+
 libcsoap (1.1.0-2) unstable; urgency=low
 
   * Adjusted libcsoap.pc.in to be correct for new Debian packaging.
@@ -16,7 +22,9 @@ libcsoap (1.0.4-1) unstable; urgency=low
 
   * Initial release of libcsoap package of CSOAP library. (Closes: #379048)
     downloaded from http://csoap.sourceforge.net/ and used in CompLearn at
-    http://complearn.org/
+    http://complearn.org/ .  This upload will be sponsored by
+    Paul van Tilburg and has benefitted from his guidance.
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  5 Jun 2006 04:43:48 +0200
+
 
