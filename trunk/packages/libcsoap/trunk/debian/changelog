@@ -1,3 +1,9 @@
+libcsoap (1.1.0-4) unstable; urgency=low
+
+  * Added Paul van Tilburg to Uploaders field in debian/control.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Wed, 13 Sep 2006 14:35:26 +0200
+
 libcsoap (1.1.0-3) unstable; urgency=low
 
   * Removed extra docs.
