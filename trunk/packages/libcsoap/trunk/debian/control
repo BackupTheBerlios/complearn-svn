@@ -14,7 +14,7 @@ Description: development header files for CSOAP library
  This package contains files needed to compile libcsoap applications.
 
 Package: libnanohttp-dev
-Section: libs
+Section: libdevel
 Architecture: any
 Depends: libnanohttp1
 Description: shared nanohttp header files for SOAP server apps in C

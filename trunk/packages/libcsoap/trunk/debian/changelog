@@ -1,3 +1,9 @@
+libcsoap (1.1.0-5) unstable; urgency=low
+
+  * Changed Section: for libnanohttp-dev package.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sun, 17 Sep 2006 16:26:45 +0200
+
 libcsoap (1.1.0-4) unstable; urgency=low
 
   * Added Paul van Tilburg to Uploaders field in debian/control.
