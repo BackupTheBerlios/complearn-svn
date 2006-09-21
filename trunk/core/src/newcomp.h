@@ -1,3 +1,6 @@
+#ifndef __NEWCOMP_H
+#define __NEWCOMP_H
+
 #include <complearn/datablock.h>
 #include <complearn/envmap.h>
 
@@ -63,3 +66,4 @@ struct CompressionBaseAdaptor {
   struct DataBlock *(*concatCB)(struct CompressionBase *cb, struct DataBlock *dat1, struct DataBlock *dat2);
 };
 
+#endif

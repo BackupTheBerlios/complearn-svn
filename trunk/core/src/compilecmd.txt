@@ -1,1 +1,1 @@
-gcc ncazlib.c newcomp.c nczlib.c -I. .libs/libcomplearn.a -lz -ldl -o nc
+gcc ncbase.c ncazlib.c newcomp.c nczlib.c -I. .libs/libcomplearn.a -lz -ldl -o nc

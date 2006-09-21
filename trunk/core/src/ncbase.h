@@ -1,0 +1,3 @@
+
+extern struct CompressionBaseAdaptor cbsuper;
+
