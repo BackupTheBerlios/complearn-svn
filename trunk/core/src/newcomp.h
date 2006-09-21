@@ -5,14 +5,15 @@ struct CompressionBase {
 };
 
 struct CompressionBaseInternal {
-  char *shortName, *longName;
+  char *shortName;
   char *errorMessage;
   struct CompressionBase *cb;
   struct CompressionBaseAdaptor *vptr;
 };
 
 
-struct CompressionBase *clInitCB(const char *shortName, const char *longName, int allocSize, struct CompressionBaseAdaptor *vptr);
+void clRegisterCB(const char *shortName, int allocSize, struct CompressionBaseAdaptor *vptr);
+struct CompressionBase *clNewCompressorCB(const char *shortName);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);
 void clSetLastErrorCB(struct CompressionBase *cb, const char *errMsg);
 struct CompressionBaseAdaptor *clGetCBAsuper(void);
@@ -23,7 +24,6 @@ struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
   void (*freeCB)(struct CompressionBase *cb);
   int (*getAPIVersionCB)(struct CompressionBase *cb);
-  const char *(*getShortNameCB)(struct CompressionBase *cb);
   const char *(*getLongNameCB)(struct CompressionBase *cb);
 
   int (*isDisabledCB)(struct CompressionBase *cb);
@@ -36,6 +36,8 @@ struct CompressionBaseAdaptor {
   int (*doesRoundWholeBytesCB)(void);
 
   const char *(*toStringCB)(void);
+
+  const char *(*paramStringCB)(void);
 
   /* Returns result in bits */
   float (*compressCB)(struct CompressionBase *cb, struct DataBlock *datum);

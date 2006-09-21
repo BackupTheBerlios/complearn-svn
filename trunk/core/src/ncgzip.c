@@ -12,17 +12,17 @@ static int specificInitCB(struct CompressionBase *cb)
 }
 
 static struct CompressionBaseAdaptor cba = {
-  NULL,
-  //specificInitCB,
+  //NULL,
+  specificInitCB,
 };
 
 static void initGZ(void)
 {
-  clInitCB("gzip", "GZip Lempel-Ziv 77",
-                   sizeof(struct GZipCompressionInstance), &cba);
+  clRegisterCB("gzip", sizeof(struct GZipCompressionInstance), &cba);
 }
 
 int main(int argc, char **argv) {
   initGZ();
+  struct CompressionBase *cb = clNewCompressorCB("gzip");
   return 0;
 }
