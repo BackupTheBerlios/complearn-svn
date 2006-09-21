@@ -78,7 +78,7 @@ int clEnvmapFree(struct EnvMap *em);
  *  \param val value
  *  \return CL_OK on success
  */
-int clEnvmapSetKeyVal(struct EnvMap *em, char *key, char *val);
+int clEnvmapSetKeyVal(struct EnvMap *em, const char *key, const char *val);
 
 /** \brief Returns number of key-value pairs in EnvMap.
  *  \param em EnvMap

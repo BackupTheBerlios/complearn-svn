@@ -5,6 +5,18 @@
 
 #include "newcomp.h"
 
+struct CompressionBaseInternal {
+  int fHavePrepared;
+  char *shortName;
+  char *errorMessage;
+  struct CompressionBase *cb;
+  struct EnvMap *em;
+  struct CompressionBaseAdaptor *vptr;
+};
+
+#define VFI(xcbi,xfunc) (*(xcbi->vptr->xfunc))
+#define VF(xcb, xfunc) VFI(xcb->cbi, xfunc)
+
 struct CLCompressionInfo {
   int allocSize;
   const char *shortName;
@@ -34,6 +46,14 @@ static void addToCLCIList(struct CLCompressionInfo *t)
   clciHead = t;
 }
 
+static void checkPrepared(struct CompressionBase *cb)
+{
+  if (cb->cbi->fHavePrepared == 0) {
+    VF(cb, prepareToCompressCB)(cb);
+    cb->cbi->fHavePrepared = 1;
+  }
+}
+
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t)
 {
   struct CLCompressionInfo *c = clciHead;
@@ -57,17 +77,23 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   return NULL;
 }
 
-static int specificInitCB(struct CompressionBase *cb)
+static double fcompressCB(struct CompressionBase *cb, struct DataBlock *db)
+{
+  printf("(no specific compression function given)\n");
+  return clDatablockSize(db) * 8.0;
+}
+
+static int fspecificInitCB(struct CompressionBase *cb)
 {
   printf("(no specific initialization function given)\n");
 }
 
 struct CompressionBaseAdaptor cbsuper = {
-  specificInitCB,
+  specificInitCB : fspecificInitCB,
+  compressCB : fcompressCB,
 };
 
 void **dvptr = (void **) &cbsuper;
-
 struct CompressionBase *clNewCompressorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci;
@@ -78,8 +104,16 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   cbi->cb = cb;
   cbi->vptr = &ci->cba;
   cb->cbi = cbi;
-  cbi->vptr->specificInitCB(cb);
+  cbi->em = clEnvmapNew();
+  VF(cb, specificInitCB)(cb);
   return cb;
+}
+
+int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate)
+{
+  clEnvmapSetKeyVal(cb->cbi->em, key, val);
+  if (isPrivate)
+    clEnvmapSetKeyPrivate(cb->cbi->em, key);
 }
 
 void clRegisterCB(const char *shortName, int allocSize, struct CompressionBaseAdaptor *vptr)
@@ -100,4 +134,22 @@ void clRegisterCB(const char *shortName, int allocSize, struct CompressionBaseAd
   ci->shortName = strdup(shortName);
   ci->allocSize = allocSize;
   addToCLCIList(ci);
+}
+
+double clCompressCB(struct CompressionBase *cb, struct DataBlock *db)
+{
+  checkPrepared(cb);
+  return VF(cb, compressCB)(cb, db);
+}
+
+struct DataBlock *clConcatCB(struct CompressionBase *cb, struct DataBlock *db1,
+                            struct DataBlock *db2)
+{
+  checkPrepared(cb);
+  return VF(cb, concatCB)(cb, db1, db2);
+}
+
+struct EnvMap *clGetParameters(struct CompressionBase *cb)
+{
+  return cb->cbi->em;
 }

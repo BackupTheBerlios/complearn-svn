@@ -203,7 +203,7 @@ void clEnvmapSetKeyMarked(struct EnvMap *em, const char *key)
   clnodesetAddNode(em->marked, clEnvmapIndexForKey(em, key));
 }
 
-int clEnvmapSetKeyVal(struct EnvMap *em, char *key, char *val)
+int clEnvmapSetKeyVal(struct EnvMap *em, const char *key, const char *val)
 {
   int i;
   if (em == NULL || key == NULL || val == NULL) {
