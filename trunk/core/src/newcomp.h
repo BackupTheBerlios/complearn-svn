@@ -10,11 +10,11 @@ struct CompressionBase {
   struct CompressionBaseInternal *cbi;
 };
 
-void clRegisterCB(const char *shortName, int allocSize, struct CompressionBaseAdaptor *vptr);
-#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
+void clRegisterCB(struct CompressionBaseAdaptor *vptr);
 
 struct CompressionBase *clNewCompressorCB(const char *shortName);
-struct EnvMap *clGetParameters(struct CompressionBase *cb);
+struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
+const char *clGetParamStringCB(struct CompressionBase *cb);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);
 void clSetLastErrorCB(struct CompressionBase *cb, const char *errMsg);
 double clCompressCB(struct CompressionBase *cb, struct DataBlock *db);
@@ -23,6 +23,9 @@ struct DataBlock *clConcatCB(struct CompressionBase *cb, struct DataBlock *db1,
 struct CompressionBaseAdaptor *clGetCBAsuper(void);
 struct CompressionBaseAdaptor *clGetCBA(struct CompressionBase *cb);
 const char *clLastErrorCB(struct CompressionBase *cb);
+int clIsEnabledCB(const char *shortName);
+const char *clLastStaticErrorCB(const char *shortName);
+void clFreeCB(struct CompressionBase *cb);
 
 struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
@@ -30,7 +33,7 @@ struct CompressionBaseAdaptor {
   int (*getAPIVersionCB)(void);
   const char *(*getLongNameCB)(struct CompressionBase *cb);
 
-  int (*isDisabledCB)(struct CompressionBase *cb);
+  int (*isDisabledCB)(void);
 
     // Should read params and use them.   This will be called only once
     // prior to compression.  This should do any compressor-specific
@@ -46,10 +49,12 @@ struct CompressionBaseAdaptor {
        // If != 0 is to be returned, a call to setLastErrorCB should first
        // occur to explain the reason for the error.
   int (*isRuntimeProblemCB)(void); // Returns != 0 iff runtime problem
+  const char *(*shortNameCB)(void);
+  int (*allocSizeCB)(void);
 
-  const char *(*toStringCB)(void);
+  const char *(*toStringCB)(struct CompressionBase *cb);
 
-  const char *(*paramStringCB)(void);  // Should show params somehow
+  const char *(*paramStringCB)(struct CompressionBase *cb);  // Should show params somehow
 
   /* Returns result in bits */
   double (*compressCB)(struct CompressionBase *cb, struct DataBlock *datum);

@@ -31,6 +31,22 @@ static struct ZlibDynamicAdaptorCB zlibsda;
 #endif
 
 static struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
+
+static int fgetWindowSizeCB(void)
+{
+  return 32768;
+}
+
+static const char *fshortNameCB(void)
+{
+  return "gzip";
+}
+
+static int fallocSizeCB(void)
+{
+  return sizeof(struct GZipCompressionInstance);
+}
+
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
   struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
@@ -64,13 +80,12 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 static int fspecificInitCB(struct CompressionBase *cb)
 {
   struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
-  printf("gzip specific init func!\n");
-  gzci->level = 9;
+  gzci->level = 9; // Best compression by default
 }
 
 static int fprepareToCompressCB(struct CompressionBase *cb)
 {
-  const char *clvl = clEnvmapValueForKey(clGetParameters(cb), "level");
+  const char *clvl = clEnvmapValueForKey(clGetParametersCB(cb), "level");
   struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
   if (clvl != NULL)
     gzci->level = atoi(clvl);
@@ -84,12 +99,16 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 static struct CompressionBaseAdaptor cba = {
   specificInitCB : fspecificInitCB,
   prepareToCompressCB : fprepareToCompressCB,
-  compressCB : fcompressCB
+  compressCB : fcompressCB,
+  getWindowSizeCB : fgetWindowSizeCB,
+  shortNameCB : fshortNameCB,
+  allocSizeCB : fallocSizeCB
 };
 
 static void initGZ(void)
 {
-  REGTYPEFORNAME(gzip, struct GZipCompressionInstance, cba);
+//#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
+  clRegisterCB(&cba);
 }
 
 /***** Dynamic Adaptor module to support dual-mode static / dynamic loading
@@ -128,11 +147,14 @@ static struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void) {
 int main(int argc, char **argv) {
   initGZ();
   struct CompressionBase *cb = clNewCompressorCB("gzip");
-//  clSetParameterCB(cb, "level", "4", 0);
+  clSetParameterCB(cb, "level", "4", 0);
+  printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
   db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
   printf("%f\n", clCompressCB(cb, db));
   db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaaaxaaaaaaaaaaaa");
   printf("%f (with 3 more)\n", clCompressCB(cb, db));
+  clFreeCB(cb);
+  printCompressors();
   return 0;
 }
