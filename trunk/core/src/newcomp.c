@@ -77,6 +77,26 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   return NULL;
 }
 
+static int fgetWindowSizeCB(void)
+{
+  return 0;
+}
+
+static int fdoesRoundWholeBytesCB(void)
+{
+  return 1;
+}
+
+static int fisCompileProblemCB(void)
+{
+  return 0;
+}
+
+static int fisRuntimeProblemCB(void)
+{
+  return 0;
+}
+
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *db)
 {
   printf("(no specific compression function given)\n");
@@ -91,6 +111,10 @@ static int fspecificInitCB(struct CompressionBase *cb)
 struct CompressionBaseAdaptor cbsuper = {
   specificInitCB : fspecificInitCB,
   compressCB : fcompressCB,
+  getWindowSizeCB : fgetWindowSizeCB,
+  doesRoundWholeBytesCB : fdoesRoundWholeBytesCB,
+  isCompileProblemCB : fisCompileProblemCB,
+  isRuntimeProblemCB : fisRuntimeProblemCB
 };
 
 void **dvptr = (void **) &cbsuper;
