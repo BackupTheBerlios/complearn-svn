@@ -17,6 +17,7 @@ struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
 const char *clGetParamStringCB(struct CompressionBase *cb);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);
 void clSetLastErrorCB(struct CompressionBase *cb, const char *errMsg);
+void clSetLastStaticErrorCB(const char *shortName, const char *errMsg);
 double clCompressCB(struct CompressionBase *cb, struct DataBlock *db);
 struct DataBlock *clConcatCB(struct CompressionBase *cb, struct DataBlock *db1,
                             struct DataBlock *db2);
@@ -26,6 +27,7 @@ const char *clLastErrorCB(struct CompressionBase *cb);
 int clIsEnabledCB(const char *shortName);
 const char *clLastStaticErrorCB(const char *shortName);
 void clFreeCB(struct CompressionBase *cb);
+void clSetStaticErrorMessage(const char *shortName, const char *msg);
 
 struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);

@@ -25,6 +25,17 @@ static int fallocSizeCB(void)
   return sizeof(struct ZLibCompressionInstance);
 }
 
+static int fisCompileProblemCB(void)
+{
+#if HAVE_ZLIB_H
+  return 0;
+#endif
+  if (clGrabZlibDACB() != NULL)
+    return 0;
+  clSetStaticErrorMessage(fshortNameCB(), "Cannot open zlib library");
+  return 1;
+}
+
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
   struct ZLibCompressionInstance *gzci = (struct ZLibCompressionInstance *) cb;

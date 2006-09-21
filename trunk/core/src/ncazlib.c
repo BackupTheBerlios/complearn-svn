@@ -43,7 +43,7 @@ struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void) {
   if (!haveTriedDL) {
     void *lib_handle;
     haveTriedDL = 1;
-#ifdef HAVE_DLFCN_H
+#if HAVE_DLFCN_H
     lib_handle = dlopen("libz.so", RTLD_LAZY);
     if (lib_handle) {
       zlibdda.compress2= dlsym(lib_handle,"compress2");

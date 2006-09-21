@@ -40,7 +40,7 @@ const char *clLastStaticErrorCB(const char *shortName)
   return ci->staticErrorMsg;
 }
 
-static void setStaticErrorMessage(const char *shortName, const char *msg)
+void clSetStaticErrorMessage(const char *shortName, const char *msg)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
   assert(ci != NULL);
