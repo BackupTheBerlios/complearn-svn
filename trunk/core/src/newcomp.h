@@ -23,8 +23,8 @@ struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
   void (*freeCB)(struct CompressionBase *cb);
   int (*getAPIVersionCB)(struct CompressionBase *cb);
-  const char (*getShortNameCB)(struct CompressionBase *cb);
-  const char (*getLongNameCB)(struct CompressionBase *cb);
+  const char *(*getShortNameCB)(struct CompressionBase *cb);
+  const char *(*getLongNameCB)(struct CompressionBase *cb);
 
   int (*isDisabledCB)(struct CompressionBase *cb);
   const char *(*getReasonDisabledCB)(struct CompressionBase *cb);
