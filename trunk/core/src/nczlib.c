@@ -1,36 +1,14 @@
 #include <complearn/complearn.h>
 
-#ifdef HAVE_DLFCN_H
-#include <dlfcn.h>
-#endif
-
-#if HAVE_ZLIB_H
-#include <zlib.h>
-#endif
-
 #include "newcomp.h"
+#include "ncazlib.h"
 
-struct GZipCompressionInstance {
+struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
+
+struct ZLibCompressionInstance {
   void *baseClass;
   int level;
 };
-
-struct ZlibDynamicAdaptorCB {
-  int (*compress2)(unsigned char *dbuff,unsigned long *p,
-    unsigned char *src, unsigned long sz, int level);
-  int (*uncompress)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz);
-};
-
-#if HAVE_ZLIB_H
-static struct ZlibDynamicAdaptorCB zlibsda = {
-  (int (*)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz, int level) ) compress2,
-  (int (*)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz) ) uncompress
-};
-#else
-static struct ZlibDynamicAdaptorCB zlibsda;
-#endif
-
-static struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
 
 static int fgetWindowSizeCB(void)
 {
@@ -44,12 +22,12 @@ static const char *fshortNameCB(void)
 
 static int fallocSizeCB(void)
 {
-  return sizeof(struct GZipCompressionInstance);
+  return sizeof(struct ZLibCompressionInstance);
 }
 
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
-  struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
+  struct ZLibCompressionInstance *gzci = (struct ZLibCompressionInstance *) cb;
   struct ZlibDynamicAdaptorCB *zlib = clGrabZlibDACB();
   int s;
 
@@ -79,14 +57,14 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 
 static int fspecificInitCB(struct CompressionBase *cb)
 {
-  struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
+  struct ZLibCompressionInstance *gzci = (struct ZLibCompressionInstance *) cb;
   gzci->level = 9; // Best compression by default
 }
 
 static int fprepareToCompressCB(struct CompressionBase *cb)
 {
   const char *clvl = clEnvmapValueForKey(clGetParametersCB(cb), "level");
-  struct GZipCompressionInstance *gzci = (struct GZipCompressionInstance *) cb;
+  struct ZLibCompressionInstance *gzci = (struct ZLibCompressionInstance *) cb;
   if (clvl != NULL)
     gzci->level = atoi(clvl);
   if (gzci->level < 1)
@@ -109,39 +87,6 @@ static void initGZ(void)
 {
 //#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
   clRegisterCB(&cba);
-}
-
-/***** Dynamic Adaptor module to support dual-mode static / dynamic loading
- *
- * This system is intended to simplify installation by allowing users to
- * install a dynamic-loading zlib library after static compiletime config
- * without reconfiguring.  This is done through a two-step strategy on
- * compressor module startup:
- *
- * First, if a static symbol has been compiled, link with it and use it.
- * If it hasn't, search using dlopen for the zlib library and load the
- * necessary symbols (compression and decompression) into an adaptor.
- * Expose this adaptor to the rest of the system via a Singleton Facade.
- */
-
-static struct ZlibDynamicAdaptorCB zlibdda;
-static int haveTriedDL; /* Singleton */
-
-static struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void) {
-  if (zlibsda.compress2)
-    return &zlibsda;
-  if (!haveTriedDL) {
-    void *lib_handle;
-    haveTriedDL = 1;
-#ifdef HAVE_DLFCN_H
-    lib_handle = dlopen("libz.so", RTLD_LAZY);
-    if (lib_handle) {
-      zlibdda.compress2= dlsym(lib_handle,"compress2");
-      zlibdda.uncompress= dlsym(lib_handle,"uncompress");
-    }
-#endif
-  }
-  return zlibdda.compress2 ? &zlibdda : NULL;
 }
 
 int main(int argc, char **argv) {

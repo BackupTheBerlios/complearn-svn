@@ -276,6 +276,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
 
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate)
 {
+  assert(cb->cbi->fHavePrepared == 0 && "Parameters already locked.");
   clEnvmapSetKeyVal(cb->cbi->em, key, val);
   if (isPrivate)
     clEnvmapSetKeyPrivate(cb->cbi->em, key);
