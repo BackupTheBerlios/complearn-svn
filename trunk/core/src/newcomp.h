@@ -1,6 +1,8 @@
 #include <complearn/datablock.h>
 #include <complearn/envmap.h>
 
+#define APIVER_CLCOMP10 10
+
 struct CompressionBase;
 struct CompressionBaseAdaptor;
 
@@ -25,11 +27,10 @@ const char *clLastErrorCB(struct CompressionBase *cb);
 struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
   void (*freeCB)(struct CompressionBase *cb);
-  int (*getAPIVersionCB)(struct CompressionBase *cb);
+  int (*getAPIVersionCB)(void);
   const char *(*getLongNameCB)(struct CompressionBase *cb);
 
   int (*isDisabledCB)(struct CompressionBase *cb);
-  const char *(*getReasonDisabledCB)(struct CompressionBase *cb);
 
     // Should read params and use them.   This will be called only once
     // prior to compression.  This should do any compressor-specific

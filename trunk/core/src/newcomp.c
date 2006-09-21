@@ -97,6 +97,11 @@ static int fisRuntimeProblemCB(void)
   return 0;
 }
 
+static int fgetAPIVersionCB(void)
+{
+  return APIVER_CLCOMP10;
+}
+
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *db)
 {
   printf("(no specific compression function given)\n");
@@ -109,6 +114,7 @@ static int fspecificInitCB(struct CompressionBase *cb)
 }
 
 struct CompressionBaseAdaptor cbsuper = {
+  getAPIVersionCB : fgetAPIVersionCB,
   specificInitCB : fspecificInitCB,
   compressCB : fcompressCB,
   getWindowSizeCB : fgetWindowSizeCB,
