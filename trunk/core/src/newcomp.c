@@ -107,6 +107,8 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   struct CLCompressionInfo *ci;
   ci = findCompressorInfo(shortName);
   assert(ci != NULL);
+  if (!clIsEnabledCB(shortName))
+    return NULL;
   struct CompressionBase *cb = calloc(ci->cba.allocSizeCB(), 1);
   struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
   cbi->cb = cb;
