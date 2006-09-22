@@ -3,6 +3,7 @@
 
 struct CompressionBaseInternal {
   int fHavePrepared;
+  int fHaveFailed;
   char *shortName;
   char *madeupLongname;
   char *madeupToString;

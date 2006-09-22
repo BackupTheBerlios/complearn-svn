@@ -217,11 +217,13 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 static int fspecificInitCB(struct CompressionBase *cb)
 {
 //  struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+  return 0;
 }
 
 static int fprepareToCompressCB(struct CompressionBase *cb)
 {
-  struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+  //struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+  return 0;
 }
 
 static void resetStatistics(struct BlockSortCompressionInstance *bsci)
@@ -248,6 +250,7 @@ static void resetStatistics(struct BlockSortCompressionInstance *bsci)
 
 static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(freeCB),
   VIRTFUNCEXPORT(prepareToCompressCB),
   VIRTFUNCEXPORT(compressCB),
   VIRTFUNCEXPORT(shortNameCB),

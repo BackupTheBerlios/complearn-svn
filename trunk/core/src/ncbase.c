@@ -6,12 +6,6 @@
 
 // START OF BASE-CLASS FUNCTIONS
 // ----------------------------------------------------------
-//
-// By default, do nothing
-//
-static int fSpecificInitCB(struct CompressionBase *cb)
-{
-}
 
 // By default, do nothing.  (the block itself, cb, will automatically be freed)
 //
@@ -44,7 +38,7 @@ static const char *fshortNameCB(void)
   return NULL;
 }
 
-static int fallocSize(void)
+static int fallocSizeCB(void)
 {
   return sizeof(void *);
 }
@@ -56,7 +50,7 @@ static const char *ftoStringCB(struct CompressionBase *cb)
     const char *sn = VF(cb, shortNameCB)();
     int sl = strlen(sn);
     cb->cbi->madeupToString = calloc(20 + sl, 1);
-    sprintf(cb->cbi->madeupToString, "%s:%08x", sn, cb);
+    sprintf(cb->cbi->madeupToString, "%s:%08x", sn, ((unsigned int) cb));
   }
   return cb->cbi->madeupToString;
 }
@@ -123,6 +117,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *db)
 static int fspecificInitCB(struct CompressionBase *cb)
 {
   printf("(no specific initialization function given)\n");
+  return 0;
 }
 
 struct CompressionBaseAdaptor cbsuper = {
@@ -137,6 +132,7 @@ struct CompressionBaseAdaptor cbsuper = {
   VIRTFUNCEXPORT(isRuntimeProblemCB),
   VIRTFUNCEXPORT(longNameCB),
   VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(allocSizeCB),
   VIRTFUNCEXPORT(toStringCB),
   VIRTFUNCEXPORT(paramStringCB),
   VIRTFUNCEXPORT(concatCB),

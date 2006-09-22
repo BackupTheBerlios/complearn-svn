@@ -19,6 +19,7 @@ static struct CLCompressionInfo **clciHeadPtr = &clciHead;
 
 static struct CLCompressionInfo *findCompressorInfo(const char *name);
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t);
+static void staticErrorExitIfBad(int retval, struct CompressionBase *cb);
 
 const char *clLastStaticErrorCB(const char *shortName)
 {
@@ -73,9 +74,13 @@ static void addToCLCIList(struct CLCompressionInfo *t)
 static void checkPrepared(struct CompressionBase *cb)
 {
   if (cb->cbi->fHavePrepared == 0) {
-    VF(cb, prepareToCompressCB)(cb);
+    int retval;
+    retval = VF(cb, prepareToCompressCB)(cb);
+    if (retval != 0)
+      cb->cbi->fHaveFailed = 1;
     cb->cbi->fHavePrepared = 1;
   }
+  staticErrorExitIfBad(cb->cbi->fHaveFailed, cb);
 }
 
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t)
@@ -115,8 +120,17 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   cbi->vptr = &ci->cba;
   cb->cbi = cbi;
   cbi->em = clEnvmapNew();
-  VF(cb, specificInitCB)(cb);
+  int retval;
+  retval = VF(cb, specificInitCB)(cb);
+  staticErrorExitIfBad(retval, cb);
   return cb;
+}
+static void staticErrorExitIfBad(int retval, struct CompressionBase *cb)
+{
+  if (retval != 0) {
+    fprintf(stderr, "Error in %s: %s\n", VF(cb,shortNameCB)(), clLastStaticErrorCB(VF(cb,shortNameCB)()));
+    exit(1);
+  }
 }
 
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate)
@@ -125,6 +139,7 @@ int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *va
   clEnvmapSetKeyVal(cb->cbi->em, key, val);
   if (isPrivate)
     clEnvmapSetKeyPrivate(cb->cbi->em, key);
+  return 0;
 }
 
 void clRegisterCB(struct CompressionBaseAdaptor *vptr)
@@ -174,6 +189,7 @@ struct EnvMap *clGetParametersCB(struct CompressionBase *cb)
 
 const char *clLastErrorCB(struct CompressionBase *cb)
 {
+  return cb->cbi->errorMessage;
 }
 
 int clIsEnabledCB(const char *shortName)

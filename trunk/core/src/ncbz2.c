@@ -78,6 +78,7 @@ static int fspecificInitCB(struct CompressionBase *cb)
   bzci->blocksize = 9; // Best compression by default
   bzci->workfactor = 30; // Default provides "ok" performance
   bzci->verbosity = 0; // Silent
+  return 0;
 }
 
 static int fprepareToCompressCB(struct CompressionBase *cb)
@@ -92,12 +93,14 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
     bzci->workfactor = atoi(swf);
   if (sv != NULL)
     bzci->verbosity = atoi(sv);
+  return 0;
 }
 
 static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(specificInitCB),
   VIRTFUNCEXPORT(prepareToCompressCB),
   VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(isCompileProblemCB),
   VIRTFUNCEXPORT(getWindowSizeCB),
   VIRTFUNCEXPORT(shortNameCB),
   VIRTFUNCEXPORT(longNameCB),

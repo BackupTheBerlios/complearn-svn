@@ -76,6 +76,7 @@ static int fspecificInitCB(struct CompressionBase *cb)
 {
   struct ZLibCompressionInstance *gzci = (struct ZLibCompressionInstance *) cb;
   gzci->level = 9; // Best compression by default
+  return 0;
 }
 
 static int fprepareToCompressCB(struct CompressionBase *cb)
@@ -89,12 +90,14 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   if (gzci->level > 9)
     gzci->level = 9;
   printf("In gzip-specific prepare function, with level param %d\n", gzci->level);
+  return 0;
 }
 
 static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(specificInitCB),
   VIRTFUNCEXPORT(prepareToCompressCB),
   VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(isCompileProblemCB),
   VIRTFUNCEXPORT(getWindowSizeCB),
   VIRTFUNCEXPORT(shortNameCB),
   VIRTFUNCEXPORT(longNameCB),
@@ -108,6 +111,7 @@ static void initGZ(void)
 }
 
 void initBZ2(void);
+void printCompressors(void);
 int main(int argc, char **argv) {
   initGZ();
   initBZ2();
