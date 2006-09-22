@@ -2,6 +2,7 @@
 
 #include "newcomp.h"
 #include "ncazlib.h"
+#include "ncblocksort.h"
 
 struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
 
@@ -104,7 +105,8 @@ void initBZ2(void);
 int main(int argc, char **argv) {
   initGZ();
   initBZ2();
-  struct CompressionBase *cb = clNewCompressorCB("bzip2");
+  initBlockSort();
+  struct CompressionBase *cb = clNewCompressorCB("blocksort");
   clSetParameterCB(cb, "level", "4", 0);
   printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
