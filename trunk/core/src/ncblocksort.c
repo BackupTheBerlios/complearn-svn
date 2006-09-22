@@ -173,6 +173,11 @@ static double bs_compress(struct BlockSortCompressionInstance *CI,
   return (cl + log(size)) / M_LN2;
 }
 
+static const char *flongNameCB(void)
+{
+  return "block-sorting non-rounding";
+}
+
 static const char *fshortNameCB(void)
 {
   return "blocksort";
@@ -242,12 +247,13 @@ static void resetStatistics(struct BlockSortCompressionInstance *bsci)
 }
 
 static struct CompressionBaseAdaptor cba = {
-  specificInitCB : fspecificInitCB,
-  prepareToCompressCB : fprepareToCompressCB,
-  compressCB : fcompressCB,
-  shortNameCB : fshortNameCB,
-  allocSizeCB : fallocSizeCB,
-  doesRoundWholeBytesCB : fdoesRoundWholeBytesCB
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(longNameCB),
+  VIRTFUNCEXPORT(allocSizeCB),
+  VIRTFUNCEXPORT(doesRoundWholeBytesCB)
 };
 
 void initBlockSort(void)

@@ -5,6 +5,7 @@
 #include <complearn/envmap.h>
 
 #define APIVER_CLCOMP10 10
+#define VIRTFUNCEXPORT(x) x : f##x
 
 struct CompressionBase;
 struct CompressionBaseAdaptor;
@@ -36,7 +37,7 @@ struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
   void (*freeCB)(struct CompressionBase *cb);
   int (*getAPIVersionCB)(void);
-  const char *(*getLongNameCB)(struct CompressionBase *cb);
+  const char *(*longNameCB)(void);
 
   int (*isDisabledCB)(void);
 

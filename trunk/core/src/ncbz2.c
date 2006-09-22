@@ -27,6 +27,11 @@ static const char *fshortNameCB(void)
   return "bzip2";
 }
 
+static const char *flongNameCB(void)
+{
+  return "popular block-sorting bzip2";
+}
+
 static int fallocSizeCB(void)
 {
   return sizeof(struct BZipCompressionInstance);
@@ -90,12 +95,13 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 }
 
 static struct CompressionBaseAdaptor cba = {
-  specificInitCB : fspecificInitCB,
-  prepareToCompressCB : fprepareToCompressCB,
-  compressCB : fcompressCB,
-  getWindowSizeCB : fgetWindowSizeCB,
-  shortNameCB : fshortNameCB,
-  allocSizeCB : fallocSizeCB
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(getWindowSizeCB),
+  VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(longNameCB),
+  VIRTFUNCEXPORT(allocSizeCB)
 };
 
 void initBZ2(void)

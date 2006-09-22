@@ -25,14 +25,11 @@ static int fgetAPIVersionCB(void)
   return APIVER_CLCOMP10;
 }
 
-static const char *fgetLongNameCB(struct CompressionBase *cb)
+static const char *flongNameCB(void)
 {
-  if (cb->cbi->madeupLongname == NULL) {
-    cb->cbi->madeupLongname = calloc(strlen(cb->cbi->shortName)+80, 1);
-    sprintf(cb->cbi->madeupLongname, "(no description for %s)",
-            cb->cbi->shortName);
-  }
-  return cb->cbi->madeupLongname;
+  fprintf(stderr, "Error, no long name defined for compressor\n");
+  exit(0);
+  return NULL;
 }
 
 static int fisDisabledCB(void)
@@ -129,20 +126,20 @@ static int fspecificInitCB(struct CompressionBase *cb)
 }
 
 struct CompressionBaseAdaptor cbsuper = {
-  getAPIVersionCB : fgetAPIVersionCB,
-  specificInitCB : fspecificInitCB,
-  freeCB : ffreeCB,
-  compressCB : fcompressCB,
-  specificInitCB : fspecificInitCB,
-  getWindowSizeCB : fgetWindowSizeCB,
-  doesRoundWholeBytesCB : fdoesRoundWholeBytesCB,
-  isCompileProblemCB : fisCompileProblemCB,
-  isRuntimeProblemCB : fisRuntimeProblemCB,
-  getLongNameCB : fgetLongNameCB,
-  shortNameCB : fshortNameCB,
-  toStringCB : ftoStringCB,
-  paramStringCB : fparamStringCB,
-  concatCB : fconcatCB,
-  isDisabledCB : fisDisabledCB
+  VIRTFUNCEXPORT(getAPIVersionCB),
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(freeCB),
+  VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(getWindowSizeCB),
+  VIRTFUNCEXPORT(doesRoundWholeBytesCB),
+  VIRTFUNCEXPORT(isCompileProblemCB),
+  VIRTFUNCEXPORT(isRuntimeProblemCB),
+  VIRTFUNCEXPORT(longNameCB),
+  VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(toStringCB),
+  VIRTFUNCEXPORT(paramStringCB),
+  VIRTFUNCEXPORT(concatCB),
+  VIRTFUNCEXPORT(isDisabledCB)
 };
 

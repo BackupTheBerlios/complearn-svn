@@ -16,6 +16,11 @@ static int fgetWindowSizeCB(void)
   return 32768;
 }
 
+static const char *flongNameCB(void)
+{
+  return "Lempel-Ziv 77 zlib";
+}
+
 static const char *fshortNameCB(void)
 {
   return "gzip";
@@ -87,12 +92,13 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 }
 
 static struct CompressionBaseAdaptor cba = {
-  specificInitCB : fspecificInitCB,
-  prepareToCompressCB : fprepareToCompressCB,
-  compressCB : fcompressCB,
-  getWindowSizeCB : fgetWindowSizeCB,
-  shortNameCB : fshortNameCB,
-  allocSizeCB : fallocSizeCB
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(getWindowSizeCB),
+  VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(longNameCB),
+  VIRTFUNCEXPORT(allocSizeCB)
 };
 
 static void initGZ(void)
