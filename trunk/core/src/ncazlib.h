@@ -1,3 +1,5 @@
+#ifndef __NCAZLIB_H
+#define __NCAZLIB_H
 
 struct ZlibDynamicAdaptorCB {
   int (*compress2)(unsigned char *dbuff,unsigned long *p,
@@ -7,3 +9,4 @@ struct ZlibDynamicAdaptorCB {
 
 struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
 
+#endif

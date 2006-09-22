@@ -100,9 +100,11 @@ static void initGZ(void)
   clRegisterCB(&cba);
 }
 
+void initBZ2(void);
 int main(int argc, char **argv) {
   initGZ();
-  struct CompressionBase *cb = clNewCompressorCB("gzip");
+  initBZ2();
+  struct CompressionBase *cb = clNewCompressorCB("bzip2");
   clSetParameterCB(cb, "level", "4", 0);
   printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
