@@ -101,6 +101,11 @@ static int fdoesRoundWholeBytesCB(void)
 static int fisCompileProblemCB(void)
 {
   return 0;
+
+
+static ixnt fisAutoEnabled(void)
+{
+  return 1;
 }
 
 static int fisRuntimeProblemCB(void)
@@ -136,6 +141,7 @@ struct CompressionBaseAdaptor cbsuper = {
   VIRTFUNCEXPORT(toStringCB),
   VIRTFUNCEXPORT(paramStringCB),
   VIRTFUNCEXPORT(concatCB),
-  VIRTFUNCEXPORT(isDisabledCB)
+  VIRTFUNCEXPORT(isDisabledCB),
+  VIRTFUNCEXPORT(isAutoEnabledCB)
 };
 

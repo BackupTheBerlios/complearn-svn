@@ -65,6 +65,7 @@ struct CompressionBaseAdaptor {
   /* Returns result in bits */
   double (*compressCB)(struct CompressionBase *cb, struct DataBlock *datum);
   struct DataBlock *(*concatCB)(struct CompressionBase *cb, struct DataBlock *dat1, struct DataBlock *dat2);
+  int (*isAutoEnabledCB)(void);
 };
 
 #endif
