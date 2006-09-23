@@ -257,7 +257,7 @@ void testZlibCA()
 
 void testBZipCA()
 {
-  testCANamed("bzip");
+  testCANamed("bzip2");
 }
 
 void testBlockSortCA()
@@ -816,7 +816,7 @@ void testQuartet(void)
 #define TREETRIALCOUNT 5
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompressionBase *bz = clNewCompressorCB("bzip");
+  struct CompressionBase *bz = clNewCompressorCB("bzip2");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
@@ -1190,7 +1190,7 @@ void testTreeMolder()
 {
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompressionBase *bz = clNewCompressorCB("bzip");
+  struct CompressionBase *bz = clNewCompressorCB("bzip2");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
