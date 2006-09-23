@@ -1,3 +1,13 @@
+libcomplearn (0.9.5-1) unstable; urgency=low
+
+  * New upstream release; fixes broken compressor-listing as well as
+    broken command-line option logic.  Also fixed CompAdaptor, added
+    new better dynamic shared object module interface, and new parameter
+    setting command line option.
+  * Fixed broken maketree -T option to read text-format distance matrix.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat, 23 Sep 2006 21:28:10 +0200
+
 libcomplearn (0.9.4-1) unstable; urgency=low
 
   * Updated configure.ac to check for new nanohttp lib function.
