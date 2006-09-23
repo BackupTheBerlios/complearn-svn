@@ -88,7 +88,6 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
     gzci->level = 1;
   if (gzci->level > 9)
     gzci->level = 9;
-  printf("In gzip-specific prepare function, with level param %d\n", gzci->level);
   return 0;
 }
 

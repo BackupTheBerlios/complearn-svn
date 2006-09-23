@@ -312,15 +312,20 @@ void doBestScan(void);
 void doBestScan(void)
 {
   struct CLCompressionInfo *c;
-  const char *fname = "/usr/bin/aleph";
+  const char *fname = "nc";
   struct DataBlock *d = clFileToDataBlockPtr(fname);
   printf("Best Scan with datablock %s, size %d\n", fname, clDatablockSize(d)*8);
   for (c = clciHead; c; c = c->next) {
     if (c->cba.isAutoEnabledCB() && clIsEnabledCB(c->cba.shortNameCB())) {
       struct CompressionBase *cb = clNewCompressorCB(c->cba.shortNameCB());
-      double sz = VF(cb, compressCB)(cb, d);
+      double sz = clCompressCB(cb, d);
       double ratio = sz/(clDatablockSize(d)*8);
-      printf("%-12s:%5.5f%%  :%f\n", VF(cb, shortNameCB)(), ratio*100, sz);
+      char pctspot[16];
+      char sizespot[32];
+      sprintf(pctspot, "%6.6f", ratio*100);
+      sprintf(sizespot, "%6.6f", sz);
+      pctspot[5] = 0;
+      printf("%-12s:%s%% :%18s\n", VF(cb, shortNameCB)(), pctspot, sizespot);
     }
   }
 }
@@ -329,14 +334,14 @@ int main(int argc, char **argv) {
   initBZ2();
   initReal();
   initBlockSort();
-  struct CompressionBase *cb = clNewCompressorCB("blocksort");
-  clSetParameterCB(cb, "level", "4", 0);
-//  printf("Using parameters %s\n", clGetParamStringCB(cb));
+  struct CompressionBase *cb = clNewCompressorCB("real");
+  clSetParameterCB(cb, "cmd", "catgzip", 0);
+  printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
   db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
-//  printf("%f\n", clCompressCB(cb, db));
+  printf("%f\n", clCompressCB(cb, db));
   db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaaaxaaaaaaaaaaaa");
-//  printf("%f (with 3 more)\n", clCompressCB(cb, db));
+  printf("%f (with 3 more)\n", clCompressCB(cb, db));
   clFreeCB(cb);
   printCompressors();
   doBestScan();
