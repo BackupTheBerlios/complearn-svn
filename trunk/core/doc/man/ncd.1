@@ -8,7 +8,7 @@ ncd \- compute the Normalized Compression Distance
 .I config_file
 .B ] [ -o
 .I filename
-.B ] [ -LgDhVSvjsxbPH ] [ -f|p|t|d|w ]
+.B ] [ -LgDhVSvjsxbPmH ] [ -f|p|t|d|w ]
 .I ARG1
 .B [ -f|p|t|d|w ]
 .I ARG2
@@ -92,8 +92,13 @@ use a different configuration file than the default search locations
 \fB\-o\fR, \fB\-\-output\fR=\fIFILE\fR
 specify output filename
 .TP
-\fB\-P\fR, \fB\-\-svd-project\fR
-outputs a singular value decomposition matrix
+\fB\-P\fR, \fB\-\-property\fR=\fINAME\fR=\fIVALUE\fR
+sets a property of the form NAME=VALUE, e.g. --property=cmd=$HOME/bin/catppmd
+.TP
+\fB\-m\fR, \fB\-\-module\fR=\fImodulefile\fR
+loads a compressor module (shared object usually ending in .so on Linux) called
+modulefile ; LD_LIBRARY_PATH must point to the directory that contains it for
+this to work, or you must specify an aboslute path.
 .TP
 \fB\-b\fR, \fB\-\-binary\fR
 output results to binary file
