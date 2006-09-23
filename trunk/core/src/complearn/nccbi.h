@@ -1,5 +1,8 @@
 
-#include "newcomp.h"
+#ifndef __NCCBI_H
+#define __NCCBI_H
+
+#include <complearn/builtin.h>
 
 struct CompressionBaseInternal {
   int fHavePrepared;
@@ -17,3 +20,4 @@ struct CompressionBaseInternal {
 #define VFI(xcbi,xfunc) (*(xcbi->vptr->xfunc))
 #define VF(xcb, xfunc) VFI(xcb->cbi, xfunc)
 
+#endif

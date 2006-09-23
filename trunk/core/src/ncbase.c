@@ -1,8 +1,6 @@
 #include <complearn/complearn.h>
 #include <string.h>
-#include "ncbase.h"
-#include "newcomp.h"
-#include "nccbi.h"
+#include <complearn/nccbi.h>
 
 // START OF BASE-CLASS FUNCTIONS
 // ----------------------------------------------------------

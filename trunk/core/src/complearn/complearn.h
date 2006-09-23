@@ -85,6 +85,7 @@
 #include <complearn/clwrap.h>
 #include <complearn/clparser.h>
 #include <complearn/ncabz2.h>
+#include <complearn/ncbase.h>
 #include <complearn/ncazlib.h>
 
 #ifdef HAVE_DMALLOC

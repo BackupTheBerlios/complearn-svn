@@ -8,12 +8,10 @@
 #include <unistd.h>
 #include <signal.h>
 
-
-#include "newcomp.h"
-#include "ncbase.h"
-#include "nccbi.h"
-#include "ncazlib.h"
-#include "ncblocksort.h"
+#include <complearn/ncbase.h>
+#include <complearn/nccbi.h>
+#include <complearn/ncazlib.h>
+#include <complearn/ncblocksort.h>
 #include <complearn/complearn.h>
 
 static int fHaveInitted;
