@@ -277,6 +277,7 @@ static int grabFields(gsl_matrix *m, const char *rowStart, int row, struct Strin
   strncpy(numbuf, rowStart, rowEnd-rowStart);
   if (labels)
     clStringstackPush(labels, numbuf);
+  return 0;
 }
 
 int cltxtRowSize(struct DataBlock *db)
