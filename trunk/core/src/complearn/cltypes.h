@@ -58,7 +58,7 @@ struct GeneralConfig;
 typedef unsigned int t_tagtype;
 
 typedef void (*t_emitclFunc)(char *str);
-typedef struct CompAdaptor *(*t_clnewca)(void);
+typedef void (*t_cldlinitcl)(void);
 typedef double (*t_compclFunc)(struct CompAdaptor *ca, struct DataBlock *src);
 typedef void (*t_freecompclFunc)(struct CompAdaptor *ca);
 typedef char *(*t_shortname)(void);

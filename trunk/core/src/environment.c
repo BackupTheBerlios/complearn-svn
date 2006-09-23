@@ -139,7 +139,7 @@ void clPrintOptionHelp(void)
 "  -S, --size                  compressed size 1 FILE, STRING or DIR\n"
 "  -x, --exp                   print out 2^val instead of val\n"
 "  -B, --binary                enable binary output mode\n"
-"  -P, --svd-project           output a singular value decomposition matrix\n"
+"  -P, --property=name=value   set propery / environment setting name=value\n"
 "  -s, --suppress              suppress ASCII output\n"
 "  -b, --both                  enable both binary and text output mode\n"
 "  -H, --html                  output in HTML format\n"
@@ -193,6 +193,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
   static int fCmdSaved;
   int oldargc = argc;
   int oldoptind;
+  char *propName = NULL, *propVal = NULL;
   char *oldargv[64];
   int result;
   int oldopterr = opterr;
@@ -216,12 +217,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
     if (longindex)
       oldlongind = *longindex;
     opterr = 0; /* suppress error message here */
-/*  if (longindex) {
-    printf("Longindex is first %d\n", *longindex);
-  }
-  */
   result = getopt_long(argc, argv, optstring, longopts, longindex);
-//  printf("Got first result %c with longindex %d\n", result, *longindex);
   opterr = oldopterr; /* restore old opterr value */
   if (result == ':' && oldopterr) { /* missing parameter must print error */
     if (longindex)
@@ -238,7 +234,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
     optind = oldoptind;
     if (longindex)
       *longindex = oldlongind;
-    const char *const def_short_options="C:c:T:BhVvjsbPHrU:Sx";
+    const char *const def_short_options="c:VvsBbP:C:SxHT:rU:h";
     static struct option def_long_options[] = {
       { "config-file", 1, NULL, 'c' },
       { "version", 0, NULL, 'V' },
@@ -246,7 +242,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
       { "suppress", 0, NULL, 's' }, /* suppress ASCII output */
       { "binary", 0, NULL, 'B' },   /* binary output mode */
       { "both", 0, NULL, 'b' },   /* both output mode */
-      { "svd-project", 0, NULL, 'P' },
+      { "property", 1, NULL, 'P' },
       { "compressor", 1, NULL, 'C' },
       { "size", 0, NULL, 'S' },     /* Just the compressed size, not NCD */
       { "exp", 0, NULL, 'x' }, /* print out 2^val instead of val */
@@ -313,7 +309,12 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
         clUpdateEMToConfig(curEnv);
         break;
       case 'P':
-        curEnv->fSVD = 1;
+        propName = strtok(optarg, "=");
+	propVal = strtok(NULL, "=");
+	if (propName == NULL || propVal == NULL || propName[0] == 0) {
+		clogError("Bad property setting syntax, please see --help.");
+	}
+	clEnvmapSetKeyVal(curEnv->em, propName, propVal);
         break;
       case 'H':
         curEnv->fHTML = 1;

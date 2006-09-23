@@ -26,7 +26,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include <complearn/dlextcomp.h>
+#include <complearn/complearn.h>
 
 #if DLFCN_RDY
 
@@ -42,9 +42,9 @@ static void *dl_musthavesymbol(void *dlhandle, const char *str)
 	return result;
 }
 
-struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname)
+void clCompaLoadDynamicLib(const char *libraryname)
 {
-	void *dlhandle;
+  void *dlhandle;
   struct CompAdaptor *c;
   t_clnewca nca;
 	dlhandle = dlopen(libraryname, RTLD_LAZY);
@@ -53,16 +53,16 @@ struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname)
 		exit(1);
 	}
 
-  nca = (t_clnewca) dl_musthavesymbol(dlhandle, FUNCNAMENCA);
-  c = nca();
-
-	return c;
+  nca = (t_cldlinitcl) dl_musthavesymbol(dlhandle, FUNCNAMENCA);
+  nca();
 }
 
 #else
 
 struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname)
 {
+  fprintf(stderr, "Cannot load %s\n", libraryname);
+  clogError("No Dynamic Library Support compiled in, sorry.");
   return NULL;
 }
 

@@ -183,7 +183,7 @@ int clEnvmapSize(struct EnvMap *em)
   return clDraSize(em->d);
 }
 
-static int setKeyValAt(struct EnvMap *em, int where, char *key, char *val)
+static int setKeyValAt(struct EnvMap *em, int where, const char *key, const char *val)
 {
   union PCTypes p;
   if (em == NULL || key == NULL || val == NULL) {

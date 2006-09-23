@@ -41,7 +41,7 @@
  * must define in order to be compatible with this system.
  */
 
-#define FUNCNAMENCA "newCompAdaptor"
+#define FUNCNAMENCA "initCL"
 
 /** \brief Loads custom compressor module through dynamic library.
  *
