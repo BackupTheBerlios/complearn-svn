@@ -1,29 +1,3 @@
-/*
-* Copyright (c) 2006 Rudi Cilibrasi, Rulers of the RHouse
-* All rights reserved.     cilibrar@cilibrar.com
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*     * Redistributions of source code must retain the above copyright
-*       notice, this list of conditions and the following disclaimer.
-*     * Redistributions in binary form must reproduce the above copyright
-*       notice, this list of conditions and the following disclaimer in the
-*       documentation and/or other materials provided with the distribution.
-*     * Neither the name of the RHouse nor the
-*       names of its contributors may be used to endorse or promote products
-*       derived from this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE RULERS AND CONTRIBUTORS "AS IS" AND ANY
-* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE RULERS AND CONTRIBUTORS BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -33,30 +7,27 @@
 #include <string.h>
 #include <math.h>
 
+#include "newcomp.h"
+
 #include <complearn/complearn.h>
 
 #define MAXSTATES 13
 #define CREDULITY 52
 #define STATELOGBASE 1.532
 
-/*! \file builtinca-blocksort.c */
+/*! \file ncblocksort.c */
 
-/** \brief blocksort compressor instance
- *
- * Provides simple BlockSort compression.
- *
- * \sa builtinca-blocksort.c
- * \struct BlockSortCompInstance
- */
-struct BlockSortCompInstance {
+struct BlockSortCompressionInstance {
+  void *baseClass;
   int code2state[256];
   int nstates;
   int *x, *p, allocated;
 };
 
 void clSuffixsort(int *x, int *p, int n, int k, int l);
+static void resetStatistics(struct BlockSortCompressionInstance *bsci);
 
-static double bs_compress(struct BlockSortCompInstance *CI,
+static double bs_compress(struct BlockSortCompressionInstance *CI,
 			  unsigned char *data, int size) {
   int *x, *p;
   int i, j, mass, av;
@@ -202,51 +173,64 @@ static double bs_compress(struct BlockSortCompInstance *CI,
   return (cl + log(size)) / M_LN2;
 }
 
-void clBs_freecompclFunc(struct CompAdaptor *ca) {
-  struct BlockSortCompInstance *bsci =
-    (struct BlockSortCompInstance *)ca->cptr;
+static const char *flongNameCB(void)
+{
+  return "block-sorting non-rounding";
+}
+
+static const char *fshortNameCB(void)
+{
+  return "blocksort";
+}
+
+static int fdoesRoundWholeBytesCB(void)
+{
+  return 0;
+}
+
+static int fallocSizeCB(void)
+{
+  return sizeof(struct BlockSortCompressionInstance);
+}
+
+static void ffreeCB(struct CompressionBase *cb)
+{
+  struct BlockSortCompressionInstance *bsci =
+    (struct BlockSortCompressionInstance *)cb;
   if (bsci->allocated > 0) {
     free(bsci->x);
     free(bsci->p);
+    bsci->allocated = 0;
+    bsci->x = NULL;
+    bsci->p = NULL;
   }
-  free(ca->cptr);
-  free(ca);
 }
 
-static double bs_compclFunc(struct CompAdaptor *ca, struct DataBlock *src) {
-  struct BlockSortCompInstance *bsci =
-    (struct BlockSortCompInstance *)ca->cptr;
+static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
+{
+  struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+
+  resetStatistics(bsci);
   return bs_compress(bsci, clDatablockData(src), clDatablockSize(src));
 }
 
-static char *bs_shortname(void) { return "blocksort"; }
-static char *bs_longname(void) { return "block-sorting compressor"; }
-static int   bs_apiver(void) { return APIVER_V1; }
+static int fspecificInitCB(struct CompressionBase *cb)
+{
+//  struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+  return 0;
+}
 
-struct CompAdaptor *clBuiltin_blocksort(void) {
+static int fprepareToCompressCB(struct CompressionBase *cb)
+{
+  //struct BlockSortCompressionInstance *bsci = (struct BlockSortCompressionInstance *) cb;
+  return 0;
+}
+
+static void resetStatistics(struct BlockSortCompressionInstance *bsci)
+{
   int i, d, m, s;
   double prev, cur;
-  const static struct CompAdaptor c = {
-    cptr: NULL,
-    cf:   bs_compclFunc,
-    fcf:  clBs_freecompclFunc,
-    sn:   bs_shortname,
-    ln:   bs_longname,
-    apiv: bs_apiver
-  };
-  struct CompAdaptor *ca;
-  struct BlockSortCompInstance *bsci;
-
-  ca   = clCalloc(sizeof(*ca), 1);
-  bsci = clCalloc(sizeof(*bsci), 1);
-
-  if (ca==NULL || bsci==NULL) { clogError("clBuiltin_blocksort"); }
-  *ca = c;
-  ca->cptr= bsci;
-
-  bsci->x = bsci->p = NULL;
-  bsci->allocated = 0;
-  d = m = 0;
+  m = 0;
   prev = 0;
   s = 0;
   for (i=0; i<256; i++) {
@@ -262,8 +246,21 @@ struct CompAdaptor *clBuiltin_blocksort(void) {
     clogError( "MAXSTATES should be at least %d\n", s+1);
     exit(1);
   }
-
-  clCompaInitParameters(ca);
-
-  return ca;
 }
+
+static struct CompressionBaseAdaptor cba = {
+  VIRTFUNCEXPORT(specificInitCB),
+  VIRTFUNCEXPORT(freeCB),
+  VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(compressCB),
+  VIRTFUNCEXPORT(shortNameCB),
+  VIRTFUNCEXPORT(longNameCB),
+  VIRTFUNCEXPORT(allocSizeCB),
+  VIRTFUNCEXPORT(doesRoundWholeBytesCB)
+};
+
+void initBlockSort(void)
+{
+  clRegisterCB(&cba);
+}
+

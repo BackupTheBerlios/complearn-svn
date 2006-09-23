@@ -135,6 +135,9 @@ adjadaptor.c \
 adjlist.c \
 adjmatrix.c \
 builtin.c \
+ncbase.c \
+ncazlib.c \
+ncabz2.c \
 builtinca-bzlib.c \
 builtinca-google.c \
 builtinca-realcomp.c \

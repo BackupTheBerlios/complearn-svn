@@ -36,6 +36,8 @@
 #include <complearn/datablockenum.h>
 #include <getopt.h>
 
+struct CompressionBase;
+
 /** \brief Where configuration details are stored.
  *
  * This holds all generic configuration options for the CompLearn system
@@ -68,7 +70,7 @@ struct GeneralConfig {
   struct EnvMap *em; /*!< EnvMap storing serialized version of this GeneralConfig */
   struct StringStack *cmdKeeper; /*!< Growing list of commands in this experiment */
   char *compressor_name; /*!< name of desired compressor */
-  struct CompAdaptor *ca; /*!< loaded CompAdaptor to use */
+  struct CompressionBase *ca; /*!< loaded CompressionBase to use */
   void *ptr;              /*!< pointer to application specific configuration */
   t_freeappconfig freeappcfg; /*!< pointer to function which frees application
                                    specific config */

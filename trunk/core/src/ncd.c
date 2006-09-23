@@ -74,22 +74,22 @@ void loadCompressor(struct GeneralConfig *cur)
   if (cur->ca == NULL) {
     if (cur->fVerbose)
       printf("About to load %s..\n", cur->compressor_name);
-      cur->ca = clCompaLoadBuiltin(cur->compressor_name);
+    cur->ca = clNewCompressorCB(cur->compressor_name);
     if (cur->ca == NULL) {
       //clogError( "Error, cannot load builtin compressor %s\n", cur->compressor_name);
-      printf("Available compressors:\n");
-      clCompaPrintBuiltin();
+      printf("Compressor options:\n");
+      printCompressors();
       clogError("Cannot load builtin compressor %s\n", cur->compressor_name);
     }
     if (cur->fVerbose)
       printf("Done loading %p.\n", cur->ca);
   }
     if (cur->fVerbose)
-      printf("Now have instance %p\n", cur->ca->cptr);
+      printf("Now have instance %p\n", cur->ca);
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock *db;
     db = clStringToDataBlockPtr("m\n");
-    cur->M = pow(2.0, clCompaCompress(cur->ca, db));
+    cur->M = pow(2.0, clCompressCB(cur->ca, db));
     cur->multiplier = cur->M;
     clDatablockFreePtr(db);
   }
@@ -108,7 +108,7 @@ void printCounts(struct DataBlockEnumeration *a)
     }
     else {
 //      ncdcfg->M = 1.0;
-      pg = clCompaCompress(cur->ca, dba);
+      pg = clCompressCB(cur->ca, dba);
     }
     printf(fmtString, clXpremap(pg, cur));
     //double m = clCalculateM();
@@ -157,6 +157,7 @@ int main(int argc, char **argv)
       { "realcomp", 1, NULL, 'r' },  /* real compressor with command <cmd> */
       { NULL, 0, NULL, 0 },
   };
+  initBuiltinCompressors();
   cur = loadNCDEnvironment();
   ncdcfg = (struct NCDConfig *) cur->ptr;
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
@@ -195,7 +196,7 @@ int main(int argc, char **argv)
         ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
-        clCompaPrintBuiltin();
+        printCompressors();
 //        cleanupBeforeExit();
         exit(0);
         break;
@@ -208,7 +209,8 @@ int main(int argc, char **argv)
         ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'r':
-        cur->ca = clCompaLoadReal(optarg);
+        cur->ca = clNewCompressorCB("real");
+        clSetParameterCB(cur->ca, "cmd", optarg, 0);
         cur->compressor_name = clStrdup(optarg);
         break;
       case 'g':
@@ -227,7 +229,7 @@ int main(int argc, char **argv)
     }
   }
   if (strcmp(cur->compressor_name, "google") == 0 ||
-      (cur->ca != NULL && strcmp(clCompaShortName(cur->ca),"google") == 0)) {
+      (cur->ca != NULL && strcmp(clShortNameCB(cur->ca),"google") == 0)) {
     ncdcfg->fUsingGoogle = 1;
   }
 

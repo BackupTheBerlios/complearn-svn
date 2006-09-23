@@ -32,7 +32,7 @@ struct IncrementalDistMatrix *clIncrdmNew(struct CompAdaptor *ca)
   idm = clCalloc(sizeof(*idm), 1);
   idm->curmat = gsl_matrix_calloc(MAXDATABLOCK, MAXDATABLOCK);
   if (ca == NULL)
-    ca = clCompaLoadBuiltin("blocksort");
+    ca = clNewCompressorCB("bzip2");
   idm->ca = ca;
   return idm;
 }

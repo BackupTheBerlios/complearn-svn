@@ -34,7 +34,7 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src);
 
 struct TransformAdaptor *clBuiltin_UNBZIP(void)
 {
-  struct BZ2DynamicAdaptor *bzlib = clGrabBZ2DA();
+  struct BZ2DynamicAdaptor *bzlib = clGrabBZ2DACB();
   struct TransformAdaptor *ptr;
   struct TransformAdaptor t =
   {
@@ -68,7 +68,7 @@ static int unbz2a_predicate(struct DataBlock *db)
 
 static struct DataBlock *unbz2a_transform(struct DataBlock *src)
 {
-  struct BZ2DynamicAdaptor *bzlib = clGrabBZ2DA();
+  struct BZ2DynamicAdaptor *bzlib = clGrabBZ2DACB();
   struct DataBlock *result = NULL;
   if (bzlib) {
   int i;
