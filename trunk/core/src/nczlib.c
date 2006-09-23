@@ -2,7 +2,6 @@
 
 #include "newcomp.h"
 #include "ncazlib.h"
-#include "ncblocksort.h"
 
 struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
 
@@ -104,29 +103,9 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-static void initGZ(void)
+void initGZ(void)
 {
 //#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
   clRegisterCB(&cba);
 }
 
-void initBZ2(void);
-void initReal(void);
-void printCompressors(void);
-int main(int argc, char **argv) {
-  initGZ();
-  initBZ2();
-  initReal();
-  initBlockSort();
-  struct CompressionBase *cb = clNewCompressorCB("blocksort");
-  clSetParameterCB(cb, "level", "4", 0);
-  printf("Using parameters %s\n", clGetParamStringCB(cb));
-  struct DataBlock *db;
-  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
-  printf("%f\n", clCompressCB(cb, db));
-  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaaaxaaaaaaaaaaaa");
-  printf("%f (with 3 more)\n", clCompressCB(cb, db));
-  clFreeCB(cb);
-  printCompressors();
-  return 0;
-}

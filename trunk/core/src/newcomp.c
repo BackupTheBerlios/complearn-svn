@@ -6,6 +6,8 @@
 #include "newcomp.h"
 #include "ncbase.h"
 #include "nccbi.h"
+#include "ncazlib.h"
+#include "ncblocksort.h"
 #include <complearn/complearn.h>
 
 struct CLCompressionInfo {
@@ -210,14 +212,18 @@ int clIsEnabledCB(const char *shortName)
 void printCompressors(void)
 {
   struct CLCompressionInfo *c;
+  const char *fmtstrtitle = "%-12s:%7s:%8s%9s:%30s:%s%s\n";
+  const char *fmtstrdata  = "%-12s:%1s:%5s:%8d%9s:%30s:%s%s\n";
+  printf(fmtstrtitle,  "Name", "Auto En","Window", "Rounding", "Description", "Errors", "");
+  printf(fmtstrtitle, "-----------", "-------", "------", "--------", "-----------------------", "------", "");
   for (c = clciHead; c; c = c->next) {
     const char *erm = NULL;
     if (!clIsEnabledCB(c->cba.shortNameCB()))
       erm = clLastStaticErrorCB(c->cba.shortNameCB());
-    printf("%1s %10s:%12s:%8d%9s:%30s:%s%s\n",
-      c->cba.isAutoEnabledCB() ? "A" : "_",
-      clIsEnabledCB(c->cba.shortNameCB())?"(enabled)" : "(disabled)",
+    printf(fmtstrdata,
       c->cba.shortNameCB(),
+      c->cba.isAutoEnabledCB() ? "A" : "_",
+      clIsEnabledCB(c->cba.shortNameCB())?"(yes)" : "(no)",
       c->cba.getWindowSizeCB(),
       c->cba.doesRoundWholeBytesCB() ? "(int)" : "(double)",
       c->cba.longNameCB(),
@@ -232,4 +238,25 @@ const char *clGetParamStringCB(struct CompressionBase *cb)
   checkPrepared(cb);
   return VF(cb, paramStringCB)(cb);
   return "(no parmstring yet)";
+}
+void initGZ(void);
+void initBZ2(void);
+void initReal(void);
+void printCompressors(void);
+int main(int argc, char **argv) {
+  initGZ();
+  initBZ2();
+  initReal();
+  initBlockSort();
+  struct CompressionBase *cb = clNewCompressorCB("blocksort");
+  clSetParameterCB(cb, "level", "4", 0);
+//  printf("Using parameters %s\n", clGetParamStringCB(cb));
+  struct DataBlock *db;
+  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
+//  printf("%f\n", clCompressCB(cb, db));
+  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaaaxaaaaaaaaaaaa");
+//  printf("%f (with 3 more)\n", clCompressCB(cb, db));
+  clFreeCB(cb);
+  printCompressors();
+  return 0;
 }
