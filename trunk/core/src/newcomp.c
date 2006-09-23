@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+
 
 #include "newcomp.h"
 #include "ncbase.h"
@@ -239,10 +244,86 @@ const char *clGetParamStringCB(struct CompressionBase *cb)
   return VF(cb, paramStringCB)(cb);
   return "(no parmstring yet)";
 }
+
+void clZombie_reaperCB(int q)
+{
+  int stat;
+  while(waitpid(-1, &stat, WNOHANG) > 0) ;
+}
+/** \brief Returns an fd to read the output of given command with DataBlock
+ * fed in through stdin.
+ * \param inp pointer to DataBlock to feed in to external program
+ * \param cmd string indicating pathname for external program
+ * \return fd that may be read to get data from external program stdout
+ */
+int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
+{
+	int pout[2], pin[2];
+  int retval;
+  int childid;
+  retval = pipe(pout);
+  if (retval)
+    clogError("pipe");
+  retval = pipe(pin);
+  if (retval)
+    clogError("pipe");
+  signal(SIGCHLD, (void(*)(int))clZombie_reaperCB);
+  childid = fork();
+  if (childid < 0) { // An error
+        clogError("fork");
+      }
+  if (childid) { // parent
+    int wlen, wtot = 0, wleft;
+    wleft = clDatablockSize(inp);
+    while (wleft > 0) {
+      wlen = write(pout[1], clDatablockData(inp)+wtot, wleft);
+      if (wlen < 0) {
+        clogError("write");
+        continue;
+      }
+      wtot += wlen;
+      wleft -= wlen;
+    }
+    close(pout[1]);
+    close(pout[0]);
+    close(pin[1]);
+  } else       { // child
+    close(pin[0]);
+    close(pout[1]);
+    retval = dup2(pout[0],0);
+    if (retval < 0)
+      clogError("dup2");
+    retval = dup2(pin[1],1);
+    if (retval < 0)
+      clogError("dup2");
+    execl(cmd, cmd, NULL);
+    printf("Shouldn't be here, wound up returning from exec!!\n");
+    exit(1);
+  }
+  return pin[0];
+}
+
 void initGZ(void);
 void initBZ2(void);
 void initReal(void);
 void printCompressors(void);
+void doBestScan(void);
+
+void doBestScan(void)
+{
+  struct CLCompressionInfo *c;
+  const char *fname = "/usr/bin/aleph";
+  struct DataBlock *d = clFileToDataBlockPtr(fname);
+  printf("Best Scan with datablock %s, size %d\n", fname, clDatablockSize(d)*8);
+  for (c = clciHead; c; c = c->next) {
+    if (c->cba.isAutoEnabledCB() && clIsEnabledCB(c->cba.shortNameCB())) {
+      struct CompressionBase *cb = clNewCompressorCB(c->cba.shortNameCB());
+      double sz = VF(cb, compressCB)(cb, d);
+      double ratio = sz/(clDatablockSize(d)*8);
+      printf("%-12s:%5.5f%%  :%f\n", VF(cb, shortNameCB)(), ratio*100, sz);
+    }
+  }
+}
 int main(int argc, char **argv) {
   initGZ();
   initBZ2();
@@ -258,5 +339,6 @@ int main(int argc, char **argv) {
 //  printf("%f (with 3 more)\n", clCompressCB(cb, db));
   clFreeCB(cb);
   printCompressors();
+  doBestScan();
   return 0;
 }

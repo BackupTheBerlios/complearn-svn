@@ -1,5 +1,6 @@
 #include <complearn/complearn.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "newcomp.h"
 #include "ncabz2.h"
@@ -7,6 +8,7 @@
 struct RealCompressionInstance {
   void *baseClass;
   char *cmd;
+  int bytecount;
 };
 
 static const char *fshortNameCB(void)
@@ -26,8 +28,18 @@ static int fallocSizeCB(void)
 
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
-  //struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
-  return clDatablockSize(src)*8.0;
+  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
+#define READBLOCKSIZE 16384
+  static char dummy[READBLOCKSIZE];
+  int readfd, readlen;
+
+  rci->bytecount = 0;
+  readfd = clForkPipeExecAndFeedCB(src, rci->cmd);
+  while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
+    rci->bytecount += readlen;
+  }
+  close(readfd);
+  return rci->bytecount * 8.0;
 }
 
 static void ffreeCB(struct CompressionBase *cb)
