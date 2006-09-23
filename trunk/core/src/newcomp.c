@@ -211,13 +211,18 @@ void printCompressors(void)
 {
   struct CLCompressionInfo *c;
   for (c = clciHead; c; c = c->next) {
-    printf("%10s:%15s:%8d %10s: %s %s\n",
-      clIsEnabledCB(c->cba.shortNameCB())?"(enabled)" : clLastStaticErrorCB(c->cba.shortNameCB()),
+    const char *erm = NULL;
+    if (!clIsEnabledCB(c->cba.shortNameCB()))
+      erm = clLastStaticErrorCB(c->cba.shortNameCB());
+    printf("%1s %10s:%12s:%8d%9s:%30s:%s%s\n",
+      c->cba.isAutoEnabledCB() ? "A" : "_",
+      clIsEnabledCB(c->cba.shortNameCB())?"(enabled)" : "(disabled)",
       c->cba.shortNameCB(),
       c->cba.getWindowSizeCB(),
       c->cba.doesRoundWholeBytesCB() ? "(int)" : "(double)",
-      c->cba.isAutoEnabledCB() ? "A" : "_",
-      c->cba.longNameCB()
+      c->cba.longNameCB(),
+      erm ? "\nreason:" : "",
+      erm ? erm : ""
     );
   }
 }

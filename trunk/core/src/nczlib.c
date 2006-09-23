@@ -111,10 +111,12 @@ static void initGZ(void)
 }
 
 void initBZ2(void);
+void initReal(void);
 void printCompressors(void);
 int main(int argc, char **argv) {
   initGZ();
   initBZ2();
+  initReal();
   initBlockSort();
   struct CompressionBase *cb = clNewCompressorCB("blocksort");
   clSetParameterCB(cb, "level", "4", 0);

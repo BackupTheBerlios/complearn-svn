@@ -101,9 +101,9 @@ static int fdoesRoundWholeBytesCB(void)
 static int fisCompileProblemCB(void)
 {
   return 0;
+}
 
-
-static ixnt fisAutoEnabled(void)
+static int fisAutoEnabledCB(void)
 {
   return 1;
 }
