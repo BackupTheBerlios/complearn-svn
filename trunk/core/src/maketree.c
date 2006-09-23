@@ -100,7 +100,7 @@ void clFuncstart(struct TreeOrderObserver *tob)
 }
 void clFuncordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
 {
-  printf("order improvement Or(T) = %f\n", clTreemolderScoreScaled(th));
+//  printf("order improvement Or(T) = %f\n", clTreemolderScoreScaled(th));
 //  printf("With flips set:\n");
 //  clnodesetPrint(flips);
   writeDotFile(clTreemolderTreeAdaptor(th), clTreemolderScore(th), flips);

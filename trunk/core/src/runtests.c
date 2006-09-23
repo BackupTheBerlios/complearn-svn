@@ -1381,7 +1381,7 @@ int main(int argc, char **argv)
   testQuartet();
   testALTagFile();
   testSmoothing();
-//  testReadTextDM();
+  testReadTextDM();
   testSingletonDBE();
   testWindowedDBE();
 /*  testFileListDBE(); */

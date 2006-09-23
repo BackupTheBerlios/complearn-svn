@@ -73,9 +73,9 @@ struct TreeBlaster *clTreebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
     tm->k += 1;
   for (i = 0; i < tm->k; i += 1) {
     tm->tm[i] = clTreemolderNew(tm->dm, tm->ta);
-    printf("Tree holder %d starts with score %f\n", i, clTreemolderScore(tm->tm[i]));
+//    printf("Tree holder %d starts with score %f\n", i, clTreemolderScore(tm->tm[i]));
     clTreemolderScramble(tm->tm[i]);
-    printf("Tree holder %d scrmables to score %f\n", i, clTreemolderScore(tm->tm[i]));
+//    printf("Tree holder %d scrmables to score %f\n", i, clTreemolderScore(tm->tm[i]));
   }
   setBestPtr(tm);
   return tm;

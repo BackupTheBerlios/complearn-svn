@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
 
 //  db = clFileToDataBlockPtr(argv[1]);
   printf("opening %s\n", argv[1]);
-  dm = cltxtDistMatrix(argv[1]);
-  labels = cltxtLabels(argv[1]);
+  labels = clStringstackNew();
+  dm = cltxtDistMatrix(argv[1], labels);
   db = makeCLBDistMatrix(dm, labels, NULL, NULL);
   printf("writing CLB file %s\n", argv[2]);
   clDatablockWriteToFile(db, argv[2]);

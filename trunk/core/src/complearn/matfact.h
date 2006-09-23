@@ -171,7 +171,7 @@ struct DataBlock *clbDMDataBlock(char *fname);
  *  \param fname path to text file
  *  \return gsl_matrix
  */
-gsl_matrix *cltxtDistMatrix(char *fname);
+gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels);
 
 /** \brief Retrieves the row size of a matrix stored in an ASCII text file
  *
@@ -182,7 +182,7 @@ gsl_matrix *cltxtDistMatrix(char *fname);
  *  \param fname path to text file
  *  \return int row size
  */
-int cltxtRowSize(char *fname);
+int cltxtRowSize(struct DataBlock *db);
 
 /** \brief Retrieves the column size of a matrix stored in an ASCII text file
  *
@@ -193,7 +193,7 @@ int cltxtRowSize(char *fname);
  *  \param fname path to text file
  *  \return int column size
  */
-int cltxtColSize(char *fname);
+int cltxtColSize(struct DataBlock *db);
 
 /** \brief Prints to stdout the given gsl_matrix
  *  \param m pointer to gsl_matrix

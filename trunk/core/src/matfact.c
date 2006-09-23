@@ -158,10 +158,13 @@ struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
   if (clbIsCLBFile(db))
     return clbDBLabels(db);
   else {
-    printf("error not implemented 3 yet\n");
-    exit(1);
+    struct StringStack *labels;
+    labels = clStringstackNew();
+    gsl_matrix *gm;
+    gm = cltxtDistMatrix(db, labels);
+    gsl_matrix_free(gm);
+    return labels;
   }
-//    return cltxtLabels(db);
 }
 
 gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
@@ -169,10 +172,10 @@ gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
   if (clbIsCLBFile(db))
     return clbDBDistMatrix(db);
   else {
-    printf("error not implemented 4 yet\n");
-    exit(1);
+    return cltxtDistMatrix(db, NULL);
+    //printf("error not implemented 4 yet\n");
+    //exit(1);
   }
-//    return cltxtDistMatrix(db);
 }
 
 gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
@@ -244,21 +247,63 @@ static struct DRA *get_dm_row_from_txt(char *linebuf, int isLabeled)
   return row;
 }
 
-int cltxtRowSize(char *fname)
+static int grabFields(gsl_matrix *m, const char *rowStart, int row, struct StringStack *labels)
 {
-  FILE *fp;
-  int rows = 0;
-  static char linebuf[MAXLINESIZE];
-  fp = clFopen(fname, "r");
-  while (fgets(linebuf, MAXLINESIZE, fp)) {
-    rows += 1;
+  int i;
+  char numbuf[2048];
+  int numtop = 100;
+  int numpos;
+  const char *rowEnd = index(rowStart, '\n');
+  if (rowEnd == NULL)
+    rowEnd = rowStart + strlen(rowStart);
+  numpos = numtop;
+  numbuf[numtop+1] = 0;
+  int colind = m->size1-1;
+  while (colind >= 0 && rowEnd > rowStart) {
+    int c;
+    c = *rowEnd--;
+    if ((c >= '0' && c <= '9') || c == '.') {
+      numbuf[numpos--] = c;
+    }
+    else {
+      if (numpos < numtop) {
+        double v = atof(numbuf+numpos+1);
+        gsl_matrix_set(m, colind--, row, v);
+        numpos = numtop;
+      }
+    }
   }
-  clFclose(fp);
-  return rows;
+  memset(numbuf, 0, sizeof(numbuf));
+  strncpy(numbuf, rowStart, rowEnd-rowStart);
+  if (labels)
+    clStringstackPush(labels, numbuf);
 }
 
-int cltxtColSize(char *fname)
+int cltxtRowSize(struct DataBlock *db)
 {
+  int i;
+  int sz = clDatablockSize(db);
+  unsigned char *d = clDatablockData(db);
+  int goodrow = 0;
+  int c, lc;
+  int rowCount = 0;
+  for (i = 0; i < sz; i += 1) {
+    lc = c;
+    c = d[i];
+    if (!(c == '\r' || c == '\n' || c == '\t' || c == ' '))
+      goodrow = 1;
+    if ((c == '\r' || c == '\n') && (lc != '\r' && lc != '\n')) {
+      rowCount += goodrow;
+      goodrow = 0;
+    }
+  }
+  return rowCount;
+}
+
+int cltxtColSize(struct DataBlock *db)
+{
+  return cltxtRowSize(db);
+/*
   FILE *fp;
   int cols = 0;
   char *s, linebuf[MAXLINESIZE];
@@ -272,27 +317,46 @@ int cltxtColSize(char *fname)
   }
   clFclose(fp);
   return cols;
+*/
 }
 
-gsl_matrix *cltxtDistMatrix(char *fname)
+gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
 {
-  char linebuf[MAXLINESIZE];
-  FILE *fp;
+  int i;
+  int sz = clDatablockSize(db);
+  char *d = (char *) clDatablockData(db);
+  int goodrow = 0;
+  int c, lc;
+  int curRow = 0;
   int rows = 0;
-  int cols = 0;
   int isLabeled = 0;
-  int i, j;
+  char *lastRow;
   gsl_matrix *result;
 
-  rows = cltxtRowSize(fname);
+  rows = cltxtRowSize(db);
   if (rows < 4) {
-    fprintf(stderr, "Error, only %d rows in matrix %s.\n", rows, fname);
+    fprintf(stderr, "Error, only %d rows in matrix, but need at least 4.\n", rows);
     exit(1);
   }
-  cols = cltxtColSize(fname);
-
-  if (cols > rows) isLabeled = 1;
   result = gsl_matrix_alloc(rows,rows);
+  lastRow = d;
+  for (i = 0; i < sz; i += 1) {
+    lc = c;
+    c = d[i];
+    if (!(c == '\r' || c == '\n' || c == '\t' || c == ' ')) {
+      goodrow = 1;
+      if (lc == '\r' || lc == '\n')
+        lastRow = d + i;
+    }
+    if ((c == '\r' || c == '\n') && (lc != '\r' && lc != '\n')) {
+      if (goodrow)
+        grabFields(result, lastRow, curRow, labels);
+      curRow += goodrow;
+      goodrow = 0;
+    }
+  }
+/*
+  if (cols > rows) isLabeled = 1;
   fp = clFopen(fname, "r");
 
   for (i = 0; i < rows ; i += 1) {
@@ -305,9 +369,11 @@ gsl_matrix *cltxtDistMatrix(char *fname)
   }
 
   clFclose(fp);
+*/
   return result;
 }
 
+/*
 int cltxtToCLB(char *source, char *dest)
 {
   struct DataBlock *dmdb, *labelsdb, *clbdb;
@@ -330,6 +396,7 @@ int cltxtToCLB(char *source, char *dest)
 
   return 1;
 }
+*/
 
 void clGslmatrixPrint(gsl_matrix *m, char *delim)
 {
