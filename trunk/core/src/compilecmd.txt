@@ -1,1 +1,1 @@
-gcc ncrealcomp.c ncblocksort.c ncabz2.c ncbase.c ncazlib.c newcomp.c nczlib.c ncbz2.c -I. .libs/libcomplearn.a -lz -ldl -o nc -lbz2 -lm -g -Wall
+gcc ncvirtcomp.c ncrealcomp.c ncblocksort.c ncabz2.c ncbase.c ncazlib.c newcomp.c nczlib.c ncbz2.c -I. .libs/libcomplearn.a -lz -ldl -o nc -lbz2 -lm -g -Wall

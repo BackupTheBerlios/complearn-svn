@@ -6,47 +6,60 @@
 #include "newcomp.h"
 #include "ncabz2.h"
 
-struct RealCompressionInstance {
+#define RCIBUFSIZE 1024
+
+struct VirtualCompressionInstance {
   void *baseClass;
   char *ecmd;
+  int curpt;
   int bytecount;
+  char sbuf[RCIBUFSIZE];
 };
 
 static const char *fshortNameCB(void)
 {
-  return "real";
+  return "virtual";
 }
 
 static const char *flongNameCB(void)
 {
-  return "external process";
+  return "virtual external process";
+}
+
+static int fdoesRoundWholeBytesCB(void)
+{
+  return 0;
 }
 
 static int fallocSizeCB(void)
 {
-  return sizeof(struct RealCompressionInstance);
+  return sizeof(struct VirtualCompressionInstance);
 }
 
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
+  struct VirtualCompressionInstance *rci = (struct VirtualCompressionInstance *) cb;
 #define READBLOCKSIZE 16384
-  static char dummy[READBLOCKSIZE];
-  int readfd, readlen;
+  char ch;
+  int readfd;
+  float retval;
 
-  rci->bytecount = 0;
+  rci->curpt = 0;
   assert(rci->ecmd);
   readfd = clForkPipeExecAndFeedCB(src, rci->ecmd);
-  while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
-    rci->bytecount += readlen;
+
+  while (read(readfd, &ch, 1) == 1 && rci->curpt < RCIBUFSIZE) {
+    rci->sbuf[rci->curpt++] = ch;
   }
+  rci->sbuf[rci->curpt++] = 0;
+  retval = atof(rci->sbuf);
   close(readfd);
-  return rci->bytecount * 8.0;
+  return retval;
 }
 
 static void ffreeCB(struct CompressionBase *cb)
 {
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
+  struct VirtualCompressionInstance *rci = (struct VirtualCompressionInstance *) cb;
   if (rci->ecmd) {
     free(rci->ecmd);
     rci->ecmd = NULL;
@@ -55,7 +68,6 @@ static void ffreeCB(struct CompressionBase *cb)
 
 static int fspecificInitCB(struct CompressionBase *cb)
 {
-  //clSetParameterCB(cb, "cmd", "cat", 0);
   return 0;
 }
 
@@ -64,20 +76,21 @@ static int fisAutoEnabledCB(void)
   return 0;
 }
 
+#define DELIMS ":"
 static int fprepareToCompressCB(struct CompressionBase *cb)
 {
   const char *scmd = clEnvmapValueForKey(clGetParametersCB(cb), "cmd");
   const char *ecmd;
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
+  struct VirtualCompressionInstance *rci = (struct VirtualCompressionInstance *) cb;
   if (scmd == NULL) {
-    clogError("Error, real compressor must have cmd parameter");
+    clogError("Error, virtual compressor must have cmd parameter");
   }
   ecmd = expandCommand(scmd);
   if (ecmd)
     rci->ecmd = strdup(ecmd);
   else {
     char buf[1024];
-    sprintf(buf, "Cannot find command %s for real compressor.", scmd);
+    sprintf(buf, "Cannot find command %s for virtual compressor.", scmd);
     clogError(buf);
   }
   return 0;
@@ -91,10 +104,11 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(longNameCB),
   VIRTFUNCEXPORT(isAutoEnabledCB),
   VIRTFUNCEXPORT(freeCB),
+  VIRTFUNCEXPORT(doesRoundWholeBytesCB),
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initReal(void)
+void initVirtual(void)
 {
   clRegisterCB(&cba);
 }

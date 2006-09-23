@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
 
@@ -14,6 +15,8 @@
 #include "ncazlib.h"
 #include "ncblocksort.h"
 #include <complearn/complearn.h>
+
+#define DELIMS ":"
 
 struct CLCompressionInfo {
   struct CompressionBaseAdaptor cba;
@@ -306,6 +309,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
 void initGZ(void);
 void initBZ2(void);
 void initReal(void);
+void initVirtual(void);
 void printCompressors(void);
 void doBestScan(void);
 
@@ -329,13 +333,40 @@ void doBestScan(void)
     }
   }
 }
+const char *expandCommand(const char *inpcmd)
+{
+  static char *buf;
+  struct stat st;
+  char *path, *p;
+  int inplen, pathlen;
+  if (inpcmd[0] == '/')
+    return inpcmd;
+  inplen = strlen(inpcmd);
+  path = getenv("PATH");
+  if (path == NULL)
+    path = "/bin:/usr/bin";
+  pathlen = strlen(path);
+  if (buf)
+    free(buf);
+  buf = calloc(1, inplen + pathlen + 16);
+  path = strdup(path);
+  for (p = strtok(path, DELIMS); p; p = strtok(NULL, DELIMS)) {
+    sprintf(buf, "%s/%s", p, inpcmd);
+    if (stat(buf, &st) == 0)
+      return buf;
+  }
+  free(path);
+  return NULL;
+}
+
 int main(int argc, char **argv) {
   initGZ();
   initBZ2();
   initReal();
   initBlockSort();
-  struct CompressionBase *cb = clNewCompressorCB("real");
-  clSetParameterCB(cb, "cmd", "catgzip", 0);
+  initVirtual();
+  struct CompressionBase *cb = clNewCompressorCB("virtual");
+  clSetParameterCB(cb, "cmd", "virtcat", 0);
   printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
   db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
