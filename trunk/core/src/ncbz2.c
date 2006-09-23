@@ -60,16 +60,16 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   if (bzip2 == NULL) {
     clogError("Cannot do bzip2 compression: no bzip2 library available.");
   }
-	p = clDatablockSize(src)*1.5+600;
-	dbuff = (unsigned char*)clMalloc(p);
-	s = (bzip2->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) clDatablockData(src),clDatablockSize(src),
-			bzci->blocksize, bzci->verbosity, bzci->workfactor);
-	if (s != BZ_OK) {
-		printf ("error code %d\n", s);
-		exit(1);
-	}
-	free(dbuff);
-	return (double) p*8.0;
+  p = clDatablockSize(src)*1.5+600;
+  dbuff = (unsigned char*)clMalloc(p);
+  s = (bzip2->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) clDatablockData(src),clDatablockSize(src),
+      bzci->blocksize, bzci->verbosity, bzci->workfactor);
+  if (s != BZ_OK) {
+    printf ("error code %d\n", s);
+    exit(1);
+  }
+  free(dbuff);
+  return (double) p*8.0;
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)
