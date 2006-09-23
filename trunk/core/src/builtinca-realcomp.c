@@ -3,9 +3,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "newcomp.h"
-#include "ncabz2.h"
-
 struct RealCompressionInstance {
   void *baseClass;
   char *ecmd;

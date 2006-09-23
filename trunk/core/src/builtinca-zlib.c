@@ -1,8 +1,5 @@
 #include <complearn/complearn.h>
 
-#include "newcomp.h"
-#include "ncazlib.h"
-
 struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
 
 struct ZLibCompressionInstance {

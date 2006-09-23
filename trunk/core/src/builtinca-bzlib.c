@@ -5,9 +5,6 @@
 #include <bzlib.h>
 #endif
 
-#include "newcomp.h"
-#include "ncabz2.h"
-
 struct BZ2DynamicAdaptorCB *clGrabBZ2DACB(void);
 
 struct BZipCompressionInstance {

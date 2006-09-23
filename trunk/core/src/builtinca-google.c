@@ -3,9 +3,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "newcomp.h"
-#include "ncabz2.h"
-
 static char *shortName = "google";
 struct GoogleCompressionInstance {
   void *baseClass;

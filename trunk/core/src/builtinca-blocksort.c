@@ -7,8 +7,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "newcomp.h"
-
 #include <complearn/complearn.h>
 
 #define MAXSTATES 13
