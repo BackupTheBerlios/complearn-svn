@@ -16,6 +16,14 @@
 #include "ncblocksort.h"
 #include <complearn/complearn.h>
 
+void initZLib(void);
+void initBZ2(void);
+void initReal(void);
+void initVirtual(void);
+void initGoogle(void);
+void printCompressors(void);
+void doBestScan(void);
+
 #define DELIMS ":"
 
 struct CLCompressionInfo {
@@ -128,6 +136,14 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci;
   ci = findCompressorInfo(shortName);
+  if (ci == NULL) {
+  	char buf[1024];
+	sprintf(buf, "Cannot find compressor %s", shortName);
+	fprintf(stderr, "ERROR: %s\n", buf);
+	printCompressors();
+  	clogError(buf);
+	exit(1);
+  }
   assert(ci != NULL);
   if (!clIsEnabledCB(shortName))
     return NULL;
@@ -252,7 +268,7 @@ void printCompressors(void)
       c->cba.getWindowSizeCB(),
       c->cba.doesRoundWholeBytesCB() ? "(int)" : "(double)",
       c->cba.longNameCB(),
-      erm ? "\nreason:" : "",
+      erm ? "\n         disabled because " : "",
       erm ? erm : ""
     );
   }
@@ -322,14 +338,6 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
   }
   return pin[0];
 }
-
-void initZLib(void);
-void initBZ2(void);
-void initReal(void);
-void initVirtual(void);
-void initGoogle(void);
-void printCompressors(void);
-void doBestScan(void);
 
 void doBestScan(void)
 {

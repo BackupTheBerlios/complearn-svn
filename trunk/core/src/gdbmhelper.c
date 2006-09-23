@@ -149,9 +149,30 @@ int cldbclose(struct GDBMHelper *gh)
   return 0;
 }
 
+int cldbIsGDBMProblem(void)
+{
+	return 0;
+}
+
+const char *cldbReasonWhy(void)
+{
+	return NULL;
+}
+
 #else
 
 #include <complearn/complearn.h>
+
+int cldbIsGDBMProblem(void)
+{
+	return 1;
+}
+
+const char *cldbReasonWhy(void)
+{
+	return "Cannot find #include <gdbm.h>";
+}
+
 struct GDBMHelper { int ignoreMe; };
 
 struct GDBMHelper *cldbopen(const char *userfilename)

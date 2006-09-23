@@ -70,7 +70,7 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   const char *ecmd;
   struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
   if (scmd == NULL) {
-    clSetLastErrorCB(cb,"Error, virtual compressor must have cmd parameter");
+    clSetLastErrorCB(cb,"Error, real compressor must have cmd parameter");
     return 1;
   }
   ecmd = expandCommand(scmd);

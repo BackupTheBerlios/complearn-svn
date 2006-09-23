@@ -100,6 +100,10 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 }
 static int fisCompileProblemCB(void)
 {
+  if (cldbIsGDBMProblem()) {
+    clSetLastStaticErrorCB(shortName, cldbReasonWhy());
+    return 1;
+  }
   return 0;
 }
 #else
