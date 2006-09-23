@@ -71,6 +71,7 @@ static int fisAutoEnabledCB(void)
   return 0;
 }
 
+#if HAVE_NANOHTTP_NANOHTTP_CLIENT_H
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
 #include <libcsoap/soap-client.h>
 #include <string.h>
@@ -110,6 +111,17 @@ static int fisCompileProblemCB(void)
 static int fisCompileProblemCB(void)
 {
   clSetLastStaticErrorCB(shortName, "No CSOAP available; need <libcsoap/soap-client.h>");
+  return 1;
+}
+static int fprepareToCompressCB(struct CompressionBase *cb)
+{
+  exit(1);
+}
+#endif
+#else
+static int fisCompileProblemCB(void)
+{
+  clSetLastStaticErrorCB(shortName, "No nanohttp available; need <nanohttp/nanohttp-client.h> header file.  This is normally part of the CSOAP distribution.");
   return 1;
 }
 static int fprepareToCompressCB(struct CompressionBase *cb)
