@@ -16,6 +16,8 @@
 #include "ncblocksort.h"
 #include <complearn/complearn.h>
 
+static int fHaveInitted;
+
 void initZLib(void);
 void initBZ2(void);
 void initReal(void);
@@ -23,6 +25,7 @@ void initVirtual(void);
 void initGoogle(void);
 void printCompressors(void);
 void doBestScan(void);
+static void checkInitted(void);
 
 #define DELIMS ":"
 
@@ -135,6 +138,7 @@ void **dvptr = (void **) &cbsuper;
 struct CompressionBase *clNewCompressorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci;
+  checkInitted();
   ci = findCompressorInfo(shortName);
   if (ci == NULL) {
   	char buf[1024];
@@ -185,18 +189,23 @@ int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *va
 
 void clRegisterCB(struct CompressionBaseAdaptor *vptr)
 {
-  struct CLCompressionInfo *ci = calloc(sizeof(struct CLCompressionInfo), 1);
+  struct CLCompressionInfo *ci;
   int cbas = sizeof(struct CompressionBaseAdaptor);
   int ps = sizeof(void *);
+  const char *shortName;
+  void **vpn;
+  void **svptr;
+  int i;
+  checkInitted();
+  ci = calloc(sizeof(struct CLCompressionInfo), 1);
   assert(vptr != NULL);
   assert(vptr->shortNameCB != NULL);
-  const char *shortName = vptr->shortNameCB();
+  shortName = vptr->shortNameCB();
   assert(shortName != NULL);
   assert(strlen(shortName) > 0);
   assert(findCompressorInfo(shortName) == NULL);
-  void **vpn = (void **) &ci->cba;
-  void **svptr = (void **) vptr;
-  int i;
+  vpn = (void **) &ci->cba;
+  svptr = (void **) vptr;
   for (i = 0; i < (cbas/ps); i += 1) {
     void *f = svptr[i];
     if (f == NULL)
@@ -250,6 +259,7 @@ int clIsEnabledCB(const char *shortName)
 
 void printCompressors(void)
 {
+  checkInitted();
   struct CLCompressionInfo *c;
   const char *fmtstrtitle = "%-12s:%7s:%8s%9s:%30s:%s%s\n";
   const char *fmtstrdata  = "%-12s:%1s:%5s:%8d%9s:%30s:%s%s\n";
@@ -390,11 +400,17 @@ const char *expandCommand(const char *inpcmd)
   return NULL;
 }
 
-void initBuiltinCompressors(void) {
+static void initBuiltinCompressors(void) {
+  fHaveInitted = 1;
   initGoogle();
   initReal();
   initVirtual();
   initBZ2();
   initBlockSort();
   initZLib();
+}
+
+static void checkInitted(void) {
+  if (!fHaveInitted)
+    initBuiltinCompressors();
 }

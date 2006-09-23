@@ -41,7 +41,7 @@
 
 /******** testDL struct ********************/
 
-#define DLNAME "/home/cilibrar/src/shared/complearn/examples/dltest/libart.so.1.0.1"
+#define DLNAME "/home/cilibrar/src/complearn/examples/dltest/libart.so.1.0.1"
 
 #define MAX_SS_SIZE 1024
 #define TEST_TS_SIZE 200
@@ -104,9 +104,10 @@ void testDataBlock()
 
 void testDL2()
 {
-  struct CompAdaptor *comp = NULL;
+  struct CompressionBase *comp = NULL;
   struct EnvMap *em;
-  char *sn;
+  int retval;
+  const char *sn;
   char *strab = "ab";
   char *straa = "aa";
   char *strsmallalpha = "baaaababba";
@@ -120,17 +121,18 @@ void testDL2()
   em = clGetEnvMap(gconf);
   assert(em != NULL);
   clEnvmapSetKeyVal(em, "padding", "40");
-  comp = clCompaLoadDynamicLib(DLNAME);
-  assert(comp->cf != NULL);
+  retval = clCompaLoadDynamicLib(DLNAME);
+  assert(retval == 0);
+  comp = clNewCompressorCB("art");
   //comp->se(comp,em);
-  sn = clCompaShortName(comp);
+  sn = clShortNameCB(comp);
   assert(strcmp(sn, "art") == 0);
-  cdbab = clCompaCompress(comp, dbab);
+  cdbab = clCompressCB(comp, dbab);
   assert(cdbab >= clDatablockSize(dbab)*8);
-  cdbaa = clCompaCompress(comp, dbaa);
+  cdbaa = clCompressCB(comp, dbaa);
   assert(cdbaa <= clDatablockSize(dbaa)*8);
-  cdbsa = clCompaCompress(comp, dbsmallalpha);
-  cdbla = clCompaCompress(comp, dblargealpha);
+  cdbsa = clCompressCB(comp, dbsmallalpha);
+  cdbla = clCompressCB(comp, dblargealpha);
   assert(cdbsa < cdbla);
   clDatablockFreePtr(dbab);
   clDatablockFreePtr(dbaa);
@@ -218,7 +220,7 @@ void testSS()
   clDatablockFreePtr(db);
 }
 
-void testCAPtr(struct CompAdaptor *ca)
+void testCAPtr(struct CompressionBase *ca)
 {
 //  void *ci;
   char *str = ""
@@ -234,18 +236,17 @@ void testCAPtr(struct CompAdaptor *ca)
   assert(ca != NULL);
   //ca->se(ca,em);
 //  assert(ci != NULL);
-  assert(ca->cf != NULL);
-  c = clCompaCompress(ca,db);
+  c = clCompressCB(ca,db);
   assert(c < strlen(str)*8);
   if (gconf->fVerbose)
-    printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), c);
+    printf("Testing %s to get compressed size %f\n", clShortNameCB(ca), c);
   clDatablockFreePtr(db);
-  clCompaFree(ca);
+  clFreeCB(ca);
 }
 
 void testCANamed(const char *name)
 {
-  struct CompAdaptor *ca = clCompaLoadBuiltin(name);
+  struct CompressionBase *ca = clNewCompressorCB(name);
   testCAPtr(ca);
 }
 
@@ -264,14 +265,13 @@ void testBlockSortCA()
 #define REPS 10
 #define MAX_BLKSIZE 200
   int i, j, c;
-  struct CompAdaptor *ca = clCompaLoadBuiltin("blocksort");
+  struct CompressionBase *ca = clNewCompressorCB("blocksort");
   struct DataBlock *db = NULL;
   double v;
   int dbsize;
   unsigned char *dbptr;
   assert(ca != NULL);
   srand( time(NULL) );
-    assert(ca->cf != NULL);
 
   /* Blocks only 1 or 2 bytes in size */
   for (i = 0; i < REPS; i +=1) {
@@ -281,9 +281,9 @@ void testBlockSortCA()
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(dbptr, c, dbsize);
     db = clDatablockNewFromBlock(dbptr,dbsize);
-    v = clCompaCompress(ca,db);
+    v = clCompressCB(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clShortNameCB(ca), v);
     clFree(dbptr);
     clDatablockFreePtr(db);
   }
@@ -295,9 +295,9 @@ void testBlockSortCA()
     c = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     memset(dbptr, c, dbsize);
     db = clDatablockNewFromBlock(dbptr,dbsize);
-    v = clCompaCompress(ca,db);
+    v = clCompressCB(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clShortNameCB(ca), v);
     clFree(dbptr);
     clDatablockFreePtr(db);
   }
@@ -310,13 +310,13 @@ void testBlockSortCA()
       dbptr[j] = (int) ((double)rand()/((double)RAND_MAX + 1) * 256);
     }
     db = clDatablockNewFromBlock(dbptr,dbsize);
-    v = clCompaCompress(ca,db);
+    v = clCompressCB(ca,db);
     if (gconf->fVerbose)
-      printf("Testing %s to get compressed size %f\n", clCompaShortName(ca), v);
+      printf("Testing %s to get compressed size %f\n", clShortNameCB(ca), v);
     clFree(dbptr);
     clDatablockFreePtr(db);
   }
-  clCompaFree(ca);
+  clFreeCB(ca);
 }
 
 void testYamlParser()
@@ -337,17 +337,19 @@ void testYamlParser()
 
 void testVirtComp()
 {
-  char *cmdname = "/home/cilibrar/src/shared/complearn/scripts/testvirtcomp.zsh";
-  struct CompAdaptor *ca;
-  ca = clCompaLoadVirtual(cmdname);
+  char *cmdname = "/home/cilibrar/src/complearn/core/scripts/testvirtcomp.zsh";
+  struct CompressionBase *ca;
+  ca = clNewCompressorCB("virtual");
+  clSetParameterCB(ca, "cmd", cmdname, 0);
   testCAPtr(ca);
 }
 
 void testRealComp()
 {
-  char *cmdname = "/home/cilibrar/src/shared/complearn/scripts/testrealcomp.sh";
-  struct CompAdaptor *ca;
-  ca = clCompaLoadReal(cmdname);
+  char *cmdname = "/home/cilibrar/src/complearn/core/scripts/testrealcomp.sh";
+  struct CompressionBase *ca;
+  ca = clNewCompressorCB("real");
+  clSetParameterCB(ca, "cmd", cmdname, 0);
   testCAPtr(ca);
 }
 
@@ -405,11 +407,13 @@ void testGoogle()
 
 void testSOAPComp()
 {
+#if 0
   char *url = "http://localhost:2000/";
   char *urn = "urn:hws";
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
   ca = clCompaLoadSOAP(url, urn);
   testCAPtr(ca);
+#endif
 }
 
 void testTransformBZ()
@@ -812,7 +816,7 @@ void testQuartet(void)
 #define TREETRIALCOUNT 5
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompAdaptor *bz = clCompaLoadBuiltin("bzip");
+  struct CompressionBase *bz = clNewCompressorCB("bzip");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
@@ -865,7 +869,7 @@ void testQuartet(void)
     for (i = 0; i < labelcount; i += 1)
       clDatablockFreePtr(db[i]);
   }
-  clCompaFree(bz);
+  clFreeCB(bz);
   gconf->ca = NULL;
   bz = NULL;
 }
@@ -1186,7 +1190,7 @@ void testTreeMolder()
 {
   struct DataBlock *db[LABELCOUNT];
   int i, j;
-  struct CompAdaptor *bz = clCompaLoadBuiltin("bzip");
+  struct CompressionBase *bz = clNewCompressorCB("bzip");
   double score;
   struct TreeScore *ts;
   struct DataBlockEnumeration *dbe;
@@ -1230,7 +1234,7 @@ void testTreeMolder()
     for (i = 0; i < labelcount; i += 1)
       clDatablockFreePtr(db[i]);
   }
-  clCompaFree(bz);
+  clFreeCB(bz);
   gconf->ca = NULL;
   bz = NULL;
 }

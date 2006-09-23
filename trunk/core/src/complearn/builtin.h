@@ -30,7 +30,6 @@
 #include <complearn/uclconfig.h>
 #include <complearn/environment.h>
 
-void initBuiltinCompressors(void);
 /** \brief Returns pointer to a SOAP compressor server interface.
  *
  *  The SOAP compressor server interace requires a url of the form

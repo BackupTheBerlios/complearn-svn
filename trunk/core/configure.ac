@@ -246,4 +246,4 @@ echo "build         is $build"
 
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
-AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile])
+AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile examples/dltest/Makefile])

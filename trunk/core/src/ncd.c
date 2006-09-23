@@ -167,7 +167,6 @@ int main(int argc, char **argv)
       { "realcomp", 1, NULL, 'r' },  /* real compressor with command <cmd> */
       { NULL, 0, NULL, 0 },
   };
-  initBuiltinCompressors();
   cur = loadNCDEnvironment();
   ncdcfg = (struct NCDConfig *) cur->ptr;
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
