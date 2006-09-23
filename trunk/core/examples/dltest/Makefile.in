@@ -5,11 +5,8 @@ all: libart.so.1.0.1
 %.o: %.c
 	gcc -fPIC -g -c -Wall $< $(CFLAGS)
 
-#libart.so.1.0.1: libart.o stringstack.o envstack.o
-#	gcc -shared -Wl,-soname,libart.so.1 -o libart.so.1.0.1 libart.o stringstack.o envstack.o -lc -lm
-
 libart.so.1.0.1: libart.o
-	gcc -shared -Wl,-soname,libart.so.1 -o libart.so.1.0.1 libart.o /home/cilibrar/src/shared/complearn/src/libcomplearn.a -lc -lm
+	gcc -shared -Wl,-soname,libart.so.1 -o libart.so.1.0.1 libart.o @top_srcdir@/src/.libs/libcomplearn.so -lc -lm
 
 install:
 	echo "(no installation)"

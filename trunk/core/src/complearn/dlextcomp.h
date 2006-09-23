@@ -46,8 +46,8 @@
 /** \brief Loads custom compressor module through dynamic library.
  *
  * \param libraryname name of dynamic library
- * \returns CompAdaptor new compressor interface
+ * \returns 0 on success
  */
-struct CompAdaptor *clCompaLoadDynamicLib(const char *libraryname);
+int clCompaLoadDynamicLib(const char *libraryname);
 
 #endif

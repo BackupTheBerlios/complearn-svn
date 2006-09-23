@@ -53,19 +53,19 @@ struct IncrementalDistMatrix {
   double singlesize[MAXDATABLOCK];
   gsl_matrix *curmat;
   gsl_matrix_view result;
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
 };
 
 
-/** \brief creates a new IncrementalDistMatrix using a given CompAdaptor
+/** \brief creates a new IncrementalDistMatrix using a given CompressionBase
  *
  * This function is the basic constructor for an IncrementalDistMatrix.
- * The user must supply a CompAdaptor to use for compression.
+ * The user must supply a CompressionBase to use for compression.
  *
- * \param ca pointer to the CompAdaptor to be used in this distance matrix
+ * \param ca pointer to the CompressionBase to be used in this distance matrix
  * \return pointer to an IncrementalDistMatrix with no objects yet added
  */
-struct IncrementalDistMatrix *clIncrdmNew(struct CompAdaptor *ca);
+struct IncrementalDistMatrix *clIncrdmNew(struct CompressionBase *ca);
 
 /** \brief Adds a DataBlock to an IncrementalDistMatrix
  *

@@ -61,6 +61,7 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 "  -C, --compressor=STRING     use builtin compressor\n"
 "  -L, --list                  list of available builtin compressors\n"
 "  -g, --google                use Google compression (NGD)\n"
+"  -m, --module=mycomp.so      Load custom dynamic compression module\n"
 "  -D, --delcache              clear the Google cache\n"
 "  -o, --outfile=distmatname   set the default distance matrix output name\n"
 "  -r, --realcomp=pathname     use real compressor, passing in pathname of compressor\n"
@@ -151,7 +152,7 @@ int main(int argc, char **argv)
   struct NCDConfig *ncdcfg;
   int next_option, whichLongOpt;
   void testGSoapReq(void);
-  const char *const ncd_short_options="f:l:Lp:t:d:w:gDo:r:";
+  const char *const ncd_short_options="f:l:Lp:t:d:w:m:gDo:r:";
   struct option ncd_long_options[] = {
       { "file-mode", 1, NULL, 'f' },
       { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */ { "list", 0, NULL, 'L' },         /* list compressors */
@@ -159,6 +160,7 @@ int main(int argc, char **argv)
       { "termlist-mode", 1, NULL, 't' },
       { "directory-mode", 1, NULL, 'd' },
       { "windowed-mode", 1, NULL, 'w' },
+      { "module", 1, NULL, 'm' },
       { "google", 0, NULL, 'g' },
       { "delcache", 0, NULL, 'D' }, /* clear the google cache */
       { "outfile", 1, NULL, 'o' },   /* distmatrix output file <filename> */
@@ -177,6 +179,7 @@ int main(int argc, char **argv)
     ncdcfg->da.dbf = clDbefactoryNew();
   }
   while (1) {
+    int retval;
     next_option = clComplearn_getopt_long(argc, argv, ncd_short_options, ncd_long_options, &whichLongOpt, cur);
     if (next_option == -1) /* options done */
       break;
@@ -220,6 +223,13 @@ int main(int argc, char **argv)
         cur->ca = clNewCompressorCB("real");
         clSetParameterCB(cur->ca, "cmd", optarg, 0);
         cur->compressor_name = clStrdup(optarg);
+        break;
+      case 'm':
+        retval = clCompaLoadDynamicLib(optarg);
+        if (retval != 0) {
+          fprintf(stderr, "Error loading module %s\n", optarg);
+          exit(1);
+        }
         break;
       case 'g':
         clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);

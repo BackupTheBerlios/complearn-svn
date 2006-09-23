@@ -26,7 +26,7 @@
 */
 #include <complearn/complearn.h>
 
-struct IncrementalDistMatrix *clIncrdmNew(struct CompAdaptor *ca)
+struct IncrementalDistMatrix *clIncrdmNew(struct CompressionBase *ca)
 {
   struct IncrementalDistMatrix *idm;
   idm = clCalloc(sizeof(*idm), 1);
