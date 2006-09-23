@@ -43,12 +43,12 @@ void clIncrdmAddDataBlock(struct IncrementalDistMatrix *idm, struct DataBlock *d
   int curguy = idm->dbcount;
   idm->dbcount += 1;
   idm->db[curguy] = clDatablockClonePtr(db);
-  idm->singlesize[curguy] = clCompaCompress(idm->ca, idm->db[curguy]);
+  idm->singlesize[curguy] = clCompressCB(idm->ca, idm->db[curguy]);
   for (i = 0; i <= curguy; i += 1) {
     double bothsize, curcell;
     struct DataBlock *combinedDataBlock;
     combinedDataBlock = clDatablockCatPtr(idm->db[curguy], idm->db[i]);
-    bothsize = clCompaCompress(idm->ca, combinedDataBlock);
+    bothsize = clCompressCB(idm->ca, combinedDataBlock);
     curcell = clMndf(idm->singlesize[i], idm->singlesize[curguy], bothsize, bothsize);
     clDatablockFreePtr(combinedDataBlock);
     gsl_matrix_set(idm->curmat, i, curguy, curcell);

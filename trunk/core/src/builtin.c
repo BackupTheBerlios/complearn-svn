@@ -145,7 +145,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
 static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb)
 {
   if (retval != 0) {
-    fprintf(stderr, "Error in %s: %s\n", VF(cb,shortNameCB)(), clLastErrorCB(cb));
+    fprintf(stderr, "Instance error in %s: %s\n", VF(cb,shortNameCB)(), clLastErrorCB(cb));
     exit(1);
   }
 }
@@ -153,7 +153,7 @@ static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb)
 static void staticErrorExitIfBad(int retval, struct CompressionBase *cb)
 {
   if (retval != 0) {
-    fprintf(stderr, "Error in %s: %s\n", VF(cb,shortNameCB)(), clLastStaticErrorCB(VF(cb,shortNameCB)()));
+    fprintf(stderr, "Static error in %s: %s\n", VF(cb,shortNameCB)(), clLastStaticErrorCB(VF(cb,shortNameCB)()));
     exit(1);
   }
 }
@@ -390,17 +390,3 @@ void initBuiltinCompressors(void) {
   initBlockSort();
   initZLib();
 }
-/*
-  struct CompressionBase *cb = clNewCompressorCB("zlib");
-  printf("Using parameters %s\n", clGetParamStringCB(cb));
-  struct DataBlock *db;
-  db = clStringToDataBlockPtr("hose");
-  printf("%f\n", clCompressCB(cb, db));
-  db = clStringToDataBlockPtr("roder\nhorse");
-  printf("%f\n", clCompressCB(cb, db));
-  clFreeCB(cb);
-  printCompressors();
-  doBestScan();
-  return 0;
-}
-*/

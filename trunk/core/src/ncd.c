@@ -70,6 +70,8 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 
 void loadCompressor(struct GeneralConfig *cur)
 {
+  int i;
+  union PCTypes p;
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   if (cur->ca == NULL) {
     if (cur->fVerbose)
@@ -84,8 +86,16 @@ void loadCompressor(struct GeneralConfig *cur)
     if (cur->fVerbose)
       printf("Done loading %p.\n", cur->ca);
   }
-    if (cur->fVerbose)
-      printf("Now have instance %p\n", cur->ca);
+  assert(cur);
+  assert(cur->em);
+  assert(cur->ca);
+  if (cur->fVerbose)
+      printf("New compressor instance %s:%p initialized\n", cur->compressor_name, cur->ca);
+  for (i = 0; i < clEnvmapSize(cur->em); i += 1) {
+    p = clEnvmapKeyValAt(cur->em,i);
+    clSetParameterCB(cur->ca, p.sp.key, p.sp.val, clEnvmapIsPrivateAt(cur->em,i));
+  }
+  clUpdateConfigToEM(cur);
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock *db;
     db = clStringToDataBlockPtr("m\n");
@@ -93,7 +103,6 @@ void loadCompressor(struct GeneralConfig *cur)
     cur->multiplier = cur->M;
     clDatablockFreePtr(db);
   }
-  clUpdateConfigToEM(cur);
 }
 void printCounts(struct DataBlockEnumeration *a)
 {

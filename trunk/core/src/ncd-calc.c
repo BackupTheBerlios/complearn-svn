@@ -41,14 +41,18 @@ double clMndf (double ca, double cb, double cab, double cba) {
 double clNcdclFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur)
 {
   double result;
+  struct DataBlock *c;
+  double x, y, xy;
+  c = clDatablockCatPtr(a, b);
   if (cur->fJustSize) {
-    struct DataBlock *c;
-    c = clDatablockCatPtr(a, b);
-    result = clCompaCompress(cur->ca, c);
-    clDatablockFreePtr(c);
+    result = clCompressCB(cur->ca, c);
   }
   else {
-    result = clCompaNCD(cur->ca, a, b);
+    x = clCompressCB(cur->ca, a);
+    y = clCompressCB(cur->ca, b);
+    xy = clCompressCB(cur->ca, c);
+    result = clMndf (x, y, xy, xy);
   }
+  clDatablockFreePtr(c);
   return result;
 }

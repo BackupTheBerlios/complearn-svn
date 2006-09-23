@@ -56,7 +56,7 @@ void clFreeDefaultEnvironment(struct GeneralConfig *g)
     curEnv->em = NULL;
   }
   if (curEnv->ca) {
-    clCompaFree(curEnv->ca);
+    clFreeCB(curEnv->ca);
     curEnv->ca = NULL;
   }
   clFreeandclear(curEnv);
