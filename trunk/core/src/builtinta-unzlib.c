@@ -37,7 +37,7 @@ static struct DataBlock *unzlib_transform(struct DataBlock *src);
 
 struct TransformAdaptor *clBuiltin_UNZLIB(void)
 {
-  struct ZlibDynamicAdaptor *zlib = clGrabZlibDACB();
+  struct ZlibDynamicAdaptorCB *zlib = clGrabZlibDACB();
   struct TransformAdaptor *ptr;
 	struct TransformAdaptor t =
 	{
@@ -71,8 +71,8 @@ static int unzlib_predicate(struct DataBlock *db)
 
 static struct DataBlock *unzlib_transform(struct DataBlock *src)
 {
-  struct ZlibDynamicAdaptor *zlib = clGrabZlibDACB();
-	struct DataBlock *result;
+  struct ZlibDynamicAdaptorCB *zlib = clGrabZlibDACB();
+  struct DataBlock *result;
   if (zlib) {
 	int i;
 	unsigned char *dbuff = NULL;

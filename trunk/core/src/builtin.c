@@ -45,7 +45,7 @@ void clSetLastErrorCB(struct CompressionBase *cb, const char *msg)
   cb->cbi->errorMessage = strdup(msg);
 }
 
-void clSetStaticErrorMessage(const char *shortName, const char *msg)
+void clSetLastStaticErrorCB(const char *shortName, const char *msg)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
   assert(ci != NULL);

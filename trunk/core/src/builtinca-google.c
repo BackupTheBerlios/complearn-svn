@@ -6,6 +6,7 @@
 #include "newcomp.h"
 #include "ncabz2.h"
 
+static char *shortName = "google";
 struct GoogleCompressionInstance {
   void *baseClass;
   char *gkey;    /*!< GoogleKey which must be obtained by Google */
@@ -15,7 +16,7 @@ struct GoogleCompressionInstance {
 
 static const char *fshortNameCB(void)
 {
-  return "google";
+  return shortName;
 }
 
 static const char *flongNameCB(void)
@@ -97,11 +98,19 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   //clogLog("M=%f\n", ci->m);
   return 0;
 }
+static int fisCompileProblemCB(void)
+{
+  return 0;
+}
 #else
+static int fisCompileProblemCB(void)
+{
+  clSetLastStaticErrorCB(shortName, "No CSOAP available; need <libcsoap/soap-client.h>");
+  return 1;
+}
 static int fprepareToCompressCB(struct CompressionBase *cb)
 {
-  clSetLastError("No CSOAP library available.  Need <libcsoap/soap-client.h>");
-  return 1;
+  exit(1);
 }
 #endif
 
@@ -153,6 +162,7 @@ double clCalculateMbase(const char *daystr, const char *gkey)
 static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(specificInitCB),
   VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(isCompileProblemCB),
   VIRTFUNCEXPORT(compressCB),
   VIRTFUNCEXPORT(shortNameCB),
   VIRTFUNCEXPORT(longNameCB),

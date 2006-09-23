@@ -33,9 +33,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method);
 struct SOAPCompInstance;
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
+SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method);
+
 SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method)
 {
   SoapCtx *ctx;
