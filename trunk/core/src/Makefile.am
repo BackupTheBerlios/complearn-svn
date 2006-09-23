@@ -72,6 +72,8 @@ complearn/dlextcomp.h \
 complearn/complearn.h \
 complearn/aclconfig.h \
 complearn/uclconfig.h \
+complearn/ncazlib.h \
+complearn/ncabz2.h \
 complearn/adjadaptor.h \
 complearn/adjlist.h \
 complearn/adjmatrix.h \
