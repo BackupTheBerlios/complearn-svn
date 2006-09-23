@@ -83,7 +83,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   const char *ecmd;
   struct VirtualCompressionInstance *rci = (struct VirtualCompressionInstance *) cb;
   if (scmd == NULL) {
-    clogError("Error, virtual compressor must have cmd parameter");
+    clSetLastErrorCB(cb,"Error, virtual compressor must have cmd parameter");
+    return 1;
   }
   ecmd = expandCommand(scmd);
   if (ecmd)
@@ -91,7 +92,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   else {
     char buf[1024];
     sprintf(buf, "Cannot find command %s for virtual compressor.", scmd);
-    clogError(buf);
+    clSetLastErrorCB(cb, buf);
+    return 1;
   }
   return 0;
 }

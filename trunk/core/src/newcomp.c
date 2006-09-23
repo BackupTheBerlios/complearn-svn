@@ -30,12 +30,19 @@ static struct CLCompressionInfo **clciHeadPtr = &clciHead;
 static struct CLCompressionInfo *findCompressorInfo(const char *name);
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t);
 static void staticErrorExitIfBad(int retval, struct CompressionBase *cb);
+static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb);
 
 const char *clLastStaticErrorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
   assert(ci != NULL);
   return ci->staticErrorMsg;
+}
+
+void clSetLastErrorCB(struct CompressionBase *cb, const char *msg)
+{
+  assert(msg && "NULL error message error.");
+  cb->cbi->errorMessage = strdup(msg);
 }
 
 void clSetStaticErrorMessage(const char *shortName, const char *msg)
@@ -90,7 +97,7 @@ static void checkPrepared(struct CompressionBase *cb)
       cb->cbi->fHaveFailed = 1;
     cb->cbi->fHavePrepared = 1;
   }
-  staticErrorExitIfBad(cb->cbi->fHaveFailed, cb);
+  instanceErrorExitIfBad(cb->cbi->fHaveFailed, cb);
 }
 
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t)
@@ -135,6 +142,14 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   staticErrorExitIfBad(retval, cb);
   return cb;
 }
+static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb)
+{
+  if (retval != 0) {
+    fprintf(stderr, "Error in %s: %s\n", VF(cb,shortNameCB)(), clLastErrorCB(cb));
+    exit(1);
+  }
+}
+
 static void staticErrorExitIfBad(int retval, struct CompressionBase *cb)
 {
   if (retval != 0) {
@@ -306,10 +321,11 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
   return pin[0];
 }
 
-void initGZ(void);
+void initZLib(void);
 void initBZ2(void);
 void initReal(void);
 void initVirtual(void);
+void initGoogle(void);
 void printCompressors(void);
 void doBestScan(void);
 
@@ -360,19 +376,19 @@ const char *expandCommand(const char *inpcmd)
 }
 
 int main(int argc, char **argv) {
-  initGZ();
-  initBZ2();
+  initGoogle();
   initReal();
-  initBlockSort();
   initVirtual();
-  struct CompressionBase *cb = clNewCompressorCB("virtual");
-  clSetParameterCB(cb, "cmd", "virtcat", 0);
+  initBZ2();
+  initBlockSort();
+  initZLib();
+  struct CompressionBase *cb = clNewCompressorCB("zlib");
   printf("Using parameters %s\n", clGetParamStringCB(cb));
   struct DataBlock *db;
-  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaa");
+  db = clStringToDataBlockPtr("hose");
   printf("%f\n", clCompressCB(cb, db));
-  db = clStringToDataBlockPtr("liiiiiiiissssssssssaaaaaaaaaxaaaaaaaaaaaa");
-  printf("%f (with 3 more)\n", clCompressCB(cb, db));
+  db = clStringToDataBlockPtr("roder\nhorse");
+  printf("%f\n", clCompressCB(cb, db));
   clFreeCB(cb);
   printCompressors();
   doBestScan();

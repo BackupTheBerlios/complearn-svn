@@ -1,1 +1,1 @@
-gcc ncvirtcomp.c ncrealcomp.c ncblocksort.c ncabz2.c ncbase.c ncazlib.c newcomp.c nczlib.c ncbz2.c -I. .libs/libcomplearn.a -lz -ldl -o nc -lbz2 -lm -g -Wall
+gcc ncgoogle.c ncvirtcomp.c ncrealcomp.c ncblocksort.c ncabz2.c ncbase.c ncazlib.c newcomp.c nczlib.c ncbz2.c -I. .libs/libcomplearn.a -lz -ldl -o nc -lbz2 -lm -g -Wall -I /usr/include/libcsoap-1.0 -I /usr/include/nanohttp-1.0 -I /usr/include/libxml2 -lcsoap -lgdbm -lnanohttp

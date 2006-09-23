@@ -55,7 +55,7 @@ static void ffreeCB(struct CompressionBase *cb)
 
 static int fspecificInitCB(struct CompressionBase *cb)
 {
-  //clSetParameterCB(cb, "cmd", "cat", 0);
+//  clSetParameterCB(cb, "cmd", "catbzip", 0);
   return 0;
 }
 
@@ -70,7 +70,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   const char *ecmd;
   struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
   if (scmd == NULL) {
-    clogError("Error, real compressor must have cmd parameter");
+    clSetLastErrorCB(cb,"Error, virtual compressor must have cmd parameter");
+    return 1;
   }
   ecmd = expandCommand(scmd);
   if (ecmd)
@@ -78,7 +79,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   else {
     char buf[1024];
     sprintf(buf, "Cannot find command %s for real compressor.", scmd);
-    clogError(buf);
+    clSetLastErrorCB(cb, buf);
+    return 1;
   }
   return 0;
 }

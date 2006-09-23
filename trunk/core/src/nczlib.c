@@ -22,7 +22,7 @@ static const char *flongNameCB(void)
 
 static const char *fshortNameCB(void)
 {
-  return "gzip";
+  return "zlib";
 }
 
 static int fallocSizeCB(void)
@@ -102,7 +102,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initGZ(void)
+void initZLib(void)
 {
 //#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
   clRegisterCB(&cba);
