@@ -123,11 +123,10 @@ void clPrintOptionHelp(void)
 "  -s, --suppress              suppress ASCII output\n"
 "  -b, --both                  enable both binary and text output mode\n"
 "  -H, --html                  output in HTML format\n"
-"  -P, --svd-project           activate SVD projection mode\n"
 "  -r, --suppressdetails       do not print details to dot file\n"
-"  -V, --version\n"
-"  -v, --verbose\n"
-"  -h, --help\n";
+"  -V, --version               print version information and exit\n"
+"  -v, --verbose               extra diagnostic information\n"
+"  -h, --help                  print this help and exit\n";
 
   if (curEnv && curEnv->printapphelp)
     curEnv->printapphelp(curEnv);
