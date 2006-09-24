@@ -58,7 +58,7 @@ static int fisRuntimeProblemCB(void)
    ;  /* all good */ ;
   } else {
     char buf[1024];
-    sprintf(buf, "Cannot find command %s for real compressor.", scmd);
+    sprintf(buf, "Cannot find command %s (please install)", scmd);
     clSetLastStaticErrorCB(fshortNameCB(), buf);
     return 1;
   }
