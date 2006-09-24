@@ -405,10 +405,9 @@ const char *expandCommand(const char *inpcmd)
   pathlen = strlen(path);
   if (buf)
     free(buf);
-  buf = calloc(1, inplen + pathlen + 16);
   path = strdup(path);
   for (p = strtok(path, DELIMS); p; p = strtok(NULL, DELIMS)) {
-    sprintf(buf, "%s/%s", p, inpcmd);
+    buf = clJoinAsPath(p, inpcmd);
     if (stat(buf, &st) == 0)
       return buf;
   }

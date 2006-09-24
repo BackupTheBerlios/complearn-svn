@@ -35,10 +35,6 @@
 #define COMPLEARNDIR ".complearn"
 #define CONFIGNAME "config.yml"
 
-static char *readHomeVar(void)
-{
-  return getenv("HOME");
-}
 struct StringStack *clGetDefaultFileList(void)
 {
   struct StringStack *ss;
@@ -46,7 +42,7 @@ struct StringStack *clGetDefaultFileList(void)
   char *homeenv;
   ss = clStringstackNew();
   clStringstackPush(ss, SYSTEMDATAFILE);
-  homeenv = readHomeVar();
+  homeenv = clGetHomeDir();
   if (homeenv) {
     sprintf(homedir, "%s/%s/%s", homeenv, COMPLEARNDIR, CONFIGNAME);
     clStringstackPush(ss, homedir);

@@ -43,14 +43,6 @@ struct GDBMHelper {
   char *filename;
 };
 
-const char *clGetHomeDir(void)
-{
-  char *result;
-  result = getenv("HOME");
-  assert(result);
-  return result;
-}
-
 datum clConvertDataBlockToDatum(struct DataBlock *d)
 {
   datum gd;

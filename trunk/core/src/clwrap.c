@@ -41,12 +41,12 @@ const char *getLikelyTmpPrefix()
 
 static FILE *makeTmpCopyStdin(void)
 {
-  static char tmpfile[128];
+  static char *tmpfile;
   int fd;
   FILE *fp;
-  if (tmpfile[0] == 0) {
+  if (tmpfile == NULL) {
     struct DataBlock *db = clFilePtrToDataBlockPtr(stdin);
-    sprintf(tmpfile, "%s/clstdintmp-XXXXXX", getLikelyTmpPrefix());
+    tmpfile = clJoinAsPath(getLikelyTmpPrefix(),"clstdintmp-XXXXXX");
     fd = mkstemp(tmpfile);
     close(fd);
     clDatablockWriteToFile(db, tmpfile);
@@ -74,3 +74,48 @@ void clFclose(FILE *fp)
     return;
   }
 }
+
+char *clJoinAsPath(const char *c1, const char *c2)
+{
+  char *result = calloc(1, strlen(c1) + strlen(c2) + 2);
+  sprintf(result, "%s/%s", c1, c2);
+  return result;
+}
+
+const char *clGetHomeModuleDir(void)
+{
+  static char *result;
+  if (!result)
+    result = clJoinAsPath(clGetHomeCompLearnDir(), "modules");
+  return result;
+}
+
+const char *clGetSystemModuleDir(void)
+{
+  static char *result;
+  if (!result)
+    result = clJoinAsPath(clGetSystemCompLearnDir(), "modules");
+  return result;
+}
+
+const char *clGetSystemCompLearnDir(void)
+{
+  return "/etc/complearn";
+}
+
+const char *clGetHomeCompLearnDir(void)
+{
+  static char *result;
+  if (!result)
+    result = clJoinAsPath(clGetHomeDir(), ".complearn");
+  return result;
+}
+
+const char *clGetHomeDir(void)
+{
+  char *result;
+  result = getenv("HOME");
+  assert(result);
+  return result;
+}
+

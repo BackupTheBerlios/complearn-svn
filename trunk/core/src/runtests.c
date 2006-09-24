@@ -1242,9 +1242,8 @@ void testTreeMolder()
 void testReadTextDM()
 {
   gsl_matrix *dm;
-  struct StringStack *labels;
-  dm = cltxtDistMatrix("distmatrix.txt");
-  labels = cltxtLabels("distmatrix.txt");
+  struct StringStack *labels = clStringstackNew();
+  dm = cltxtDistMatrix(clFileToDataBlockPtr("distmatrix.txt"), labels);
   assert(dm);
   assert(labels);
   gsl_matrix_free(dm);
@@ -1323,7 +1322,7 @@ char *findDir(const char *dir)
 }
 void testCLTextConverter(void)
 {
-  cltxtToCLB("distmatrix.txt","convertedDM.clb");
+  //cltxtToCLB("distmatrix.txt","convertedDM.clb");
 }
 
 int main(int argc, char **argv)
