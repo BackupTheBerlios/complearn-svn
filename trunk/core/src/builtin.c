@@ -412,3 +412,17 @@ static void checkInitted(void) {
   if (!fHaveInitted)
     initBuiltinCompressors();
 }
+
+struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
+{
+  struct ParamList *pl = clParamlistNew();
+  struct EnvMap *em = clGetParametersCB(cb);
+  int i;
+  pl->size = clEnvmapSize(em);
+  for (i = 0; i < pl->size; i += 1) {
+    union PCTypes p;
+    p = clEnvmapKeyValAt(em, i);
+    pl->fields[i] = clFielddescNew(p.sp.key, p.sp.val, 0);
+  }
+  return pl;
+}

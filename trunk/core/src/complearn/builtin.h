@@ -42,6 +42,8 @@
  */
 struct CompAdaptor *clCompaLoadSOAP(const char *url, const char *urn);
 
+struct ParamList *clGetParameterListCB(struct CompressionBase *cb);
+
 /** Dynamic Adaptors to support dual-mode loading */
 struct BZ2DynamicAdaptor {
   int (*buftobufcompress)(char *dbuff,unsigned int *p,
