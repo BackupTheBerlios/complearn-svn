@@ -1,5 +1,0 @@
-#!/bin/sh
-ARG=$1
-set -e
-
-ldconfig
