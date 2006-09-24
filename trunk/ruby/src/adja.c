@@ -83,6 +83,7 @@ rbadja_setconstate(VALUE self, VALUE vi, VALUE vj, VALUE g)
   i = NUM2INT(vi);
   j = NUM2INT(vj);
   clAdjaSetConState(adja, i, j, (g == INT2FIX(0) || g == Qnil || g == Qfalse) ? 0 : 1);
+  return Qnil;
 }
 
 static VALUE
@@ -92,7 +93,7 @@ rbadja_getneighborcount(VALUE self, VALUE vi)
   int i;
   Data_Get_Struct(self, struct AdjAdaptor, adja);
   i = NUM2INT(vi);
-  return INT2FIX(adjaGetNeighborCountAt(adja, i));
+  return INT2FIX(clAdjaNeighborCount(adja, i));
 }
 
 static VALUE
@@ -139,6 +140,7 @@ rbadja_getneighbors(VALUE self, VALUE vwhich)
 static VALUE
 rbadja_init(VALUE self)
 {
+  return self;
 }
 
 VALUE

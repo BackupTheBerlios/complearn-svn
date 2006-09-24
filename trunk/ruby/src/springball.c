@@ -69,6 +69,7 @@ static VALUE rbsbs_size(VALUE self)
 
 static VALUE rbsbs_init(VALUE self)
 {
+  return self;
 }
 
 VALUE rbsbs_new(VALUE cl, VALUE tree, VALUE isRooted)

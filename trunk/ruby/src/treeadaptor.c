@@ -26,16 +26,12 @@
 */
 #include "clrbcon.h"
 
-static VALUE rbtra_treemutate(VALUE self)
-{
-  struct TreeAdaptor *ta;
-  Data_Get_Struct(self, struct TreeAdaptor, ta);
-  clTreeaMutate(ta);
-  return Qnil;
-}
+VALUE secretrbtra_new(struct TreeAdaptor *tra);
+VALUE rbadja_secretnew(VALUE, struct AdjAdaptor *a);
 
 static VALUE rbtra_init(VALUE self)
 {
+  return self;
 }
 
 VALUE secretrbtra_new(struct TreeAdaptor *tra)
@@ -97,16 +93,13 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
 static VALUE rbtra_mutationcount(VALUE self)
 {
   struct TreeAdaptor *ta;
-  int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
-  clTreeaMutate(ta);
   return INT2FIX(clTreeaMutationCount(ta));
 }
 
 static VALUE rbtra_mutate(VALUE self)
 {
   struct TreeAdaptor *ta;
-  int n;
   Data_Get_Struct(self, struct TreeAdaptor, ta);
   clTreeaMutate(ta);
   return Qnil;

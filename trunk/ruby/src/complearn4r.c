@@ -29,7 +29,7 @@
 VALUE mCompLearn;
 
 VALUE cAdjAdaptor;
-VALUE cCompAdaptor;
+VALUE cCompressionBase;
 VALUE cTreeAdaptor;
 VALUE cTreeHolder;
 VALUE cTreeMaster;

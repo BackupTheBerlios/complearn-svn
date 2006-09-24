@@ -26,6 +26,8 @@
 */
 #include "clrbcon.h"
 
+VALUE secretrbtra_new(struct TreeAdaptor *ta);
+
 static VALUE rbth_tree(VALUE tree)
 {
   struct TreeHolder *th;
@@ -92,6 +94,7 @@ static VALUE rbth_init(VALUE self)
 {
   if (0) // avoid link errors
     clTreehFree(NULL);
+  return self;
 }
 
 VALUE secretrbth_new(struct TreeHolder *tomakeruby)

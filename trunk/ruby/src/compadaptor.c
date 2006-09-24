@@ -139,12 +139,13 @@ static VALUE rbcompa_names(VALUE kl)
 
 static VALUE rbcompa_init(VALUE self)
 {
+  return self;
 }
 
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
   struct CompressionBase *ca = clNewCompressorCB(STR2CSTR(comp));
-  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clCompaFree, ca);
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clFreeCB, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;

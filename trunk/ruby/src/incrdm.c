@@ -25,19 +25,21 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <complearn/complearn.h>
 #include "clrbcon.h"
 
 static VALUE rbincrdm_init(VALUE self)
 {
+  return self;
 }
 
 VALUE rbincrdm_new(int argc, VALUE *argv, VALUE cl)
 {
-  struct CompAdaptor *incrdmca = NULL;
+  struct CompressionBase *incrdmca = NULL;
   struct IncrementalDistMatrix *idm;
   volatile VALUE tdata;
   if (argc > 0) {
-    Data_Get_Struct(argv[0], struct CompAdaptor, incrdmca);
+    Data_Get_Struct(argv[0], struct CompressionBase, incrdmca);
   }
   idm = clIncrdmNew(incrdmca);
   tdata = Data_Wrap_Struct(cl, 0, clIncrdmFree, idm);
@@ -66,7 +68,7 @@ static VALUE rbincrdm_distmatrix(VALUE self)
 static VALUE ksDMK;
 static VALUE ksDBK;
 static VALUE ksSSK;
-static VALUE ksCAK;
+static VALUE ksCBK;
 
 static VALUE rbincrdm_dmk(VALUE self)
 {
@@ -87,7 +89,7 @@ static VALUE rbincrdm_ssk(VALUE self)
 
 static VALUE rbincrdm_cak(VALUE self)
 {
-  return ksCAK;
+  return ksCBK;
 }
 
 static VALUE rbincrdm_size(VALUE self)
@@ -100,7 +102,7 @@ static VALUE rbincrdm_size(VALUE self)
 static VALUE ksDMK;
 static VALUE ksDBK;
 static VALUE ksSSK;
-static VALUE ksCAK;
+static VALUE ksCBK;
 static VALUE rbincrdm_dump(VALUE self, VALUE depth) {
   struct IncrementalDistMatrix *idm;
   Data_Get_Struct(self, struct IncrementalDistMatrix, idm);
@@ -118,27 +120,26 @@ static VALUE rbincrdm_dump(VALUE self, VALUE depth) {
   }
   rb_hash_aset(obj, ksDBK, dba);
   rb_hash_aset(obj, ksSSK, ssa);
-  rb_hash_aset(obj, ksCAK, rb_ivar_get(self, rb_intern("ca")));
+  rb_hash_aset(obj, ksCBK, rb_ivar_get(self, rb_intern("ca")));
   return rb_funcall(cMarshal, rb_intern("dump"), 1, obj);
 }
 
 static VALUE rbincrdm_load(VALUE kl, VALUE str)
 {
   int i, j;
-  VALUE self;
   VALUE obj;
   gsl_matrix *gslm;
   struct IncrementalDistMatrix *idm;
   VALUE rca, dba, ssa, tdata, dm;
-  struct CompAdaptor *ca = NULL;
+  struct CompressionBase *ca = NULL;
 
   obj = rb_funcall(cMarshal, rb_intern("load"), 1, str);
-  rca = rb_hash_aref(obj, ksCAK);
+  rca = rb_hash_aref(obj, ksCBK);
   dba = rb_hash_aref(obj, ksDBK);
   ssa = rb_hash_aref(obj, ksSSK);
   dm =  rb_hash_aref(obj, ksDMK);
   if (rca != Qnil) {
-    Data_Get_Struct(rca, struct CompAdaptor, ca);
+    Data_Get_Struct(rca, struct CompressionBase, ca);
   }
 
   idm = clIncrdmNew(ca);
@@ -190,11 +191,11 @@ void doInitIncrDistMatrix(void) {
   rb_define_const(cIncrementalDistMatrix, "DistMatrixKey", rb_str_new2("dmk"));
   rb_define_const(cIncrementalDistMatrix, "DataBlockKey", rb_str_new2("dbk"));
   rb_define_const(cIncrementalDistMatrix, "SingleSizeKey", rb_str_new2("ssk"));
-  rb_define_const(cIncrementalDistMatrix, "CompAdaptorKey", rb_str_new2("cak"));
+  rb_define_const(cIncrementalDistMatrix, "CompressionBaseKey", rb_str_new2("cbk"));
 
   ksDMK = rb_const_get(cIncrementalDistMatrix, rb_intern("DistMatrixKey"));
   ksDBK = rb_const_get(cIncrementalDistMatrix, rb_intern("DataBlockKey"));
   ksSSK = rb_const_get(cIncrementalDistMatrix, rb_intern("SingleSizeKey"));
-  ksCAK = rb_const_get(cIncrementalDistMatrix, rb_intern("CompAdaptorKey"));
+  ksCBK = rb_const_get(cIncrementalDistMatrix, rb_intern("CompressionBaseKey"));
 
 }

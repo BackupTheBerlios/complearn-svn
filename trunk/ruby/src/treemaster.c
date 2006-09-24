@@ -33,8 +33,9 @@ static VALUE rbtm_loadMatrix(VALUE cl, VALUE rfname)
   gsl_matrix *dm = clbDistMatrix(fname);
   struct StringStack *labels = clbLabels(fname);
   assert(dm);
-  result = convertgslmatrixToRubyMatrix(dm, labels);
+  result = convertgslmatrixToRubyMatrix(dm);
   gsl_matrix_free(dm);
+  clStringstackFree(labels);
   return result;
 }
 
@@ -109,10 +110,12 @@ static VALUE rbtm_settreeobserver(VALUE self, VALUE obs)
   //rb_raise(rb_eTypeError, "Error clTreemasterSetTreeObserver disabled.");
   clTreemasterSetTreeObserver(tm, to);
   clTreemasterSetUserData(tm, tos);
+  return Qnil;
 }
 
 static VALUE rbtm_init(VALUE self)
 {
+  return self;
 }
 
 static VALUE rbtm_findtree(VALUE self)
@@ -190,10 +193,12 @@ VALUE rbtm_new(VALUE cl, VALUE dm, VALUE isRooted)
   return tdata;
 }
 
+/*
 static VALUE rbto_searchstarted(VALUE self)
 {
   return Qnil;
 }
+*/
 
 static VALUE rbto_rejected(VALUE self)
 {
@@ -229,6 +234,7 @@ static VALUE rbtm_aborttreesearch(VALUE self)
   struct TreeMaster *tm;
   Data_Get_Struct(self, struct TreeMaster, tm);
   clTreemasterAbortSearch(tm);
+  return Qnil;
 }
 
 void doInitTreeMaster(void) {
