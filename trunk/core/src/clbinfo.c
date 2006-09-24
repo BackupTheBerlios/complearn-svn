@@ -60,12 +60,12 @@
  *  \subsection sub_soap SOAP Compressor Server
  *  requires a url of the form http://localhost:2000/ and urn of the form
  *  urn:hws. The complearn system will connect to the specified SOAP server
- *  and call a single function called compclFunc and pass it one string. The
+ *  and call a single function called compfunc and pass it one string. The
  *  compression server is expected to return a double precision floating-point
  *  value indicating the compressed size, in bits, of the string.  Custom
  *  compressor module through dynamic library
  *  a custom compression module defines 7 C functions in a dynamic library with
- *  the following names: newcompinst, compclFunc, freecompclFunc, shortname,
+ *  the following names: newcompinst, compfunc, freecompfunc, shortname,
  *  longname, compparam, apiver
  *
  */

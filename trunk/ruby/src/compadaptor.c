@@ -35,11 +35,11 @@ static VALUE rbcompa_params(VALUE self) {
   VALUE hash;
   Data_Get_Struct(self, struct CompressionBase, ca);
   assert(ca);
-  pl = clCompaParameters(ca);
+  pl = clGetParameterListCB(ca);
   assert(pl);
 
   hash = rb_hash_new();
-  rb_hash_aset(hash, rb_str_new2("compressor"),rb_str_new2(clCompaShortName(ca)));
+  rb_hash_aset(hash, rb_str_new2("compressor"),rb_str_new2(clShortNameCB(ca)));
   for (i = 0; i < pl->size ; i += 1) {
     key = pl->fields[i]->key; val = pl->fields[i]->value;
     rb_hash_aset(hash, rb_str_new2(key), rb_str_new2(val));;
@@ -73,10 +73,10 @@ static VALUE rbcompa_load(VALUE cl, VALUE rdata)
     clEnvmapSetKeyVal(em, key, val);
   }
   clEnvmapMerge(clLoadDefaultEnvironment()->em, em);
-  ca = clCompaLoadBuiltin(STR2CSTR(cname));
+  ca = clNewCompressorCB(STR2CSTR(cname));
   assert(ca);
 
-  tdata = Data_Wrap_Struct(cCompressionBase, 0, clCompaFree, ca);
+  tdata = Data_Wrap_Struct(cCompressionBase, 0, clFreeCB, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
@@ -85,14 +85,14 @@ static VALUE rbcompa_shortname(VALUE self)
 {
   struct CompressionBase *ca;
   Data_Get_Struct(self, struct CompressionBase, ca);
-  return rb_str_new2(clCompaShortName(ca));
+  return rb_str_new2(clShortNameCB(ca));
 }
 
 static VALUE rbcompa_longname(VALUE self)
 {
   struct CompressionBase *ca;
   Data_Get_Struct(self, struct CompressionBase, ca);
-  return rb_str_new2(clLongnameCB(ca));
+  return rb_str_new2(clLongNameCB(ca));
 }
 
 static VALUE rbcompa_apiver(VALUE self)
@@ -102,7 +102,7 @@ static VALUE rbcompa_apiver(VALUE self)
   return INT2NUM(APIVER_CLCOMP10);
 }
 
-static VALUE rbcompa_compclFunc(VALUE self, VALUE str)
+static VALUE rbcompa_compfunc(VALUE self, VALUE str)
 {
   struct CompressionBase *ca;
   struct DataBlock *db = clStringToDataBlockPtr(STR2CSTR(str));
@@ -122,7 +122,7 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
   struct DataBlock *dbb = clStringToDataBlockPtr(STR2CSTR(strb));
 
   Data_Get_Struct(self, struct CompressionBase, ca);
-  result = clCompaNCD(ca, dba, dbb);
+  result = clNcdclFuncCB(ca, dba, dbb);
   clDatablockFreePtr(dba);
   clDatablockFreePtr(dbb);
   return rb_float_new(result);
@@ -131,7 +131,7 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 static VALUE rbcompa_names(VALUE kl)
 {
   VALUE result;
-  struct StringStack *ss = clCompaListBuiltin();
+  struct StringStack *ss = clListBuiltinsCB(1);
   result = convertStringStackToRubyArray(ss);
   clStringstackFree(ss);
   return result;
@@ -143,7 +143,7 @@ static VALUE rbcompa_init(VALUE self)
 
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
-  struct CompressionBase *ca = clCompaLoadBuiltin(STR2CSTR(comp));
+  struct CompressionBase *ca = clNewCompressorCB(STR2CSTR(comp));
   volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clCompaFree, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);
@@ -157,7 +157,7 @@ void doInitCompa(void) {
   rb_define_singleton_method(cCompressionBase, "loadBuiltin", rbcompa_new, 1);
   rb_define_singleton_method(cCompressionBase, "names", rbcompa_names, 0);
   rb_define_singleton_method(cCompressionBase, "listBuiltin", rbcompa_names, 0);
-  rb_define_method(cCompressionBase, "compclFunc", rbcompa_compclFunc, 1);
+  rb_define_method(cCompressionBase, "compfunc", rbcompa_compfunc, 1);
   rb_define_method(cCompressionBase, "shortname", rbcompa_shortname, 0);
   rb_define_method(cCompressionBase, "longname", rbcompa_longname, 0);
   rb_define_method(cCompressionBase, "apiver", rbcompa_apiver, 0);

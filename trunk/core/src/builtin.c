@@ -41,6 +41,18 @@ static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t);
 static void staticErrorExitIfBad(int retval, struct CompressionBase *cb);
 static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb);
 
+struct StringStack *clListBuiltinsCB(int fWithDisabled)
+{
+  struct StringStack *ss = clStringstackNew();
+  struct CLCompressionInfo *c;
+  for (c = clciHead; c; c = c->next) {
+    const char *sn = c->cba.shortNameCB();
+    if (fWithDisabled || clIsEnabledCB(sn))
+      clStringstackPush(ss, sn);
+  }
+  return ss;
+}
+
 const char *clLastStaticErrorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);

@@ -42,7 +42,7 @@
 extern VALUE mCompLearn;
 
 extern VALUE cAdjAdaptor;
-extern VALUE cCompAdaptor;
+extern VALUE cCompressionBase;
 extern VALUE cTreeAdaptor;
 extern VALUE cTreeHolder;
 extern VALUE cTreeMaster;

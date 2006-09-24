@@ -35,7 +35,7 @@
  *  The SOAP compressor server interace requires a url of the form
  *  "http://localhost:2000/" and urn of the form "urn:hws". The CompLearn
  *  system will connect to the specified SOAP server and call a single function
- *  called compclFunc and pass it one string. The compression server is expected
+ *  called compfunc and pass it one string. The compression server is expected
  *  to return a double precision floating-point value indicating the compressed
  *  size, in bits, of the string.
  * \returns pointer to CompAdaptor
@@ -101,6 +101,7 @@ int clIsEnabledCB(const char *shortName);
 const char *clLastStaticErrorCB(const char *shortName);
 void clFreeCB(struct CompressionBase *cb);
 void clSetStaticErrorMessage(const char *shortName, const char *msg);
+struct StringStack *clListBuiltinsCB(int fWithDisabled);
 
 struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);
