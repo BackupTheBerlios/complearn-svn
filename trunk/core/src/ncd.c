@@ -95,7 +95,6 @@ void loadCompressor(struct GeneralConfig *cur)
     p = clEnvmapKeyValAt(cur->em,i);
     clSetParameterCB(cur->ca, p.sp.key, p.sp.val, clEnvmapIsPrivateAt(cur->em,i));
   }
-  clUpdateConfigToEM(cur);
   if (ncdcfg->fUsingGoogle) {
     struct DataBlock *db;
     db = clStringToDataBlockPtr("m\n");

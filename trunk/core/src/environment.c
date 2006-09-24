@@ -50,7 +50,6 @@ void clFreeDefaultEnvironment(struct GeneralConfig *g)
   assert(g == curEnv);
   if (curEnv->ptr && curEnv->freeappcfg)
     curEnv->freeappcfg(curEnv);
-  clFreeifpresent(curEnv->compressor_name);
   if (curEnv->em) {
     clEnvmapFree(curEnv->em);
     curEnv->em = NULL;
@@ -60,27 +59,6 @@ void clFreeDefaultEnvironment(struct GeneralConfig *g)
     curEnv->ca = NULL;
   }
   clFreeandclear(curEnv);
-}
-
-void clUpdateEMToConfig(struct GeneralConfig *env)
-{
-  if (curEnv && curEnv->upappcfg)
-    curEnv->upappcfg(curEnv);
-  if (clEnvmapValueForKey(env->em, "compressor"))
-      env->compressor_name = strdup(clEnvmapValueForKey(env->em, "compressor"));
-}
-
-void clUpdateConfigToEM(struct GeneralConfig *env)
-{
-  if (curEnv && curEnv->upappem)
-    curEnv->upappem(curEnv);
-  if (env->compressor_name) {
-    clEnvmapSetKeyVal(env->em, "compressor", env->compressor_name);
-    clEnvmapSetKeyMarked(env->em, "compressor");
-  }
-  if (env->config_filename) {
-    clEnvmapSetKeyVal(env->em, "config-file", env->config_filename);
-  }
 }
 
 struct GeneralConfig *clLoadDefaultEnvironment()
@@ -123,9 +101,11 @@ struct GeneralConfig *clLoadDefaultEnvironment()
     *curEnv = defaultConfig;
     curEnv->em = clEnvmapNew();
     curEnv->cmdKeeper = clStringstackNew();
-    curEnv->compressor_name = clStrdup("blocksort");
     clReadDefaultConfig(curEnv->em);
-    clUpdateEMToConfig(curEnv);
+    if (curEnv->compressor_name == NULL)
+      curEnv->compressor_name = clEnvmapValueForKey(curEnv->em,"compressor");
+    if (curEnv->compressor_name == NULL)
+      curEnv->compressor_name = "blocksort";
   }
   return curEnv;
 }
@@ -290,7 +270,6 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
         curEnv->fAscii = 1;
         break;
       case 'C':
-        clFreeifpresent(curEnv->compressor_name);
         curEnv->compressor_name = clStrdup(optarg);
         break;
       case 's':
@@ -299,14 +278,12 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
       case 'c':
         curEnv->config_filename = clStrdup(optarg);
         clReadSpecificFile(curEnv->em, curEnv->config_filename);
-        clUpdateEMToConfig(curEnv);
         break;
       case 'r':
         curEnv->fSuppressVisibleDetails = 1;
         break;
       case 'U':
         clHandleLine(curEnv->em,optarg);
-        clUpdateEMToConfig(curEnv);
         break;
       case 'P':
         propName = strtok(optarg, "=");

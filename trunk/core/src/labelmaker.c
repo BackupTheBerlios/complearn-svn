@@ -128,26 +128,6 @@ struct StringStack *clbLabels(char *fname)
   return result;
 }
 
-#define DELIMS " ,\t\r\n"
-#define MAXLINESIZE 1024
-struct StringStack *cltxtLabels(char *fname)
-{
-  struct StringStack *labels = NULL;
-  FILE *fp;
-  char linebuf[MAXLINESIZE];
-
-  if ( cltxtRowSize(fname) == cltxtColSize(fname) ) {
-    clogError("Error: no labels in this file\n");
-    exit(1);
-  }
-  labels = clStringstackNew();
-  fp = clFopen(fname, "r");
-  while (fgets(linebuf, MAXLINESIZE, fp)) {
-    clStringstackPush(labels, strtok(linebuf,DELIMS));
-  }
-  return labels;
-}
-
 /* TODO: needs new home; does not belong here */
 struct StringStack *clbCommands(char *fname)
 {

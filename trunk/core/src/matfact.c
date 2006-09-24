@@ -379,10 +379,9 @@ int cltxtToCLB(char *source, char *dest)
 {
   struct DataBlock *dmdb, *labelsdb, *clbdb;
   gsl_matrix *dm;
-  struct StringStack *labels;
+  struct StringStack *labels = NULL;
 
   dm = cltxtDistMatrix(source);
-  labels = cltxtLabels(source);
   dmdb = clDistmatrixDump(dm);
   labelsdb = clLabelsDump(labels);
 

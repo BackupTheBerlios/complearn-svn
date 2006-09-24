@@ -28,6 +28,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define CONFIGNAME "config.yml"
+
 const char *getLikelyTmpPrefix()
 {
   static const char *tmpFileDir;
@@ -116,3 +118,11 @@ const char *clGetHomeDir(void)
   return result;
 }
 
+const char *clGetSystemConfigFileName(void)
+{
+  return clJoinAsPath(clGetSystemCompLearnDir(), CONFIGNAME);
+}
+const char *clGetHomeConfigFileName(void)
+{
+  return clJoinAsPath(clGetHomeCompLearnDir(), CONFIGNAME);
+}

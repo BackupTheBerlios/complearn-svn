@@ -33,21 +33,13 @@
 #include <complearn/complearn.h>
 
 #define COMPLEARNDIR ".complearn"
-#define CONFIGNAME "config.yml"
 
 struct StringStack *clGetDefaultFileList(void)
 {
   struct StringStack *ss;
-  char *homedir = clCalloc(1, 2048);
-  char *homeenv;
   ss = clStringstackNew();
-  clStringstackPush(ss, SYSTEMDATAFILE);
-  homeenv = clGetHomeDir();
-  if (homeenv) {
-    sprintf(homedir, "%s/%s/%s", homeenv, COMPLEARNDIR, CONFIGNAME);
-    clStringstackPush(ss, homedir);
-  }
-  free(homedir);
+  clStringstackPush(ss, clGetHomeConfigFileName());
+  clStringstackPush(ss, clGetSystemConfigFileName());
   return ss;
 }
 
