@@ -133,7 +133,6 @@ int clCountBytesTillEOFThenCloseCB(int readfd)
   int bc = 0, readlen;
   static char dummy[READBLOCKSIZE];
   while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
-    write(1, dummy, readlen);
     bc += readlen;
   }
   close(readfd);
