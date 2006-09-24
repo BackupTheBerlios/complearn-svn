@@ -29,6 +29,16 @@ Description: machine-learning with data compression core library runtime files
  .
  Homepage: http://complearn.org/
 
+Package: libcomplearn-mod-art
+Section: libdevel
+Architecture: any
+Depends: libcomplearn0 (= ${Source-Version}), libgsl0-dev
+Description: simple CompLearn compression module arithmetic encoder
+ This is an adaptive 0-order arithmetic encoder module for the CompLearn
+ machine learning through data compression software system.
+ .
+ Homepage: http://complearn.org/
+
 Package: complearn-tools
 Section: science
 Architecture: any
