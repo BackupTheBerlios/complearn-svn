@@ -28,9 +28,41 @@
 #include <stdlib.h>
 #include <complearn/complearn.h>
 
+#include <dirent.h>
+
 #if HAVE_DLFCN_H
 
 #include <dlfcn.h>
+
+void scanDirForModules(const char *dirname, struct GeneralConfig *cur)
+{
+  DIR *d;
+  struct dirent *dp;
+  d = opendir(dirname);
+  if (d == NULL)
+    return;
+  while ((dp = readdir(d)) != NULL) {
+    char *name = dp->d_name;
+    char *goodname;
+    int retval;
+    if (name[0] == '.')
+      continue;
+    goodname = clJoinAsPath(dirname, name);
+    if (cur && cur->fVerbose) {
+      printf("Loading %s...", goodname);
+      fflush(stdout);
+    }
+    retval = clCompaLoadDynamicLib(goodname);
+    if (cur && cur->fVerbose) {
+      if (retval)
+        printf("failed\n");
+      else
+        printf("succeeded\n");
+    }
+    free(goodname);
+  }
+  closedir(d);
+}
 
 static void *dl_musthavesymbol(void *dlhandle, const char *str)
 {
@@ -67,6 +99,11 @@ int clCompaLoadDynamicLib(const char *libraryname)
   fprintf(stderr, "Cannot load %s\n", libraryname);
   clogError("No Dynamic Library Support compiled in, sorry.");
   return NULL;
+}
+
+void scanDirForModules(const char *dirname)
+{
+  clCompaLoadDynamicLib(dirname);
 }
 
 #endif

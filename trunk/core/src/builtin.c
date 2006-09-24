@@ -423,6 +423,8 @@ static void initBuiltinCompressors(void) {
   initBZ2();
   initBlockSort();
   initZLib();
+  scanDirForModules(clGetSystemModuleDir(), NULL);
+  scanDirForModules(clGetHomeModuleDir(), NULL);
 }
 
 static void checkInitted(void) {

@@ -92,10 +92,7 @@ const char *clGetHomeModuleDir(void)
 
 const char *clGetSystemModuleDir(void)
 {
-  static char *result;
-  if (!result)
-    result = clJoinAsPath(clGetSystemCompLearnDir(), "modules");
-  return result;
+  return "/usr/lib/complearn/modules";
 }
 
 const char *clGetSystemCompLearnDir(void)

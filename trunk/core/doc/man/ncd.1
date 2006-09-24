@@ -98,7 +98,7 @@ sets a property of the form NAME=VALUE, e.g. --property=cmd=$HOME/bin/catppmd
 \fB\-m\fR, \fB\-\-module\fR=\fImodulefile\fR
 loads a compressor module (shared object usually ending in .so on Linux) called
 modulefile ; LD_LIBRARY_PATH must point to the directory that contains it for
-this to work, or you must specify an aboslute path.
+this to work, or you must specify an aboslute path.  This option is normally not necessary as the CompLearn system automatically scans the standard search paths /usr/lib/complearn/modules and $HOME/.complearn/modules to automatically load any compressor modules on startup.
 .TP
 \fB\-b\fR, \fB\-\-binary\fR
 output results to binary file
@@ -120,12 +120,21 @@ show help options and exit
 
 
 .SH FILES
+
+.TP
 .I $HOME/.complearn/config.yml
 .RS
  per-user configuration file, overrides systemwide default
 see
 .BR complearn (5)
 for further details.
+
+.TP
+.I $HOME/.complearn/modules /usr/lib/complearn/modules
+.RS
+ standard module automatic loading area.  Any shared object compressor
+modules found here will be loaded on startup.
+
 .SH ENVIRONMENT
 none
 .SH DIAGNOSTICS
