@@ -111,7 +111,7 @@ AC_ARG_ENABLE(optimize,
    yes) ua_optimize=true ;;
    no)  ua_optimize=false ;;
     *) AC_MSG_ERROR(bad value "${enableval}" for --enable-optimize) ;;
-esac], [ua_optimize=false])
+esac], [ua_optimize=true])
 
 if test x$ua_optimize = xtrue ; then
   CPPFLAGS="$CPPFLAGS -DNDEBUG"
