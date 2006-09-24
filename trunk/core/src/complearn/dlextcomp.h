@@ -41,7 +41,9 @@
  * must define in order to be compatible with this system.
  */
 
-#define FUNCNAMENCA "initCL"
+#define INITFUNCNAME        initCompLearnModule
+#define INITFUNCQUOTED     "initCompLearnModule"
+#define INITFUNCTYPE() void initCompLearnModule(void)
 
 /** \brief Loads custom compressor module through dynamic library.
  *

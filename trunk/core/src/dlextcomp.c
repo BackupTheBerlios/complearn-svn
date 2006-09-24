@@ -34,82 +34,28 @@
 
 static void *dl_musthavesymbol(void *dlhandle, const char *str)
 {
-	void *result;
-	result = dlsym(dlhandle, str);
-	if (result == NULL) {
-		clogError( "Error, symbol %s not defined for "
+  void *result;
+  result = dlsym(dlhandle, str);
+  if (result == NULL) {
+    clogError( "Error, symbol %s not defined for "
                     "dynamic library compressor\n", str);
-		exit(1);
-	}
-	return result;
+    exit(1);
+  }
+  return result;
 }
-
-#if 0
-void doSymbol(void *dlhandle, const char *modName, const char *symName, void **loc)
-{
-	static char symbuf[1024];
-	sprintf(symbuf, "%s_%s", modName, symName);
-	*loc = dlsym(dlhandle, symbuf);
-  printf("Loaded %p for symbol %s\n", *loc, symbuf);
-}
-#endif
-/*
-void clCompaLoadDynamicLibModuleNamed(const char *moduleName)
-{
-  void *d = dlopen(0, RTLD_LAZY);
-  void *f = &d;
-  doSymbol(d, "art", "freeCB", &f);
-  printf("F is now %p\n", f);
-  exit(0);
-}
-*/
-#if 0
-  int (*specificInitCB)(struct CompressionBase *cb);
-  void (*freeCB)(struct CompressionBase *cb);
-  int (*getAPIVersionCB)(void);
-  const char *(*longNameCB)(void);
-
-  int (*isDisabledCB)(void);
-
-    // Should read params and use them.   This will be called only once
-    // prior to compression.  This should do any compressor-specific
-    // initialization at this point and return 0 to indicate success or
-    // nonzero to indicate an error.  Don't forget to clSetLastErrorCB().
-  int (*prepareToCompressCB)(struct CompressionBase *cb);
-
-  int (*getWindowSizeCB)(void); // Return 0 for "infinite window"
-  int (*doesRoundWholeBytesCB)(void);
-
-  int (*isCompileProblemCB)(void); // Returns != 0 iff compile-time problem
-       // is detected that will prevent this compressor from working.
-       // If != 0 is to be returned, a call to setLastErrorCB should first
-       // occur to explain the reason for the error.
-  int (*isRuntimeProblemCB)(void); // Returns != 0 iff runtime problem
-  const char *(*shortNameCB)(void);
-  int (*allocSizeCB)(void);
-
-  const char *(*toStringCB)(struct CompressionBase *cb);
-
-  const char *(*paramStringCB)(struct CompressionBase *cb);  // Should show params somehow
-
-  /* Returns result in bits */
-  double (*compressCB)(struct CompressionBase *cb, struct DataBlock *datum);
-  struct DataBlock *(*concatCB)(struct CompressionBase *cb, struct DataBlock *dat1, struct DataBlock *dat2);
-  int (*isAutoEnabledCB)(void);
-#endif
 
 int clCompaLoadDynamicLib(const char *libraryname)
 {
   void *dlhandle;
   t_cldlinitcl nca;
-	dlhandle = dlopen(libraryname, RTLD_LAZY);
-	if (dlhandle == NULL) {
+  dlhandle = dlopen(libraryname, RTLD_LAZY | RTLD_LOCAL);
+  if (dlhandle == NULL) {
     perror("dlopen");
-		clogError( "Error opening dynamic library %s\n", libraryname);
-		exit(1);
-	}
+    clogError( "Error opening dynamic library %s\n", libraryname);
+    exit(1);
+  }
 
-  nca = (t_cldlinitcl) dl_musthavesymbol(dlhandle, FUNCNAMENCA);
+  nca = (t_cldlinitcl) dl_musthavesymbol(dlhandle, INITFUNCQUOTED);
   nca();
   return 0;
 }

@@ -107,7 +107,9 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initCL(void)
+/* Register one or more compressor types here. */
+
+INITFUNCTYPE()
 {
   clRegisterCB(&cba);
 }
