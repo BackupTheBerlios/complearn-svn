@@ -33,8 +33,6 @@
 
 #include <complearn/complearn.h>
 
-#include "newcomp.h"
-
 struct ARTCompressionInstance {
   void *baseClass;
   int c[256];
