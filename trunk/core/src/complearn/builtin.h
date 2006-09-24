@@ -82,6 +82,7 @@ void clRegisterCB(struct CompressionBaseAdaptor *vptr);
 
 struct CompressionBase *clNewCompressorCB(const char *shortName);
 const char *clShortNameCB(struct CompressionBase *cb);
+const char *clLongNameCB(struct CompressionBase *cb);
 const char *expandCommand(const char *inpcmd);
 int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd);
 void clZombie_reaperCB(int q);

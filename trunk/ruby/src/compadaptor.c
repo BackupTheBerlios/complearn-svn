@@ -28,12 +28,12 @@
 #include "clrbcon.h"
 
 static VALUE rbcompa_params(VALUE self) {
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
   int i;
   struct ParamList *pl;
   char *key, *val;
   VALUE hash;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
+  Data_Get_Struct(self, struct CompressionBase, ca);
   assert(ca);
   pl = clCompaParameters(ca);
   assert(pl);
@@ -55,7 +55,7 @@ static VALUE rbcompa_dump(VALUE self) {
 
 static VALUE rbcompa_load(VALUE cl, VALUE rdata)
 {
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
   int i;
   struct EnvMap *em = clEnvmapNew();
   char *key;
@@ -76,52 +76,52 @@ static VALUE rbcompa_load(VALUE cl, VALUE rdata)
   ca = clCompaLoadBuiltin(STR2CSTR(cname));
   assert(ca);
 
-  tdata = Data_Wrap_Struct(cCompAdaptor, 0, clCompaFree, ca);
+  tdata = Data_Wrap_Struct(cCompressionBase, 0, clCompaFree, ca);
   rb_obj_call_init(tdata, 0, 0);
   return tdata;
 }
 
 static VALUE rbcompa_shortname(VALUE self)
 {
-  struct CompAdaptor *ca;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
+  struct CompressionBase *ca;
+  Data_Get_Struct(self, struct CompressionBase, ca);
   return rb_str_new2(clCompaShortName(ca));
 }
 
 static VALUE rbcompa_longname(VALUE self)
 {
-  struct CompAdaptor *ca;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
-  return rb_str_new2(clCompaLongName(ca));
+  struct CompressionBase *ca;
+  Data_Get_Struct(self, struct CompressionBase, ca);
+  return rb_str_new2(clLongnameCB(ca));
 }
 
 static VALUE rbcompa_apiver(VALUE self)
 {
-  struct CompAdaptor *ca;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
-  return INT2NUM(clCompaAPIVer(ca));
+  struct CompressionBase *ca;
+  Data_Get_Struct(self, struct CompressionBase, ca);
+  return INT2NUM(APIVER_CLCOMP10);
 }
 
 static VALUE rbcompa_compclFunc(VALUE self, VALUE str)
 {
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
   struct DataBlock *db = clStringToDataBlockPtr(STR2CSTR(str));
   double result;
-  Data_Get_Struct(self, struct CompAdaptor, ca);
+  Data_Get_Struct(self, struct CompressionBase, ca);
 
-  result = clCompaCompress(ca, db);
+  result = clCompressCB(ca, db);
   clDatablockFreePtr(db);
   return rb_float_new(result);
 }
 
 static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
-  struct CompAdaptor *ca;
+  struct CompressionBase *ca;
   double result;
   struct DataBlock *dba = clStringToDataBlockPtr(STR2CSTR(stra));
   struct DataBlock *dbb = clStringToDataBlockPtr(STR2CSTR(strb));
 
-  Data_Get_Struct(self, struct CompAdaptor, ca);
+  Data_Get_Struct(self, struct CompressionBase, ca);
   result = clCompaNCD(ca, dba, dbb);
   clDatablockFreePtr(dba);
   clDatablockFreePtr(dbb);
@@ -143,7 +143,7 @@ static VALUE rbcompa_init(VALUE self)
 
 VALUE rbcompa_new(VALUE cl, VALUE comp)
 {
-  struct CompAdaptor *ca = clCompaLoadBuiltin(STR2CSTR(comp));
+  struct CompressionBase *ca = clCompaLoadBuiltin(STR2CSTR(comp));
   volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clCompaFree, ca);
 //  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, 0, ca);
   rb_obj_call_init(tdata, 0, 0);
@@ -151,18 +151,18 @@ VALUE rbcompa_new(VALUE cl, VALUE comp)
 }
 
 void doInitCompa(void) {
-  cCompAdaptor = rb_define_class_under(mCompLearn,"CompAdaptor", rb_cObject);
-  rb_define_method(cCompAdaptor, "initialize", rbcompa_init, 0);
-  rb_define_singleton_method(cCompAdaptor, "new", rbcompa_new, 1);
-  rb_define_singleton_method(cCompAdaptor, "loadBuiltin", rbcompa_new, 1);
-  rb_define_singleton_method(cCompAdaptor, "names", rbcompa_names, 0);
-  rb_define_singleton_method(cCompAdaptor, "listBuiltin", rbcompa_names, 0);
-  rb_define_method(cCompAdaptor, "compclFunc", rbcompa_compclFunc, 1);
-  rb_define_method(cCompAdaptor, "shortname", rbcompa_shortname, 0);
-  rb_define_method(cCompAdaptor, "longname", rbcompa_longname, 0);
-  rb_define_method(cCompAdaptor, "apiver", rbcompa_apiver, 0);
-  rb_define_method(cCompAdaptor, "params", rbcompa_params, 0);
-  rb_define_method(cCompAdaptor, "ncd", rbcompa_ncd, 2);
-  rb_define_method(cCompAdaptor, "_dump", rbcompa_dump, 1);
-  rb_define_singleton_method(cCompAdaptor, "_load", rbcompa_load, 1);
+  cCompressionBase = rb_define_class_under(mCompLearn,"CompressionBase", rb_cObject);
+  rb_define_method(cCompressionBase, "initialize", rbcompa_init, 0);
+  rb_define_singleton_method(cCompressionBase, "new", rbcompa_new, 1);
+  rb_define_singleton_method(cCompressionBase, "loadBuiltin", rbcompa_new, 1);
+  rb_define_singleton_method(cCompressionBase, "names", rbcompa_names, 0);
+  rb_define_singleton_method(cCompressionBase, "listBuiltin", rbcompa_names, 0);
+  rb_define_method(cCompressionBase, "compclFunc", rbcompa_compclFunc, 1);
+  rb_define_method(cCompressionBase, "shortname", rbcompa_shortname, 0);
+  rb_define_method(cCompressionBase, "longname", rbcompa_longname, 0);
+  rb_define_method(cCompressionBase, "apiver", rbcompa_apiver, 0);
+  rb_define_method(cCompressionBase, "params", rbcompa_params, 0);
+  rb_define_method(cCompressionBase, "ncd", rbcompa_ncd, 2);
+  rb_define_method(cCompressionBase, "_dump", rbcompa_dump, 1);
+  rb_define_singleton_method(cCompressionBase, "_load", rbcompa_load, 1);
 }

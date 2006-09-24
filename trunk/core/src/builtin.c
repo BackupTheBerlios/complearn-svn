@@ -367,9 +367,15 @@ void doBestScan(void)
     }
   }
 }
+
 const char *clShortNameCB(struct CompressionBase *cb)
 {
   return VF(cb, shortNameCB)();
+}
+
+const char *clLongNameCB(struct CompressionBase *cb)
+{
+  return VF(cb, longNameCB)();
 }
 
 const char *expandCommand(const char *inpcmd)

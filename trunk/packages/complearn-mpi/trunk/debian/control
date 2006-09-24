@@ -2,6 +2,7 @@ Source: complearn-mpi
 Section: science
 Priority: optional
 Maintainer: Rudi Cilibrasi <cilibrar@cilibrar.com>
+Uploaders: Paul van Tilburg <paulvt@debian.org>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libmpich1.0-dev, libcomplearn-dev, pkg-config, libgsl0-dev, cdbs
 Standards-Version: 3.7.2
 

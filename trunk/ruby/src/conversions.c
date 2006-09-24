@@ -50,7 +50,7 @@ VALUE convertgslvectorToRubyVector(gsl_vector *v)
   return result;
 }
 
-VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm, struct StringStack *labels)
+VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm)
 {
   int i, j;
   volatile VALUE result;
