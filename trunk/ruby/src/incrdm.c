@@ -87,7 +87,7 @@ static VALUE rbincrdm_ssk(VALUE self)
   return ksSSK;
 }
 
-static VALUE rbincrdm_cak(VALUE self)
+static VALUE rbincrdm_cbk(VALUE self)
 {
   return ksCBK;
 }
@@ -182,7 +182,7 @@ void doInitIncrDistMatrix(void) {
   rb_define_singleton_method(cIncrementalDistMatrix, "dmk", rbincrdm_dmk, 0);
   rb_define_singleton_method(cIncrementalDistMatrix, "dbk", rbincrdm_dbk, 0);
   rb_define_singleton_method(cIncrementalDistMatrix, "ssk", rbincrdm_ssk, 0);
-  rb_define_singleton_method(cIncrementalDistMatrix, "cak", rbincrdm_cak, 0);
+  rb_define_singleton_method(cIncrementalDistMatrix, "cbk", rbincrdm_cbk, 0);
 
   rb_define_method(cIncrementalDistMatrix, "_dump", rbincrdm_dump, 1);
 

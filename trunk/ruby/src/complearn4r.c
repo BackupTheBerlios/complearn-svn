@@ -45,9 +45,11 @@ VALUE cVector;
 VALUE cTime;
 VALUE cMarshal;
 
-static dummySOAP(void)
+static int dummySOAP(void)
 {
   soap_client_init_args(1,NULL);
+  if (0)
+    dummySOAP(); // avoid warning
 }
 
 struct TreeOrderObserverState {

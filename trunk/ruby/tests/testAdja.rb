@@ -58,24 +58,24 @@ printAdjAdaptor(ad)
 
 input = "hello world\n"
 
-CompAdaptor.names.sort.each { |compname|
-bzca = CompAdaptor.new(compname)
+CompressionBase.names.sort.each { |compname|
+bzca = CompressionBase.new(compname)
 s1 = 'block'
 s2 = 'flock'
 ln = bzca.longname
 puts "Testing #{compname}: #{bzca.compfunc(input)} (#{ln})"
 puts "Version: #{bzca.apiver}, NCD(#{s1},#{s2})=#{bzca.ncd(s1,s2)}"
 }
-#zca = CompAdaptor.new("zlib")
+#zca = CompressionBase.new("zlib")
 #puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
 #puts "Version: #{zca.apiver}"
 #
-#zca = CompAdaptor.new("blocksort")
+#zca = CompressionBase.new("blocksort")
 #puts "#{zca.shortname}, #{zca.longname}: #{zca.compfunc(input)}"
 #puts "Version: #{zca.apiver}, NCD: #{zca.ncd('block', 'flock')}"
 
 # TODO: find and fix the memory double free / corruption bug commented out here
-gca = CompAdaptor.new("google")
+gca = CompressionBase.new("zlib")
 puts "#{gca.shortname}, #{gca.longname}: #{gca.compfunc(input)}"
 puts "Version: #{gca.apiver}"
 
@@ -136,12 +136,12 @@ puts "Done testing tree."
 #  m.evolve
 #}
 
-bzca = CompAdaptor.new("bzip")
+bzca = CompressionBase.new("bzip2")
 bzca.params.each do |k,v|
   puts "#{k} => #{v}"
 end
 
-puts "Here's the CompAdaptor: #{bzca.inspect}"
+puts "Here's the CompressionBase: #{bzca.inspect}"
 cdump = Marshal.dump(bzca)
 cloaded = Marshal.load(cdump)
 puts cloaded.class

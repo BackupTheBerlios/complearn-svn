@@ -28,9 +28,9 @@ require 'complearn4r'
 dmk = CompLearn::IncrementalDistMatrix.dmk
 dbk = CompLearn::IncrementalDistMatrix.dbk
 ssk = CompLearn::IncrementalDistMatrix.ssk
-cak = CompLearn::IncrementalDistMatrix.cak
+cbk = CompLearn::IncrementalDistMatrix.cbk
 
-ca = CompLearn::CompAdaptor.new("zlib")
+ca = CompLearn::CompressionBase.new("zlib")
 
 idm = CompLearn::IncrementalDistMatrix.new(ca)
 #idm.addDataBlock("hello there")

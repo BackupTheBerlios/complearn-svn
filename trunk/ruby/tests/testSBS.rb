@@ -23,6 +23,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+# TODO: Figure out how come this test sometimes segfaults.  Memory corruption
+# problem perhaps due to tree retarget followed by GC on old tree while in
+# drawIt loop...  just guessing.
 require 'complearn4r'
 require 'curses'
 require 'date'
@@ -102,6 +106,7 @@ class TreeObserverPrinter < CompLearn::TreeObserver
     redrawTime
     drawDoneMessage
     Curses::refresh
+    puts "In done A"
   end
   def clearToBottom
     10.times { |i|

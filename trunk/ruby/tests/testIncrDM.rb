@@ -28,7 +28,7 @@ require 'matrix'
 
 include CompLearn
 
-ca = CompAdaptor.new("blocksort")
+ca = CompressionBase.new("blocksort")
 idm = IncrementalDistMatrix.new(ca)
 idm.addString("hello")
 idm.addString("world")
@@ -36,7 +36,7 @@ puts idm.distmatrix
 idm.addString("alien")
 puts idm.distmatrix
 
-class CompAdaptor
+class CompressionBase
   def ncdMatrix(ardb)
     incrdm = IncrementalDistMatrix.new(self)
     ardb.each { |d| incrdm.addString(d) }
