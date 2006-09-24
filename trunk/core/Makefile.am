@@ -62,6 +62,7 @@ doc/man/maketree.1 \
 doc/man/ncd.1
 
 examples = \
+examples/README \
 examples/example-config.yml \
 examples/dltest/libart.c \
 examples/dltest/Makefile \
