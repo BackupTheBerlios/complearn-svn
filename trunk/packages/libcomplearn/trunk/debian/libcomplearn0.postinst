@@ -1,12 +1,5 @@
 #!/bin/sh
 ARG=$1
 set -e
-if test x$ARG = xinstall ; then
-  if test -f /etc/complearn/config.yml ; then
-    echo -n
-  else
-    cp examples/config.yml /etc/complearn
-  fi
-fi
 
 ldconfig
