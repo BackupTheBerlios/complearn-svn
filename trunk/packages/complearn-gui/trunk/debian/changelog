@@ -1,3 +1,9 @@
+complearn-gui (0.9.3-3) unstable; urgency=low
+
+  * Recompiled against new upstream library package.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sun, 24 Sep 2006 13:46:24 +0200
+
 complearn-gui (0.9.3-2) unstable; urgency=low
 
   * Adjusted packaging slightly, such as changing -dev package dep names.
