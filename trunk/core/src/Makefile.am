@@ -143,6 +143,7 @@ ncbase.c \
 ncazlib.c \
 ncabz2.c \
 builtinca-bzlib.c \
+builtinca-bzlibx.c \
 builtinca-google.c \
 builtinca-realcomp.c \
 builtinca-soap.c \

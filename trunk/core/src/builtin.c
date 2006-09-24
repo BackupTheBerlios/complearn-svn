@@ -22,6 +22,7 @@ void initReal(void);
 void initVirtual(void);
 void initLZMA(void);
 void initGoogle(void);
+void initBZip2X(void);
 void printCompressors(void);
 void doBestScan(void);
 static void checkInitted(void);
@@ -362,7 +363,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
     retval = dup2(pin[1],1);
     if (retval < 0)
       clogError("dup2");
-    execv(cmd, arglist);
+    execv(cmd, (char * const*)arglist);
     printf("Shouldn't be here, wound up returning from exec!!\n");
     exit(1);
   }
@@ -434,6 +435,7 @@ static void initBuiltinCompressors(void) {
   initBlockSort();
   initZLib();
   initLZMA();
+  initBZip2X();
   scanDirForModules(clGetSystemModuleDir(), NULL);
   scanDirForModules(clGetHomeModuleDir(), NULL);
 }

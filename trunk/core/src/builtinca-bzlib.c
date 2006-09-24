@@ -86,6 +86,10 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   struct BZipCompressionInstance *bzci = (struct BZipCompressionInstance *) cb;
   if (sbs != NULL)
     bzci->blocksize = atoi(sbs);
+  if (bzci->blocksize < 1 || bzci->blocksize > 9) {
+    clSetInstanceErrorCB(cb, "bad blocksize parameter setting.");
+    return 1;
+  }
   if (swf != NULL)
     bzci->workfactor = atoi(swf);
   if (sv != NULL)
