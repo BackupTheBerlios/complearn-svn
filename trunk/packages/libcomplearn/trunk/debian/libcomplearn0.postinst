@@ -1,7 +1,7 @@
 #!/bin/sh
 ARG=$1
 set -e
-if test x$ARG == x -a -f /etc/complearn/config.yml ; then
+if test x$ARG == xinstall -a -f /etc/complearn/config.yml ; then
   echo -n
 else
   cp examples/config.yml /etc/complearn
