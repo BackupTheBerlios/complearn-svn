@@ -36,7 +36,6 @@ LEV3PROGRAMS = $(LEV2PROGRAMS) $(NGDLIBS)
 
 bin_PROGRAMS = $(LEV3PROGRAMS)
 check_PROGRAMS = runtests
-
 EXTRA_PROGRAMS=
 
 runtests_SOURCES = runtests.c
@@ -201,9 +200,13 @@ clog.c \
 clwrap.c \
 clparser.c
 
-lib_LTLIBRARIES= libcomplearn.la
+
+#lib_LIBRARIES= libart.so
+
+lib_LTLIBRARIES= libcomplearn.la libart.la
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
 libcomplearn_la_LIBADD= $(NGDLIBS)
+libart_la_SOURCES=libart.c
 
 clean:
 	rm -rf *.o *.lo $(BASICPROGRAMS) .libs

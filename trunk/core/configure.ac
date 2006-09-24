@@ -30,6 +30,8 @@ AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 AM_MAINTAINER_MODE
+mkdir artmod
+cp examples/dltest/* artmod
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
   exec_prefix_NONE=
@@ -246,4 +248,4 @@ echo "build         is $build"
 
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
-AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile examples/dltest/Makefile])
+AC_OUTPUT([complearn.pc Doxyfile Makefile src/Makefile])

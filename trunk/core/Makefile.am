@@ -23,8 +23,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SUBDIRS = src
+SUBDIRS=src
+
 #am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in config.status config.log
+
 DISTCLEAN_TARGETS = config.status config.log libcomplearn-0.9.4.tar.gz configure Makefile.in Doxyfile config.log depcomp config.guess config.sub Makefile complearn.pc config.status autom4te.cache libtool missing aclocal.m4 install-sh
 
 distclean: clean
@@ -62,7 +64,7 @@ doc/man/ncd.1
 examples = \
 examples/example-config.yml \
 examples/dltest/libart.c \
-examples/dltest/Makefile.in \
+examples/dltest/Makefile \
 examples/perlsoapserver.pl \
 examples/rubysoapserver/hs.rb \
 examples/speeches/bush-911-address \
@@ -134,3 +136,4 @@ scripts = \
 scripts/reconf.zsh \
 scripts/testrealcomp.sh \
 scripts/testvirtcomp.zsh
+
