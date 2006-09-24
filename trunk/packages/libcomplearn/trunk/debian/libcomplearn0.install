@@ -1,2 +1,2 @@
-src/.libs/libcomplearn.so.* usr/lib/
-examples/example-config.yml /etc/complearn/config.yml
+src/.libs/libcomplearn.so.* usr/lib
+examples/config.yml /etc/complearn
