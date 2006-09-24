@@ -32,7 +32,7 @@ src/extconf.rb \
 src/clrbcon.h \
 src/conversions.h \
 src/adja.c \
-src/compadaptor.c \
+src/compbase.c \
 src/complearn4r.c \
 src/conversions.c \
 src/incrdm.c \
