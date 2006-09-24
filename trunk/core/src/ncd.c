@@ -167,6 +167,11 @@ int main(int argc, char **argv)
       { NULL, 0, NULL, 0 },
   };
   cur = loadNCDEnvironment();
+  if (argc == 1) {
+    clPrintOptionHelp();
+    printCompressors();
+    exit(0);
+  }
   ncdcfg = (struct NCDConfig *) cur->ptr;
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
 //  testGSoapReq();
