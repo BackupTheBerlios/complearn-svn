@@ -29,6 +29,7 @@
 
 #include <complearn/uclconfig.h>
 #include <complearn/environment.h>
+#include <complearn/stringstack.h>
 
 /** \brief Returns pointer to a SOAP compressor server interface.
  *
@@ -84,7 +85,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName);
 const char *clShortNameCB(struct CompressionBase *cb);
 const char *clLongNameCB(struct CompressionBase *cb);
 const char *expandCommand(const char *inpcmd);
-int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd);
+int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct StringStack *afterCmdArgs);
 void clZombie_reaperCB(int q);
 struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
 const char *clGetParamStringCB(struct CompressionBase *cb);

@@ -10,31 +10,3 @@ all: debs
 
 debs: $(DBSTAMPS)
 	echo "Trying to make $(DSCS) from $(PKGPAKS)"
-
-addkey:
-	wget -q "http://cilibrar.com/debian/gpgkey-E0CFA8E4.txt" -O - | sudo apt-key add -
-
-%.dsc: %.pkgpak
-	source $< ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; pushd . ; cd $${SRCDIRNAME} && aclocal && automake -a && autoconf && ./configure --enable-optimize && make dist && popd && cp $${SRCDIRNAME}/$${BUILDDIRNAME}.tar.gz $${ORIGTARNAME} && tar xvfz $${ORIGTARNAME} && cd $${BUILDDIRNAME} && cp -rv ../$${SRCDIRNAME}/debian . && cd .. && dpkg-source -b -isvn/ $${BUILDDIRNAME} $${ORIGTARNAME}
-
-.%.debstamp: %.dsc
-	SMALLNAME=`basename $< .dsc` ; source $${SMALLNAME}.pkgpak && sudo pbuilder build $< && sudo cp $${SMALLNAME}.diff.gz $< /var/cache/pbuilder/result && touch $@
-
-rdebs: libcomplearn-ruby_0.5.4-1.dsc
-
-mdebs: complearn-mpi_0.9.3-1.dsc
-
-gdebs: complearn-gui_0.9.3-1.dsc
-
-cldebs: libcomplearn_0.9.3-1.dsc
-
-csdebs: libcsoap_1.0.4-1.dsc
-
-deploy:
-	scp *.dsc *.tar.gz *.diff.gz cilibrar@cilibrar.com:public_html/cilibrarcom/debian/pool/main/l/libcomplearn && ssh cilibrar@cilibrar.com /home/cilibrar/bin/upa pkgarc main
-
-clean:
-	echo "Removing $(DSCS)" ; \
-	for i in $(PKGPAKS) ; do source $$i ; BUILDDIRNAME=$${PACKAGENAME}-$${VERSION} ; ORIGTARNAME=$${PACKAGENAME}_$${VERSION}.orig.tar.gz ; rm -rf $${BUILDDIRNAME} $${ORIGTARNAME} $${PACKAGENAME}_$${VERSION}-*.changes *_$${VERSION}-*.deb ; done ; rm -f $(DSCS) $(DIFFS) $(DBSTAMPS)
-
-

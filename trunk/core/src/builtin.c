@@ -312,11 +312,20 @@ void clZombie_reaperCB(int q)
  * \param cmd string indicating pathname for external program
  * \return fd that may be read to get data from external program stdout
  */
-int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
+int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct StringStack *afterCmdArgs)
 {
+  int i;
 	int pout[2], pin[2];
   int retval;
   int childid;
+  const char *arglist[128];
+  int argnum = 0;
+  arglist[argnum++] = cmd;
+  if (afterCmdArgs) {
+    for (i = 0;i < clStringstackSize(afterCmdArgs); i += 1)
+      arglist[argnum++] = clStringstackReadAt(afterCmdArgs, i);
+  }
+  arglist[argnum++] = NULL;
   retval = pipe(pout);
   if (retval)
     clogError("pipe");
@@ -352,7 +361,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd)
     retval = dup2(pin[1],1);
     if (retval < 0)
       clogError("dup2");
-    execl(cmd, cmd, NULL);
+    execv(cmd, arglist);
     printf("Shouldn't be here, wound up returning from exec!!\n");
     exit(1);
   }
