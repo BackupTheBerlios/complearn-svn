@@ -63,7 +63,7 @@ doc/man/ncd.1
 
 examples = \
 examples/README \
-examples/example-config.yml \
+examples/config.yml \
 examples/dltest/libart.c \
 examples/dltest/Makefile \
 examples/perlsoapserver.pl \
