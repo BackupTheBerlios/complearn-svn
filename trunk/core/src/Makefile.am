@@ -144,6 +144,7 @@ ncazlib.c \
 ncabz2.c \
 builtinca-bzlib.c \
 builtinca-bzlibx.c \
+builtinca-ppmdx.c \
 builtinca-google.c \
 builtinca-realcomp.c \
 builtinca-soap.c \

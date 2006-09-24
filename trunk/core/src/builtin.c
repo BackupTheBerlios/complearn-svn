@@ -23,9 +23,12 @@ void initVirtual(void);
 void initLZMA(void);
 void initGoogle(void);
 void initBZip2X(void);
+void initPPMDX(void);
+
 void printCompressors(void);
 void doBestScan(void);
 static void checkInitted(void);
+static void initBuiltinCompressors(void);
 
 #define DELIMS ":"
 
@@ -426,20 +429,6 @@ const char *expandCommand(const char *inpcmd)
   return NULL;
 }
 
-static void initBuiltinCompressors(void) {
-  fHaveInitted = 1;
-  initGoogle();
-  initReal();
-  initVirtual();
-  initBZ2();
-  initBlockSort();
-  initZLib();
-  initLZMA();
-  initBZip2X();
-  scanDirForModules(clGetSystemModuleDir(), NULL);
-  scanDirForModules(clGetHomeModuleDir(), NULL);
-}
-
 static void checkInitted(void) {
   if (!fHaveInitted)
     initBuiltinCompressors();
@@ -457,4 +446,19 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
     pl->fields[i] = clFielddescNew(p.sp.key, p.sp.val, 0);
   }
   return pl;
+}
+
+static void initBuiltinCompressors(void) {
+  fHaveInitted = 1;
+  initGoogle();
+  initReal();
+  initVirtual();
+  initBZ2();
+  initBlockSort();
+  initZLib();
+  initLZMA();
+  initBZip2X();
+  initPPMDX();
+  scanDirForModules(clGetSystemModuleDir(), NULL);
+  scanDirForModules(clGetHomeModuleDir(), NULL);
 }
