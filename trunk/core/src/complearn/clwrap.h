@@ -33,6 +33,9 @@ FILE *clFopen(const char *fname, char *mode);
 const char *getLikelyTmpPrefix();
 void clFclose(FILE *fp);
 
+/* for fd's */
+int clCountBytesTillEOFThenCloseCB(int readfd);
+
 char *clJoinAsPath(const char *c1, const char *c2);
 const char *clGetHomeDir(void);
 const char *clGetHomeCompLearnDir(void);
@@ -43,5 +46,6 @@ const char *clGetSystemModuleDir(void);
 const char *clGetHomeModuleDir(void);
 const char *clGetHomeConfigFileName(void);
 const char *clGetSystemConfigFileName(void);
+
 
 #endif

@@ -148,6 +148,7 @@ builtinca-realcomp.c \
 builtinca-soap.c \
 builtinca-virtcomp.c \
 builtinca-blocksort.c \
+builtinca-lzma.c \
 qsufsort.c \
 builtinca-zlib.c \
 builtinta-unbzip.c \

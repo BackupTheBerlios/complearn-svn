@@ -3,72 +3,63 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-struct RealCompressionInstance {
+struct LZMACompressionInstance {
   void *baseClass;
-  char *ecmd;
 };
 
+static const char *ecmd;
 static const char *fshortNameCB(void)
 {
-  return "real";
+  return "lzma";
 }
 
 static const char *flongNameCB(void)
 {
-  return "external process";
+  return "Lempel-Ziv Markov-Chain";
 }
 
 static int fallocSizeCB(void)
 {
-  return sizeof(struct RealCompressionInstance);
+  return sizeof(struct LZMACompressionInstance);
 }
 
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
+  struct LZMACompressionInstance *rci = (struct LZMACompressionInstance *) cb;
+  struct StringStack *args = clStringstackNew();
+  clStringstackPush(args, "-9zcf");
   int readfd;
 
-  assert(rci->ecmd);
-  readfd = clForkPipeExecAndFeedCB(src, rci->ecmd, NULL);
+  assert(ecmd);
+  readfd = clForkPipeExecAndFeedCB(src, ecmd, args);
   return 8.0 * clCountBytesTillEOFThenCloseCB(readfd);
 }
 
 static void ffreeCB(struct CompressionBase *cb)
 {
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
-  if (rci->ecmd) {
-    free(rci->ecmd);
-    rci->ecmd = NULL;
-  }
+  struct LZMACompressionInstance *rci = (struct LZMACompressionInstance *) cb;
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)
 {
-//  clSetParameterCB(cb, "cmd", "catbzip", 0);
   return 0;
 }
 
 static int fisAutoEnabledCB(void)
 {
-  return 0;
+  return 1;
 }
 
-static int fprepareToCompressCB(struct CompressionBase *cb)
+static int fisRuntimeProblemCB(void)
 {
-  const char *scmd = clEnvmapValueForKey(clGetParametersCB(cb), "cmd");
-  const char *ecmd;
-  struct RealCompressionInstance *rci = (struct RealCompressionInstance *) cb;
-  if (scmd == NULL) {
-    clSetLastErrorCB(cb,"Error, real compressor must have cmd parameter");
-    return 1;
-  }
+  const char *scmd = "lzma";
   ecmd = expandCommand(scmd);
-  if (ecmd)
-    rci->ecmd = strdup(ecmd);
-  else {
+  if (ecmd) {
+   ;  /* all good */ ;
+  } else {
     char buf[1024];
     sprintf(buf, "Cannot find command %s for real compressor.", scmd);
-    clSetLastErrorCB(cb, buf);
+    clSetLastStaticErrorCB(fshortNameCB(), buf);
     return 1;
   }
   return 0;
@@ -76,7 +67,7 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 
 static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(specificInitCB),
-  VIRTFUNCEXPORT(prepareToCompressCB),
+  VIRTFUNCEXPORT(isRuntimeProblemCB),
   VIRTFUNCEXPORT(compressCB),
   VIRTFUNCEXPORT(shortNameCB),
   VIRTFUNCEXPORT(longNameCB),
@@ -85,7 +76,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initReal(void)
+void initLZMA(void)
 {
   clRegisterCB(&cba);
 }

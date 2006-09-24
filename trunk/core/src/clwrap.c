@@ -30,6 +30,8 @@
 
 #define CONFIGNAME "config.yml"
 
+#define READBLOCKSIZE 16384
+
 const char *getLikelyTmpPrefix()
 {
   static const char *tmpFileDir;
@@ -126,3 +128,14 @@ const char *clGetHomeConfigFileName(void)
 {
   return clJoinAsPath(clGetHomeCompLearnDir(), CONFIGNAME);
 }
+int clCountBytesTillEOFThenCloseCB(int readfd)
+{
+  int bc = 0, readlen;
+  static char dummy[READBLOCKSIZE];
+  while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
+    bc += readlen;
+  }
+  close(readfd);
+  return bc;
+}
+

@@ -20,6 +20,7 @@ void initZLib(void);
 void initBZ2(void);
 void initReal(void);
 void initVirtual(void);
+void initLZMA(void);
 void initGoogle(void);
 void printCompressors(void);
 void doBestScan(void);
@@ -318,7 +319,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
 	int pout[2], pin[2];
   int retval;
   int childid;
-  const char *arglist[128];
+  char const *arglist[128];
   int argnum = 0;
   arglist[argnum++] = cmd;
   if (afterCmdArgs) {
@@ -432,6 +433,7 @@ static void initBuiltinCompressors(void) {
   initBZ2();
   initBlockSort();
   initZLib();
+  initLZMA();
   scanDirForModules(clGetSystemModuleDir(), NULL);
   scanDirForModules(clGetHomeModuleDir(), NULL);
 }

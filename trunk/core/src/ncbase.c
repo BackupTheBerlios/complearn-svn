@@ -117,6 +117,11 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *db)
   return clDatablockSize(db) * 8.0;
 }
 
+static int fprepareToCompressCB(struct CompressionBase *cb)
+{
+  return 0; /* OK */
+}
+
 static int fspecificInitCB(struct CompressionBase *cb)
 {
   printf("(no specific initialization function given)\n");
@@ -140,6 +145,7 @@ struct CompressionBaseAdaptor cbsuper = {
   VIRTFUNCEXPORT(paramStringCB),
   VIRTFUNCEXPORT(concatCB),
   VIRTFUNCEXPORT(isDisabledCB),
-  VIRTFUNCEXPORT(isAutoEnabledCB)
+  VIRTFUNCEXPORT(isAutoEnabledCB),
+  VIRTFUNCEXPORT(prepareToCompressCB)
 };
 
