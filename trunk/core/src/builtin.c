@@ -15,12 +15,13 @@ static int fHaveInitted;
 
 void clinitZLib(void);
 void clinitBZ2(void);
+void clinitBlockSort(void);
 void clinitReal(void);
 void clinitVirtual(void);
 void clinitGoogle(void);
 void clinitBZip2X(void);
 
-static void doBestScan(void);
+static void clDoBestScan(void);
 static void checkInitted(void);
 static void initBuiltinCompressors(void);
 
@@ -445,6 +446,8 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
 static void initBuiltinCompressors(void) {
   char *modPath;
   fHaveInitted = 1;
+  if (fHaveInitted == 0)
+    clDoBestScan(); // to stop warnings for now
   clinitGoogle();
   clinitReal();
   clinitVirtual();

@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT(complearn-gui,0.9.3,cilibrar@cilibrar.com)
+AC_INIT(complearn-gui,0.9.6,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/clfun.c)
 AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
@@ -97,7 +97,7 @@ AC_ARG_ENABLE(optimize,
    yes) ua_optimize=true ;;
    no)  ua_optimize=false ;;
     *) AC_MSG_ERROR(bad value "${enableval}" for --enable-optimize) ;;
-esac], [ua_optimize=false])
+esac], [ua_optimize=true])
 
 if test x$ua_optimize = xtrue ; then
   CPPFLAGS="$CPPFLAGS -DNDEBUG"

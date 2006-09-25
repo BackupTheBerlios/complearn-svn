@@ -324,7 +324,7 @@ static void handle_key_changed( SDL_keysym* keysym, int isDown )
     if (isDown) {
       cam.curChanging = choseAxis;
       cam.curDir = choseDir;
-      cam.lastTime = cldatetimeStaticTimer();
+      cam.lastTime = clDatetimeStaticTimer();
     } else {
       cam.curChanging = NULL;
       cam.curDir = 0;
@@ -540,7 +540,7 @@ static void draw_screen(void)
 {
   int i, j, n;
   double x, y, z;
-  double curtime = cldatetimeStaticTimer();
+  double curtime = clDatetimeStaticTimer();
   /* Clear the color and depth buffers. */
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -553,7 +553,7 @@ static void draw_screen(void)
 
 
 //  glEnable(GL_COLOR_MATERIAL);
-  double t = cldatetimeStaticTimer();
+  double t = clDatetimeStaticTimer();
   matspring_diff[0] = 0.4 + 0.4 * cos(t * 7 * isCalculatingDM());
   matspring_diff[1] = 0.4 + 0.4 * cos(t * 4 * isCalculatingDM());
 //  glColor3fv(matspring_diff);
@@ -779,7 +779,7 @@ static void setupCameraAngle(void) {
      */
     gluPerspective( 60.0, ratio, 1.0, 1024.0 );
     gluLookAt(cam.radius*sin(cam.angle1)*cos(cam.angle2),cam.radius*sin(cam.angle2), cam.radius*cos(cam.angle1), 0, 0, 0, 0, 1, 0);
-  double curtime = cldatetimeStaticTimer();
+  double curtime = clDatetimeStaticTimer();
   if (cam.curChanging) {
     double dt = curtime - cam.lastTime;
     cam.lastTime = curtime;
@@ -924,7 +924,7 @@ static void realDoDroppedFile(char *buf)
     curFiles = clCalloc(sizeof(struct DataBlockKeeper), 1);
   }
   if (clIsDirectory(buf)) {
-    struct DataBlockEnumeration *dbe = clDbeLoadDirectory(buf);
+    struct DataBlockEnumeration *dbe = clBlockEnumerationLoadDirectory(buf);
     struct DataBlockEnumerationIterator *dbi;
     struct DataBlock *cur;
     dbi = dbe->newenumiter(dbe);
@@ -979,7 +979,7 @@ int main( int argc, char* argv[] )
   /* Dimensions of our window. */
   int width = 0;
   int height = 0;
-  cam.lastTime = cldatetimeStaticTimer();
+  cam.lastTime = clDatetimeStaticTimer();
   /* Color depth in bits of our window. */
   int bpp = 0;
   /* Flags we will pass into SDL_SetVideoMode. */
