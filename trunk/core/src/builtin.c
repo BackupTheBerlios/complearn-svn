@@ -447,6 +447,7 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
 }
 
 static void initBuiltinCompressors(void) {
+  char *modPath;
   fHaveInitted = 1;
   initGoogle();
   initReal();
@@ -455,6 +456,9 @@ static void initBuiltinCompressors(void) {
   initBlockSort();
   initZLib();
   initBZip2X();
+  modPath = getenv("COMPLEARNMODPATH");
+  if (modPath)
+    scanDirForModules(modPath, NULL);
   scanDirForModules(clGetSystemModuleDir(), NULL);
   scanDirForModules(clGetHomeModuleDir(), NULL);
 }
