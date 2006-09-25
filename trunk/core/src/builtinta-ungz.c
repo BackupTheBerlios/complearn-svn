@@ -82,7 +82,7 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
 	char tmpfile[1024];
   char pbuf[1024];
 
-  dirs[0] = getLikelyTmpPrefix();
+  dirs[0] = clGetLikelyTmpPrefix();
 
   for(i = 0; dirs[i]; i += 1) {
     sprintf(pbuf,"%s",dirs[i]);

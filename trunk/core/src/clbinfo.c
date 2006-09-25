@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
   printf("opening %s\n", argv[1]);
   labels = clStringstackNew();
   dm = cltxtDistMatrix(argv[1], labels);
-  db = makeCLBDistMatrix(dm, labels, NULL, NULL);
+  db = clMakeCLBDistMatrix(dm, labels, NULL, NULL);
   printf("writing CLB file %s\n", argv[2]);
   clDatablockWriteToFile(db, argv[2]);
 */
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
   printf("doing %d trials\n", maxtrials);
   matched = 0;
 
-  start = cldatetimeStaticTimer();
+  start = clDatetimeStaticTimer();
   for ( i = 0; i < maxtrials ; i += 1) {
     struct TreeMaster *tm1, *tm2;
     struct TreeHolder *th1, *th2;
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     clTreemasterFree(tm1);
     clTreemasterFree(tm2);
   }
-  finish = cldatetimeStaticTimer();
+  finish = clDatetimeStaticTimer();
 
   */
 /*  fp = clFopen(outfile,"a+");

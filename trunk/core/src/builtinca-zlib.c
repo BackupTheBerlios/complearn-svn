@@ -99,7 +99,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initZLib(void)
+void clinitZLib(void)
 {
 //#define REGTYPEFORNAME(name, typ, xcba) clRegisterCB(#name, sizeof(typ), &xcba)
   clRegisterCB(&cba);

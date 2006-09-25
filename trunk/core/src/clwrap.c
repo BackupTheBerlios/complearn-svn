@@ -32,7 +32,7 @@
 
 #define READBLOCKSIZE 16384
 
-const char *getLikelyTmpPrefix()
+const char *clGetLikelyTmpPrefix()
 {
   static const char *tmpFileDir;
   if (tmpFileDir == NULL) {
@@ -50,7 +50,7 @@ static FILE *makeTmpCopyStdin(void)
   FILE *fp;
   if (tmpfile == NULL) {
     struct DataBlock *db = clFilePtrToDataBlockPtr(stdin);
-    tmpfile = clJoinAsPath(getLikelyTmpPrefix(),"clstdintmp-XXXXXX");
+    tmpfile = clJoinAsPath(clGetLikelyTmpPrefix(),"clstdintmp-XXXXXX");
     fd = mkstemp(tmpfile);
     close(fd);
     clDatablockWriteToFile(db, tmpfile);

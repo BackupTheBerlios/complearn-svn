@@ -312,7 +312,7 @@ struct TreeHolder *clTreemasterFindTree(struct TreeMaster *tm)
   if (tm == NULL) {
     clogError("NULL ptr in clTreemasterFindTree()\n");
   }
-  tm->startTime = cldatetimeNow();
+  tm->startTime = clDatetimeNow();
   if (tm->tob && tm->tob->treesearchstarted)
     tm->tob->treesearchstarted(tm->tob);
   for (;;) {
@@ -324,7 +324,7 @@ struct TreeHolder *clTreemasterFindTree(struct TreeMaster *tm)
         break;
     }
   }
-  tm->endTime = cldatetimeNow();
+  tm->endTime = clDatetimeNow();
 #if 1
   if (!tm->fAbortNow && tm->tob && tm->tob->treedone) {
     struct TreeHolder *th = clTreehClone(tm->th[0]);
@@ -352,11 +352,11 @@ void clTreemasterFree(struct TreeMaster *tm)
     tm->best=NULL;
   }
   if (tm->endTime) {
-    cldatetimeFree(tm->endTime);
+    clDatetimeFree(tm->endTime);
     tm->endTime = NULL;
   }
   if (tm->startTime) {
-    cldatetimeFree(tm->startTime);
+    clDatetimeFree(tm->startTime);
     tm->startTime = NULL;
   }
   gsl_matrix_free(tm->dm);

@@ -98,8 +98,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 }
 static int fisCompileProblemCB(void)
 {
-  if (cldbIsGDBMProblem()) {
-    clSetLastStaticErrorCB(shortName, cldbReasonWhy());
+  if (clDBIsGDBMProblem()) {
+    clSetLastStaticErrorCB(shortName, clDBReasonWhy());
     return 1;
   }
   return 0;
@@ -184,7 +184,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initGoogle(void)
+void clinitGoogle(void)
 {
   clRegisterCB(&cba);
 }

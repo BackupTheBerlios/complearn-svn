@@ -715,13 +715,13 @@ void testDateTime(void)
 {
   struct CLDateTime *td;
   char *daystr;
-  td = cldatetimeNow();
+  td = clDatetimeNow();
   assert(td);
-  daystr = cldatetimeToDayString(td);
+  daystr = clDatetimeToDayString(td);
 /*  assert(daystr);
   assert(strlen(daystr) > 2);
   */
-  cldatetimeFree(td);
+  clDatetimeFree(td);
 }
 
 void testMarshalling(void)

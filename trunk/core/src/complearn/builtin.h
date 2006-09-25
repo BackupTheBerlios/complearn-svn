@@ -103,6 +103,7 @@ const char *clLastStaticErrorCB(const char *shortName);
 void clFreeCB(struct CompressionBase *cb);
 void clSetStaticErrorMessage(const char *shortName, const char *msg);
 struct StringStack *clListBuiltinsCB(int fWithDisabled);
+void clPrintCompressors(void);
 
 struct CompressionBaseAdaptor {
   int (*specificInitCB)(struct CompressionBase *cb);

@@ -34,7 +34,7 @@
 
 #include <dlfcn.h>
 
-void scanDirForModules(const char *dirname, struct GeneralConfig *cur)
+void clScanDirForModules(const char *dirname, struct GeneralConfig *cur)
 {
   DIR *d;
   struct dirent *dp;
@@ -101,7 +101,7 @@ int clCompaLoadDynamicLib(const char *libraryname)
   return NULL;
 }
 
-void scanDirForModules(const char *dirname)
+void clScanDirForModules(const char *dirname)
 {
   clCompaLoadDynamicLib(dirname);
 }

@@ -31,16 +31,16 @@
 
 struct CLDateTime;
 
-struct CLDateTime *cldatetimeNow(void);
-double cldatetimeStaticTimer(void);
-void cldatetimeFree(struct CLDateTime *cldt);
-const char *cldatetimeToString(struct CLDateTime *c);
-char *cldatetimePreviousDayString(const char *str);
-const char *cldatetimeToHumString(struct CLDateTime *c);
-unsigned long cldatetimeToInt(struct CLDateTime *c);
-double cldatetimeToDouble(struct CLDateTime *c);
-char *cldatetimeToDayString(struct CLDateTime *c);
-struct CLDateTime *cldatetimeAddDays(const struct CLDateTime *basis, int offset);
+struct CLDateTime *clDatetimeNow(void);
+double clDatetimeStaticTimer(void);
+void clDatetimeFree(struct CLDateTime *cldt);
+const char *clDatetimeToString(struct CLDateTime *c);
+char *clDatetimePreviousDayString(const char *str);
+const char *clDatetimeToHumString(struct CLDateTime *c);
+unsigned long clDatetimeToInt(struct CLDateTime *c);
+double clDatetimeToDouble(struct CLDateTime *c);
+char *clDatetimeToDayString(struct CLDateTime *c);
+struct CLDateTime *clDatetimeAddDays(const struct CLDateTime *basis, int offset);
 void clSleepMillis(int howManyMillis);
 
 #endif

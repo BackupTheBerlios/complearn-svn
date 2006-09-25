@@ -80,7 +80,7 @@ void loadCompressor(struct GeneralConfig *cur)
     cur->ca = clNewCompressorCB(cur->compressor_name);
     if (cur->ca == NULL) {
       //clogError( "Error, cannot load builtin compressor %s\n", cur->compressor_name);
-      printCompressors();
+      clPrintCompressors();
       clogError("Error loading %s: %s\n", cur->compressor_name, clLastStaticErrorCB(cur->compressor_name));
     }
     if (cur->fVerbose)
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
   cur = loadNCDEnvironment();
   if (argc == 1) {
     clPrintOptionHelp();
-    printCompressors();
+    clPrintCompressors();
     exit(0);
   }
   ncdcfg = (struct NCDConfig *) cur->ptr;
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
         ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
-        printCompressors();
+        clPrintCompressors();
 //        cleanupBeforeExit();
         exit(0);
         break;

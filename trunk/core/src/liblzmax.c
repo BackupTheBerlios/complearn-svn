@@ -53,7 +53,7 @@ static int fisAutoEnabledCB(void)
 static int fisRuntimeProblemCB(void)
 {
   const char *scmd = "lzma";
-  ecmd = expandCommand(scmd);
+  ecmd = clExpandCommand(scmd);
   if (ecmd) {
    ;  /* all good */ ;
   } else {

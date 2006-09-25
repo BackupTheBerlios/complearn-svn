@@ -74,7 +74,7 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 static int fisRuntimeProblemCB(void)
 {
   const char *scmd = "bzip2";
-  ecmd = expandCommand(scmd);
+  ecmd = clExpandCommand(scmd);
   if (ecmd) {
    ;  /* all good */ ;
   } else {
@@ -98,7 +98,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initBZip2X(void)
+void clinitBZip2X(void)
 {
   clRegisterCB(&cba);
 }

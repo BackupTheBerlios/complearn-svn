@@ -42,12 +42,12 @@
  */
 struct GDBMHelper;
 
-struct GDBMHelper *cldbopen(const char *filename);
-void cldbunlink(const char *filename);
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key);
-void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val);
-int cldbclose(struct GDBMHelper *gh);
-int cldbIsGDBMProblem(void);
-const char *cldbReasonWhy(void);
+struct GDBMHelper *clDBopen(const char *filename);
+void clDBunlink(const char *filename);
+struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key);
+void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val);
+int clDBclose(struct GDBMHelper *gh);
+int clDBIsGDBMProblem(void);
+const char *clDBReasonWhy(void);
 
 #endif

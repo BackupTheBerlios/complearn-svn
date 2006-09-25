@@ -83,7 +83,7 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
     clSetLastErrorCB(cb,"Error, virtual compressor must have cmd parameter");
     return 1;
   }
-  ecmd = expandCommand(scmd);
+  ecmd = clExpandCommand(scmd);
   if (ecmd)
     rci->ecmd = strdup(ecmd);
   else {
@@ -107,7 +107,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initVirtual(void)
+void clinitVirtual(void)
 {
   clRegisterCB(&cba);
 }

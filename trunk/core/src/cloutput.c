@@ -143,7 +143,7 @@ gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnume
   return gres;
 }
 
-struct DataBlock *makeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em)
+struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em)
 {
   struct EnvMap *myenv = NULL;
   struct StringStack *mycmds = NULL, *mylabels = NULL;
@@ -226,7 +226,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   }
   if (cur->fBinary) {
     struct DataBlock *db;
-    db = makeCLBDistMatrix(gres, labels, cur->cmdKeeper, cur->em);
+    db = clMakeCLBDistMatrix(gres, labels, cur->cmdKeeper, cur->em);
     clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
     clDatablockFreePtr(db);
   }
@@ -331,18 +331,18 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   if (tm) {
     int t0, tf, dt;
     if (clTreemasterStartTime(tm)) {
-      sprintf(con1, "/* start time %s */", cldatetimeToHumString(clTreemasterStartTime(tm)));
+      sprintf(con1, "/* start time %s */", clDatetimeToHumString(clTreemasterStartTime(tm)));
       clStringstackPush(dotacc, con1);
     }
     if (clTreemasterEndTime(tm)) {
-      sprintf(con1, "/* end   time %s */", cldatetimeToHumString(clTreemasterEndTime(tm)));
+      sprintf(con1, "/* end   time %s */", clDatetimeToHumString(clTreemasterEndTime(tm)));
       clStringstackPush(dotacc, con1);
     }
     sprintf(con1, "/* total trees: %d */", clTreemasterTreeCount(tm));
     clStringstackPush(dotacc, con1);
     if (clTreemasterEndTime(tm) && clTreemasterStartTime(tm)) {
-      t0 = cldatetimeToInt(clTreemasterStartTime(tm));
-      tf = cldatetimeToInt(clTreemasterEndTime(tm));
+      t0 = clDatetimeToInt(clTreemasterStartTime(tm));
+      tf = clDatetimeToInt(clTreemasterEndTime(tm));
       dt = tf - t0;
       if (dt > 0) {
         sprintf(con1, "/* trees / sec : %f */", clTreemasterTreeCount(tm) /

@@ -108,7 +108,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initBZ2(void)
+void clinitBZ2(void)
 {
   clRegisterCB(&cba);
 }

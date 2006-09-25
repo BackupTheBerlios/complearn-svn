@@ -97,7 +97,7 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 static int fisRuntimeProblemCB(void)
 {
   const char *scmd = "ppmd";
-  ecmd = expandCommand(scmd);
+  ecmd = clExpandCommand(scmd);
   if (ecmd) {
    ;  /* all good */ ;
   } else {

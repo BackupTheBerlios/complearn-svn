@@ -51,6 +51,6 @@
  * \returns 0 on success
  */
 int clCompaLoadDynamicLib(const char *libraryname);
-void scanDirForModules(const char *dirname, struct GeneralConfig *cur);
+void clScanDirForModules(const char *dirname, struct GeneralConfig *cur);
 
 #endif

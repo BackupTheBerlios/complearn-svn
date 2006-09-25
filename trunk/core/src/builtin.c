@@ -16,15 +16,14 @@
 
 static int fHaveInitted;
 
-void initZLib(void);
-void initBZ2(void);
-void initReal(void);
-void initVirtual(void);
-void initGoogle(void);
-void initBZip2X(void);
+void clinitZLib(void);
+void clinitBZ2(void);
+void clinitReal(void);
+void clinitVirtual(void);
+void clinitGoogle(void);
+void clinitBZip2X(void);
 
-void printCompressors(void);
-void doBestScan(void);
+static void doBestScan(void);
 static void checkInitted(void);
 static void initBuiltinCompressors(void);
 
@@ -96,7 +95,7 @@ void clFreeCB(struct CompressionBase *cb)
   free(cb);
 }
 
-void deregisterCompressorCL(const char *shortName)
+void clDeregisterCompressor(const char *shortName)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
   assert(ci != NULL);
@@ -157,7 +156,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   	char buf[1024];
 	sprintf(buf, "Cannot find compressor %s", shortName);
 	fprintf(stderr, "ERROR: %s\n", buf);
-	printCompressors();
+	clPrintCompressors();
   	clogError(buf);
 	exit(1);
   }
@@ -270,7 +269,7 @@ int clIsEnabledCB(const char *shortName)
   return 1;
 }
 
-void printCompressors(void)
+void clPrintCompressors(void)
 {
   checkInitted();
   struct CLCompressionInfo *c;
@@ -371,7 +370,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
   return pin[0];
 }
 
-void doBestScan(void)
+static void clDoBestScan(void)
 {
   struct CLCompressionInfo *c;
   const char *fname = "nc";
@@ -402,7 +401,7 @@ const char *clLongNameCB(struct CompressionBase *cb)
   return VF(cb, longNameCB)();
 }
 
-const char *expandCommand(const char *inpcmd)
+const char *clExpandCommand(const char *inpcmd)
 {
   static char *buf;
   struct stat st;
@@ -449,16 +448,16 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
 static void initBuiltinCompressors(void) {
   char *modPath;
   fHaveInitted = 1;
-  initGoogle();
-  initReal();
-  initVirtual();
-  initBZ2();
-  initBlockSort();
-  initZLib();
-  initBZip2X();
+  clinitGoogle();
+  clinitReal();
+  clinitVirtual();
+  clinitBZ2();
+  clinitBlockSort();
+  clinitZLib();
+  clinitBZip2X();
   modPath = getenv("COMPLEARNMODPATH");
   if (modPath)
-    scanDirForModules(modPath, NULL);
-  scanDirForModules(clGetSystemModuleDir(), NULL);
-  scanDirForModules(clGetHomeModuleDir(), NULL);
+    clScanDirForModules(modPath, NULL);
+  clScanDirForModules(clGetSystemModuleDir(), NULL);
+  clScanDirForModules(clGetHomeModuleDir(), NULL);
 }

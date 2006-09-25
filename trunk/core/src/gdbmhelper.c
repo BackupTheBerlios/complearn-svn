@@ -63,7 +63,7 @@ static char *makefilename(const char *userfilename)
   return filename;
 }
 
-void cldbunlink(const char *userfilename)
+void clDBunlink(const char *userfilename)
 {
   unlink(makefilename(userfilename));
 }
@@ -73,7 +73,7 @@ static void printclFunc(const char *str)
   clogError( "GDBM error: %s\n", str);
 }
 
-struct GDBMHelper *cldbopen(const char *userfilename)
+struct GDBMHelper *clDBopen(const char *userfilename)
 {
   struct GDBMHelper *gh;
   struct stat buf;
@@ -93,7 +93,7 @@ struct GDBMHelper *cldbopen(const char *userfilename)
 
 /* Allocates a new DataBlock and returns pointer to new DataBlock
  */
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
+struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   GDBM_FILE db;
   datum result;
@@ -111,7 +111,7 @@ struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
   return NULL;
 }
 
-void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
+void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   GDBM_FILE db;
   assert(gh);
@@ -130,7 +130,7 @@ void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
   gdbm_close(db);
 }
 
-int cldbclose(struct GDBMHelper *gh)
+int clDBclose(struct GDBMHelper *gh)
 {
   assert(gh);
   //assert(gh->db);
@@ -141,12 +141,12 @@ int cldbclose(struct GDBMHelper *gh)
   return 0;
 }
 
-int cldbIsGDBMProblem(void)
+int clDBIsGDBMProblem(void)
 {
 	return 0;
 }
 
-const char *cldbReasonWhy(void)
+const char *clDBReasonWhy(void)
 {
 	return NULL;
 }
@@ -155,35 +155,35 @@ const char *cldbReasonWhy(void)
 
 #include <complearn/complearn.h>
 
-int cldbIsGDBMProblem(void)
+int clDBIsGDBMProblem(void)
 {
 	return 1;
 }
 
-const char *cldbReasonWhy(void)
+const char *clDBReasonWhy(void)
 {
 	return "Cannot find #include <gdbm.h>";
 }
 
 struct GDBMHelper { int ignoreMe; };
 
-struct GDBMHelper *cldbopen(const char *userfilename)
+struct GDBMHelper *clDBopen(const char *userfilename)
 {
   assert("No GDBM installed." && 0);
 }
-int cldbclose(struct GDBMHelper *gh)
+int clDBclose(struct GDBMHelper *gh)
 {
   assert("No GDBM installed." && 0);
 }
-struct DataBlock *cldbfetch(struct GDBMHelper *gh, struct DataBlock *key)
+struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
   assert("No GDBM installed." && 0);
 }
-void cldbstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
+void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   assert("No GDBM installed." && 0);
 }
-void cldbunlink(const char *userfilename)
+void clDBunlink(const char *userfilename)
 {
   assert("No GDBM installed." && 0);
 }

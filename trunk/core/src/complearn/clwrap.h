@@ -30,7 +30,7 @@
 /*! \file clwrap.h */
 
 FILE *clFopen(const char *fname, char *mode);
-const char *getLikelyTmpPrefix();
+const char *clGetLikelyTmpPrefix();
 void clFclose(FILE *fp);
 
 /* for fd's */

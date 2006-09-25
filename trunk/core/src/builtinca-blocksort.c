@@ -257,7 +257,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(doesRoundWholeBytesCB)
 };
 
-void initBlockSort(void)
+void clinitBlockSort(void)
 {
   clRegisterCB(&cba);
 }

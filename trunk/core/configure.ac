@@ -30,6 +30,21 @@ AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 AM_MAINTAINER_MODE
+dnl
+dnl release and version information
+dnl
+libcomplearn_major=`echo $VERSION | $AWK -F. '{print $1}'`
+libcomplearn_minor=`echo $VERSION | $AWK -F. '{print $2}'`
+libcomplearn_patch=`echo $VERSION | $AWK -F. '{print $3}'`
+AC_SUBST(libcomplearn_major)
+AC_SUBST(libcomplearn_minor)
+AC_SUBST(libcomplearn_patch)
+
+libcomplearn_release="$libcomplearn_major.$libcomplearn_minor"
+libcomplearn_version=`expr $libcomplearn_major + $libcomplearn_minor`":$libcomplearn_patch:$libcomplearn_minor"
+AC_SUBST(libcomplearn_release)
+AC_SUBST(libcomplearn_version)
+
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
   exec_prefix_NONE=

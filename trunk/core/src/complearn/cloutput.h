@@ -78,6 +78,6 @@ const char *clGetUsername(void);
 int clGetPID(void);
 const char *clGetHostname(void);
 const char *clGetUTSName(void);
-struct DataBlock *makeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em);
+struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em);
 
 #endif

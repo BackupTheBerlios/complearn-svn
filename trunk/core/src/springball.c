@@ -532,7 +532,7 @@ int clJac(double t, const double uy[], double *dfdy, double dfdt[], void *params
   return GSL_SUCCESS;
 }
 
-int rclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
+int clRclJac(double t, const double uy[], double *dfdy, double dfdt[], void *params)
 {
   struct SBS4 *sbs4 = (struct SBS4 *) params;
   //double *y = (double *) &uy[0];
@@ -599,7 +599,7 @@ struct SpringBallSystem *clSbsNew(struct TreeAdaptor *ta) {
 
   sbs->modelSpeed = 1.0;
 
-  sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
+  sbs->t = sbs->modelSpeed * clDatetimeStaticTimer();
 
   sbs->T = (gsl_odeiv_step_type *) gsl_odeiv_step_rk4;
   //sbs->T = (gsl_odeiv_step_type *) gsl_odeiv_step_bsimp;
@@ -615,7 +615,7 @@ struct SpringBallSystem *clSbsNew(struct TreeAdaptor *ta) {
 void clSbsSetModelSpeed(struct SpringBallSystem *sbs, double modelSpeed)
 {
   sbs->modelSpeed = modelSpeed;
-  sbs->t = sbs->modelSpeed * cldatetimeStaticTimer();
+  sbs->t = sbs->modelSpeed * clDatetimeStaticTimer();
 }
 
 void clPrintSBS(struct SpringBallSystem *sbs)
@@ -630,7 +630,7 @@ void clPrintSBS(struct SpringBallSystem *sbs)
 
 void clSbsEvolveForward(struct SpringBallSystem *sbs)
 {
-  double newt = sbs->modelSpeed * cldatetimeStaticTimer();
+  double newt = sbs->modelSpeed * clDatetimeStaticTimer();
   if (newt <= sbs->t)
     return;
   clStepTowards(sbs->sbs4->smoothk, sbs->sbs4->targetk, newt - sbs->t, 0.1);

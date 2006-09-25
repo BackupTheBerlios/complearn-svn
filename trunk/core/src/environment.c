@@ -155,13 +155,13 @@ void clSaveCmd(struct GeneralConfig *ev, int argc, char **argv)
   static char sbuf[16384];
   struct CLDateTime *cdt;
   char *ptr = sbuf;
-  cdt = cldatetimeNow();
+  cdt = clDatetimeNow();
   while (*argv) {
     ptr += sprintf(ptr, " %s", *argv);
     argv += 1;
   }
-  ptr += sprintf(ptr, " # at %s", cldatetimeToHumString(cdt));
-  cldatetimeFree(cdt);
+  ptr += sprintf(ptr, " # at %s", clDatetimeToHumString(cdt));
+  clDatetimeFree(cdt);
   *ptr = '\0';
   clStringstackPush(ev->cmdKeeper, sbuf+1);
 }
