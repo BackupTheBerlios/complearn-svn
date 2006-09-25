@@ -33,7 +33,7 @@ Package: libcomplearn-mod-ppmdx
 Section: libdevel
 Architecture: any
 Depends: libcomplearn0 (= ${Source-Version}), libgsl0-dev, ppmd
-Description: simple CompLearn compression module arithmetic encoder
+Description: CompLearn compression module using PPMD compressor
  This is an interface to the PPMD compression program for CompLearn.
  .
  Homepage: http://complearn.org/
@@ -42,7 +42,7 @@ Package: libcomplearn-mod-lzmax
 Section: libdevel
 Architecture: any
 Depends: libcomplearn0 (= ${Source-Version}), libgsl0-dev, lzma
-Description: simple CompLearn compression module arithmetic encoder
+Description: CompLearn compression module using LZMA compressor
  This is an interface to the LZMA compression program for CompLearn.
  .
  Homepage: http://complearn.org/
