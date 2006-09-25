@@ -20,10 +20,8 @@ void initZLib(void);
 void initBZ2(void);
 void initReal(void);
 void initVirtual(void);
-void initLZMA(void);
 void initGoogle(void);
 void initBZip2X(void);
-void initPPMDX(void);
 
 void printCompressors(void);
 void doBestScan(void);
@@ -456,9 +454,7 @@ static void initBuiltinCompressors(void) {
   initBZ2();
   initBlockSort();
   initZLib();
-  initLZMA();
   initBZip2X();
-  initPPMDX();
   scanDirForModules(clGetSystemModuleDir(), NULL);
   scanDirForModules(clGetHomeModuleDir(), NULL);
 }

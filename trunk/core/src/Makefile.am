@@ -144,13 +144,11 @@ ncazlib.c \
 ncabz2.c \
 builtinca-bzlib.c \
 builtinca-bzlibx.c \
-builtinca-ppmdx.c \
 builtinca-google.c \
 builtinca-realcomp.c \
 builtinca-soap.c \
 builtinca-virtcomp.c \
 builtinca-blocksort.c \
-builtinca-lzma.c \
 qsufsort.c \
 builtinca-zlib.c \
 builtinta-unbzip.c \
@@ -203,13 +201,20 @@ clog.c \
 clwrap.c \
 clparser.c
 
+lib_LTLIBRARIES   = libcomplearn.la
+noinst_LTLIBRARIES= libart.la liblzmax.la libppmdx.la
 
-#lib_LIBRARIES= libart.so
-
-lib_LTLIBRARIES= libcomplearn.la libart.la
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
 libcomplearn_la_LIBADD= $(NGDLIBS)
-libart_la_SOURCES=libart.c
+
+# CompLearn Compression Modules
+
+libart_la_SOURCES  =  libart.c
+libart_la_LDFLAGS  =  -rpath /complearn/shared/object/compmod
+liblzmax_la_SOURCES=  liblzmax.c
+liblzmax_la_LDFLAGS  =  -rpath /complearn/shared/object/compmod
+libppmdx_la_SOURCES=  libppmdx.c
+libppmdx_la_LDFLAGS  =  -rpath /complearn/shared/object/compmod
 
 clean:
 	rm -rf *.o *.lo $(BASICPROGRAMS) .libs

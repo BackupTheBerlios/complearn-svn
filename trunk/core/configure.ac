@@ -23,15 +23,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT(libcomplearn,0.9.5,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,0.9.6,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 AM_MAINTAINER_MODE
-mkdir artmod
-cp examples/dltest/* artmod
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
   exec_prefix_NONE=

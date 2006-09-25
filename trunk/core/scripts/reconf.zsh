@@ -19,6 +19,10 @@ fi
 # set the path for the with-xml2 option to where the xml2 header files are
 # located.
 
+rm -rf $HOME/tmp/complearntest
+if test -f Makefile ; then
+  make clean
+fi
 aclocal && autoconf && \
 if test ! -f ./src/complearn/aclconfig.h.in ; then
   autoheader

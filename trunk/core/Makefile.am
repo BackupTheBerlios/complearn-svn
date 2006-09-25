@@ -24,13 +24,26 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SUBDIRS=src
+#INSTALL_DATA=$(INSTALL)
+MODULEDIR=${pkgdatadir}/modules
+#INSTALLdir=${datadir}/complearn
+
+
+install-data-local:
+	$(POST_INSTALL)
+	$(mkinstalldirs) $(MODULEDIR)
+	mkdir tmpspot
+	mv src/.libs/libcomplearn* tmpspot
+	$(INSTALL) src/.libs/*.so $(MODULEDIR)
+	mv tmpspot/* src/.libs
+	rmdir tmpspot
 
 #am__CONFIG_DISTCLEAN_FILES = src/complearn/aclconfig.h.in config.status config.log
 
 DISTCLEAN_TARGETS = config.status config.log libcomplearn-0.9.4.tar.gz configure Makefile.in Doxyfile config.log depcomp config.guess config.sub Makefile complearn.pc config.status autom4te.cache libtool missing aclocal.m4 install-sh
 
 distclean: clean
-	make -C src distclean ; rm -rf $(DISTCLEAN_TARGETS)
+	$(MAKE) -C src distclean ; rm -rf $(DISTCLEAN_TARGETS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = complearn.pc

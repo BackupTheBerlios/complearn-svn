@@ -10,12 +10,12 @@ struct LZMACompressionInstance {
 static const char *ecmd;
 static const char *fshortNameCB(void)
 {
-  return "lzma";
+  return "lzmax";
 }
 
 static const char *flongNameCB(void)
 {
-  return "Lempel-Ziv Markov-Chain";
+  return "Lempel-Ziv Markov-Chain cmd";
 }
 
 static int fallocSizeCB(void)
@@ -76,7 +76,7 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
-void initLZMA(void)
+INITFUNCTYPE()
 {
   clRegisterCB(&cba);
 }
