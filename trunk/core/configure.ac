@@ -97,6 +97,10 @@ fi
 case "${host}" in
   *-*-linux*)
   AC_DEFINE(LINUX, 1, "Linux")
+  *-*-cygwin*)
+if test -e /usr/lib/libgslcblas.a -a ! -e /usr/lib/libblas.a ; then
+cp /usr/lib/libgslcblas.a /usr/lib/libblas.a
+fi
 ;;
   *)
   echo "Building for host: ${host}"

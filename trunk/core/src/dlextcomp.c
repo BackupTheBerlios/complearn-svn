@@ -80,7 +80,11 @@ int clCompaLoadDynamicLib(const char *libraryname)
 {
   void *dlhandle;
   t_cldlinitcl nca;
-  dlhandle = dlopen(libraryname, RTLD_LAZY | RTLD_LOCAL);
+  int flags = RTLD_LAZY;
+#ifndef __CYGWIN__
+  flags |= RTLD_LOCAL;
+#endif
+  dlhandle = dlopen(libraryname, flags);
   if (dlhandle == NULL) {
     perror("dlopen");
     clLogError( "Error opening dynamic library %s\n", libraryname);
