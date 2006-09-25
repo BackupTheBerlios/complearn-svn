@@ -29,6 +29,24 @@ Description: machine-learning with data compression core library runtime files
  .
  Homepage: http://complearn.org/
 
+Package: libcomplearn-mod-ppmdx
+Section: libdevel
+Architecture: any
+Depends: libcomplearn0 (= ${Source-Version}), libgsl0-dev, ppmd
+Description: simple CompLearn compression module arithmetic encoder
+ This is an interface to the PPMD compression program for CompLearn.
+ .
+ Homepage: http://complearn.org/
+
+Package: libcomplearn-mod-lzmax
+Section: libdevel
+Architecture: any
+Depends: libcomplearn0 (= ${Source-Version}), libgsl0-dev, lzma
+Description: simple CompLearn compression module arithmetic encoder
+ This is an interface to the LZMA compression program for CompLearn.
+ .
+ Homepage: http://complearn.org/
+
 Package: libcomplearn-mod-art
 Section: libdevel
 Architecture: any
@@ -42,6 +60,7 @@ Description: simple CompLearn compression module arithmetic encoder
 Package: complearn-tools
 Section: science
 Architecture: any
+Suggests: libcomplearn-mod-ppmdx, libcomplearn-mod-lzmax, libcomplearn-mod-art
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: complearn machine-learning command-line utilities
  complearn makes artificial intelligence easy.  By using the powerful
