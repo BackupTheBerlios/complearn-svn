@@ -1,32 +1,18 @@
-libcomplearn (0.9.5-1) unstable; urgency=low
+libcomplearn (0.9.6-1) unstable; urgency=low
 
   * New upstream release; fixes broken compressor-listing as well as
-    broken command-line option logic.  Also fixed CompAdaptor, added
+    broken command-line option logic.  Also rewrote CompAdaptor, now
+    known as CompressionBase and CompressionBaseAdaptor.  Made a
     new better dynamic shared object module interface, and new parameter
-    setting command line option.
+    setting command line option -P.
+  * Added several new compressors including bzip2x, ppmdx, and lzmax.
   * Fixed broken maketree -T option to read text-format distance matrix.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat, 23 Sep 2006 21:28:10 +0200
-
-libcomplearn (0.9.4-1) unstable; urgency=low
-
   * Updated configure.ac to check for new nanohttp lib function.
     This packaging bug was preventing Google (ncd -g) search from working.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 15:53:30 +0200
-
-libcomplearn (0.9.3-2) unstable; urgency=low
-
   * Many small packaging fixes, including renaming -dev packages
-    without numerals.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 15:53:30 +0200
-
-
-libcomplearn (0.9.3-1) unstable; urgency=low
-
+    without numerals, soname, modules, config files, lintian warnings, etc.
+  * This package was downloaded from http://complearn.org/
   * Initial release of libcomplearn.  (Closes: #379087)
-    This package was downloaded from http://complearn.org/
 
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  5 Jun 2006 04:30:53 +0200
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat, 23 Sep 2006 21:28:10 +0200
 
