@@ -24,12 +24,15 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef __BUILTIN_H
-#define __BUILTIN_H
+#ifndef __NEWCOMP_H
+#define __NEWCOMP_H
 
 #include <complearn/uclconfig.h>
 #include <complearn/environment.h>
 #include <complearn/stringstack.h>
+#include <complearn/datablock.h>
+#include <complearn/envmap.h>
+#include <complearn/ncbase.h>
 
 /** \brief Returns pointer to a SOAP compressor server interface.
  *
@@ -45,29 +48,6 @@ struct CompAdaptor *clCompaLoadSOAP(const char *url, const char *urn);
 
 struct ParamList *clGetParameterListCB(struct CompressionBase *cb);
 
-/** Dynamic Adaptors to support dual-mode loading */
-struct BZ2DynamicAdaptor {
-  int (*buftobufcompress)(char *dbuff,unsigned int *p,
-    char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
-  int (*buftobufdecompress)(char *dbuff,unsigned int *p,
-    char *src, unsigned int sz, int small, int verblevel);
-};
-
-struct BZ2DynamicAdaptor *clGrabBZ2DA(void);
-
-struct ZlibDynamicAdaptor {
-  int (*compress2)(unsigned char *dbuff,unsigned long *p,
-    unsigned char *src, unsigned long sz, int level);
-  int (*uncompress)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz);
-};
-
-struct ZlibDynamicAdaptor *clGrabZlibDA(void);
-
-#ifndef __NEWCOMP_H
-#define __NEWCOMP_H
-
-#include <complearn/datablock.h>
-#include <complearn/envmap.h>
 
 #define APIVER_CLCOMP10 10
 #define VIRTFUNCEXPORT(x) x : f##x
@@ -105,40 +85,4 @@ void clSetStaticErrorMessage(const char *shortName, const char *msg);
 struct StringStack *clListBuiltinsCB(int fWithDisabled);
 void clPrintCompressors(void);
 
-struct CompressionBaseAdaptor {
-  int (*specificInitCB)(struct CompressionBase *cb);
-  void (*freeCB)(struct CompressionBase *cb);
-  int (*getAPIVersionCB)(void);
-  const char *(*longNameCB)(void);
-
-  int (*isDisabledCB)(void);
-
-    // Should read params and use them.   This will be called only once
-    // prior to compression.  This should do any compressor-specific
-    // initialization at this point and return 0 to indicate success or
-    // nonzero to indicate an error.  Don't forget to clSetLastErrorCB().
-  int (*prepareToCompressCB)(struct CompressionBase *cb);
-
-  int (*getWindowSizeCB)(void); // Return 0 for "infinite window"
-  int (*doesRoundWholeBytesCB)(void);
-
-  int (*isCompileProblemCB)(void); // Returns != 0 iff compile-time problem
-       // is detected that will prevent this compressor from working.
-       // If != 0 is to be returned, a call to setLastErrorCB should first
-       // occur to explain the reason for the error.
-  int (*isRuntimeProblemCB)(void); // Returns != 0 iff runtime problem
-  const char *(*shortNameCB)(void);
-  int (*allocSizeCB)(void);
-
-  const char *(*toStringCB)(struct CompressionBase *cb);
-
-  const char *(*paramStringCB)(struct CompressionBase *cb);  // Should show params somehow
-
-  /* Returns result in bits */
-  double (*compressCB)(struct CompressionBase *cb, struct DataBlock *datum);
-  struct DataBlock *(*concatCB)(struct CompressionBase *cb, struct DataBlock *dat1, struct DataBlock *dat2);
-  int (*isAutoEnabledCB)(void);
-};
-
-#endif
 #endif

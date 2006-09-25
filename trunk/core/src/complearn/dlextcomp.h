@@ -53,4 +53,23 @@
 int clCompaLoadDynamicLib(const char *libraryname);
 void clScanDirForModules(const char *dirname, struct GeneralConfig *cur);
 
+/** Dynamic Adaptors to support dual-mode loading */
+struct BZ2DynamicAdaptor {
+  int (*buftobufcompress)(char *dbuff,unsigned int *p,
+    char *src, unsigned int sz, int blocksize, int verblevel, int workfactor);
+  int (*buftobufdecompress)(char *dbuff,unsigned int *p,
+    char *src, unsigned int sz, int small, int verblevel);
+};
+
+struct BZ2DynamicAdaptor *clGrabBZ2DA(void);
+
+struct ZlibDynamicAdaptor {
+  int (*compress2)(unsigned char *dbuff,unsigned long *p,
+    unsigned char *src, unsigned long sz, int level);
+  int (*uncompress)(unsigned char *dbuff,unsigned long *p, unsigned char *src, unsigned long sz);
+};
+
+struct ZlibDynamicAdaptor *clGrabZlibDA(void);
+
+
 #endif
