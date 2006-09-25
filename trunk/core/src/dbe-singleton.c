@@ -30,8 +30,8 @@
 
 #include <complearn/complearn.h>
 
-struct DataBlockEnumeration *clDbeLoadSingleton(struct DataBlock *db)
+struct DataBlockEnumeration *clBlockEnumerationLoadSingleton(struct DataBlock *db)
 {
   assert(db);
-  return clDbeLoadArray(&db, 1);
+  return clBlockEnumerationLoadArray(&db, 1);
 }

@@ -37,7 +37,7 @@
  *  \param db pointer to DataBlock
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *clDbeLoadWindowed(struct DataBlock *db,
+struct DataBlockEnumeration *clBlockEnumerationLoadWindowed(struct DataBlock *db,
     int firstpos, int stepsize, int width, int lastpos);
 
 #endif

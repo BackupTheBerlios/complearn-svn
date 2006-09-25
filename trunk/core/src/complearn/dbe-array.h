@@ -38,6 +38,6 @@
  *  \param size number of elements in DataBlock array
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *clDbeLoadArray(struct DataBlock **db, int size);
+struct DataBlockEnumeration *clBlockEnumerationLoadArray(struct DataBlock **db, int size);
 
 #endif

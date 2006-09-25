@@ -34,7 +34,7 @@ struct DBEFactory {
   int mode;
 };
 
-struct DBEFactory *clDbefactoryNew(void)
+struct DBEFactory *clBlockEnumerationFactoryNew(void)
 {
   struct DBEFactory *dbf;
   dbf = clCalloc(sizeof(struct DBEFactory), 1);
@@ -42,25 +42,25 @@ struct DBEFactory *clDbefactoryNew(void)
   return dbf;
 }
 
-void clDbefactoryFree(struct DBEFactory *dbf)
+void clBlockEnumerationFactoryFree(struct DBEFactory *dbf)
 {
   dbf->mode = 0;
   clFreeandclear(dbf);
 }
 
-int clDbefactorySetMode(struct DBEFactory *dbf, int newMode)
+int clBlockEnumerationFactorySetMode(struct DBEFactory *dbf, int newMode)
 {
   assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
 }
 
-int clDbefactoryGetMode(struct DBEFactory *dbf)
+int clBlockEnumerationFactoryGetMode(struct DBEFactory *dbf)
 {
   return dbf->mode;
 }
 
-const char *clDbefactoryModeString(struct DBEFactory *dbf)
+const char *clBlockEnumerationFactoryModeString(struct DBEFactory *dbf)
 {
   switch (dbf->mode) {
     case DBF_MODE_QUOTED: return "quoted";
@@ -108,26 +108,26 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
       }
     }
   }
-  return clDbeLoadWindowed(db, startpos, stepsize, width, lastpos);
+  return clBlockEnumerationLoadWindowed(db, startpos, stepsize, width, lastpos);
 }
 
-struct DataBlockEnumeration *clDbefactoryNewDBE(struct DBEFactory *dbf, const char
+struct DataBlockEnumeration *clBlockEnumerationFactoryNewDBE(struct DBEFactory *dbf, const char
  *str)
 {
   struct DataBlock *db;
   switch (dbf->mode) {
     case DBF_MODE_QUOTED:
       db = clStringToDataBlockPtr(str);
-      return clDbeLoadSingleton(db);
+      return clBlockEnumerationLoadSingleton(db);
     case DBF_MODE_FILE:
       db = clFileToDataBlockPtr(str);
-      return clDbeLoadSingleton(db);
+      return clBlockEnumerationLoadSingleton(db);
     case DBF_MODE_FILELIST:
-      return clDbeLoadFileList(str);
+      return clBlockEnumerationLoadFileList(str);
     case DBF_MODE_STRINGLIST:
-      return clDbeLoadStringList(str);
+      return clBlockEnumerationLoadStringList(str);
     case DBF_MODE_DIRECTORY:
-      return clDbeLoadDirectory(str);
+      return clBlockEnumerationLoadDirectory(str);
     case DBF_MODE_WINDOWED:
       return dbef_handleWindowedDBE(dbf, str);
     default:

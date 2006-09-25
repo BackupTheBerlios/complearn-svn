@@ -145,7 +145,7 @@ char *clAddNL(const char *inp)
 
 static void cleanupBeforeExit()
 {
-//  clDbefactoryFree(curEnv->da.dbf);
+//  clBlockEnumerationFactoryFree(curEnv->da.dbf);
   clFreeDefaultEnvironment(curEnv);
   curEnv = NULL;
 }

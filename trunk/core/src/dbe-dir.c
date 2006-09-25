@@ -159,7 +159,7 @@ static void dbe_dir_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnum
   } while (dirdbi->curfilename[0] == '.');
 }
 
-struct DataBlockEnumeration *clDbeLoadDirectory(const char *dirname)
+struct DataBlockEnumeration *clBlockEnumerationLoadDirectory(const char *dirname)
 {
   struct DataBlockEnumeration c = {
     NULL, /* eptr, private enumeration instance */

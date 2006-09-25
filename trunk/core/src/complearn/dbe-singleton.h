@@ -37,6 +37,6 @@
  *  \param db pointer to DataBlock
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *clDbeLoadSingleton(struct DataBlock *db);
+struct DataBlockEnumeration *clBlockEnumerationLoadSingleton(struct DataBlock *db);
 
 #endif

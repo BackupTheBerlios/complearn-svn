@@ -179,7 +179,7 @@ int main(int argc, char **argv)
   whichLongOpt = 1;
   if (ncdcfg->da.dbf == NULL) /* must init */ {
     ncdcfg->da.desize = 0;
-    ncdcfg->da.dbf = clDbefactoryNew();
+    ncdcfg->da.dbf = clBlockEnumerationFactoryNew();
   }
   while (1) {
     int retval;
@@ -193,21 +193,21 @@ int main(int argc, char **argv)
         ncdcfg->output_distmat_fname = clStrdup(optarg);
         break;
       case 'f':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 't':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         cur->fUsingFilenames = 1;
         break;
       case 'p':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'l':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
         clPrintCompressors();
@@ -215,12 +215,12 @@ int main(int argc, char **argv)
         exit(0);
         break;
       case 'd':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'w':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, optarg);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
+        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'r':
         cur->ca = clNewCompressorCB("real");
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
         }
         break;
       case 'g':
-        clDbefactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
+        clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
         cur->compressor_name = clStrdup("google");
         break;
       case 'D':
@@ -267,7 +267,7 @@ int main(int argc, char **argv)
       }
       else
         goodop = clStrdup(op);
-      ncdcfg->da.de[ncdcfg->da.desize++] =  clDbefactoryNewDBE(ncdcfg->da.dbf, goodop);
+      ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, goodop);
     }
   }
 #if 1

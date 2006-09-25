@@ -111,7 +111,7 @@ static void dbe_wi_istep(struct DataBlockEnumeration *dbe, struct DataBlockEnume
     widbi->curpos += widbe->stepsize;
 }
 
-struct DataBlockEnumeration *clDbeLoadWindowed(struct DataBlock *db,
+struct DataBlockEnumeration *clBlockEnumerationLoadWindowed(struct DataBlock *db,
     int firstpos, int stepsize, int width, int lastpos)
 {
   struct DataBlockEnumeration c = {

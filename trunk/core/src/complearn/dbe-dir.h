@@ -37,7 +37,7 @@
  *  \param dirname pointer to string directory name
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *clDbeLoadDirectory(const char *dirname);
+struct DataBlockEnumeration *clBlockEnumerationLoadDirectory(const char *dirname);
 
 int clIsDirectory(const char *dirname);
 

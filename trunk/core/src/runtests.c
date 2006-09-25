@@ -511,7 +511,7 @@ void testSingletonDBE()
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   db = clStringToDataBlockPtr(teststr);
-  dbe = clDbeLoadSingleton(db);
+  dbe = clBlockEnumerationLoadSingleton(db);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -539,7 +539,7 @@ void testWindowedDBE()
   struct DataBlockEnumerationIterator *dbi;
   db = clStringToDataBlockPtr(teststr);
   lastpos = clDatablockSize(db) - 1;
-  dbe = clDbeLoadWindowed(db, firstpos, stepsize, width, lastpos);
+  dbe = clBlockEnumerationLoadWindowed(db, firstpos, stepsize, width, lastpos);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -568,7 +568,7 @@ void testDirectoryDBE()
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   int fcount = 0;
-  dbe = clDbeLoadDirectory(testpg4dir);
+  dbe = clBlockEnumerationLoadDirectory(testpg4dir);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -596,7 +596,7 @@ void testArrayDBE()
   assert(clDatablockSize(db[0]) == 1);
   db[1] = clStringToDataBlockPtr("b");
   db[2] = clStringToDataBlockPtr("c");
-  dbe = clDbeLoadArray(db, size);
+  dbe = clBlockEnumerationLoadArray(db, size);
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -627,7 +627,7 @@ void testFileListDBE(void)
   struct DataBlockEnumeration *dbe;
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
-  dbe = clDbeLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
+  dbe = clBlockEnumerationLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
   assert(dbe);
   dbi = dbe->newenumiter(dbe);
   assert(dbi);
@@ -835,7 +835,7 @@ void testQuartet(void)
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
       db[i] = clStringToDataBlockPtr(buf2);
     }
-    dbe = clDbeLoadArray(db, labelcount);
+    dbe = clBlockEnumerationLoadArray(db, labelcount);
     dm = clGetNCDMatrix(dbe, dbe, gconf);
 //    printf("Got NCD matrix... %dx%d\n", dm->size1, dm->size2);
     assert(n);
@@ -1208,7 +1208,7 @@ void testTreeMolder()
       sprintf(buf2, "%s%d%s%s%d%s%d",buf,buf[3],buf,buf+3,i+8,buf,i % 3);
       db[i] = clStringToDataBlockPtr(buf2);
     }
-    dbe = clDbeLoadArray(db, labelcount);
+    dbe = clBlockEnumerationLoadArray(db, labelcount);
     dm = clGetNCDMatrix(dbe, dbe, gconf);
     ts = clInitTreeScore(dm);
     {

@@ -38,6 +38,6 @@
  *  \param filename pointer to string filename for list
  *  \return pointer to new DataBlockEnumeration
  */
-struct DataBlockEnumeration *clDbeLoadStringList(const char *filename);
+struct DataBlockEnumeration *clBlockEnumerationLoadStringList(const char *filename);
 
 #endif
