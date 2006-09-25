@@ -5,6 +5,7 @@ libcomplearn (0.9.6-1) unstable; urgency=low
     known as CompressionBase and CompressionBaseAdaptor.  Made a
     new better dynamic shared object module interface, and new parameter
     setting command line option -P.
+  * Changed a few library symbol names to make them more consistent.
   * Added several new compressors including bzip2x, ppmdx, and lzmax.
   * Fixed broken maketree -T option to read text-format distance matrix.
   * Updated configure.ac to check for new nanohttp lib function.
