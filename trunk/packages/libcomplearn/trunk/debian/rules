@@ -3,3 +3,4 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 DEB_INSTALL_EXAMPLES_libcomplearn-dev = examples/*
+DEB_DH_MAKESHLIBS_args_libcomplearn-mod-art := -n
