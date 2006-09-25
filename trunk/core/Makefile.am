@@ -31,6 +31,7 @@ MODULEDIR=${pkgdatadir}/modules
 
 install-data-local:
 	$(POST_INSTALL)
+	$(mkinstalldirs) ${pkgdatadir}
 	$(mkinstalldirs) $(MODULEDIR)
 	mkdir tmpspot
 	mv src/.libs/libcomplearn* tmpspot
