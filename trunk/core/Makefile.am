@@ -25,17 +25,16 @@
 
 SUBDIRS=src
 #INSTALL_DATA=$(INSTALL)
-MODULEDIR=${pkgdatadir}/modules
+MODULEDIR=$(DESTDIR)${pkgdatadir}/modules
 #INSTALLdir=${datadir}/complearn
 
 
 install-data-local:
 	$(POST_INSTALL)
-	$(mkinstalldirs) ${pkgdatadir}
 	$(mkinstalldirs) $(MODULEDIR)
 	mkdir tmpspot
 	mv src/.libs/libcomplearn* tmpspot
-	$(INSTALL) src/.libs/*.so $(MODULEDIR)
+	$(INSTALL) src/.libs/*$(shrext_cmds) $(MODULEDIR)
 	mv tmpspot/* src/.libs
 	rmdir tmpspot
 
