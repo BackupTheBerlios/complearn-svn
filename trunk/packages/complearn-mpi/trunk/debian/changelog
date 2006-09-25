@@ -1,3 +1,10 @@
+complearn-mpi (0.9.6-1) unstable; urgency=low
+
+  * Adjusted symbols to match new libcomplearn 0.9.6 in a few places and
+    relinked.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 25 Sep 2006 23:59:00 +0200
+
 complearn-mpi (0.9.3-2) unstable; urgency=low
 
   * Minor packaging improvements and simplifications.

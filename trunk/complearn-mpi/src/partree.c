@@ -120,7 +120,7 @@ void sendBlock(int dest, struct DataBlock *idb, int tag, double d);
 int receiveMessage(struct DataBlock **ptr, double *score, int *fw);
 struct DataBlock *wrapWithTag(struct DataBlock *dbinp, int tag, double score);
 struct DataBlock *unwrapForTag(struct DataBlock *dbbig,int *tag,double *score);
-void clogSendAlert( const char *fmt, ...);
+void clLogSendAlert( const char *fmt, ...);
 
 int my_rank;
 int p;
@@ -241,7 +241,7 @@ static void sendAlertForEmit(char *str)
   if (my_rank == 0)
     fprintf(stderr, "%s", str);
   else
-    clogSendAlert("%s", str);
+    clLogSendAlert("%s", str);
 }
 
 void setMPIGlobals(void) {
@@ -252,7 +252,7 @@ void setMPIGlobals(void) {
   else
     signal(SIGINT, ignorer);
   nice(19);
-  clogSetEmitFunction(sendAlertForEmit);
+  clLogSetEmitFunction(sendAlertForEmit);
 }
 
 void sendBlock(int dest, struct DataBlock *idb, int tag, double d)
@@ -273,7 +273,7 @@ int findFree(struct MasterState *ms)
   return -1;
 }
 
-void clogSendAlert( const char *fmt, ...)
+void clLogSendAlert( const char *fmt, ...)
 {
   va_list args;
   static char buf[16384];
@@ -335,11 +335,11 @@ void writeBestToFile(struct MasterState *ms)
   ms->tlog = clFopen(ALLTREESFNAME, "ab");
   fprintf(ms->tlog, "\nBETTER TREE FOUND AT %d TREES SEARCHED WITH SCORE %f\n", treesexamined(ms), ms->bestscore);
 	fwrite(clDatablockData(db),1,clDatablockSize(db),ms->tlog);
-  struct CLDateTime *cldt = cldatetimeNow();
-  fprintf(ms->tlog, "\nTREE WRITTEN AT time %s which is %d sec\n-----------------------\n", cldatetimeToHumString(cldt), cldatetimeToInt(cldt));
+  struct CLDateTime *cldt = clDatetimeNow();
+  fprintf(ms->tlog, "\nTREE WRITTEN AT time %s which is %d sec\n-----------------------\n", clDatetimeToHumString(cldt), clDatetimeToInt(cldt));
   clFclose(ms->tlog);
   ms->tlog = NULL;
-  cldatetimeFree(cldt);
+  clDatetimeFree(cldt);
   clDatablockFreePtr(db);
   dumpStats(ms);
 }
@@ -511,13 +511,13 @@ void calculateTree(struct SlaveState *ss)
     struct TreeAdaptor *ta = NULL;
     struct CLDateTime *cdstart, *cdend;
     double diff;
-    cdstart = cldatetimeNow();
+    cdstart = clDatetimeNow();
     result = clTreehImprove(ss->th);
-    cdend = cldatetimeNow();
-    diff = cldatetimeToDouble(cdend) - cldatetimeToDouble(cdstart);
+    cdend = clDatetimeNow();
+    diff = clDatetimeToDouble(cdend) - clDatetimeToDouble(cdstart);
     addToHistogram(HISTOLABEL_SCORETIME, diff, 1.0);
-    cldatetimeFree(cdstart);
-    cldatetimeFree(cdend);
+    clDatetimeFree(cdstart);
+    clDatetimeFree(cdend);
     ta = clTreehTreeAdaptor(ss->th);
     if (result) {
       struct DataBlock *db;
