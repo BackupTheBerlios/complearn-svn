@@ -55,7 +55,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   unsigned long p;
 
   if (bzip2 == NULL) {
-    clogError("Cannot do bzip2 compression: no bzip2 library available.");
+    clLogError("Cannot do bzip2 compression: no bzip2 library available.");
   }
 	p = clDatablockSize(src)*1.5+600;
 	dbuff = (unsigned char*)clMalloc(p);

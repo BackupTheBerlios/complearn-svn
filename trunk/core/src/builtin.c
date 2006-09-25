@@ -157,7 +157,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
 	sprintf(buf, "Cannot find compressor %s", shortName);
 	fprintf(stderr, "ERROR: %s\n", buf);
 	clPrintCompressors();
-  	clogError(buf);
+  	clLogError(buf);
 	exit(1);
   }
   assert(ci != NULL);
@@ -303,7 +303,7 @@ const char *clGetParamStringCB(struct CompressionBase *cb)
   return "(no parmstring yet)";
 }
 
-void clZombie_reaperCB(int q)
+void clZombieReaperCB(int q)
 {
   int stat;
   while(waitpid(-1, &stat, WNOHANG) > 0) ;
@@ -330,14 +330,14 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
   arglist[argnum++] = NULL;
   retval = pipe(pout);
   if (retval)
-    clogError("pipe");
+    clLogError("pipe");
   retval = pipe(pin);
   if (retval)
-    clogError("pipe");
-  signal(SIGCHLD, (void(*)(int))clZombie_reaperCB);
+    clLogError("pipe");
+  signal(SIGCHLD, (void(*)(int))clZombieReaperCB);
   childid = fork();
   if (childid < 0) { // An error
-        clogError("fork");
+        clLogError("fork");
       }
   if (childid) { // parent
     int wlen, wtot = 0, wleft;
@@ -345,7 +345,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
     while (wleft > 0) {
       wlen = write(pout[1], clDatablockData(inp)+wtot, wleft);
       if (wlen < 0) {
-        clogError("write");
+        clLogError("write");
         continue;
       }
       wtot += wlen;
@@ -359,10 +359,10 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
     close(pout[1]);
     retval = dup2(pout[0],0);
     if (retval < 0)
-      clogError("dup2");
+      clLogError("dup2");
     retval = dup2(pin[1],1);
     if (retval < 0)
-      clogError("dup2");
+      clLogError("dup2");
     execv(cmd, (char * const*)arglist);
     printf("Shouldn't be here, wound up returning from exec!!\n");
     exit(1);

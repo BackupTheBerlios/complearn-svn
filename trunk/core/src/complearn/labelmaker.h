@@ -33,7 +33,7 @@
  *
  *  clLabelsDump() returns to DataBlock which then can be written to
  *  a file using the function clDatablockWriteToFile().  This resulting DataBlock
- *  is also appropriate when using the function clPackage_DataBlocks().
+ *  is also appropriate when using the function clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into an StringStack, use the
  *  clLabelsLoad() function.
@@ -76,13 +76,13 @@ struct StringStack *clbLabelsLoad(struct DataBlock *db);
 
 /** \brief Returns StringStack of distance matrix labels from a ASCII text file
  *
- *  cltxtLabels() is a high level function which reads a text file,
+ *  clTxtLabels() is a high level function which reads a text file,
  *  formatted in the same way as output from the ncd command, and returns a
  *  StringStack of labels for the distance matrix.
  *  \param fname path to text file
  *  \return StringStack of distance matrix labels
  */
-struct StringStack *cltxtLabels(char *fname);
+struct StringStack *clTxtLabels(char *fname);
 
 /** \brief Dumps a StringStack of commands into a serialized DataBlock
  *

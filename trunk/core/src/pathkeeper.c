@@ -291,11 +291,11 @@ struct DRA *clSimpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips)
   union PCTypes p = zeropct;
   struct DRA *result = clDraNew();
   struct DRA *border = clDraNew();
-  struct CLNodeSet *done = clnodesetNew(clTreeaNodeCount(ta));
+  struct CLNodeSet *done = clNodesetNew(clTreeaNodeCount(ta));
   clDraPush(border, p);
   clWalkTree(clTreeaAdjAdaptor(ta), result, border, done, 0, flips);
   clDraFree(border);
-  clnodesetFree(done);
+  clNodesetFree(done);
   return result;
 
 }
@@ -313,14 +313,14 @@ void clWalkTree(struct AdjAdaptor *aa,
       cur = clDraShift(border).i;
 /*    assert(cur >= 0); */
     assert(cur < clAdjaSize(aa));
-    if (!clnodesetHasNode(done, cur)) {
+    if (!clNodesetHasNode(done, cur)) {
       union PCTypes p = zeropct;
       int i;
       int retval;
       struct DRA *nb = clDraNew();
       int nbuf[MAXNEIGHBORS];
       int nsize = MAXNEIGHBORS;
-      clnodesetAddNode(done, cur);
+      clNodesetAddNode(done, cur);
       p.i = cur;
       clDraPush(result, p);
       retval = clAdjaNeighbors(aa, cur, nbuf, &nsize);
@@ -330,10 +330,10 @@ void clWalkTree(struct AdjAdaptor *aa,
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];
-        if (!clnodesetHasNode(done, p.i))
+        if (!clNodesetHasNode(done, p.i))
           clDraPush(nb, p);
       }
-      if (flipped && clnodesetHasNode(flipped, cur)) {
+      if (flipped && clNodesetHasNode(flipped, cur)) {
         if (nsize < 2) {
           //printf("Warning: bogus flip in flip set: %d\n", cur);
         } else {

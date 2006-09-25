@@ -117,7 +117,7 @@ gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnume
         dbb = clCreateCloneWithNLFree(dbb);
         madeNewOne = 1;
       }
-      ncd = clNcdclFunc(dba, dbb, cur);
+      ncd = clNcdFunc(dba, dbb, cur);
       outnum = clXpremap(ncd, cur);
 //      printf(fmtString, outnum);
       clDraSetDValueAt(da, clDraSize(da), outnum);
@@ -181,7 +181,7 @@ struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labe
   assert(labels);
   dblabelstagged = clLabelsDump(labels);
   dbcommandstagged = clCommandsDump(cmds);
-  db = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
+  db = clPackageDataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
 //  clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
 //  clDatablockFreePtr(db);
   clDatablockFreePtr(dblabelstagged);

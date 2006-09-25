@@ -118,7 +118,7 @@ char *clEnvmapValueForKey(struct EnvMap *em, const char *key);
  *
  *  clEnvmapDump() a DataBlock which then can be written to a file using the
  *  function clDatablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the function clPackage_DataBlocks().
+ *  appropriate when using the function clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into an EnvMap, use clEnvmapLoad()
  *  function.

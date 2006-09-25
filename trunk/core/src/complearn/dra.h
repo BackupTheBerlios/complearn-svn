@@ -165,7 +165,7 @@ struct DRA *clDraLoad(struct DataBlock *d, int fmustbe);
  *  clDraDump() returns a DataBlock which then can be
  *  written to a file using the function clDatablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
- *  clPackage_DataBlocks().
+ *  clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
  *  clDraLoad() function.
@@ -181,7 +181,7 @@ struct DataBlock *clDraDump(const struct DRA *d);
  *  clDraDeepDump() returns a DataBlock which then can be
  *  written to a file using the function clDatablockWriteToFile().  This
  *  resulting DataBlock is also appropriate when using the function
- *  clPackage_DataBlocks().
+ *  clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into a DRA, use
  *  clDraLoad() function.
@@ -307,7 +307,7 @@ void clDraPrintIntList(const struct DRA *da);
  *
  *  clStringDump() returns a DataBlock which then can be written to a file using
  *  the function clDatablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the function clPackage_DataBlocks().
+ *  appropriate when using the function clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into a character string, use
  *  clStringLoad() function.

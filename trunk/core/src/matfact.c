@@ -87,7 +87,7 @@ gsl_matrix *clGslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
   m = (struct GSLMHdr *) (clDatablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_GSLMATRIX) {
     if (fmustbe) {
-    clogError("Error: expecting GSLMATRIX tagnum %x, got %x\n",
+    clLogError("Error: expecting GSLMATRIX tagnum %x, got %x\n",
         TAGNUM_GSLMATRIX,h->tagnum);
     exit(1);
     }
@@ -112,7 +112,7 @@ struct DataBlock *clDistmatrixDump(gsl_matrix *m)
 {
   struct DataBlock *db, *dbm;
   db = clGslmatrixDump(m);
-  dbm = clPackage_DataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
+  dbm = clPackageDataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
   return dbm;
 }
 
@@ -125,7 +125,7 @@ gsl_matrix *clDistmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
 
   if (h->tagnum != TAGNUM_CLDISTMATRIX) {
     if (fmustbe) {
-      clogError("Error: expecting CLDISTMATRIX tagnum %x, got %x\n",
+      clLogError("Error: expecting CLDISTMATRIX tagnum %x, got %x\n",
           TAGNUM_CLDISTMATRIX,h->tagnum);
       exit(1);
     }
@@ -133,10 +133,10 @@ gsl_matrix *clDistmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
       return NULL;
   }
 
-  dd = clLoad_DataBlock_package(ptrdb);
+  dd = clLoadDatablockPackage(ptrdb);
   dbdm = clScanForTag(dd, TAGNUM_GSLMATRIX );
   m = clGslmatrixLoad(dbdm, 1);
-  clFree_DataBlock_package (dd);
+  clFreeDataBlockpackage (dd);
   clDatablockFreePtr(dbdm);
 
   return m;
@@ -161,7 +161,7 @@ struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
     struct StringStack *labels;
     labels = clStringstackNew();
     gsl_matrix *gm;
-    gm = cltxtDistMatrix(db, labels);
+    gm = clTxtDistMatrix(db, labels);
     gsl_matrix_free(gm);
     return labels;
   }
@@ -172,7 +172,7 @@ gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
   if (clbIsCLBFile(db))
     return clbDBDistMatrix(db);
   else {
-    return cltxtDistMatrix(db, NULL);
+    return clTxtDistMatrix(db, NULL);
     //printf("error not implemented 4 yet\n");
     //exit(1);
   }
@@ -184,7 +184,7 @@ gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
   gsl_matrix *dm;
   struct DRA *dd;
 
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clbDistMatrixLoad(dbdm);
 
@@ -198,11 +198,11 @@ struct DataBlock *clbDMDataBlock(char *fname) {
   struct DRA *dd;
 
   db = clFileToDataBlockPtr(fname);
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
 
   clDatablockFreePtr(db);
-  clFree_DataBlock_package(dd);
+  clFreeDataBlockpackage(dd);
   return dbdm;
 }
 
@@ -280,7 +280,7 @@ static int grabFields(gsl_matrix *m, const char *rowStart, int row, struct Strin
   return 0;
 }
 
-int cltxtRowSize(struct DataBlock *db)
+int clTxtRowSize(struct DataBlock *db)
 {
   int i;
   int sz = clDatablockSize(db);
@@ -301,9 +301,9 @@ int cltxtRowSize(struct DataBlock *db)
   return rowCount;
 }
 
-int cltxtColSize(struct DataBlock *db)
+int clTxtColSize(struct DataBlock *db)
 {
-  return cltxtRowSize(db);
+  return clTxtRowSize(db);
 /*
   FILE *fp;
   int cols = 0;
@@ -321,7 +321,7 @@ int cltxtColSize(struct DataBlock *db)
 */
 }
 
-gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
+gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
 {
   int i;
   int sz = clDatablockSize(db);
@@ -334,7 +334,7 @@ gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
   char *lastRow;
   gsl_matrix *result;
 
-  rows = cltxtRowSize(db);
+  rows = clTxtRowSize(db);
   if (rows < 4) {
     fprintf(stderr, "Error, only %d rows in matrix, but need at least 4.\n", rows);
     exit(1);
@@ -375,17 +375,17 @@ gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
 }
 
 /*
-int cltxtToCLB(char *source, char *dest)
+int clTxtToCLB(char *source, char *dest)
 {
   struct DataBlock *dmdb, *labelsdb, *clbdb;
   gsl_matrix *dm;
   struct StringStack *labels = NULL;
 
-  dm = cltxtDistMatrix(source);
+  dm = clTxtDistMatrix(source);
   dmdb = clDistmatrixDump(dm);
   labelsdb = clLabelsDump(labels);
 
-  clbdb = clPackage_DataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
+  clbdb = clPackageDataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
   clDatablockWriteToFile(clbdb, dest);
 
   clDatablockFreePtr(clbdb);

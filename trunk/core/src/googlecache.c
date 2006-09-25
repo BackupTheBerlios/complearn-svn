@@ -66,7 +66,7 @@ struct GoogleCache *clNewGC(void)
     if (gc->samp != NULL)
       break;
     if (retryNum > maxTries) {
-      clogError( "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
+      clLogError( "Error, cannot open GDBM google sample database.  Only one ncd may be running at once.\n");
       exit(1);
     }
     clSleepMillis(rand() % 1000);
@@ -136,7 +136,7 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
   }
   if (gc == NULL)
     gc = clNewGC();
-  err = clFetchsample(gc, daystr, terms, &result, gkey);
+  err = clFetchSample(gc, daystr, terms, &result, gkey);
   clFreeandclear(daystr);
   if (dt)
     clDatetimeFree(dt);
@@ -155,7 +155,7 @@ static void showStatusMsg(struct StringStack *terms, const char *daystr)
 /** \brief Fetches a sample from the local count database with the help of the
  * caching agent, GoogleCache.
  *
- * The clFetchsample function is the primary interface to the GoogleCache
+ * The clFetchSample function is the primary interface to the GoogleCache
  * database, and is expected to be sufficient for most uses.  It supports a
  * GDBM-based query mechanism that allows efficient retrieval of count
  * information for any given day.  In order to fetch a sample, a user must
@@ -163,12 +163,12 @@ static void showStatusMsg(struct StringStack *terms, const char *daystr)
  * encodes day information, as well as a searchquery that is comprised of
  * a StringStack of search terms.  The results are returned via the
  * out parameter val as well as a return status code, nominally CL_OK.
- * Another requirement of using clFetchsample is a Google API account key.
+ * Another requirement of using clFetchSample is a Google API account key.
  * This key looks like "Q/ZMtPCJYCKQrnxeq/pXJ/UNC4DEG1CZe" and is sent to
  * you after applying with Google online.
  *
  * The search terms supplied in the terms StringStack are expected to be
- * unquoted.  The clFetchsample function will add double-quotes around these
+ * unquoted.  The clFetchSample function will add double-quotes around these
  * strings as well as preceding each of them with + and joining them with
  * spaces.  This will form one large string query to send to Google from
  * the passed-in array.
@@ -178,14 +178,14 @@ static void showStatusMsg(struct StringStack *terms, const char *daystr)
  * \param terms pointer to a StringStack of terms that will be
  * \return a value 0 indicating a cache-miss, or 1 indicating a cache-success
  */
-int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
+int clFetchSample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey)
 {
   struct StringStack *normed;
   char *daystrcachekey, *lastkeystr;
   struct DataBlock *dblastkey, *lastdbval;
   struct DataBlock *db;
   struct DataBlock *dbdaystrkey;
-//  printf("In the clFetchsample function...\n");
+//  printf("In the clFetchSample function...\n");
 //  showStatusMsg(terms, daystr);
   normed = clStringstackClone(terms);                    /* FSA02 */
   clNormalizeSearchTerms(normed);
@@ -219,7 +219,7 @@ int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack
     struct DataBlock *newentry;
     pgc = clGetPageCount(terms, gkey);
     if (pgc < 0) {
-      clogError("Error contacting Google, aborting...\n");
+      clLogError("Error contacting Google, aborting...\n");
     }
     *val = pgc;
     newentry = clMakeCacheVal(pgc, lastdbval, clMakeQueryString(terms));

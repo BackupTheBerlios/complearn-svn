@@ -48,7 +48,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   unsigned long p;
 
   if (zlib == NULL) {
-    clogError("Cannot do zlib compression: no zlib library available.");
+    clLogError("Cannot do zlib compression: no zlib library available.");
   }
 
   p = clDatablockSize(src)*1.2 + 12;

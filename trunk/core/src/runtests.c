@@ -151,8 +151,8 @@ void testDL()
   clEnvmapSetKeyVal(em, "padding", "20");
   dlh = dlopen(DLNAME, RTLD_NOW | RTLD_GLOBAL);
   if (dlh == NULL) {
-    clogError( "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
-    clogError( "reason given: %s\n", dlerror());
+    clLogError( "Error: cannot open dynamic library\n%s\nDid you build it yet?\n", DLNAME);
+    clLogError( "reason given: %s\n", dlerror());
     exit(1);
   }
   assert("Error: cannot open dynamic library, did you build it yet?" && dlh);
@@ -863,7 +863,7 @@ void testQuartet(void)
   }
     clDraFree(n);
     clFreeTreeScore(ts);
-//    clUnrootedbinaryFree(ct);
+//    clUnrootedBinaryFree(ct);
     clTreeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
@@ -881,8 +881,8 @@ void testCLTree(void)
 #define TREENODEWANTED (2*TREELEAFSIZE-2)
 #define MAXPATHTESTS 128
 #define MAXPATHLEN 16
-  struct UnrootedBinary *ct = clUnclRootedbinaryNew(TREELEAFSIZE);
-  struct DRA *n = clUnclRootedbinaryNodes(ct, NULL);
+  struct UnrootedBinary *ct = clUnrootedBinaryNew(TREELEAFSIZE);
+  struct DRA *n = clUnrootedBinaryNodes(ct, NULL);
   struct DRA *spm, *spmmap, *pp;
   union PCTypes a, b;
   int retval;
@@ -893,7 +893,7 @@ void testCLTree(void)
 	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
   assert(clDraSize(n) == TREENODEWANTED);
-  pp = clUnrootedbinaryPerimPairs(ct, NULL);
+  pp = clUnrootedBinaryPerimPairs(ct, NULL);
   assert(clDraSize(pp) == TREELEAFSIZE);
   clDraFree(pp);
   spmmap = clMakeSPMMap(clGetAdjAdaptorForUB(ct));
@@ -918,10 +918,10 @@ void testCLTree(void)
     retval = clPathFinder(clGetAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
     assert(retval == CL_OK);
     if (plen != psize) {
-      clogError( "Error, plen %d and psize %d\n", plen, psize);
-      clogError( "nodes %d and %d\n", a.i, b.i);
+      clLogError( "Error, plen %d and psize %d\n", plen, psize);
+      clLogError( "nodes %d and %d\n", a.i, b.i);
       if (plen == 2)
-        clogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
+        clLogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
     assert(plen == psize);
     clDraFree(spm);
@@ -931,12 +931,12 @@ void testCLTree(void)
   spmmap = NULL;
   clDraFree(n);
   n = NULL;
-//  dotdb = clConvertTreeToDot(ct, NULL, clUnclRootedbinaryLabelPerm(ct));
+//  dotdb = clConvertTreeToDot(ct, NULL, clUnrootedBinaryLabelPerm(ct));
 //  clDatablockWriteToFile(dotdb, "treefile.dot");
 //  assert(dotdb);
 //  assert(dotdb->ptr);
 //  assert(dotdb->size > TREENODEWANTED * 2);
-  clUnrootedbinaryFree(ct);
+  clUnrootedBinaryFree(ct);
   ct = NULL;
 }
 
@@ -1099,7 +1099,7 @@ void testALTagFile(void)
   assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
   gsl_matrix_free(ngm);
 
-  dbpkg = clPackage_DataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
+  dbpkg = clPackageDataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
   clDatablockFreePtr(dbss);
   clDatablockFreePtr(dbstr);
   clDatablockFreePtr(dbgslm);
@@ -1108,7 +1108,7 @@ void testALTagFile(void)
   clDatablockFreePtr(dbpkg);
   dbpkg_read = clFileToDataBlockPtr(TAGFILENAME);
   unlink(TAGFILENAME);
-  dd = clLoad_DataBlock_package(dbpkg_read);
+  dd = clLoadDatablockPackage(dbpkg_read);
   for (i = 0; i < clDraSize(dd); i += 1) {
     struct DataBlock *dblame;
     curtnum = clDraGetValueAt(dd,i).idbp.tnum;
@@ -1141,7 +1141,7 @@ void testALTagFile(void)
         break;
     }
   }
-  clFree_DataBlock_package(dd);
+  clFreeDataBlockpackage(dd);
   clStringstackFree(ss);
   gsl_matrix_free(gm);
   clDatablockFreePtr(dbpkg_read);
@@ -1178,8 +1178,8 @@ void testPerimPairs()
 {
   struct TreeAdaptor *tra = clTreeaLoadRootedBinary(6);
   struct DRA *da;
-  struct CLNodeSet *clns = clnodesetNew(9);
-  clnodesetAddNode(clns, 2);
+  struct CLNodeSet *clns = clNodesetNew(9);
+  clNodesetAddNode(clns, 2);
   da = clTreeaPerimPairs(tra, NULL);
   clDraFree(da);
   da = clTreeaPerimPairs(tra, clns);
@@ -1228,7 +1228,7 @@ void testTreeMolder()
     }
     clDraFree(n);
     clFreeTreeScore(ts);
-//    clUnrootedbinaryFree(ct);
+//    clUnrootedBinaryFree(ct);
     clTreeaFree(ta);
     dbe->efree(dbe);
     for (i = 0; i < labelcount; i += 1)
@@ -1243,7 +1243,7 @@ void testReadTextDM()
 {
   gsl_matrix *dm;
   struct StringStack *labels = clStringstackNew();
-  dm = cltxtDistMatrix(clFileToDataBlockPtr("distmatrix.txt"), labels);
+  dm = clTxtDistMatrix(clFileToDataBlockPtr("distmatrix.txt"), labels);
   assert(dm);
   assert(labels);
   gsl_matrix_free(dm);
@@ -1322,7 +1322,7 @@ char *findDir(const char *dir)
 }
 void testCLTextConverter(void)
 {
-  //cltxtToCLB("distmatrix.txt","convertedDM.clb");
+  //clTxtToCLB("distmatrix.txt","convertedDM.clb");
 }
 
 int main(int argc, char **argv)

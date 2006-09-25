@@ -70,7 +70,7 @@ const char *clBlockEnumerationFactoryModeString(struct DBEFactory *dbf)
     case DBF_MODE_DIRECTORY: return "directory";
     case DBF_MODE_WINDOWED: return "windowed";
     default:
-      clogError( "Bad mode %d\n", dbf->mode);
+      clLogError( "Bad mode %d\n", dbf->mode);
       exit(1);
   }
   return "(error)";
@@ -131,7 +131,7 @@ struct DataBlockEnumeration *clBlockEnumerationFactoryNewDBE(struct DBEFactory *
     case DBF_MODE_WINDOWED:
       return dbef_handleWindowedDBE(dbf, str);
     default:
-      clogError( "Bad mode %d\n", dbf->mode);
+      clLogError( "Bad mode %d\n", dbf->mode);
       exit(1);
   }
 }

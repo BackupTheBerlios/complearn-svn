@@ -38,7 +38,7 @@ double clMndf (double ca, double cb, double cab, double cba) {
 	return ( maxck / maxk );
 }
 
-double clNcdclFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur)
+double clNcdFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur)
 {
   double result;
   if (cur->fJustSize) {
@@ -49,11 +49,11 @@ double clNcdclFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfi
     clDatablockFreePtr(c);
   }
   else
-    result = clNcdclFuncCB(cur->ca, a, b);
+    result = clNcdFuncCB(cur->ca, a, b);
   return result;
 }
 
-double clNcdclFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataBlock *b)
+double clNcdFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataBlock *b)
 {
   double result;
   struct DataBlock *c;

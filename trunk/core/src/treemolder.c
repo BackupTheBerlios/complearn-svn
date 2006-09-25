@@ -38,7 +38,7 @@ struct TreeMolder {
 
 void clTreemolderFree(struct TreeMolder *tm)
 {
-  clnodesetFree(tm->flips);
+  clNodesetFree(tm->flips);
   clTreeaFree(tm->ta);
   clGslmatrixFree(tm->dm);
   clFreeandclear(tm);
@@ -67,7 +67,7 @@ struct TreeMolder *clTreemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
   tm->nodecount = clAdjaSize(aa);
   tm->ta = clTreeaClone(ta);
   tm->dm = clGslmatrixClone(gm);
-  tm->flips = clnodesetNew(tm->nodecount);
+  tm->flips = clNodesetNew(tm->nodecount);
   tm->score = -1;
   calcRangesTM(tm);
   return tm;
@@ -106,7 +106,7 @@ double clTreemolderScore(struct TreeMolder *tm)
 
 struct CLNodeSet *clTreemolderFlips(struct TreeMolder *tm)
 {
-  return clnodesetClone(tm->flips);
+  return clNodesetClone(tm->flips);
 }
 
 static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
@@ -116,9 +116,9 @@ static void mutateFlipArray(struct TreeMolder *tm, struct CLNodeSet *dst)
     do {
       whichNode = rand() % tm->nodecount;
     } while (!clTreeaIsFlippable(tm->ta, whichNode));
-    oldStatus = clnodesetHasNode(dst, whichNode);
+    oldStatus = clNodesetHasNode(dst, whichNode);
     //printf("About to switch node %d flip from %d to %d.\n", whichNode, oldStatus, !oldStatus);
-    clnodesetSetNodeStatus(dst, whichNode, !oldStatus);
+    clNodesetSetNodeStatus(dst, whichNode, !oldStatus);
   } while ((rand() % 2) == 0);
 }
 
@@ -132,19 +132,19 @@ void clTreemolderScramble(struct TreeMolder *tm)
 
 int clTreemolderImprove(struct TreeMolder *tm)
 {
-  struct CLNodeSet *cand = clnodesetClone(tm->flips);
+  struct CLNodeSet *cand = clNodesetClone(tm->flips);
   double candscore;
   mutateFlipArray(tm, cand);
   candscore = scorePerimeter(tm->dm, tm->ta, cand);
   if (candscore < clTreemolderScore(tm)) {
 //    printf("In treemolder %p, raw score impr from %f to %f\n", tm, tm->score, candscore );
     tm->score = candscore;
-    clnodesetFree(tm->flips);
+    clNodesetFree(tm->flips);
     tm->flips = cand;
     return 1;
   }
   else {
-    clnodesetFree(cand);
+    clNodesetFree(cand);
     return 0;
   }
 }

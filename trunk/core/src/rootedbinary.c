@@ -43,7 +43,7 @@ struct RootedBinary {
   struct AdjAdaptor *aa;
 };
 
-struct AdjAdaptor *clRootedbinaryAdjAdaptor(struct RootedBinary *rb)
+struct AdjAdaptor *clRootedBinaryAdjAdaptor(struct RootedBinary *rb)
 {
   return rb->aa;
 }
@@ -77,7 +77,7 @@ static int verifyTree(struct RootedBinary *rb)
 {
   int i, j;
   int nc;
-  struct DRA *result = clRootedbinaryNodes(rb);
+  struct DRA *result = clRootedBinaryNodes(rb);
   if (clDraSize(result) != rb->nodecount) {
     printf("Error, inconsistent node list with size %d but nodecount %d\n",
       clDraSize(result), rb->nodecount);
@@ -142,7 +142,7 @@ tryagain:
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems < 2) {
-    clogError( "Warning, got node %d with too many (%d) neighbors, %d...\n",
+    clLogError( "Warning, got node %d with too many (%d) neighbors, %d...\n",
         i1, nsizems, m1);
     assert(nsizems == 2);
   }
@@ -242,22 +242,22 @@ static void mutateComplex(struct RootedBinary *rb)
   }
 }
 
-int clRootedbinaryLastMutationCount(const struct RootedBinary *rb)
+int clRootedBinaryLastMutationCount(const struct RootedBinary *rb)
 {
   return rb->mc;
 }
 
-void clRootedbinaryComplexMutation(struct RootedBinary *rb)
+void clRootedBinaryComplexMutation(struct RootedBinary *rb)
 {
   mutateComplex(rb);
 }
 
-void clRootedbinaryLabelPermSetter(struct RootedBinary *rb, int j, int i)
+void clRootedBinaryLabelPermSetter(struct RootedBinary *rb, int j, int i)
 {
   clLabelpermSetColumnIndexToNodeNumber(rb->labelperm, j, i);
 }
 
-struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
+struct RootedBinary *clRootedBinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm)
 {
   int i;
   struct DRA *leaves;
@@ -290,7 +290,7 @@ struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
   return rb;
 }
 
-struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *rb)
+struct RootedBinary *clRootedBinaryClone(const struct RootedBinary *rb)
 {
   struct RootedBinary *cp;
   cp = clCalloc(sizeof(*cp), 1);
@@ -304,37 +304,37 @@ struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *rb)
 }
 
 
-int clRootedbinaryIsQuartetableNode(const struct RootedBinary *rb, qbase_t which)
+int clRootedBinaryIsQuartetableNode(const struct RootedBinary *rb, qbase_t which)
 {
   return clAdjaNeighborCount(rb->aa, which) < 3;
 }
 
-int clRootedbinaryIsFlippableNode(struct RootedBinary *rb, qbase_t which)
+int clRootedBinaryIsFlippableNode(struct RootedBinary *rb, qbase_t which)
 {
   int nc = clAdjaNeighborCount(rb->aa, which);
 // return nc != 1;
   return nc == 2 || nc == 3;
 }
 
-qbase_t clRootedbinaryStartingNode(const struct RootedBinary *rb)
+qbase_t clRootedBinaryStartingNode(const struct RootedBinary *rb)
 {
   return 0;
 }
 
-struct DRA *clRootedbinaryNodes(const struct RootedBinary *rb)
+struct DRA *clRootedBinaryNodes(const struct RootedBinary *rb)
 {
   union PCTypes p = zeropct;
   struct DRA *result = clDraNew();
   struct DRA *border = clDraNew();
-  struct CLNodeSet *done = clnodesetNew(rb->nodecount);
+  struct CLNodeSet *done = clNodesetNew(rb->nodecount);
   clDraPush(border, p);
-  clWalkTree(clRootedbinaryAdjAdaptor((struct RootedBinary *) rb), result, border, done, 0, NULL);
+  clWalkTree(clRootedBinaryAdjAdaptor((struct RootedBinary *) rb), result, border, done, 0, NULL);
   clDraFree(border);
-  clnodesetFree(done);
+  clNodesetFree(done);
   return result;
 }
 
-struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips)
+struct DRA *clRootedBinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips)
 {
   struct DRA *pairs = clDraNew();
   union PCTypes p = zeropct;
@@ -343,16 +343,16 @@ struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct C
   int firstnode = -1;
   struct DRA *traversalseq = clDraNew();
   struct DRA *border = clDraNew();
-  struct CLNodeSet *done = clnodesetNew(rb->nodecount);
+  struct CLNodeSet *done = clNodesetNew(rb->nodecount);
   p.i = rb->root; /* start at root */
   clDraPush(border, p);
-  clWalkTree(clRootedbinaryAdjAdaptor((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
+  clWalkTree(clRootedBinaryAdjAdaptor((struct RootedBinary *) rb), traversalseq, border, done, 0, flips);
 
   for (i = 0;i < clDraSize(traversalseq); i += 1) {
     int curnode = clDraGetValueAt(traversalseq, i).i;
     if (curnode == rb->root)
       continue;
-    if (clRootedbinaryIsQuartetableNode(rb, curnode)) {
+    if (clRootedBinaryIsQuartetableNode(rb, curnode)) {
       if (firstnode == -1)
         firstnode = curnode;
       if (lastval != -1) {
@@ -368,7 +368,7 @@ struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct C
   return pairs;
 }
 
-void clRootedbinaryFreeRB(struct RootedBinary *rb)
+void clRootedBinaryFreeRB(struct RootedBinary *rb)
 {
   clLabelpermFree(rb->labelperm);
   clAdjaFree(rb->aa);
@@ -381,7 +381,7 @@ static struct DRA *getLabellableNodes(const struct RootedBinary *rb)
   int i;
   struct DRA *result = clDraNew();
   for (i = 0; i < rb->nodecount; i += 1) {
-    if (clRootedbinaryIsQuartetableNode(rb, i) == 1) {
+    if (clRootedBinaryIsQuartetableNode(rb, i) == 1) {
       union PCTypes p = zeropct;
       p.i = i;
       clDraPush(result, p);
@@ -390,7 +390,7 @@ static struct DRA *getLabellableNodes(const struct RootedBinary *rb)
   return result;
 }
 
-struct DRA *clRootedbinaryLeafLabels(const struct RootedBinary *rb)
+struct DRA *clRootedBinaryLeafLabels(const struct RootedBinary *rb)
 {
   struct DRA *result = clDraNew();
   int i;
@@ -402,7 +402,7 @@ struct DRA *clRootedbinaryLeafLabels(const struct RootedBinary *rb)
   return result;
 }
 
-struct LabelPerm *clRootedbinaryLabelPerm(struct RootedBinary *rb)
+struct LabelPerm *clRootedBinaryLabelPerm(struct RootedBinary *rb)
 {
   return clLabelpermClone(rb->labelperm);
 }
@@ -412,7 +412,7 @@ static struct TreeAdaptor *rb_treeclone(struct TreeAdaptor *ta)
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
   struct TreeAdaptor *result = clMalloc(sizeof(*result) * 1);
   *result = *ta;
-  result->ptr = clRootedbinaryClone(rb);
+  result->ptr = clRootedBinaryClone(rb);
   return result;
 }
 
@@ -425,7 +425,7 @@ static void rb_treemutate(struct TreeAdaptor *ta)
 static void rb_treefree(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  clRootedbinaryFreeRB(rb);
+  clRootedBinaryFreeRB(rb);
   rb = NULL;
   memset(ta, 0, sizeof(*ta));
   clFreeandclear(ta);
@@ -434,25 +434,25 @@ static void rb_treefree(struct TreeAdaptor *ta)
 void clRb_treesetlabelperm(struct TreeAdaptor *ta, int j, int i)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  clRootedbinaryLabelPermSetter(rb, j, i);
+  clRootedBinaryLabelPermSetter(rb, j, i);
 }
 
 static struct LabelPerm *rb_treegetlabelperm(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryLabelPerm(rb);
+  return clRootedBinaryLabelPerm(rb);
 }
 
 static struct AdjAdaptor *rb_treegetadja(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryAdjAdaptor(rb);
+  return clRootedBinaryAdjAdaptor(rb);
 }
 
 static int rb_treeisquartetable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryIsQuartetableNode(rb, which);
+  return clRootedBinaryIsQuartetableNode(rb, which);
 }
 
 static int rb_treeisroot(struct TreeAdaptor *ta, int which)
@@ -464,24 +464,24 @@ static int rb_treeisroot(struct TreeAdaptor *ta, int which)
 int clRb_treeisflippable(struct TreeAdaptor *ta, int which)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryIsFlippableNode(rb, which);
+  return clRootedBinaryIsFlippableNode(rb, which);
 }
 
 struct DRA *clRb_treeperimpairs(struct TreeAdaptor *ta, struct CLNodeSet *flips)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryPerimeterPairs(rb, flips);
+  return clRootedBinaryPerimeterPairs(rb, flips);
 }
 
 int clRb_treemutecount(struct TreeAdaptor *ta)
 {
   struct RootedBinary *rb = (struct RootedBinary *) ta->ptr;
-  return clRootedbinaryLastMutationCount(rb);
+  return clRootedBinaryLastMutationCount(rb);
 }
 
 struct TreeAdaptor *clTreeaLoadRootedBinary(int howBig)
 {
-  return loadRBTRA(clRootedbinaryNew(howBig, NULL, NULL));
+  return loadRBTRA(clRootedBinaryNew(howBig, NULL, NULL));
 }
 
 static struct TreeAdaptor *loadRBTRA(struct RootedBinary *rb)

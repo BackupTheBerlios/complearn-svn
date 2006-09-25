@@ -70,7 +70,7 @@ void clDBunlink(const char *userfilename)
 
 static void printclFunc(const char *str)
 {
-  clogError( "GDBM error: %s\n", str);
+  clLogError( "GDBM error: %s\n", str);
 }
 
 struct GDBMHelper *clDBopen(const char *userfilename)
@@ -103,7 +103,7 @@ struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
   db = gdbm_open(gh->filename, 0, GDBM_READER, 0664, printclFunc);
   assert(db);
   result = gdbm_fetch(db, clConvertDataBlockToDatum(key));
-//  clogWarning("KEY<%s:%d>FETCH to %p:%d\n", clDatablockToString(key), clDatablockSize(key),  result.dptr, result.dsize);
+//  clLogWarning("KEY<%s:%d>FETCH to %p:%d\n", clDatablockToString(key), clDatablockSize(key),  result.dptr, result.dsize);
   gdbm_close(db);
   if (result.dptr) {
     return clDatablockNewFromBlock(result.dptr, result.dsize);
@@ -116,7 +116,7 @@ void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
   GDBM_FILE db;
   assert(gh);
   //assert(gh->db);
-// clogWarning("KEY<%s:%d>STORE value size <%d>\n", clDatablockToString(key), clDatablockSize(key), clDatablockSize(val));
+// clLogWarning("KEY<%s:%d>STORE value size <%d>\n", clDatablockToString(key), clDatablockSize(key), clDatablockSize(val));
   while(1) {
     db = gdbm_open(gh->filename, 0, GDBM_WRCREAT | GDBM_SYNC, 0664, printclFunc);
     if (db)

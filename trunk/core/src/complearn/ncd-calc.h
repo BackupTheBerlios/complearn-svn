@@ -33,7 +33,7 @@
 
 /* should this be static? */
 double clMndf(double ca, double cb, double cab, double cba);
-double clNcdclFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur);
-double clNcdclFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataBlock *b);
+double clNcdFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig *cur);
+double clNcdFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataBlock *b);
 
 #endif

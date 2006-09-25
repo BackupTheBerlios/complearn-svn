@@ -84,7 +84,7 @@ void *clRealloc(void *ptr, size_t size)
 {
   void *result = realloc(ptr,size);
   if (result == NULL)
-    clogError("realloc error\n");
+    clLogError("realloc error\n");
   return result;
 }
 
@@ -92,7 +92,7 @@ void clFree(void *ptr)
 {
   assert(ptr);
   if (ptr == NULL)
-    clogError("tried to free NULL pointer\n");
+    clLogError("tried to free NULL pointer\n");
   free(ptr);
   ptr = NULL;
 }

@@ -29,11 +29,11 @@
 
 #include <complearn/quartet.h>
 
-/*! \file rootedbinary.h */
+/*! \file rootedBinary.h */
 
 /** \brief An undirected, rooted binary tree
  *
- * \sa rootedbinary.h
+ * \sa rootedBinary.h
  *
  * A RootedBinary holds the connection information associated with a
  * particular tree.  Each node has either 1 or 3 neighbors; leaves have only
@@ -54,9 +54,9 @@ struct StringStack;
  * is to support k leaves, then it must have k-2 kernel nodes, for a total
  * of 2 * k - 2 nodes.  When a new tree is created, it is made by a simple
  * caterpillar-style pattern.  To get random variation, use the
- * clUnrootedbinaryDoComplexMutation function with the clUnclRootedbinaryClone function.
+ * clUnrootedBinaryDoComplexMutation function with the clUnrootedBinaryClone function.
  * This function allocates memory which must eventually be freed with
- * rootedbinaryFree.
+ * rootedBinaryFree.
  *
  *  \param howManyLeaves an integer >=4 indicating how many leaves the tree
  *  should have.
@@ -66,7 +66,7 @@ struct StringStack;
  *  \param ulabelperm an optional parameter specifying which leaves are placed where in the tree.  This may be NULL as well.
  *  \return a pointer to a newly allocated tree
  */
-struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm);
+struct RootedBinary *clRootedBinaryNew(int howManyLeaves, struct AdjAdaptor *uaa, struct LabelPerm *ulabelperm);
 
 /** \brief Applies a complex mutation to a tree.
  *
@@ -75,25 +75,25 @@ struct RootedBinary *clRootedbinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
  * specified in the Quartet Tree paper by Cilibrasi and Vitanyi.
  * It then applies the requisite number of simple mutations, using the
  * builtin random-number generator rand().  This function may be used
- * in combination with clUnclRootedbinaryClone to allow several different tries from
+ * in combination with clUnrootedBinaryClone to allow several different tries from
  * the same tree starting point.  It may also be used with the TreeScore
  * module which can allow for quartet-based hill-climbing algorithms.
  *
  * \param ub pointer to the RootedBinary to be modified.
  * \return nothing
  */
-void clRootedbinaryComplexMutation(struct RootedBinary *ub);
+void clRootedBinaryComplexMutation(struct RootedBinary *ub);
 
 /** \brief Clones an RootedBinary tree, allocating new memory for the copy
  *
  * This function copies an RootedBinary tree object.  This can be used
- * in conjunction with clUnrootedbinaryDoComplexMutation for hill-climbing search.
+ * in conjunction with clUnrootedBinaryDoComplexMutation for hill-climbing search.
  * This function allocates memory which must eventually be freed with
- * rootedbinaryFree.
+ * rootedBinaryFree.
  * \param ub pointer to the RootedBinary that must be cloned
  * \return pointer to the new copy of the original tree
  */
-struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *ub);
+struct RootedBinary *clRootedBinaryClone(const struct RootedBinary *ub);
 
 /** \brief Indicates whether a given node identifier is a place for
  * a quartet-leaf object-label.
@@ -106,20 +106,20 @@ struct RootedBinary *clRootedbinaryClone(const struct RootedBinary *ub);
  * \param which qbase_t indicating the node identifier under investigation
  * \return an integer value to be interpretted in a boolean context
  */
-int clRootedbinaryIsQuartetableNode(const struct RootedBinary *ub, qbase_t which);
+int clRootedBinaryIsQuartetableNode(const struct RootedBinary *ub, qbase_t which);
 
 /** \brief Indicates whether a given node has orderable children.
  *
  * This function allows the user to determine if a given node identifier
  * has at least 2 children that can be flipped in more than one order.
- * This bit may be adjusted using unrootedbinaryFlipNodeLayout
+ * This bit may be adjusted using unrootedBinaryFlipNodeLayout
  * Leaf nodes are thus not flippable, but kernel nodes are.
  *
  * \param ub pointer to the RootedBinary that must be examined
  * \param which qbase_t indicating the node identifier under investigation
  * \return an integer value to be interpretted in a boolean context
  */
-int clRootedbinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
+int clRootedBinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
 
 /** \brief Returns the first node returned in tree traversals
  *
@@ -129,7 +129,7 @@ int clRootedbinaryIsFlippableNode(struct RootedBinary *ub, qbase_t which);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return qbase_t indicating which node is first traversed in this tree
  */
-qbase_t clRootedbinaryStartingNode(const struct RootedBinary *ub);
+qbase_t clRootedBinaryStartingNode(const struct RootedBinary *ub);
 
 /** \brief Returns a DRA contained an ordered traversal of all
  * the nodes in the tree.
@@ -137,12 +137,12 @@ qbase_t clRootedbinaryStartingNode(const struct RootedBinary *ub);
  * This function allows the user to get a dynamically-allocated list of
  * all the nodes in this tree.  They are returned in depth first order.
  * This is equivalent to the clWalkTree function with a 0 breadthFirst
- * parameter; thus the order returned by clUnclRootedbinaryNodes will be affected
+ * parameter; thus the order returned by clUnrootedBinaryNodes will be affected
  * by the node child order flip bits.
  *
  * The DRA returned by this function use the .i field of PCTypes:
  *
- * struct DRA *da = clUnclRootedbinaryNodes(ub);
+ * struct DRA *da = clUnrootedBinaryNodes(ub);
  * int i;
  * for (i = 0; i < clDraSize(da); i += 1)
  *   printf("Got node %d\n", clDraGetValueAt(da, i).i);
@@ -150,7 +150,7 @@ qbase_t clRootedbinaryStartingNode(const struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return pointer to a DRA holding the list of all tree nodes
  */
-struct DRA *clRootedbinaryNodes(const struct RootedBinary *ub);
+struct DRA *clRootedBinaryNodes(const struct RootedBinary *ub);
 
 
 /** \brief Returns a list of all adclJacent border-pair node identifiers
@@ -167,7 +167,7 @@ struct DRA *clRootedbinaryNodes(const struct RootedBinary *ub);
  * The node identifiers are accessed using the .ip.x and .ip.y members of
  * PCTypes.  For example:
  *
- * struct DRA *da = clUnrootedbinaryPerimPairs(ub);
+ * struct DRA *da = clUnrootedBinaryPerimPairs(ub);
  * int i;
  * for (i = 0; i < clDraSize(da); i += 1) {
  *   union PCTypes pct = clDraGetValueAt(da, i);
@@ -177,7 +177,7 @@ struct DRA *clRootedbinaryNodes(const struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary that must be reordered
  * \return pointer to a DRA holding the list of all perimeter pairs
  */
-struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips);
+struct DRA *clRootedBinaryPerimeterPairs(const struct RootedBinary *rb, struct CLNodeSet *flips);
 
 /** \brief tests to determine if two trees are identical
  *
@@ -198,12 +198,12 @@ struct DRA *clRootedbinaryPerimeterPairs(const struct RootedBinary *rb, struct C
  * This function frees the memory associated with an RootedBinary.
  * After calling this function it is safest to set the pointer to NULL,
  * as you shouldn't try to use it after deallocation.  This function must
- * be called for every time clRootedbinaryNew, clUnclRootedbinaryClone, or loadTree is called.
+ * be called for every time clRootedBinaryNew, clUnrootedBinaryClone, or loadTree is called.
  *
  * \param ub pointer to the RootedBinary that must be freed.
  * \return nothing
  */
-void rootedbinaryFree(struct RootedBinary *ub);
+void rootedBinaryFree(struct RootedBinary *ub);
 
 /** \brief Returns a permutation array holding the column-index to leaf-node
  * identifier mapping in effect for this tree.
@@ -218,15 +218,15 @@ void rootedbinaryFree(struct RootedBinary *ub);
  * \param ub pointer to the RootedBinary to be examined
  * \return pointer to a DRA containing leaf label positions
  */
-struct DRA *clRootedbinaryLeafLabels(const struct RootedBinary *ub);
+struct DRA *clRootedBinaryLeafLabels(const struct RootedBinary *ub);
 
 /** \brief This function returns the number of simple mutations used in
- * the most recent complex mutation step taken with clUnrootedbinaryDoComplexMutation
+ * the most recent complex mutation step taken with clUnrootedBinaryDoComplexMutation
  *
  * \param ub pointer to the RootedBinary to be path queried
  * \return integer indicating the number of simple mutation steps last used
  */
-int clRootedbinaryLastMutationCount(const struct RootedBinary *ub);
+int clRootedBinaryLastMutationCount(const struct RootedBinary *ub);
 
 /** \brief Indicates whether or not a given pair of nodes are connected.
  *
@@ -238,12 +238,12 @@ int clRootedbinaryLastMutationCount(const struct RootedBinary *ub);
  * \param b second node identifier
  * \return integer to be interpretted in a boolean context
  */
-int rootedbinaryAreNodesConnected(const struct RootedBinary *ub, qbase_t a, qbase_t b);
+int rootedBinaryAreNodesConnected(const struct RootedBinary *ub, qbase_t a, qbase_t b);
 
-struct LabelPerm *clRootedbinaryLabelPerm(struct RootedBinary *ub);
+struct LabelPerm *clRootedBinaryLabelPerm(struct RootedBinary *ub);
 
 
-struct AdjAdaptor *clRootedbinaryAdjAdaptor(struct RootedBinary *ub);
+struct AdjAdaptor *clRootedBinaryAdjAdaptor(struct RootedBinary *ub);
 
 struct TreeAdaptor *clTreeaLoadRootedBinary(int howBig);
 #endif

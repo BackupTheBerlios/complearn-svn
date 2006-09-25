@@ -52,7 +52,7 @@ struct TreeMaster {
 int clTreemasterK(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterK()\n");
+    clLogError("NULL ptr in clTreemasterK()\n");
   }
   assert(tm);
   return tm->k;
@@ -61,7 +61,7 @@ int clTreemasterK(struct TreeMaster *tm)
 static void callImprovedFunctionMaybe(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in callImprovedFunctionMaybe()\n");
+    clLogError("NULL ptr in callImprovedFunctionMaybe()\n");
   }
   if (tm->tob && tm->tob->treeimproved) {
     struct TreeHolder *th = clTreehClone(tm->best);
@@ -74,7 +74,7 @@ static void setBestPtr(struct TreeMaster *tm)
 {
   int i;
   if (tm == NULL) {
-    clogError("NULL ptr in setBestPtr()\n");
+    clLogError("NULL ptr in setBestPtr()\n");
   }
   for (i = 0; i < tm->k; i += 1)
     if (i == 0 || clTreehScore(tm->best) < clTreehScore(tm->th[i])) {
@@ -99,7 +99,7 @@ static struct TreeMasterConfig getTreeMasterDefaultConfig(void)
 static void tm_setIntValueMaybe(struct EnvMap *srcenv, const char *keyname, int *placeToSet) {
   char *val;
   if (srcenv == NULL || keyname == NULL) {
-    clogError("NULL ptr in tm_setIntValueMaybe()\n");
+    clLogError("NULL ptr in tm_setIntValueMaybe()\n");
   }
   val = clEnvmapValueForKey(srcenv,keyname);
   if (val)
@@ -110,10 +110,10 @@ static void validateMatrixForTree(gsl_matrix *gsl)
 {
   int i, j;
   if (gsl == NULL) {
-    clogError("NULL ptr in validateMatrixForTree()\n");
+    clLogError("NULL ptr in validateMatrixForTree()\n");
   }
   if (gsl->size1 != gsl->size2) {
-    clogError( "Matrix must be square, but this one is %d by %d\n", gsl->size1, gsl->size2);
+    clLogError( "Matrix must be square, but this one is %d by %d\n", gsl->size1, gsl->size2);
     exit(1);
   }
   for (i = 0; i < gsl->size1; i += 1) {
@@ -122,7 +122,7 @@ static void validateMatrixForTree(gsl_matrix *gsl)
         return;
     }
   }
-  clogError( "Sorry, this is a constant matrix so no information is available.\n");
+  clLogError( "Sorry, this is a constant matrix so no information is available.\n");
   exit(1);
 }
 
@@ -131,7 +131,7 @@ struct TreeMaster *clTreemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMa
   struct TreeMaster *result;
   struct TreeMasterConfig tmc = getTreeMasterDefaultConfig();
   if (em == NULL || gsl == NULL) {
-    clogError("NULL ptr in clTreemasterNewEx()\n");
+    clLogError("NULL ptr in clTreemasterNewEx()\n");
   }
   assert(em);
 
@@ -155,7 +155,7 @@ struct TreeMaster *clTreemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMa
 struct TreeMaster *clTreemasterNewEz(gsl_matrix *gsl)
 {
   if (gsl == NULL) {
-    clogError("NULL ptr in clTreemasterNewEz()\n");
+    clLogError("NULL ptr in clTreemasterNewEz()\n");
   }
   return clTreemasterNew(gsl, 0);
 }
@@ -167,16 +167,16 @@ struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted)
   struct TreeAdaptor *tra;
   struct TreeMaster *tm = clCalloc(sizeof(struct TreeMaster), 1);
   struct AdjAdaptor *aa;
-  //clogWarning("Staring the cltmnew...\n");
+  //clLogWarning("Staring the cltmnew...\n");
   if (gsl == NULL) {
-    clogError("NULL ptr in clTreemasterNew()\n");
+    clLogError("NULL ptr in clTreemasterNew()\n");
   }
-//  clogWarning("Staring the B cltmnew...\n");
-//  clogWarning("About to look at gsl=%p\n", gsl);
-//  clogWarning("Staring the C cltmnew...\n");
-//  clogWarning("And size %d\n", gsl->size1);
+//  clLogWarning("Staring the B cltmnew...\n");
+//  clLogWarning("About to look at gsl=%p\n", gsl);
+//  clLogWarning("Staring the C cltmnew...\n");
+//  clLogWarning("And size %d\n", gsl->size1);
   if (gsl->size1 < 4) {
-    clogError("Dist matrix needs at least 4 entries but has just %d.\n", gsl->size1);
+    clLogError("Dist matrix needs at least 4 entries but has just %d.\n", gsl->size1);
   }
   assert(gsl);
   assert(gsl->size1 == gsl->size2);
@@ -213,7 +213,7 @@ struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted)
 int clTreemasterTreeCount(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterTreeCount()\n");
+    clLogError("NULL ptr in clTreemasterTreeCount()\n");
   }
   if (tm->activeConfig.fSelfAgreementTermination) {
     int i;
@@ -232,7 +232,7 @@ static int doStep(struct TreeMaster *tm)
   int choseTree;
   int result;
   if (tm == NULL) {
-    clogError("NULL ptr in doStep()\n");
+    clLogError("NULL ptr in doStep()\n");
   }
   if (!tm->activeConfig.fSelfAgreementTermination) {
     result = clTreehImprove(tm->best);
@@ -259,7 +259,7 @@ static int clIsIdenticalTreeTRA(struct TreeAdaptor *ta1, struct TreeAdaptor *ta2
   struct LabelPerm *lab1, *lab2;
   int result;
   if (ta1 == NULL || ta2 == NULL) {
-    clogError("NULL ptr in clIsIdenticalTreeTRA()\n");
+    clLogError("NULL ptr in clIsIdenticalTreeTRA()\n");
   }
   lab1 = clTreeaLabelPerm(ta1);
   lab2 = clTreeaLabelPerm(ta2);
@@ -274,7 +274,7 @@ static int checkDone(struct TreeMaster *tm)
 {
   int i;
   if (tm == NULL) {
-    clogError("NULL ptr in checkDone()\n");
+    clLogError("NULL ptr in checkDone()\n");
   }
   if (tm->activeConfig.fSelfAgreementTermination) {
     for (i = 1; i < tm->k; ++i) {
@@ -293,7 +293,7 @@ static int checkDone(struct TreeMaster *tm)
 struct CLDateTime *clTreemasterEndTime(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterEndTime()\n");
+    clLogError("NULL ptr in clTreemasterEndTime()\n");
   }
   return tm->endTime;
 }
@@ -301,7 +301,7 @@ struct CLDateTime *clTreemasterEndTime(struct TreeMaster *tm)
 struct CLDateTime *clTreemasterStartTime(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterStartTime()\n");
+    clLogError("NULL ptr in clTreemasterStartTime()\n");
   }
   return tm->startTime;
 }
@@ -310,7 +310,7 @@ struct TreeHolder *clTreemasterFindTree(struct TreeMaster *tm)
 {
   int retval;
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterFindTree()\n");
+    clLogError("NULL ptr in clTreemasterFindTree()\n");
   }
   tm->startTime = clDatetimeNow();
   if (tm->tob && tm->tob->treesearchstarted)
@@ -340,7 +340,7 @@ void clTreemasterFree(struct TreeMaster *tm)
 {
   int i;
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterFree()\n");
+    clLogError("NULL ptr in clTreemasterFree()\n");
   }
 //  printf("Freeing treemaster at %p\n", tm);
   for (i = 0; i < tm->k; i += 1) {
@@ -371,7 +371,7 @@ void clTreemasterFree(struct TreeMaster *tm)
 struct TreeObserver *clTreemasterGetTreeObserver(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterGetTreeObserver()\n");
+    clLogError("NULL ptr in clTreemasterGetTreeObserver()\n");
   }
   return tm->tob;
 }
@@ -379,7 +379,7 @@ struct TreeObserver *clTreemasterGetTreeObserver(struct TreeMaster *tm)
 void clTreemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob)
 {
   if (tm == NULL || tob == NULL) {
-    clogError("NULL ptr in clTreemasterSetTreeObserver()\n");
+    clLogError("NULL ptr in clTreemasterSetTreeObserver()\n");
   }
   if (tm->tob) {
     clFreeandclear(tm->tob);
@@ -391,7 +391,7 @@ void clTreemasterSetTreeObserver(struct TreeMaster *tm, struct TreeObserver *tob
 void clTreemasterSetUserData(struct TreeMaster *tm, void *val)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterSetUserData()\n");
+    clLogError("NULL ptr in clTreemasterSetUserData()\n");
   }
   tm->udata = val;
 }
@@ -399,7 +399,7 @@ void clTreemasterSetUserData(struct TreeMaster *tm, void *val)
 void *clTreemasterGetUserData(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterGetUserData()\n");
+    clLogError("NULL ptr in clTreemasterGetUserData()\n");
   }
   return tm->udata;
 }
@@ -407,7 +407,7 @@ void *clTreemasterGetUserData(struct TreeMaster *tm)
 void clTreemasterAbortSearch(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterAbortSearch()\n");
+    clLogError("NULL ptr in clTreemasterAbortSearch()\n");
   }
   tm->fAbortNow = 1;
 }
@@ -415,7 +415,7 @@ void clTreemasterAbortSearch(struct TreeMaster *tm)
 struct TreeHolder *clTreemasterStarterTree(struct TreeMaster *tm)
 {
   if (tm == NULL || tm->th[0] == NULL) {
-    clogError("NULL ptr in clTreemasterStarterTree()\n");
+    clLogError("NULL ptr in clTreemasterStarterTree()\n");
   }
   assert(tm->th[0]);
   return clTreehClone(tm->th[0]);
@@ -424,7 +424,7 @@ struct TreeHolder *clTreemasterStarterTree(struct TreeMaster *tm)
 struct TreeHolder *clTreemasterTreeAtIndex(struct TreeMaster *tm, int i)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterTreeAtIndex()\n");
+    clLogError("NULL ptr in clTreemasterTreeAtIndex()\n");
   }
   assert(i >= 0);
   assert(i < tm->k);
@@ -434,7 +434,7 @@ struct TreeHolder *clTreemasterTreeAtIndex(struct TreeMaster *tm, int i)
 int clTreemasterLabelCount(struct TreeMaster *tm)
 {
   if (tm == NULL) {
-    clogError("NULL ptr in clTreemasterLabelCount()\n");
+    clLogError("NULL ptr in clTreemasterLabelCount()\n");
   }
   return tm->dm->size1;
 }

@@ -86,7 +86,7 @@ const char *clShortNameCB(struct CompressionBase *cb);
 const char *clLongNameCB(struct CompressionBase *cb);
 const char *expandCommand(const char *inpcmd);
 int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct StringStack *afterCmdArgs);
-void clZombie_reaperCB(int q);
+void clZombieReaperCB(int q);
 struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
 const char *clGetParamStringCB(struct CompressionBase *cb);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);

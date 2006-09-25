@@ -54,7 +54,7 @@ union PCTypes clDraRandom(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in clDraRandom()\n");
+    clLogError("NULL ptr in clDraRandom()\n");
   }
   assert(da->size > 0);
   i = rand() % da->size;
@@ -104,7 +104,7 @@ struct DRA *clDraNew(void)
 int clDraSize(const struct DRA *a)
 {
   if (a == NULL) {
-    clogError("NULL ptr in clDraSize()\n");
+    clLogError("NULL ptr in clDraSize()\n");
   }
   return a->size;
 }
@@ -112,7 +112,7 @@ int clDraSize(const struct DRA *a)
 double clDraGetDValueAt(struct DRA *da, int where)
 {
   if (da == NULL) {
-    clogError("NULL ptr in clDraGetDValueAt()\n");
+    clLogError("NULL ptr in clDraGetDValueAt()\n");
   }
   return clDraGetValueAt(da, where).d;
 }
@@ -137,7 +137,7 @@ union PCTypes clDraGetValueAt(const struct DRA *da, int where)
 {
 #if LOGICWALL
   if (da == NULL) {
-    clogError("NULL ptr in clDraGetValueAt()\n");
+    clLogError("NULL ptr in clDraGetValueAt()\n");
   }
   assert(da);
   assert(da->pc && "tried to access freed DRA");
@@ -145,7 +145,7 @@ union PCTypes clDraGetValueAt(const struct DRA *da, int where)
   assert(where >= 0);
   assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
-    clogError( "Error, trying to read element index %d but only of size %d\n",
+    clLogError( "Error, trying to read element index %d but only of size %d\n",
         where, da->size);
     assert(where < da->size && "reading unitialized element in array");
   }
@@ -156,7 +156,7 @@ union PCTypes clDraGetValueAt(const struct DRA *da, int where)
 void clDraSetValueAt(struct DRA *da, int where, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in clDraSetValueAt()\n");
+    clLogError("NULL ptr in clDraSetValueAt()\n");
   }
   assert(da);
   assert(where >= 0);
@@ -170,7 +170,7 @@ void clDraSetDValueAt(struct DRA *da, int where, double val)
 {
   union PCTypes pc;
   if (da == NULL) {
-    clogError("NULL ptr in clDraSetDValueAt()\n");
+    clLogError("NULL ptr in clDraSetDValueAt()\n");
   }
   pc.d = val;
   clDraSetValueAt(da, where, pc);
@@ -179,7 +179,7 @@ void clDraSetDValueAt(struct DRA *da, int where, double val)
 static void makeSizeFor(struct DRA *da, int where)
 {
   if (da == NULL) {
-    clogError("NULL ptr in makeSizeFor()\n");
+    clLogError("NULL ptr in makeSizeFor()\n");
   }
   while (where >= da->alloc) {
     union PCTypes *newBlock;
@@ -197,7 +197,7 @@ union PCTypes clDraShift(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in clDraShift()\n");
+    clLogError("NULL ptr in clDraShift()\n");
   }
   result = da->pc[0];
   assert(da->size > 0);
@@ -210,7 +210,7 @@ union PCTypes clDraPop(struct DRA *da)
 {
   union PCTypes result;
   if (da == NULL) {
-    clogError("NULL ptr in clDraPop()\n");
+    clLogError("NULL ptr in clDraPop()\n");
   }
   result  = da->pc[da->size-1];
   assert(da->size > 0);
@@ -222,7 +222,7 @@ union PCTypes clDraPop(struct DRA *da)
 void clDraUnshift(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in clDraUnshift()\n");
+    clLogError("NULL ptr in clDraUnshift()\n");
   }
   assert(da);
   assert(da->size >= 0);
@@ -253,7 +253,7 @@ void clDraUnshift(struct DRA *da, union PCTypes p)
 void clDraPush(struct DRA *da, union PCTypes p)
 {
   if (da == NULL) {
-    clogError("NULL ptr in clDraPush()\n");
+    clLogError("NULL ptr in clDraPush()\n");
   }
 #if LOGICWALL
   assert(da->size >= 0);
@@ -267,7 +267,7 @@ int clDraSwapAt(struct DRA *da, int inda, int indb)
 {
   union PCTypes tmp;
   if (da == NULL) {
-    clogError("NULL ptr in clDraSwapAt()\n");
+    clLogError("NULL ptr in clDraSwapAt()\n");
   }
   assert(da);
   assert(inda >= 0);
@@ -283,7 +283,7 @@ int clDraSwapAt(struct DRA *da, int inda, int indb)
 struct DRA *clDraClone(const struct DRA *ptr)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in clDraClone()\n");
+    clLogError("NULL ptr in clDraClone()\n");
   }
   assert(ptr);
   return clDraDeepClone(ptr, 0);
@@ -292,7 +292,7 @@ struct DRA *clDraClone(const struct DRA *ptr)
 void clDraDeepFree(struct DRA *ptr, int lvl)
 {
   if (ptr == NULL) {
-    clogError("NULL ptr in clDraDeepFree()\n");
+    clLogError("NULL ptr in clDraDeepFree()\n");
   }
   assert(ptr);
   if (lvl) {
@@ -310,7 +310,7 @@ struct DRA *clDraDeepClone(const struct DRA *ptr, int lvl)
   int sz;
   int i;
   if (ptr == NULL) {
-    clogError("NULL ptr in clDraDeepClone()\n");
+    clLogError("NULL ptr in clDraDeepClone()\n");
   }
   sz = clDraSize(ptr);
   for (i = 0; i < sz; ++i) {
@@ -328,7 +328,7 @@ void clDraPrintIntList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in clDraPrintIntList()\n");
+    clLogError("NULL ptr in clDraPrintIntList()\n");
   }
   for (i = 0; i < da->size; ++i)
     printf("%d ", da->pc[i].i);
@@ -339,7 +339,7 @@ void clDraPrintIntPairList(const struct DRA *da)
 {
   int i;
   if (da == NULL) {
-    clogError("NULL ptr in clDraPrintIntPairList()\n");
+    clLogError("NULL ptr in clDraPrintIntPairList()\n");
   }
   for (i = 0; i < da->size; i += 1)
     printf("(%d,%d) ", da->pc[i].ip.x, da->pc[i].ip.y);
@@ -354,13 +354,13 @@ struct DRA *clDraLoad(struct DataBlock *d, int fmustbe)
   struct DRA *result;
   unsigned char *cur;
   if (d == NULL) {
-    clogError("NULL ptr in clDraLoad()\n");
+    clLogError("NULL ptr in clDraLoad()\n");
   }
   cur = clDatablockData(d) + sizeof(*h) + sizeof(*ddh);
   h = (struct TagHdr *) clDatablockData(d);
   ddh = (struct DRAHdr *) (clDatablockData(d) + sizeof(*h));
   if (h->tagnum != TAGNUM_DOUBLEDOUBLER) {
-    clogError("Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
+    clLogError("Error: expecting DOUBLEDOUBLER tagnum %x, got %x\n",
         TAGNUM_DOUBLEDOUBLER, h->tagnum);
     exit(1);
   }
@@ -391,7 +391,7 @@ struct DRA *clDraLoad(struct DataBlock *d, int fmustbe)
 struct DataBlock *clDraDump(const struct DRA *d)
 {
   if (d == NULL) {
-    clogError("NULL ptr in clDraDump()\n");
+    clLogError("NULL ptr in clDraDump()\n");
   }
   return clDraDeepDump(d, 0);
 }
@@ -406,7 +406,7 @@ struct DataBlock *clDraDeepDump(const struct DRA *d, int level)
   struct TagHdr h;
   struct DRAHdr ddh;
   if (d == NULL) {
-    clogError("NULL ptr in clDraDeepDump()\n");
+    clLogError("NULL ptr in clDraDeepDump()\n");
   }
   dbsize = 0;
 
@@ -456,7 +456,7 @@ struct DataBlock *clStringDump(const char *s)
   int dbsize;
 
   if (s == NULL) {
-    clogError("NULL ptr in clStringDump()\n");
+    clLogError("NULL ptr in clStringDump()\n");
   }
 
   h.tagnum = TAGNUM_STRING;
@@ -476,11 +476,11 @@ char *clStringLoad(struct DataBlock *db, int fmustbe)
   struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
 
   if (db == NULL) {
-    clogError("NULL ptr in clStringLoad()\n");
+    clLogError("NULL ptr in clStringLoad()\n");
   }
   if (h->tagnum != TAGNUM_STRING) {
     if (fmustbe) {
-      clogError("Error: expecting STRING tagnum %x, got %x\n",
+      clLogError("Error: expecting STRING tagnum %x, got %x\n",
         TAGNUM_STRING,h->tagnum);
       exit(1);
     }

@@ -34,7 +34,7 @@ struct Clog { /* NL */
 
 static t_emitclFunc emitFunc;
 
-t_emitclFunc clogSetEmitFunction(t_emitclFunc newclFunc)
+t_emitclFunc clLogSetEmitFunction(t_emitclFunc newclFunc)
 {
   t_emitclFunc oldFunc;
   oldFunc = emitFunc;
@@ -42,7 +42,7 @@ t_emitclFunc clogSetEmitFunction(t_emitclFunc newclFunc)
   return oldFunc;
 }
 
-void clogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const char *msg, const char *fmt, ...)
+void clLogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const char *msg, const char *fmt, ...)
 {
   static char buf[16384], *ptr;
   va_list args;

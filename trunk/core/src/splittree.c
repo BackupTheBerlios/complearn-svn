@@ -39,12 +39,12 @@ struct DRA *clSimpleWalkTreeFrom(struct TreeAdaptor *ta, int knode)
   union PCTypes p = zeropct;
   struct DRA *result = clDraNew();
   struct DRA *border = clDraNew();
-  struct CLNodeSet *done = clnodesetNew(clTreeaNodeCount(ta));
+  struct CLNodeSet *done = clNodesetNew(clTreeaNodeCount(ta));
   p.i = knode;
   clDraPush(border, p);
   clWalkTree(clTreeaAdjAdaptor(ta), result, border, done, 0, NULL);
   clDraFree(border);
-  clnodesetFree(done);
+  clNodesetFree(done);
   return result;
 }
 

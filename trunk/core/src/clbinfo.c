@@ -95,13 +95,13 @@ int main(int argc, char *argv[])
   /*
   printf("opening %s\n", argv[1]);
   labels = clStringstackNew();
-  dm = cltxtDistMatrix(argv[1], labels);
+  dm = clTxtDistMatrix(argv[1], labels);
   db = clMakeCLBDistMatrix(dm, labels, NULL, NULL);
   printf("writing CLB file %s\n", argv[2]);
   clDatablockWriteToFile(db, argv[2]);
 */
   /*
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clDistmatrixLoad(dbdm, 1);
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
   gsl_matrix_free(dm);
   clDatablockFreePtr(db);
   clDatablockFreePtr(dbdm);
-  clFree_DataBlock_package(dd);
+  clFreeDataBlockpackage(dd);
   */
   exit(0);
 }

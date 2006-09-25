@@ -48,7 +48,7 @@ struct DataBlock *clFileToDataBlockPtr(const char *path)
   struct DataBlock *result;
   FILE *fp = clFopen(path, "rb");
   if (fp == NULL) {
-    clogError("fopen error reading <%s>", path);
+    clLogError("fopen error reading <%s>", path);
   }
   assert(fp);
   result = clFilePtrToDataBlockPtr(fp);
@@ -67,7 +67,7 @@ struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
   struct DataBlock *result;
 
   if (fp == NULL) {
-    clogError("NULL ptr in clFilePtrToDataBlockPtr()\n");
+    clLogError("NULL ptr in clFilePtrToDataBlockPtr()\n");
   }
 
   totalbytes = 0;
@@ -118,7 +118,7 @@ char *clDatablockToString(struct DataBlock *db)
 {
   char *s;
   if (db == NULL) {
-    clogError("NULL ptr in clDatablockToString()\n");
+    clLogError("NULL ptr in clDatablockToString()\n");
   }
   s = clMalloc(db->size+1);
   memcpy(s, db->ptr, db->size);
@@ -131,11 +131,11 @@ void clDatablockWriteToFile(struct DataBlock *db, const char *path)
 	FILE *fp;
 	int err;
   if (db == NULL) {
-    clogError("NULL ptr in clDatablockWriteToFile()\n");
+    clLogError("NULL ptr in clDatablockWriteToFile()\n");
   }
 	fp = clFopen(path,"wb");
   if (fp == NULL) {
-    clogError("fopen error in clDatablockWriteToFile()\n");
+    clLogError("fopen error in clDatablockWriteToFile()\n");
   }
 	err = fwrite(db->ptr,1,db->size,fp);
 	if (err == 0) {
@@ -150,7 +150,7 @@ struct DataBlock *clDatablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 	struct DataBlock *d;
   int sz;
   if (a == NULL || b == NULL) {
-    clogError("NULL ptr in clDatablockCatPtr()\n");
+    clLogError("NULL ptr in clDatablockCatPtr()\n");
   }
   sz = a->size + b->size;
   d = clCalloc(sz, 1);
@@ -164,7 +164,7 @@ struct DataBlock *clDatablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 struct DataBlock *clDatablockClonePtr(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in clDatablockCatPtr()\n");
+    clLogError("NULL ptr in clDatablockCatPtr()\n");
   }
   return clDatablockNewFromBlock(clDatablockData(db),clDatablockSize(db));
 }
@@ -182,7 +182,7 @@ struct DataBlock *clDatablockNewFromBlock(const void *ptr, unsigned int size)
 int clDatablockSize(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in clDatablockSize()\n");
+    clLogError("NULL ptr in clDatablockSize()\n");
   }
   return db->size;
 }
@@ -190,7 +190,7 @@ int clDatablockSize(struct DataBlock *db)
 unsigned char *clDatablockData(struct DataBlock *db)
 {
   if (db == NULL) {
-    clogError("NULL ptr in clDatablockData()\n");
+    clLogError("NULL ptr in clDatablockData()\n");
   }
   return db->ptr;
 }

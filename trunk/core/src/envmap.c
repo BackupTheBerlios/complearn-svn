@@ -49,20 +49,20 @@ struct EnvMap *clEnvmapLoad(struct DataBlock *db, int fmustbe)
   int i;
 
   if (db == NULL) {
-    clogError("NULL ptr in clEnvmapLoad()\n");
+    clLogError("NULL ptr in clEnvmapLoad()\n");
   }
 
   if (h->tagnum != TAGNUM_ENVMAP) {
     if (fmustbe) {
-      clogError("Error: expecting ENVMAP tagnum %x, got %x\n",
+      clLogError("Error: expecting ENVMAP tagnum %x, got %x\n",
           TAGNUM_ENVMAP,h->tagnum);
       exit(1);
     }
     else
       return NULL;
   }
-  result->marked = clnodesetNew(MAXINDECES);
-  result->private = clnodesetNew(MAXINDECES);
+  result->marked = clNodesetNew(MAXINDECES);
+  result->private = clNodesetNew(MAXINDECES);
 
   tm = clNewTagManager(db);
 
@@ -79,7 +79,7 @@ struct EnvMap *clEnvmapLoad(struct DataBlock *db, int fmustbe)
     clEnvmapSetKeyVal(result, clStringstackReadAt(keyparts,i), clStringstackReadAt(valparts,i));
 
   for (i = 0; i < clDraSize(result->d); i += 1)
-    clnodesetAddNode(result->marked, i);
+    clNodesetAddNode(result->marked, i);
 
   clFreeTagManager(tm);
   clStringstackFree(keyparts); clStringstackFree(valparts);
@@ -95,7 +95,7 @@ struct DataBlock *clEnvmapDump(struct EnvMap *em)
   int i;
 
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapDump()\n");
+    clLogError("NULL ptr in clEnvmapDump()\n");
   }
 
   for (i = 0; i < clEnvmapSize(em) ; i += 1) {
@@ -105,7 +105,7 @@ struct DataBlock *clEnvmapDump(struct EnvMap *em)
   keys = clStringstackDump(keyparts);
   vals = clStringstackDump(valparts);
 
-  rr = clPackage_DataBlocks(TAGNUM_ENVMAP, keys,vals, NULL);
+  rr = clPackageDataBlocks(TAGNUM_ENVMAP, keys,vals, NULL);
 
   clStringstackFree(keyparts); clStringstackFree(valparts);
   clDatablockFreePtr(keys); clDatablockFreePtr(vals);
@@ -117,8 +117,8 @@ struct EnvMap *clEnvmapNew() {
   struct EnvMap *em;
   em = clCalloc(sizeof(struct EnvMap), 1);
   em->d = clDraNew();
-  em->marked = clnodesetNew(MAXINDECES);
-  em->private = clnodesetNew(MAXINDECES);
+  em->marked = clNodesetNew(MAXINDECES);
+  em->private = clNodesetNew(MAXINDECES);
   return em;
 }
 
@@ -127,16 +127,16 @@ void clEnvmapPrint(struct EnvMap *uem)
   struct EnvMap *em;
   int i;
   if (uem == NULL) {
-    clogError("NULL ptr in clEnvmapPrint()\n");
+    clLogError("NULL ptr in clEnvmapPrint()\n");
   }
   em = clEnvmapClone(uem);
   printf("ES:\n");
   for (i = 0; i < clDraSize(em->d); ++i)
     printf("%s->%s\n", clDraGetValueAt(em->d,i).sp.key, clDraGetValueAt(em->d,i).sp.val);
   printf("Marked: ");
-  clnodesetPrint(em->marked);
+  clNodesetPrint(em->marked);
   printf("Private: ");
-  clnodesetPrint(em->private);
+  clNodesetPrint(em->private);
   printf("ES END.\n");
   clEnvmapFree(em);
 }
@@ -155,22 +155,22 @@ struct EnvMap *clEnvmapClone(struct EnvMap *em)
   int i;
   int sz;
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapClone()\n");
+    clLogError("NULL ptr in clEnvmapClone()\n");
   }
   sz = clEnvmapSize(em);
   nem = clCalloc(sizeof(struct EnvMap), 1);
   nem->d = clDraNew();
   for (i = 0; i < sz; ++i)
     clDraSetValueAt(nem->d, i, cloneStringPair(clDraGetValueAt(em->d, i).sp));
-  nem->marked = clnodesetClone(em->marked);
-  nem->private = clnodesetClone(em->private);
+  nem->marked = clNodesetClone(em->marked);
+  nem->private = clNodesetClone(em->private);
   return nem;
 }
 
 int clEnvmapIsEmpty(struct EnvMap *em)
 {
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapIsEmpty()\n");
+    clLogError("NULL ptr in clEnvmapIsEmpty()\n");
   }
   return clDraSize(em->d) == 0;
 }
@@ -178,7 +178,7 @@ int clEnvmapIsEmpty(struct EnvMap *em)
 int clEnvmapSize(struct EnvMap *em)
 {
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapSize()\n");
+    clLogError("NULL ptr in clEnvmapSize()\n");
   }
   return clDraSize(em->d);
 }
@@ -187,7 +187,7 @@ static int setKeyValAt(struct EnvMap *em, int where, const char *key, const char
 {
   union PCTypes p;
   if (em == NULL || key == NULL || val == NULL) {
-    clogError("NULL ptr in clEnvmapSize()\n");
+    clLogError("NULL ptr in clEnvmapSize()\n");
   }
   p.sp.key = clStrdup(key);
   p.sp.val = clStrdup(val);
@@ -198,16 +198,16 @@ static int setKeyValAt(struct EnvMap *em, int where, const char *key, const char
 void clEnvmapSetKeyMarked(struct EnvMap *em, const char *key)
 {
   if (em == NULL || key == NULL) {
-    clogError("NULL ptr in clEnvmapSetKeyMarked()\n");
+    clLogError("NULL ptr in clEnvmapSetKeyMarked()\n");
   }
-  clnodesetAddNode(em->marked, clEnvmapIndexForKey(em, key));
+  clNodesetAddNode(em->marked, clEnvmapIndexForKey(em, key));
 }
 
 int clEnvmapSetKeyVal(struct EnvMap *em, const char *key, const char *val)
 {
   int i;
   if (em == NULL || key == NULL || val == NULL) {
-    clogError("NULL ptr in clEnvmapSetKeyVal()\n");
+    clLogError("NULL ptr in clEnvmapSetKeyVal()\n");
   }
   i = clEnvmapIndexForKey(em,key);
   if (i >= 0)
@@ -219,8 +219,8 @@ int clEnvmapSetKeyVal(struct EnvMap *em, const char *key, const char *val)
     clDraPush(em->d, p);
   }
   /* to ensure NodeSets are big enough */
-  clnodesetRemoveNode(em->marked, clEnvmapSize(em)+1);
-  clnodesetRemoveNode(em->private, clEnvmapSize(em)+1);
+  clNodesetRemoveNode(em->marked, clEnvmapSize(em)+1);
+  clNodesetRemoveNode(em->private, clEnvmapSize(em)+1);
   return CL_OK;
 }
 
@@ -230,7 +230,7 @@ int clEnvmapFree(struct EnvMap *em)
   static union PCTypes zeroblock;
 
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapFree()\n");
+    clLogError("NULL ptr in clEnvmapFree()\n");
   }
   sz = clEnvmapSize(em);
 
@@ -242,9 +242,9 @@ int clEnvmapFree(struct EnvMap *em)
   }
   clDraFree(em->d);
   em->d = NULL;
-  clnodesetFree(em->marked);
+  clNodesetFree(em->marked);
   em->marked = NULL;
-  clnodesetFree(em->private);
+  clNodesetFree(em->private);
   em->private = NULL;
   clFreeandclear(em);
   return CL_OK;
@@ -255,7 +255,7 @@ char *clEnvmapValueForKey(struct EnvMap *em, const char *key)
   int i;
   char *val = NULL;
   if (em == NULL || key == NULL) {
-    clogError("NULL ptr in clEnvmapValueForKey()\n");
+    clLogError("NULL ptr in clEnvmapValueForKey()\n");
   }
   i = clEnvmapIndexForKey(em,key);
   if (i >= 0) {
@@ -269,7 +269,7 @@ char *clEnvmapValueForKey(struct EnvMap *em, const char *key)
 union PCTypes clEnvmapKeyValAt(struct EnvMap *em, int where)
 {
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapKeyValAt()\n");
+    clLogError("NULL ptr in clEnvmapKeyValAt()\n");
   }
   assert(where >= 0);
   return clDraGetValueAt(em->d, where);
@@ -279,7 +279,7 @@ int clEnvmapIndexForKey(struct EnvMap *em, const char *key)
 {
   int i;
   if (em == NULL || key == NULL) {
-    clogError("NULL ptr in clEnvmapIndexForKey()\n");
+    clLogError("NULL ptr in clEnvmapIndexForKey()\n");
   }
   for (i = 0; i < clEnvmapSize(em); i += 1) {
     union PCTypes p = clEnvmapKeyValAt(em,i);
@@ -293,25 +293,25 @@ int clEnvmapIndexForKey(struct EnvMap *em, const char *key)
 void clEnvmapSetKeyPrivate(struct EnvMap *em, const char *key)
 {
   if (em == NULL || key == NULL) {
-    clogError("NULL ptr in clEnvmapSetKeyPrivate()\n");
+    clLogError("NULL ptr in clEnvmapSetKeyPrivate()\n");
   }
-  clnodesetAddNode(em->private, clEnvmapIndexForKey(em,key));
+  clNodesetAddNode(em->private, clEnvmapIndexForKey(em,key));
 }
 
 int clEnvmapIsMarkedAt(struct EnvMap *em, int where)
 {
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapIsMarkedAt()\n");
+    clLogError("NULL ptr in clEnvmapIsMarkedAt()\n");
   }
-  return clnodesetHasNode(em->marked, where);
+  return clNodesetHasNode(em->marked, where);
 }
 
 int clEnvmapIsPrivateAt(struct EnvMap *em, int where)
 {
   if (em == NULL) {
-    clogError("NULL ptr in clEnvmapIsPrivateAt()\n");
+    clLogError("NULL ptr in clEnvmapIsPrivateAt()\n");
   }
-  return clnodesetHasNode(em->private, where);
+  return clNodesetHasNode(em->private, where);
 }
 
 struct EnvMap *clbEnvMap(char *fname)
@@ -321,13 +321,13 @@ struct EnvMap *clbEnvMap(char *fname)
   struct EnvMap *result = NULL;
 
   db = clFileToDataBlockPtr(fname);
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbem = clScanForTag(dd, TAGNUM_ENVMAP);
   result = clEnvmapLoad(dbem, 1);
   clDatablockFreePtr(dbem);
 
   clDatablockFreePtr(db);
-  clFree_DataBlock_package(dd);
+  clFreeDataBlockpackage(dd);
   return result;
 }
 
@@ -336,12 +336,12 @@ int clEnvmapMerge(struct EnvMap *dest, struct EnvMap *src)
   union PCTypes p;
   int i;
   if (src == NULL) {
-    clogError("NULL ptr in clEnvmapMerge()\n");
+    clLogError("NULL ptr in clEnvmapMerge()\n");
   }
   for (i = 0; i < clEnvmapSize(src); i += 1) {
     p = clEnvmapKeyValAt(src,i);
     clEnvmapSetKeyVal(dest, p.sp.key, p.sp.val);
-    if (clnodesetHasNode(src->marked, i))
+    if (clNodesetHasNode(src->marked, i))
       clEnvmapSetKeyMarked(dest, p.sp.key);
   }
   return CL_OK;

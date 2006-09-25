@@ -36,14 +36,14 @@ int main(int argc, char **argv)
     exit(1);
   }
   db = clFileToDataBlockPtr(argv[1]);
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
   dm = clDistmatrixLoad(dbdm, 1);
   clDatablockFreePtr(db);
   clDatablockFreePtr(dbdm);
   //printf("The matrix is %d by %d\n", dm->size1, dm->size2);
   sdm = clSvdProject(dm);
-  clFree_DataBlock_package(dd);
+  clFreeDataBlockpackage(dd);
   clGslmatrixFree(dm);
   return 0;
 }

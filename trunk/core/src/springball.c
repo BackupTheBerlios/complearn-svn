@@ -149,7 +149,7 @@ struct SBS3 *clSbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl
   return ts;
 }
 
-double clip_val_inbetween(double val, double minval, double maxval)
+double clipValInbetween(double val, double minval, double maxval)
 {
   assert(minval <= maxval);
   if (val > maxval)
@@ -168,7 +168,7 @@ void clStepTowards(gsl_matrix *smooth, const gsl_matrix *target, double dt, doub
       double stepsize = dt * speed;
       double low = oldval - stepsize;
       double high = oldval + stepsize;
-      gsl_matrix_set(smooth, i, j, clip_val_inbetween(wanted, low, high));
+      gsl_matrix_set(smooth, i, j, clipValInbetween(wanted, low, high));
     }
   }
 }

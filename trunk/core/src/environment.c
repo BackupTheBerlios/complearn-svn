@@ -288,7 +288,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
         propName = strtok(optarg, "=");
 	propVal = strtok(NULL, "=");
 	if (propName == NULL || propVal == NULL || propName[0] == 0) {
-		clogError("Bad property setting syntax, please see --help.");
+		clLogError("Bad property setting syntax, please see --help.");
 	}
 	clEnvmapSetKeyVal(curEnv->em, propName, propVal);
         break;
@@ -299,7 +299,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
       default:
         fDidOurOption = 0;
         if (oldopterr)
-          clogError("Unrecognized command-line option phase %d with long index %d\n", result, *longindex);
+          clLogError("Unrecognized command-line option phase %d with long index %d\n", result, *longindex);
         break;
     }
   }

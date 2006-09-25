@@ -74,7 +74,7 @@ void clFreeTagManager(struct TagManager *tm)
   clFreeandclear(tm);
 }
 
-struct DataBlock *clPackage_DataBlocks(t_tagtype overalltag, ...)
+struct DataBlock *clPackageDataBlocks(t_tagtype overalltag, ...)
 {
   va_list ap;
   struct DataBlock *db, *result;
@@ -87,13 +87,13 @@ struct DataBlock *clPackage_DataBlocks(t_tagtype overalltag, ...)
   }
   va_end(ap);
 
-  result = clPackage_dd_DataBlocks(overalltag,parts);
+  result = clPackageDdDataBlocks(overalltag,parts);
 
   clDraFree(parts);
   return result;
 }
 
-struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
+struct DataBlock *clPackageDdDataBlocks(t_tagtype tnum, struct DRA *parts)
 {
   struct DataBlock *result;
   struct TagHdr h;
@@ -129,7 +129,7 @@ struct DataBlock *clPackage_dd_DataBlocks(t_tagtype tnum, struct DRA *parts)
 
 }
 
-void clFree_DataBlock_package ( struct DRA *da )
+void clFreeDataBlockpackage ( struct DRA *da )
 {
   int i;
   for ( i = 0; i < clDraSize(da) ; i += 1) {
@@ -138,7 +138,7 @@ void clFree_DataBlock_package ( struct DRA *da )
   clDraFree(da);
 }
 
-struct DRA *clLoad_DataBlock_package(struct DataBlock *db)
+struct DRA *clLoadDatablockPackage(struct DataBlock *db)
 {
   struct DRA *result = clDraNew();
   struct TagManager *tm;

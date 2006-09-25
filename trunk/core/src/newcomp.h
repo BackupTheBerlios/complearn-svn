@@ -19,7 +19,7 @@ void clRegisterCB(struct CompressionBaseAdaptor *vptr);
 struct CompressionBase *clNewCompressorCB(const char *shortName);
 const char *expandCommand(const char *inpcmd);
 int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd);
-void clZombie_reaperCB(int q);
+void clZombieReaperCB(int q);
 struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
 const char *clGetParamStringCB(struct CompressionBase *cb);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);

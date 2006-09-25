@@ -43,7 +43,7 @@ struct StringStack *clStringstackLoad(struct DataBlock *db, int fmustbe)
 
   if (h->tagnum != TAGNUM_STRINGSTACK) {
     if (fmustbe) {
-      clogError("Error: expecting STRINGSTACK tagnum %x, got %x\n",
+      clLogError("Error: expecting STRINGSTACK tagnum %x, got %x\n",
           TAGNUM_STRINGSTACK,h->tagnum);
       exit(1);
     }
@@ -79,7 +79,7 @@ struct DataBlock *clStringstackDump(const struct StringStack *ss)
     clDraPush(parts,p);
   }
 
-  result = clPackage_dd_DataBlocks(TAGNUM_STRINGSTACK, parts);
+  result = clPackageDdDataBlocks(TAGNUM_STRINGSTACK, parts);
   clDraFree(parts);
   return result;
 }

@@ -28,11 +28,11 @@
 #include <complearn/complearn.h>
 
 /* TODO: needs new home; does not belong here */
-struct DataBlock *clDumpTaggedStringStack(struct StringStack *ss, int tagnum)
+struct DataBlock *clStringStackDumpTagged(struct StringStack *ss, int tagnum)
 {
   struct DataBlock *db, *dblabels;
   db = clStringstackDump(ss);
-  dblabels = clPackage_DataBlocks(tagnum,db,NULL);
+  dblabels = clPackageDataBlocks(tagnum,db,NULL);
   clDatablockFreePtr(db);
   return dblabels;
 }
@@ -40,12 +40,12 @@ struct DataBlock *clDumpTaggedStringStack(struct StringStack *ss, int tagnum)
 /* TODO: needs new home; does not belong here */
 struct DataBlock *clCommandsDump(struct StringStack *ss)
 {
-  return clDumpTaggedStringStack(ss, TAGNUM_COMMANDS);
+  return clStringStackDumpTagged(ss, TAGNUM_COMMANDS);
 }
 
 struct DataBlock *clLabelsDump(struct StringStack *ss)
 {
-  return clDumpTaggedStringStack(ss, TAGNUM_DMLABELS);
+  return clStringStackDumpTagged(ss, TAGNUM_DMLABELS);
 }
 
 /* TODO: needs new home; does not belong here */
@@ -58,18 +58,18 @@ struct StringStack *clLoadTaggedStringStack(struct DataBlock *db, int fmustbe, c
 
   if (h->tagnum != tagnum) {
     if (fmustbe) {
-      clogError("Error: expecting %s tagnum %x, got %x\n",
+      clLogError("Error: expecting %s tagnum %x, got %x\n",
           tagname, tagnum,h->tagnum);
       exit(1);
     }
     else
       return NULL;
   }
-  results = clLoad_DataBlock_package(db);
+  results = clLoadDatablockPackage(db);
   dbss = clScanForTag(results, TAGNUM_STRINGSTACK);
   ss = clStringstackLoad(dbss, 1);
   clDatablockFreePtr(dbss);
-  clFree_DataBlock_package(results);
+  clFreeDataBlockpackage(results);
   return ss;
 }
 
@@ -84,7 +84,7 @@ struct DataBlock *clbLabelsDataBlock(char *fname)
   struct DRA *dd;
 
   db = clFileToDataBlockPtr(fname);
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dblabels = clScanForTag(dd, TAGNUM_DMLABELS);
 
   clDatablockFreePtr(db);
@@ -106,7 +106,7 @@ struct StringStack *clbDBLabels(struct DataBlock *db)
   struct DRA *dd;
   struct StringStack *ss;
 
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dblabels = clScanForTag(dd, TAGNUM_DMLABELS);
 
   ss = clbLabelsLoad(dblabels);
@@ -136,7 +136,7 @@ struct StringStack *clbCommands(char *fname)
   struct StringStack *result;
 
   db = clFileToDataBlockPtr(fname);
-  dd = clLoad_DataBlock_package(db);
+  dd = clLoadDatablockPackage(db);
   dbem = clScanForTag(dd, TAGNUM_COMMANDS);
   result = clLoadTaggedStringStack(dbem, 1, "COMMANDS", TAGNUM_COMMANDS);
 

@@ -39,7 +39,7 @@ static double bs_compress(struct BlockSortCompressionInstance *CI,
     CI->allocated = 10 + size * 1.2;
     CI->x = clRealloc(CI->x, CI->allocated * sizeof(int));
     CI->p = clRealloc(CI->p, CI->allocated * sizeof(int));
-    if (CI->x==NULL || CI->p==NULL) { clogError("do_compress"); }
+    if (CI->x==NULL || CI->p==NULL) { clLogError("do_compress"); }
   }
   x = CI->x;
   p = CI->p;
@@ -241,7 +241,7 @@ static void resetStatistics(struct BlockSortCompressionInstance *bsci)
   }
   bsci->nstates = s+1;
   if (bsci->nstates > MAXSTATES) {
-    clogError( "MAXSTATES should be at least %d\n", s+1);
+    clLogError( "MAXSTATES should be at least %d\n", s+1);
     exit(1);
   }
 }

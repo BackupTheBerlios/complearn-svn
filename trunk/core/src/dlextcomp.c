@@ -69,7 +69,7 @@ static void *dl_musthavesymbol(void *dlhandle, const char *str)
   void *result;
   result = dlsym(dlhandle, str);
   if (result == NULL) {
-    clogError( "Error, symbol %s not defined for "
+    clLogError( "Error, symbol %s not defined for "
                     "dynamic library compressor\n", str);
     exit(1);
   }
@@ -83,7 +83,7 @@ int clCompaLoadDynamicLib(const char *libraryname)
   dlhandle = dlopen(libraryname, RTLD_LAZY | RTLD_LOCAL);
   if (dlhandle == NULL) {
     perror("dlopen");
-    clogError( "Error opening dynamic library %s\n", libraryname);
+    clLogError( "Error opening dynamic library %s\n", libraryname);
     exit(1);
   }
 
@@ -97,7 +97,7 @@ int clCompaLoadDynamicLib(const char *libraryname)
 int clCompaLoadDynamicLib(const char *libraryname)
 {
   fprintf(stderr, "Cannot load %s\n", libraryname);
-  clogError("No Dynamic Library Support compiled in, sorry.");
+  clLogError("No Dynamic Library Support compiled in, sorry.");
   return NULL;
 }
 

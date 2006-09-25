@@ -115,7 +115,7 @@ gsl_matrix *clDistmatrixLoad(struct DataBlock *d, int fmustbe);
  *
  *  clEnvmapDump() a DataBlock which then can be written to a file using the
  *  function clDatablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the function clPackage_DataBlocks().
+ *  appropriate when using the function clPackageDataBlocks().
  *
  *  To convert the resulting DataBlock back into a gsl_matrix, use the
  *  clDistmatrixLoad() function.
@@ -137,7 +137,7 @@ gsl_matrix *clbDistMatrix(char *fname);
 /** \brief Retrieves a gsl_matrix from a CompLearn DataBlock "package"
  *
  *  clbDBDistMatrix() takes as input, a DataBlock "package" as created by
- *  clPackage_DataBlocks().
+ *  clPackageDataBlocks().
  *  \param pointer to DataBlock "package"
  *  \param pointer to gsl_matrix
  */
@@ -165,35 +165,35 @@ struct DataBlock *clbDMDataBlock(char *fname);
 
 /** \brief Retrieves gsl_matrix from a ASCII text file
  *
- *  cltxtDistMatrix() is a high level function which reads a text file,
+ *  clTxtDistMatrix() is a high level function which reads a text file,
  *  formatted in the same way as output from the ncd command, and returns a
  *  a distance matrix in the gsl_matrix format.
  *  \param fname path to text file
  *  \return gsl_matrix
  */
-gsl_matrix *cltxtDistMatrix(struct DataBlock *db, struct StringStack *labels);
+gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels);
 
 /** \brief Retrieves the row size of a matrix stored in an ASCII text file
  *
  *  The row size of a valie ASCII text file containing a distance matrix that
  *  can be read by CompLearn is always 1 more the integer returned by
- *  cltxtColSize(), where the "extra" row signifies the labels for the
+ *  clTxtColSize(), where the "extra" row signifies the labels for the
  *  square distance matrix.
  *  \param fname path to text file
  *  \return int row size
  */
-int cltxtRowSize(struct DataBlock *db);
+int clTxtRowSize(struct DataBlock *db);
 
 /** \brief Retrieves the column size of a matrix stored in an ASCII text file
  *
  *  The column size of a valid ASCII text file containing a distance matrix
  *  that can be read by CompLearn is always 1 less the integer returned by
- *  cltxtRowSize(), where the "extra" row signifies the labels for the
+ *  clTxtRowSize(), where the "extra" row signifies the labels for the
  *  square distance matrix.
  *  \param fname path to text file
  *  \return int column size
  */
-int cltxtColSize(struct DataBlock *db);
+int clTxtColSize(struct DataBlock *db);
 
 /** \brief Prints to stdout the given gsl_matrix
  *  \param m pointer to gsl_matrix
@@ -205,7 +205,7 @@ void clGslmatrixPrint(gsl_matrix *m, char *delim);
  *
  *  NOT READY FOR PRIMETIME YET
  */
-int cltxtToCLB(char *source, char *dest);
+int clTxtToCLB(char *source, char *dest);
 
 /** \brief Checks if a datablock is CLB format, returns 0 or 1 accordingly
  *

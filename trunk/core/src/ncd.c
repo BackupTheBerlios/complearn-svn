@@ -79,9 +79,9 @@ void loadCompressor(struct GeneralConfig *cur)
       printf("About to load %s..\n", cur->compressor_name);
     cur->ca = clNewCompressorCB(cur->compressor_name);
     if (cur->ca == NULL) {
-      //clogError( "Error, cannot load builtin compressor %s\n", cur->compressor_name);
+      //clLogError( "Error, cannot load builtin compressor %s\n", cur->compressor_name);
       clPrintCompressors();
-      clogError("Error loading %s: %s\n", cur->compressor_name, clLastStaticErrorCB(cur->compressor_name));
+      clLogError("Error loading %s: %s\n", cur->compressor_name, clLastStaticErrorCB(cur->compressor_name));
     }
     if (cur->fVerbose)
       printf("Done loading %p.\n", cur->ca);

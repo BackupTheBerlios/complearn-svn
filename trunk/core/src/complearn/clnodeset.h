@@ -26,7 +26,7 @@
 */
 #ifndef __CLNODESET_H
 #define __CLNODESET_H
-/*! \file clnodeset.h */
+/*! \file clNodeset.h */
 
 /** \brief A dynamically resizing set of integers
  *
@@ -43,22 +43,22 @@ struct CLNodeSet;
  * \param howbig an optional value indicating how big this set should
  * initially be sized.  This value is not a limit.
  */
-struct CLNodeSet *clnodesetNew(int howbig);
-struct CLNodeSet *clnodesetClone(const struct CLNodeSet *cl);
-void clnodesetFree(struct CLNodeSet *cl);
+struct CLNodeSet *clNodesetNew(int howbig);
+struct CLNodeSet *clNodesetClone(const struct CLNodeSet *cl);
+void clNodesetFree(struct CLNodeSet *cl);
 
 /** \brief Adds a node label to a CLNodeSet
  *  \param cl CLNodeSet
  *  \param which node label to add
  */
-void clnodesetAddNode(struct CLNodeSet *cl, qbase_t which);
-void clnodesetRemoveNode(struct CLNodeSet *cl, qbase_t which);
-void clnodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
-int clnodesetHasNode(const struct CLNodeSet *cl, qbase_t which);
-void clnodesetPrint(struct CLNodeSet *cl);
-struct DRA *clnodesetToDRA(const struct CLNodeSet *cl);
+void clNodesetAddNode(struct CLNodeSet *cl, qbase_t which);
+void clNodesetRemoveNode(struct CLNodeSet *cl, qbase_t which);
+void clNodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status);
+int clNodesetHasNode(const struct CLNodeSet *cl, qbase_t which);
+void clNodesetPrint(struct CLNodeSet *cl);
+struct DRA *clNodesetToDRA(const struct CLNodeSet *cl);
 struct CLNodeSet *clDraToCLNodeSet(const struct DRA *da);
-int clnodesetSize(const struct CLNodeSet *cl);
+int clNodesetSize(const struct CLNodeSet *cl);
 
 #endif
 

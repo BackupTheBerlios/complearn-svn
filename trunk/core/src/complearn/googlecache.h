@@ -46,7 +46,7 @@ struct GoogleCache;
 struct GoogleCache *clNewGC(void);
 void clFreeGC(struct GoogleCache *gc);
 
-int clFetchsample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey);
+int clFetchSample(struct GoogleCache *gc, const char *daystr, struct StringStack *terms, double *val, const char *gkey);
 double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const char *daystr);
 
 void clDeleteSavedGC(void);
