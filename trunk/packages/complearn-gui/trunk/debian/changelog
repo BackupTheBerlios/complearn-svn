@@ -1,3 +1,9 @@
+complearn-gui (0.9.6-1) unstable; urgency=low
+
+  * Made some small symbol name adjustments and relinked with libcomplearn.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Tue, 26 Sep 2006 00:16:13 +0200
+
 complearn-gui (0.9.3-3) unstable; urgency=low
 
   * Recompiled against new upstream library package.
