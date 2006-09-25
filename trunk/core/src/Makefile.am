@@ -26,7 +26,7 @@
 BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 
 GENCPPFLAGS = -I complearn -I .
-CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
+CLLDFLAGS = -L.libs -lcomplearn $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
