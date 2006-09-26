@@ -26,7 +26,7 @@
 bin_PROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 
 GENCPPFLAGS = -I complearn -I .
-CLLDFLAGS = -L.libs -lcomplearn $(NGDLIBS)
+CLLDFLAGS = .libs/libcomplearn${shrext_cmds} $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
@@ -129,7 +129,9 @@ complearn/clog.h \
 complearn/clwrap.h \
 complearn/clparser.h
 
-libcomplearn_a_SOURCES = \
+lib_LTLIBRARIES   = libcomplearn.la
+
+libcomplearn_la_SOURCES=\
 adjadaptor.c \
 adjlist.c \
 adjmatrix.c \
@@ -196,11 +198,7 @@ clog.c \
 clwrap.c \
 clparser.c
 
-lib_LTLIBRARIES   = libcomplearn.la
-
 EXTRA_libcomplearn_la_SOURCES = liblzmax.c libppmdx.c
-
-libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
 
 noinst_LTLIBRARIES= libart.la liblzmax.la libppmdx.la
 
