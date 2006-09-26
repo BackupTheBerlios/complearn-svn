@@ -112,7 +112,8 @@ case "${host}" in
     echo "please consider using a Unix style OS"
     AC_DEFINE(STATICLOADEXTRAMODS, 1)
     EXTRABUILTINS='libppmdx.lo liblzmax.lo'
-    LDFLAGS="$LDFLAGS -static"
+#    LDFLAGS="$LDFLAGS -lz"
+    LIBS="$LIBS -lz"
 if test -e /usr/lib/libgslcblas.a -a ! -e /usr/lib/libblas.a ; then
 cp /usr/lib/libgslcblas.a /usr/lib/libblas.a
 fi
@@ -277,13 +278,20 @@ echo "fdl_lib       is $fdl_lib"
 echo "ua_optimize   is $ua_optimize"
 echo "host          is $host"
 echo "build         is $build"
-if test x$EXTRABUILTINS = x ; then
+if test "x$EXTRABUILTINS" = x ; then
   echo -n
 else
+  echo
+  echo "*********************************************************************"
+  echo
   echo "Warning: To compile in Cygwin, you must use the following commands:"
   echo "cd src"
   echo "make -f winMakefile"
   echo "This will compile static versions of ncd.exe and maketree.exe for you."
+  echo "It will be your task to copy these to a better location."
+  echo
+  echo "*********************************************************************"
+  echo
 fi
 
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
