@@ -55,7 +55,8 @@ $(pkgdata_DATA) \
 $(src) \
 $(doc) \
 $(examples) \
-$(scripts)
+$(scripts) \
+src/winMakefile
 
 man_MANS = \
 doc/man/complearn.5 \

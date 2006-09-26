@@ -277,6 +277,14 @@ echo "fdl_lib       is $fdl_lib"
 echo "ua_optimize   is $ua_optimize"
 echo "host          is $host"
 echo "build         is $build"
+if test x$EXTRABUILTINS = x ; then
+  echo -n
+else
+  echo "Warning: To compile in Cygwin, you must use the following commands:"
+  echo "cd src"
+  echo "make -f winMakefile"
+  echo "This will compile static versions of ncd.exe and maketree.exe for you."
+fi
 
 AM_CONFIG_HEADER(src/complearn/aclconfig.h)
 AM_CONFIG_HEADER(src/complearn/clconfig.h)
