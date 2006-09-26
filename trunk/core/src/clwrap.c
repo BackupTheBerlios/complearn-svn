@@ -56,17 +56,21 @@ static FILE *makeTmpCopyStdin(void)
     clDatablockWriteToFile(db, tmpfile);
     clDatablockFreePtr(db);
   }
-  fp = fopen(tmpfile,"r");
+  fp = fopen(tmpfile,"rb");
   return fp;
 }
 
 FILE *clFopen(const char *fname, char *mode)
 {
+  char goodmode[3];
+  goodmode[0] = mode[0];
+  goodmode[1] = 'b';
+  goodmode[2] = '\0';
   if (strcmp(fname,"-") == 0) {
     return (mode[0] == 'r' ? makeTmpCopyStdin() : stdout);
   }
   else
-    return fopen(fname, mode);
+    return fopen(fname, goodmode);
 }
 
 void clFclose(FILE *fp)
