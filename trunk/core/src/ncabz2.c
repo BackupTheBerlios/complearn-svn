@@ -10,8 +10,6 @@
 #include <bzlib.h>
 #endif
 
-#include "ncabz2.h"
-
 /***** Dynamic Adaptor module to support dual-mode static / dynamic loading
  *
  * This system is intended to simplify installation by allowing users to

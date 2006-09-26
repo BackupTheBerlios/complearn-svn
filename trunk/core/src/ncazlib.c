@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <complearn/complearn.h>
-#include "ncazlib.h"
 
 #ifdef HAVE_DLFCN_H
 #include <dlfcn.h>
