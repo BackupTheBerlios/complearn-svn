@@ -99,6 +99,7 @@ case "${host}" in
   AC_DEFINE(LINUX, 1, "Linux")
   ;;
   *-*-cygwin*)
+    LDFLAGS="$LDFLAGS -static"
 if test -e /usr/lib/libgslcblas.a -a ! -e /usr/lib/libblas.a ; then
 cp /usr/lib/libgslcblas.a /usr/lib/libblas.a
 fi

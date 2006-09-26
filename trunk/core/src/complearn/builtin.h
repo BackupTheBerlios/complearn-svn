@@ -81,6 +81,7 @@ const char *clLastErrorCB(struct CompressionBase *cb);
 int clIsEnabledCB(const char *shortName);
 const char *clLastStaticErrorCB(const char *shortName);
 void clFreeCB(struct CompressionBase *cb);
+const char *clExpandCommand(const char *inpcmd);
 void clSetStaticErrorMessage(const char *shortName, const char *msg);
 struct StringStack *clListBuiltinsCB(int fWithDisabled);
 void clPrintCompressors(void);

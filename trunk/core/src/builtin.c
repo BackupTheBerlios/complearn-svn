@@ -213,7 +213,10 @@ void clRegisterCB(struct CompressionBaseAdaptor *vptr)
   shortName = vptr->shortNameCB();
   assert(shortName != NULL);
   assert(strlen(shortName) > 0);
-  assert(findCompressorInfo(shortName) == NULL);
+  if (findCompressorInfo(shortName) != NULL) {
+    fprintf(stderr, "Warning: already loaded compressor %s, ignoring subsequent registrations by the same name.\n", shortName);
+    return;
+  }
   vpn = (void **) &ci->cba;
   svptr = (void **) vptr;
   for (i = 0; i < (cbas/ps); i += 1) {
