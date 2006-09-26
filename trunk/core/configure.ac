@@ -30,6 +30,7 @@ AC_PROG_RANLIB
 AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 AM_MAINTAINER_MODE
+EXTRABUILTINS=
 dnl
 dnl release and version information
 dnl
@@ -99,6 +100,18 @@ case "${host}" in
   AC_DEFINE(LINUX, 1, "Linux")
   ;;
   *-*-cygwin*)
+    echo "Warning: Functionality limitted on this OS; text-mode distance"
+    echo "matrixes are the only ones that work.  You can make these using"
+    echo "ncd and > redirection of its output, as in:"
+    echo "ncd -d 10-mammals 10-mammals >distmatrix.txt"
+    echo "This distmatrix.txt file may then be fed to maketree using -T:"
+    echo "maketree -T distmatrix.txt"
+    echo "Compiling ppmdx and lzmax modules in statically for Cygwin to"
+    echo "compensate for limitted DLL functionality in this OS."
+    echo "For complete dynamic module support and binary distance matrix,"
+    echo "please consider using a Unix style OS"
+    AC_DEFINE(STATICLOADEXTRAMODS, 1)
+    EXTRABUILTINS='libppmdx.lo liblzmax.lo'
     LDFLAGS="$LDFLAGS -static"
 if test -e /usr/lib/libgslcblas.a -a ! -e /usr/lib/libblas.a ; then
 cp /usr/lib/libgslcblas.a /usr/lib/libblas.a
@@ -142,7 +155,6 @@ fi
 
 # base dependencies
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
-echo "Checking BASE DEPENDENCIES"
 if test "x$fgsl_lib" = "xfalse" ; then
 AC_ARG_WITH(gsl,
   [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
@@ -250,6 +262,7 @@ LIBS=$OLDLIBS
 
 AC_PROG_CC
 AC_SUBST(NGDLIBS)
+AC_SUBST(EXTRABUILTINS)
 AC_SUBST(FONTFILE)
 
 echo "fgsl_lib      is $fgsl_lib"

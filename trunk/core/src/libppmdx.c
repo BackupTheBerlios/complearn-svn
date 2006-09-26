@@ -121,8 +121,15 @@ static struct CompressionBaseAdaptor cba = {
   VIRTFUNCEXPORT(allocSizeCB)
 };
 
+
+#if STATICLOADEXTRAMODS
+void clinitPPMDX(void)
+{
+  clRegisterCB(&cba);
+}
+#else
 INITFUNCTYPE()
 {
   clRegisterCB(&cba);
 }
-
+#endif

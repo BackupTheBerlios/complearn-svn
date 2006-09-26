@@ -23,20 +23,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-BASICPROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
+bin_PROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 
 GENCPPFLAGS = -I complearn -I .
 CLLDFLAGS = -L.libs -lcomplearn $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 
-LEV2PROGRAMS = $(BASICPROGRAMS)
-
-LEV3PROGRAMS = $(LEV2PROGRAMS) $(NGDLIBS)
-
-bin_PROGRAMS = $(LEV3PROGRAMS)
 check_PROGRAMS = runtests
-EXTRA_PROGRAMS=
 
 runtests_SOURCES = runtests.c
 runtests_LDADD = $(CLLDFLAGS) $(NGDLIBS)
@@ -135,7 +129,7 @@ complearn/clog.h \
 complearn/clwrap.h \
 complearn/clparser.h
 
-libcomplearn_a_SOURCES=\
+libcomplearn_a_SOURCES = \
 adjadaptor.c \
 adjlist.c \
 adjmatrix.c \
@@ -204,10 +198,14 @@ clparser.c
 
 lib_LTLIBRARIES   = libcomplearn.la
 
-noinst_LTLIBRARIES= libart.la liblzmax.la libppmdx.la
+EXTRA_libcomplearn_la_SOURCES = liblzmax.c libppmdx.c
 
 libcomplearn_la_SOURCES= $(libcomplearn_a_SOURCES)
-libcomplearn_la_LIBADD= $(NGDLIBS)
+
+noinst_LTLIBRARIES= libart.la liblzmax.la libppmdx.la
+
+libcomplearn_la_LIBADD= $(NGDLIBS) @EXTRABUILTINS@
+libcomplearn_la_DEPENDENCIES= @EXTRABUILTINS@
 libcomplearn_la_LDFLAGS= -version-info @libcomplearn_version@ -Wl,-soname -Wl,libcomplearn-1.0.so.0
 
 # CompLearn Compression Modules

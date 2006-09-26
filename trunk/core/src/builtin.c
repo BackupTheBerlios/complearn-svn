@@ -20,6 +20,8 @@ void clinitReal(void);
 void clinitVirtual(void);
 void clinitGoogle(void);
 void clinitBZip2X(void);
+void clinitPPMDX(void);
+void clinitLZMAX(void);
 
 static void clDoBestScan(void);
 static void checkInitted(void);
@@ -458,6 +460,10 @@ static void initBuiltinCompressors(void) {
   clinitBlockSort();
   clinitZLib();
   clinitBZip2X();
+#if STATICLOADEXTRAMODS
+  clinitPPMDX();
+  clinitLZMAX();
+#endif
   modPath = getenv("COMPLEARNMODPATH");
   if (modPath)
     clScanDirForModules(modPath, NULL);
