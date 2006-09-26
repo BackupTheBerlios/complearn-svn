@@ -27,7 +27,15 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
   struct LZMACompressionInstance *rci = (struct LZMACompressionInstance *) cb;
   struct StringStack *args = clStringstackNew();
+  /* The Cygwin and Linux versions of lzma seem to take different options */
+#ifdef __CYGWIN__
+  clStringstackPush(args, "e");
+  clStringstackPush(args, "-d27");
+  clStringstackPush(args, "-si");
+  clStringstackPush(args, "-so");
+#else
   clStringstackPush(args, "-9zcf");
+#endif
   int readfd;
 
   assert(ecmd);
