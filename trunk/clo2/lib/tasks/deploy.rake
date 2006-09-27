@@ -1,7 +1,7 @@
 desc "Deploy basic application directories"
 task :deploy => :environment do
   dirs = %w{ app lib test public config script }
-  onserver = "webuser@complearn.org:/home/webuser/hosting/clo/rails"
+  onserver = "webuser@complearn.org:/home/webuser/hosting/clo2/rails"
    ['public'].each { |d| File.chmod(0777, d) }
   dirs.each do | dir|
     cmd = <<EOF

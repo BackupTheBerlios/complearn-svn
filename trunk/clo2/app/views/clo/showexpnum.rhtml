@@ -1,0 +1,41 @@
+<%
+  @page_title = "Results for experiment #@title, #@num"
+  @metarefresh = 60
+%>
+<% if @starttime %>
+  <h3> <%= link_to( "back to #{@starttime}", :controller => 'clo', :action => 'showmonth', :id => @starttime.to_i) %></h3>
+<% end %>
+<% if @admin %>
+<p><%= link_to "Delete experiment", :action=>"delexpnow", :id=>@num %></p>
+<% if @title && @title.size > 2 %>
+<%= link_to "Delete title", :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>'' } %></li>
+<% else %>
+Choose a term to set as title:
+<ul>
+<% @choices.each { |c| %>
+<li><%= link_to c, :action=>"settitle", :id=>@num, :params=>{ "deltime"=>@deltime+1, "title"=>c } %></li>
+<% } %>
+</ul>
+<% end %>
+<% end %>
+<div id="matrix">
+  <%= @distmatrix %>
+</div>
+
+<div id="tree">
+  <img src="<%= url_for :action=>'grabfile', :id=>@num, :params=>{:filename=>'treefile.png', :nonce=>@deltime} %>" alt="Tree" />
+</div>
+
+<div>
+Experiment made on <%= @exptime %>
+<% @comments.each { |c| %>
+  <p><%= c.str %> <em>--<%= c.username %> on <%= c.created_at %></em></p>
+<% } %>
+<h3>Add your own comment</h3>
+<%= form_tag( :action => :addcomment, :id => @expid ) %>
+<p>
+<%= text_field_tag :str %>
+<%= submit_tag "Add comment" %>
+</p>
+<%= end_form_tag %>
+</div>

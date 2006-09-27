@@ -1,0 +1,32 @@
+<% @page_title = @experiments.size.to_s + ' experiments this month' %>
+<div id="info">
+<table class="experiments"><%
+  curday = nil
+  @experiments = @experiments.sort_by { |i| i.created_at }
+  @experiments.each { |e|
+%>
+  <tr>
+    <td class="date"><% 
+  if curday != e.created_at.day
+    curday = e.created_at.day %><%= e.created_at.strftime("%D") %><% end %></td>
+    <td class="name"><%
+  if e.termlist.size > 4
+    tt = e.termlist[0..4]
+    tt.push '..'
+  else
+    tt = e.termlist
+  end
+  if e.title && e.title.size > 2
+    d = e.title
+    r = tt.join(',')
+  else
+    d = tt.join(',')
+    r = ''
+  end
+  comstr = e.comments.empty? ? '' : "(#{e.comments.size} com.)"
+%><%= link_to d, :id => e.codenum, :action=> 'showexpnum', :controller => 'clo' %></td>
+    <td><%= "#{comstr} #{r}" %></td>
+  </tr>
+<% } %>
+</table>
+</div>

@@ -1,0 +1,8 @@
+<table>
+<% @expnums.each_with_index { |str, i| %>
+<tr><td>
+<%=  link_to "Exp-##{(i+1)}:", :action=>'showexpnum', :id=>str, :params=>{"deltime"=>1000, "nonce"=>rand(111)} %>
+</td><td> <em> <%= @expterms[i] %> </em>
+</tr>
+<% } %>
+</table>
