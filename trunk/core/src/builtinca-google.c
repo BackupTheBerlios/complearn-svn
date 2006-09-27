@@ -82,7 +82,6 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
   struct GoogleCompressionInstance *gci = (struct GoogleCompressionInstance *) cb;
   char *args[1] = { NULL };
   const char *propname = "GoogleKey";
-  struct EnvMap *em = clGetParametersCB(cb);
   herror_t err;
   err = soap_client_init_args(0, args);
   if (gkp == NULL) {

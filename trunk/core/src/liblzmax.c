@@ -25,7 +25,6 @@ static int fallocSizeCB(void)
 
 static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 {
-  struct LZMACompressionInstance *rci = (struct LZMACompressionInstance *) cb;
   struct StringStack *args = clStringstackNew();
   /* The Cygwin and Linux versions of lzma seem to take different options */
 #ifdef __CYGWIN__
@@ -45,7 +44,6 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 
 static void ffreeCB(struct CompressionBase *cb)
 {
-  struct LZMACompressionInstance *rci = (struct LZMACompressionInstance *) cb;
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)

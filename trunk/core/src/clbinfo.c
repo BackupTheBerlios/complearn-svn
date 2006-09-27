@@ -74,15 +74,7 @@ int isRooted = 0;
 
 int main(int argc, char *argv[])
 {
-  int i, matched, maxtrials;
-  struct DataBlock *db, *dbdm;
-  struct DRA *dd;
-  FILE *fp;
-  char *outfile = "treestats.txt";
-  double start, finish;
-  struct StringStack *labels;
 
-  gsl_matrix *dm;
 
   if (argc != 3) {
     printf("Usage: %s distmatrix.txt distmatrix.clb\n", argv[0]);

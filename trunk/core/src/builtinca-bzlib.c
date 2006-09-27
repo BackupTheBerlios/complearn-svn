@@ -59,7 +59,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   }
 	p = clDatablockSize(src)*1.5+600;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = (bzip2->buftobufcompress)((char *) dbuff,(unsigned int *) &p,(char *) clDatablockData(src),clDatablockSize(src),
+	s = (bzip2->buftobufcompress)((char *) dbuff,(unsigned int *) ((void *) (&p)),(char *) clDatablockData(src),clDatablockSize(src),
 			bzci->blocksize, bzci->verbosity, bzci->workfactor);
 	if (s != BZ_OK) {
 		printf ("error code %d\n", s);

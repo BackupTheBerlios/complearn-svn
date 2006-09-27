@@ -41,7 +41,6 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 
 static void ffreeCB(struct CompressionBase *cb)
 {
-  struct BZip2XCompressionInstance *rci = (struct BZip2XCompressionInstance *) cb;
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)

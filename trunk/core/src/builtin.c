@@ -170,7 +170,6 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   return NULL;
 }
 
-void **dvptr = (void **) &cbsuper;
 struct CompressionBase *clNewCompressorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci;
@@ -225,6 +224,7 @@ int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *va
 
 void clRegisterCB(struct CompressionBaseAdaptor *vptr)
 {
+  void **dvptr = (void **) ((void *) &cbsuper);
   struct CLCompressionInfo *ci;
   int cbas = sizeof(struct CompressionBaseAdaptor);
   int ps = sizeof(void *);

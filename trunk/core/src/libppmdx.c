@@ -50,11 +50,11 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   chdir(tmpres);
   clDatablockWriteToFile(src, "inp");
   readfd = clForkPipeExecAndFeedCB(nonblock, ecmd, args);
-  clDatablockFree(nonblock);
+  clDatablockFreePtr(nonblock);
   dummy = clCountBytesTillEOFThenCloseCB(readfd);
   dbres = clFileToDataBlockPtr("inp.pmd");
   result = 8.0 * clDatablockSize(dbres);
-  clDatablockFree(dbres);
+  clDatablockFreePtr(dbres);
   unlink(clJoinAsPath(tmpres, "inp.pmd"));
   unlink(clJoinAsPath(tmpres, "inp"));
   chdir(olddir);
@@ -64,7 +64,6 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 
 static void ffreeCB(struct CompressionBase *cb)
 {
-  struct PPMDXCompressionInstance *rci = (struct PPMDXCompressionInstance *) cb;
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)

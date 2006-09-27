@@ -147,11 +147,11 @@ AC_ARG_ENABLE(optimize,
 esac], [ua_optimize=true])
 
 if test x$ua_optimize = xtrue ; then
-  CPPFLAGS="$CPPFLAGS -DNDEBUG"
-  CFLAGS="$CFLAGS -O3 -DNDEBUG"
+  CPPFLAGS="$CPPFLAGS -DNDEBUG -Wall"
+  CFLAGS="$CFLAGS -O3 -DNDEBUG -Wall"
   echo "Enabling performance optimizations."
 else
-  CFLAGS="$CFLAGS -g"
+  CFLAGS="$CFLAGS -g -Wall"
 fi
 
 # base dependencies

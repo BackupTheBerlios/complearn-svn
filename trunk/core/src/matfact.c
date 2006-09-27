@@ -230,26 +230,8 @@ gsl_matrix *clbDistMatrix(char *fname)
 #define DELIMS " ,\t\r\n"
 #define MAXLINESIZE 10240
 
-static struct DRA *get_dm_row_from_txt(char *linebuf, int isLabeled)
-{
-  struct DRA *row = clDraNew();
-  char *s;
-  union PCTypes p = zeropct;
-  s = strtok(linebuf, DELIMS);
-  if (!isLabeled) {
-    p.d = atof(s);
-    clDraPush(row,p);
-  }
-  while((s = strtok(NULL, DELIMS))) {
-    p.d = atof(s);
-    clDraPush(row,p);
-  }
-  return row;
-}
-
 static int grabFields(gsl_matrix *m, const char *rowStart, int row, struct StringStack *labels)
 {
-  int i;
   char numbuf[2048];
   int numtop = 100;
   int numpos;
@@ -286,7 +268,7 @@ int clTxtRowSize(struct DataBlock *db)
   int sz = clDatablockSize(db);
   unsigned char *d = clDatablockData(db);
   int goodrow = 0;
-  int c, lc;
+  int c=0, lc;
   int rowCount = 0;
   for (i = 0; i < sz; i += 1) {
     lc = c;
@@ -327,10 +309,9 @@ gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
   int sz = clDatablockSize(db);
   char *d = (char *) clDatablockData(db);
   int goodrow = 0;
-  int c, lc;
+  int c=0, lc;
   int curRow = 0;
   int rows = 0;
-  int isLabeled = 0;
   char *lastRow;
   gsl_matrix *result;
 

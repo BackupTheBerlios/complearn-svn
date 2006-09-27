@@ -142,16 +142,6 @@ double clFetchSampleSimple(struct StringStack *terms, const char *gkey, const ch
     clDatetimeFree(dt);
   return result;
 }
-static void showStatusMsg(struct StringStack *terms, const char *daystr)
-{
-  int i;
-  printf("fetchss-%s-%d:", daystr ? daystr : "(null-daystr)", clStringstackSize(terms));
-  for (i = 0; i < clStringstackSize(terms); i += 1) {
-    if (i > 0) printf(",");
-      printf("%s", clStringstackReadAt(terms, i));
-  }
-  printf("\n");
-}
 /** \brief Fetches a sample from the local count database with the help of the
  * caching agent, GoogleCache.
  *

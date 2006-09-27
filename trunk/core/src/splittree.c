@@ -53,7 +53,7 @@ struct SplitResult *splitTree(struct TreeAdaptor *ta, int knode)
   struct SplitResult *sr = clCalloc(sizeof(struct SplitResult), 1);
   struct DRA *path;
   struct AdjAdaptor *aa;
-  int i, j=-1, lastnode;
+  int i, j=-1;
   aa = clTreeaAdjAdaptor(ta);
   for (i = 0; i < 3; i += 1) {
     union PCTypes p = zeropct;
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
   char *matname = NULL;
   int i, bestNode = -1;
   double bestScore = 10000000.0;
-  struct SplitResult *sr, *bestsr;
+  struct SplitResult *sr, *bestsr=NULL;
   if (argc != 3) {
     fprintf(stderr, "Usage: %s treefile.dot distmatrix.clb\n", argv[0]);
     exit(0);
