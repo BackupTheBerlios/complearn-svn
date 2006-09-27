@@ -1186,6 +1186,18 @@ void testPerimPairs()
   clDraFree(da);
 }
 
+void testCompressorList()
+{
+  struct CompressionBase *cb;
+  const char *n;
+  int c, i;
+  c = clCompressorCount();
+  for (i = 0; i < c; i += 1) {
+    cb = clNewCompressorCB(clCompressorName(i));
+    printf("Got compressors: %s:%p\n", clCompressorName(i), cb);
+  }
+}
+
 void testTreeMolder()
 {
   struct DataBlock *db[LABELCOUNT];
@@ -1395,6 +1407,7 @@ int main(int argc, char **argv)
   testLabelPerm();
   testPerimPairs();
   testTreeMolder();
+  testCompressorList();
   //testCLTextConverter();
 #if 0
 #endif

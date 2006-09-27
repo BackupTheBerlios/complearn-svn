@@ -55,7 +55,8 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 static void ffreeCB(struct CompressionBase *cb)
 {
   struct GoogleCompressionInstance *gci = (struct GoogleCompressionInstance *) cb;
-  clFreeandclear(gci->gkey);
+  if (gci->gkey)
+    clFreeandclear(gci->gkey);
 }
 
 static int fspecificInitCB(struct CompressionBase *cb)

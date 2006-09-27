@@ -85,5 +85,7 @@ const char *clExpandCommand(const char *inpcmd);
 void clSetStaticErrorMessage(const char *shortName, const char *msg);
 struct StringStack *clListBuiltinsCB(int fWithDisabled);
 void clPrintCompressors(void);
+int clCompressorCount(void);
+const char *clCompressorName(int whichOne);
 
 #endif

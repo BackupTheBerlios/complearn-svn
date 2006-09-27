@@ -27,6 +27,7 @@ static void clDoBestScan(void);
 static void checkInitted(void);
 static void initBuiltinCompressors(void);
 
+
 #define DELIMS ":"
 
 struct CLCompressionInfo {
@@ -37,6 +38,29 @@ struct CLCompressionInfo {
 
 static struct CLCompressionInfo *clciHead = NULL;
 static struct CLCompressionInfo **clciHeadPtr = &clciHead;
+int clCompressorCount(void)
+{
+  struct CLCompressionInfo *p = clciHead;
+  int c = 0;
+  while (p) {
+    c += 1;
+    p = p->next;
+  }
+  return c;
+}
+
+const char *clCompressorName(int whichOne)
+{
+  struct CLCompressionInfo *p = clciHead;
+  int c = 0;
+  if (whichOne >= clCompressorCount())
+    return NULL;
+  while (c < whichOne) {
+    c += 1;
+    p = p->next;
+  }
+  return p->cba.shortNameCB();
+}
 
 static struct CLCompressionInfo *findCompressorInfo(const char *name);
 static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t);
@@ -275,27 +299,31 @@ int clIsEnabledCB(const char *shortName)
 void clPrintCompressors(void)
 {
   checkInitted();
-  struct CLCompressionInfo *c;
+  int cc, i;
   const char *fmtstrtitle = "%-12s:%7s:%8s%9s:%30s:%s%s\n";
   const char *fmtstrdata  = "%-12s:%1s:%5s:%8d%9s:%30s:%s%s\n";
   printf("Compressor options\n");
   printf("+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n");
   printf(fmtstrtitle,  "Name", "Auto En","Window", "Rounding", "Description", "Errors", "");
   printf(fmtstrtitle, "-----------", "-------", "------", "--------", "-----------------------", "------", "");
-  for (c = clciHead; c; c = c->next) {
+  cc = clCompressorCount();
+  for (i = 0; i < cc; i += 1) {
+    const char *sn = clCompressorName(i);
+    struct CompressionBase *cb = clNewCompressorCB(sn);
     const char *erm = NULL;
-    if (!clIsEnabledCB(c->cba.shortNameCB()))
-      erm = clLastStaticErrorCB(c->cba.shortNameCB());
+    if (!clIsEnabledCB(sn))
+      erm = clLastStaticErrorCB(sn);
     printf(fmtstrdata,
-      c->cba.shortNameCB(),
-      c->cba.isAutoEnabledCB() ? "A" : "_",
-      clIsEnabledCB(c->cba.shortNameCB())?"(yes)" : "(no)",
-      c->cba.getWindowSizeCB(),
-      c->cba.doesRoundWholeBytesCB() ? "(int)" : "(double)",
-      c->cba.longNameCB(),
+      sn,
+      VF(cb,isAutoEnabledCB)() ? "A" : "_",
+      clIsEnabledCB(sn)?"(yes)" : "(no)",
+      VF(cb,getWindowSizeCB)(),
+      VF(cb,doesRoundWholeBytesCB)() ? "(int)" : "(double)",
+      VF(cb,longNameCB)(),
       erm ? "\n         disabled because " : "",
       erm ? erm : ""
     );
+    clFreeCB(cb);
   }
 }
 
