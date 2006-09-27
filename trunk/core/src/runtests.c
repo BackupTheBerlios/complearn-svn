@@ -1190,12 +1190,20 @@ void testCompressorList()
 {
   struct CompressionBase *cb;
   const char *n;
+  struct DataBlock *d= clStringToDataBlockPtr("funstringherefuncompressfun");
   int c, i;
   c = clCompressorCount();
   for (i = 0; i < c; i += 1) {
     cb = clNewCompressorCB(clCompressorName(i));
-    printf("Got compressors: %s:%p\n", clCompressorName(i), cb);
+    if (clIsAutoEnabledCB(cb)) {
+      double f;
+      f = clCompressCB(cb, d);
+      assert(f > 10 && f < 1000);
+    }
+    assert(cb != NULL);
+    clFreeCB(cb);
   }
+  clDatablockFree(d);
 }
 
 void testTreeMolder()

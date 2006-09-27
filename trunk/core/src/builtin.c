@@ -401,6 +401,11 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
   return pin[0];
 }
 
+int clIsAutoEnabledCB(struct CompressionBase *cb)
+{
+  return VF(cb, isAutoEnabledCB)();
+}
+
 static void clDoBestScan(void)
 {
   struct CLCompressionInfo *c;

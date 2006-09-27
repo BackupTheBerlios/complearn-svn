@@ -79,6 +79,7 @@ struct CompressionBaseAdaptor *clGetCBAsuper(void);
 struct CompressionBaseAdaptor *clGetCBA(struct CompressionBase *cb);
 const char *clLastErrorCB(struct CompressionBase *cb);
 int clIsEnabledCB(const char *shortName);
+int clIsAutoEnabledCB(struct CompressionBase *cb);
 const char *clLastStaticErrorCB(const char *shortName);
 void clFreeCB(struct CompressionBase *cb);
 const char *clExpandCommand(const char *inpcmd);
