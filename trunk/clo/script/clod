@@ -1,0 +1,69 @@
+#!/usr/local/bin/ruby
+if fork
+  exit
+else
+
+require "#{File.dirname(__FILE__)}/../config/environment"
+require "#{File.dirname(__FILE__)}/../lib/utils"
+require "#{File.dirname(__FILE__)}/../app/models/r_file"
+require "#{File.dirname(__FILE__)}/../app/models/lab"
+
+ENV['RAILS_ENV'] = ARGV.first || 'development'
+@@WRITEPATH ='/var/clod/timedir'
+skelmakestr = <<EOF
+all: treefile.dot treefile.png
+
+distmatrix.clb: termlist.txt
+	echo "Please wait a moment for your distance matrix to be computed." >distmatrix.html ; touch treefile.png ; /usr/bin/ncd -H -b -g -t $< $< >d2.html ; mv d2.html distmatrix.html
+
+treefile.dot: distmatrix.clb
+	/home/webuser/bin/safemaketree distmatrix.clb
+
+%.png: %.dot
+	/usr/bin/neato -Tpng $< >$@
+
+clean:
+	rm distmatrix.clb distmatrix.txt treefile.dot treefile.png o
+EOF
+
+while true do
+curexp = Experiment.find_first
+if curexp
+  h = Marshal.load(curexp.todo)
+  codenum = h['codenum'].to_s
+  ipnum = h['ipnum'].to_s
+  wd = File.join(@@WRITEPATH, codenum)
+  tln = File.join(wd, "termlist.txt")
+  FileUtils.rm_rf(wd) if File.exist?(wd)
+  FileUtils.mkdir wd unless File.exist?(wd)
+  File.open(File.join(wd, 'Makefile'), 'w') { |f| f.write(skelmakestr) }
+  File.open(tln, 'w') { |f| f.puts(h['termlist'].terms.join("\n")) }
+  begin
+#  puts "Trying to make in #{codenum}..."    # TODO: remove me
+  FileUtils.cd(wd) {
+    `make || true`
+  }
+  tn = File.join(wd, 'treefile.png')
+  if File.exist?(tn) && FileTest.size?(tn) > 1000
+    curexp.destroy
+    FileUtils.cd("#{@@WRITEPATH}/..")
+    res = RFile.moveToDB("./timedir/#{codenum}")
+    lab = Lab.new(:codenum => codenum, :ipnum => ipnum)
+    lab.save
+#    lab.maketitle
+    FileUtils.rm_rf(wd) if File.exist?(wd)
+  else
+    STDERR.puts "Error, cannot make tree for #{curexp}"
+    sleep 4
+    FileUtils.cd(wd) {
+      `make clean || true`
+    }
+  end
+  rescue
+    curexp.destroy
+  end
+else
+  sleep 5
+end
+end
+end
