@@ -40,6 +40,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'listmonths.html', :controller => 'clo', :action => 'listmonths'
   map.connect 'clo/showmonth/:id/experiments.html', :controller => 'clo',
                                                     :action => 'showmonth'
+  map.connect 'clo/showexpnum/:id/experiments.html', :controller => 'clo',
+                                                     :action => 'showexpnum'
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
