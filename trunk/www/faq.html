@@ -144,20 +144,7 @@ it is unlikely that there will be an exact match for the counts on any
 particular common term because each server must maintain its own distinct
 "aging snapshot" of the internet.</p>
 
-<h3>8. When I compile csoap, I don't seem to be getting shared libraries.
-Or even though csoap is installed, complearn doesn't seem to be detecting
-the shared library.</h3>
-
-<p>Try compiling csoap from source with the following options:
-<pre>
-   --with-libxml-prefix=/usr --enable-shared --with-pic
-</pre>
-
-Then try reconfiguring and recompiling complearn.
-
-<p>Thanks to Tsu Do Nimh for this tip.</p>
-
-<h3>9. Is it important to adjust or choose a compressor?  How should I do it?</h3>
+<h3>8. Is it important to adjust or choose a compressor?  How should I do it?</h3>
 
 <p>Yes, it is very important to choose a good compressor for your application.
 The "blocksort" compressor is the current default.  It is a virtual compressor
@@ -175,27 +162,26 @@ will get you "zlib" style compression which is like gzip and is limitted to
 files of up to 15K in size.
 
 <pre>
-ncd -C bzip
+ncd -C bzip2
 </pre>
 will get you "bzip2" style compression which is like zlib but allows for files
 up to about 450K in size.
 
-The best accuracy is available using the "real compressor" shell option.
-For this to work you need to use a script like this:
-
+The best accuracy is available using the ppmdx or lzmax compressors.
+To use these, you must first install binary executable versions of these
+somewhere in your command execution script.  Then just use
 <pre>
-#!/bin/bash
-cd /tmp
-cat &gt;infile
-/ufs/cilibrar/bin/ppmd e infile &gt;/dev/null &lt;/dev/null 2&gt;/dev/null
-cat infile.pmd
-rm infile infile.pmd
+ncd -C ppmdx
+</pre>
+or
+<pre>
+ncd -C lxmax
 </pre>
 
-<B>Note: if you are analyzing DNA, you should add two <i>very</i> important
-options to ppmd in order to get the best results like this:</b>
+<B>Note: if you are analyzing DNA, you should add a <i>very</i> important
+option to ppmdx called "order".  It should be set to about 15 for DNA.
 <pre>
-/ufs/cilibrar/bin/ppmd e -o15 -m255 infile &gt;/dev/null &lt;/dev/null 2&gt;/dev/null
+ncd -C lxmax -P order=15
 </pre>
 This means "use 15th order instead of the default 4th order" and "use 255 megs of memory instead of the default of 10".  If you don't do this, you will have terrible results because the ppmd will be restricted to a very narrow range of contexts.
 
@@ -208,7 +194,7 @@ then you can use it with the following option to ncd:
 ncd -r $HOME/bin/catppmd
 </pre>
 
-<h3>10. Running ./configure gives me the following error: cannot find input file: src/complearn/aclconfig.h.in. Where can I find this file?</h3>
+<h3>9. Running ./configure gives me the following error: cannot find input file: src/complearn/aclconfig.h.in. Where can I find this file?</h3>
 
 <p>You will need to generate this header input file by running the autoheader
 command.  autoheader is packaged with autoconf.
@@ -217,7 +203,7 @@ command.  autoheader is packaged with autoconf.
 autoheader
 </pre>
 
-<h3>11. I get the configure error: Can't locate object method "path" via
+<h3>10. I get the configure error: Can't locate object method "path" via
 package "Request" at /usr/share/autoconf/Autom4te/C4che.pm line 69, <GEN1> line
 111.  make[1]: *** [configure] Error 1. Is there an easy way to fix this?</h3>
 
