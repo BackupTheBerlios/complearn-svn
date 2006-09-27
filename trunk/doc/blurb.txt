@@ -1,0 +1,20 @@
+Data Mining for the Slashdot Generation
+
+A long time ago, we reported on Slashdot the results of new scientific
+research involving data compression programs.  Scientists had been
+experimenting with language analysis, spam detection, genetic analysis,
+and much more.  Now, the software used to do the machine learning
+experimnts and pattern recognition has been refined to version 0.9.6 and is
+very near its 1.0 release.  The CompLearn development team would like to take
+this opportunity to welcome the Slashdot community to have a look at the
+libcomplearn software library and see if it suits your expanding needs
+as software developers.  Does it allow you to quickly solve the
+data mining and pattern recognition applications that interest you?
+As we get ready to release 1.0 we are particularly in need of API feedback.
+If you have ever been interested in artificial intelligence,
+statistics without calculus, or foundational math, then please enjoy
+our software library offering and research.  I have taken great pains to
+make the software as easy to install as possible; if you are
+familiar with programs like bzip2 or gzip then you can already combine
+data compression programs with Neural Networks or Support Vector Machines
+to create powerful recognition systems.
