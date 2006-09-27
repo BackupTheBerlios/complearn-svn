@@ -1,3 +1,9 @@
+libcsoap (1.1.0-6) unstable; urgency=low
+
+  * Added specific library-version Depends: for both -dev binary packages.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Wed, 27 Sep 2006 19:18:54 +0200
+
 libcsoap (1.1.0-5) unstable; urgency=low
 
   * Changed Section: for libnanohttp-dev package.
