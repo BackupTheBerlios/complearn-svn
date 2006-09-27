@@ -1,5 +1,6 @@
 class CloController < ApplicationController
   caches_page :welcome, :fun, :listmonths
+  layout 'main', :except => :grabfile
 
   def welcome
   end

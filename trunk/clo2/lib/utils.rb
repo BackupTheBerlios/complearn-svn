@@ -23,25 +23,38 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# The filters added to this controller will be run for all controllers in the application.
-# Likewise will all the methods added be available for all controllers.
-require 'utils'
+class TermList
+  def initialize() @t = [ ] end
+  def terms() @t.clone end
+  def delete_at(num) @t.delete_at(num) end
+  def addTerm(str)
+    @t << str #if str =~ /[a-zA-Z0-9]/
+    @t.sort!
+  end
+  def size() @t.size end
+end
 
-class ApplicationController < ActionController::Base
-  def getSessionName(cl) cl.to_s.downcase end
-  def loadSessionInstance(cl)
-    sessname = getSessionName(cl)
-    eval "@#{sessname} = @session['#{sessname}'] || #{cl}.new"
+class StatusPane
+  @@MAXSTATUSMSG = 3
+  def initialize()
+    @status = [ ]
+    addMsg("CompLearn Online Demo initialized")
   end
-  def saveSessionInstance(cl)
-    sessname = getSessionName(cl)
-    eval "@session['#{sessname}'] = @#{sessname}"
+  def addMsg(str)
+    @status << [str, Time.now]
+    @status.shift if @status.size > @@MAXSTATUSMSG
   end
-  @@SESSELEMS = [ TermList, StatusPane ]
-  def loadAll()
-    @@SESSELEMS.each { |c| loadSessionInstance(c) }
+  def getStatusLines() @status.clone end
+end
+
+class TimeDirArea
+  @@OPTPREF = "/mnt/cjhttpd"
+  @@MAINDIR = "/var/clod/timedir"
+  if File.exist?(@@MAINDIR)
+    @@WD = @@MAINDIR
+  else
+    @@WD = File.join(@@OPTPREF, @@MAINDIR)
   end
-  def saveAll()
-    @@SESSELEMS.each { |c| saveSessionInstance(c) }
-  end
+  def self.getWD() @@WD end
+  def self.getDir(num) File.join(@@WD, num.to_s) end
 end

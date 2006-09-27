@@ -1,0 +1,121 @@
+/* $Id: clo.css 387 2006-02-19 19:01:28Z slasaus $ */
+
+/* setup main styles */
+/*********************/
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   13px;
+}
+
+body {
+  margin: 7px 25px;
+  text-align: center;
+}
+
+#container {
+  margin: 0 auto;
+  width: 620px;
+  text-align: left;
+}
+
+#header {
+  border-bottom: 2px solid silver;
+}
+
+#header h2 {
+  background-color: #ff9;
+  font-size: 18px;
+  padding: 3px;
+}
+
+input {
+  border: 1px solid black;
+}
+
+#footer {
+  text-align: right;
+  font-size: 8pt;
+}
+
+/* navigation */
+/**************/
+
+#navbar ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+#navbar li {
+  border-right: 1px solid #a52a2a;
+  display: inline;
+  padding: 0px 5px;
+}
+
+#navbar li a {
+  text-decoration: none;
+}
+
+#navbar li a:link {
+  color: #a52a2a;
+}
+
+#navbar li a:visited {
+  color: #a52a2a;
+}
+
+#navbar li a:hover {
+  text-decoration: underline;
+}
+
+/* content */
+/***********/
+
+#content ul li {
+  list-style-type: square;
+}
+
+#content td.name {
+  font-weight: bolder;
+  padding: 3px 5px;
+}
+
+.readmore {
+  color: #a52a2a;
+  font-size: 12px;
+  font-style: italic;
+  text-decoration: none;
+}
+.readmore:hover {
+  text-decoration: underline;
+}
+
+#ajax {
+  float: right;
+  margin: 10px;
+}
+
+#matrix table td {
+  background-color: #ccc;
+}
+
+#terms {
+  background-color: silver;
+  border: 1px dashed black;
+  margin: 10px 5px 5px 5px;
+  padding: 5px;
+  width: 200px;
+}
+
+#terms a {
+  font-size: 10px;
+}
+
+#terms ol {
+  margin: 0px;
+  padding: 0px;
+}
+
+#terms li {
+  margin: 5px 10px 2px 35px;
+}
