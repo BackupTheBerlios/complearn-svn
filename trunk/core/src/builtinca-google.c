@@ -90,7 +90,6 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
     clSetLastErrorCB(cb, buf);
     return 1;
   }
-  clEnvmapSetKeyPrivate(em, propname);
   gci->gkey = clStrdup(gkp);
   gci->m = clCalculateM(NULL, gci->gkey);
   //clLogLog("M=%f\n", ci->m);

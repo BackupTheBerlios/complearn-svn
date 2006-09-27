@@ -226,7 +226,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   }
   if (cur->fBinary) {
     struct DataBlock *db;
-    db = clMakeCLBDistMatrix(gres, labels, cur->cmdKeeper, cur->em);
+    db = clMakeCLBDistMatrix(gres, labels, cur->cmdKeeper, clGetParametersCB(cur->ca));
     clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
     clDatablockFreePtr(db);
   }
@@ -262,6 +262,7 @@ static struct StringStack *convertParamsToStringStack(struct EnvMap *em, char
     if (clEnvmapIsMarkedAt(em, i) && !clEnvmapIsPrivateAt(em, i) ) {
       if (strcmp(p.sp.key,"GoogleKey")==0)
         continue;
+      printf("Pushing onto stringstack key <%s> with value <%s>\n", p.sp.key, p.sp.val);
       sprintf(param, "%s%s: %s%s",startparamstr,p.sp.key,p.sp.val,endparamstr);
       clStringstackPush(ss, param);
     }
@@ -312,8 +313,8 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
         endparamstr);
     clStringstackPush(dotacc, con1);
   }
-  if (cur) {
-    params = convertParamsToStringStack(cur->em, startparamstr, endparamstr);
+  if (cur && cur->ca) {
+    params = convertParamsToStringStack(clGetParametersCB(cur->ca), startparamstr, endparamstr);
     for (i = 0; i < clStringstackSize(params); i += 1)
       clStringstackPush(dotacc, clStringstackReadAt(params,i));
   }

@@ -105,8 +105,10 @@ struct GeneralConfig *clLoadDefaultEnvironment()
     if (curEnv->compressor_name == NULL)
       curEnv->compressor_name = clEnvmapValueForKey(curEnv->em,"compressor");
     if (curEnv->compressor_name == NULL)
-      curEnv->compressor_name = "blocksort";
+      curEnv->compressor_name = "zlib";
   }
+  if (clEnvmapValueForKey(curEnv->em, "GoogleKey"))
+    clEnvmapSetKeyPrivate(curEnv->em, "GoogleKey");
   return curEnv;
 }
 
