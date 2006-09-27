@@ -153,7 +153,7 @@ qbase_t clRootedBinaryStartingNode(const struct RootedBinary *ub);
 struct DRA *clRootedBinaryNodes(const struct RootedBinary *ub);
 
 
-/** \brief Returns a list of all adclJacent border-pair node identifiers
+/** \brief Returns a list of all adjacent border-pair node identifiers
  * on the tree.
  *
  * In any given ordered binary tree, we may start at node 0 and perform

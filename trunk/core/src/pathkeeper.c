@@ -50,7 +50,7 @@ static struct AdjImplementation pkimpl = {
   adjafree : pk_free,
   adjasize : pk_size,
   adjaprint : pk_print,
-  adclJaclone : pk_clone,
+  adjaclone : pk_clone,
   adjagetconstate : pk_getconstate,
   adjasetconstate : pk_setconstate,
   adjagetneighbors : pk_getneighbors,

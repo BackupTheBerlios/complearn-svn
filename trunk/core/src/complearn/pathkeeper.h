@@ -76,7 +76,7 @@ int clIsIdenticalTree(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct Adj
 /** \brief PathKeeper holds an SPM for an AdjAdaptor as a decorator
  *
  * An PathKeeper is a simple, fast data structure that allows for efficient
- * path calculation over a polymorphic adclJacency container.
+ * path calculation over a polymorphic adjacency container.
  *
  * \sa pathkeeper.h
  * \struct PathKeeper

@@ -40,7 +40,7 @@ void clAdjaFree(struct AdjAdaptor *aa)
 }
 struct AdjAdaptor *clAdjaClone(struct AdjAdaptor *aa)
 {
-  return aa->vptr->adclJaclone(aa);
+  return aa->vptr->adjaclone(aa);
 }
 int clAdjaGetConState(struct AdjAdaptor *aa, int i, int j)
 {

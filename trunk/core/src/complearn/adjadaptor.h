@@ -34,7 +34,7 @@ struct AdjImplementation;
 
 /** \brief AdclJacency matrix interface to CompLearn.
  *
- * An AdjAdaptor is the interface for adclJacency module implementations such as
+ * An AdjAdaptor is the interface for adjacency module implementations such as
  * AdjMatrix and AdjList.  It represents a diagonally-symmetric binary matrix
  * where 0 means the nodes are disconnected, and 1 means they are connected.
  * Note that any operation to adjust the connectivity at coordinate i,j will
@@ -42,7 +42,7 @@ struct AdjImplementation;
  * well as the transposed location, (j,i).
  *
  *  AdjAdaptor contains pointers to 9 functions which are defined in an
- *  external adclJacency module.
+ *  external adjacency module.
  *
  * \sa adjadaptor.h
  * \struct AdjAdaptor
@@ -57,10 +57,10 @@ struct AdjImplementation {
                                representing the connectivity of all nodes */
   t_adjasize adjasize;    /*!< Pointer to function which returns the size of
                                one side of the square matrix */
-  t_adjafree adjafree;    /*!< Pointer to function which frees adclJacency module
+  t_adjafree adjafree;    /*!< Pointer to function which frees adjacency module
                                instance from memory */
-  t_adclJaclone adclJaclone;  /*!< Pointer to function which returns a pointer to
-                               a duplicate instance of this adclJacency module */
+  t_adjaclone adjaclone;  /*!< Pointer to function which returns a pointer to
+                               a duplicate instance of this adjacency module */
   t_adjagetconstate adjagetconstate; /*!< Pointer to function which returns the
                                           connectivity state of 2 given nodes */
   t_adjasetconstate adjasetconstate; /*!< Pointer to function which sets the

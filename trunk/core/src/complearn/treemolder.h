@@ -39,7 +39,7 @@
  * Nodes are inverted if their children are visitted in reversed order.
  *
  * The order fitness function is defined as the sum of the distance matrix
- * entries for each adclJacent pair of labelled leaf nodes.  Thus, for n
+ * entries for each adjacent pair of labelled leaf nodes.  Thus, for n
  * leaves arranged in an unrooted binary tree there will be n elements in
  * the sum coming from n different places in the distance matrix.
  *
@@ -72,7 +72,7 @@ void clTreemolderFree(struct TreeMolder *tm);
 /** \brief returns the raw order score for this particular TreeMolder
  *
  * The raw order score of a particular traversal is defined as the sum of
- * each distance-matrix element corresponding to every adclJacent pair in the
+ * each distance-matrix element corresponding to every adjacent pair in the
  * circle formed by an ordered traversal of all nodes.
  *
  * \param tm pointer to the TreeMolder to be inspected

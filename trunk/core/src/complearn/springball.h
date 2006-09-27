@@ -55,9 +55,9 @@ struct SpringBallSystem;
 
 /** \brief Converts an AdjAdaptor into a GSL-style matrix with 1's for connected nodes
  *
- * clAdjaToGSLMatrix() takes a pointer to an AdjAdaptor adclJacency matrix
+ * clAdjaToGSLMatrix() takes a pointer to an AdjAdaptor adjacency matrix
  * adaptor and converts it into a standard gsl_matrix.  This is the standard
- * adclJacency-matrix representation where each entry at location i, j is
+ * adjacency-matrix representation where each entry at location i, j is
  * 1 if nodes i and j are connected, or 0 otherwise.
  *
  *  \param aa pointer to AdjAdaptor
@@ -73,15 +73,15 @@ gsl_matrix *clAdjaToGSLMatrix(struct AdjAdaptor *aa);
  * and another must appear somewhere new in order to transform the old tree
  * into a new best one.  Doing this instantaneously would result in visually
  * uncomfortable jerkiness and is better handled using a smoothing matrix.
- * The smoothing matrix is the standard binary adclJacency matrix (as returned
+ * The smoothing matrix is the standard binary adjacency matrix (as returned
  * instantaneously from clAdjaToGSLMatrix() at any point in time) put
- * through an exponential smoothing-filter so that when an adclJacency changes
+ * through an exponential smoothing-filter so that when an adjacency changes
  * status it does so with a time-constant that is not instantaneous.  This
- * results in a matrix of smoothed adclJacency values that are then directly
+ * results in a matrix of smoothed adjacency values that are then directly
  * usable in the phsyical simulation as k-values in Hook's law springs to
  * allow for a smooth morphing from one tree to the next.  A decaying average
  * is used in combination with a duration parameter dt to adjust the smooth
- * matrix towards the adclJacency matrix of the tree.  The dt represents the
+ * matrix towards the adjacency matrix of the tree.  The dt represents the
  * amount of time elapsed since the last call to this function so that it
  * may know how far to tend towards the new tree at this point.
  *

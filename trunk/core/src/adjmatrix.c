@@ -48,7 +48,7 @@ static struct AdjImplementation adimpl = {
   adjafree : ajam_free,
   adjasize : ajam_size,
   adjaprint : ajam_print,
-  adclJaclone : ajam_clone,
+  adjaclone : ajam_clone,
   adjagetconstate : ajam_getconstate,
   adjasetconstate : ajam_setconstate,
   adjagetneighbors : ajam_getneighbors,

@@ -29,10 +29,10 @@
 
 /*! \file adjmatrix.h */
 
-/** \brief AdjMatrix represents a symmetric, undirected adclJacency matrix
+/** \brief AdjMatrix represents a symmetric, undirected adjacency matrix
  *
  * An AdjMatrix is a simple, fast data structure that allows for efficient
- * adclJacency information tracking.  It represents a diagonally-symmetric
+ * adjacency information tracking.  It represents a diagonally-symmetric
  * binary matrix where 0 means the nodes are disconnected, and 1 means they
  * are connected.  Note that any operation to adjust the connectivity at
  * coordinate i,j will necessarily affect the connectivity read back both

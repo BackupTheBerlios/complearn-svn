@@ -31,7 +31,7 @@
 
 /*! \file treeadaptor.h */
 
-/** \brief holds adclJacency information and label placement information for trees
+/** \brief holds adjacency information and label placement information for trees
  *
  * The TreeAdaptor holds the basic tree topology and allows for manipulation.
  *
@@ -111,9 +111,9 @@ struct TreeAdaptor *clTreeaClone(struct TreeAdaptor *tra);
  */
 struct LabelPerm *clTreeaLabelPerm(struct TreeAdaptor *tra);
 
-/** \brief retrieves the underlying adclJacency adaptor for the TreeAdaptor
+/** \brief retrieves the underlying adjacency adaptor for the TreeAdaptor
  *
- * This function allows the user to fetch the underlying AdjAdaptor (or adclJacency
+ * This function allows the user to fetch the underlying AdjAdaptor (or adjacency
  * adaptor) for this TreeAdaptor.  This provides the ability to find out
  * whether any pair of nodes is connected or disconnected in the tree.
  *
@@ -219,7 +219,7 @@ double clTreeaDifferenceScore(struct TreeAdaptor *tra1, struct TreeAdaptor *tra2
  *
  * \param tra pointer to the TreeAdaptor to be traversed
  * \param flips pointer to CLNodeSet controlling traversal or NULL for default
- * \return DRA containing IntPair with adclJacent node numbers in order
+ * \return DRA containing IntPair with adjacent node numbers in order
  */
 struct DRA *clTreeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips);
 

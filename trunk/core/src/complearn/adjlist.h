@@ -29,10 +29,10 @@
 
 /*! \file adjlist.h */
 
-/** \brief AdjList represents a symmetric, undirected adclJacency matrix
+/** \brief AdjList represents a symmetric, undirected adjacency matrix
  *
  * An AdjList is a simple, fast data structure that allows for efficient
- * adclJacency information tracking.  It represents a diagonally-symmetric
+ * adjacency information tracking.  It represents a diagonally-symmetric
  * binary matrix where 0 means the nodes are disconnected, and 1 means they
  * are connected.  Note that any operation to adjust the connectivity at
  * coordinate i,j will necessarily affect the connectivity read back both
@@ -154,7 +154,7 @@ void clAdjlistPrint(const struct AdjList *which);
 /** \brief Allocates a new AdjList and wraps it within an AdjAdaptor
  *
  * This function allocates a new AdjList structure of the given size.  It
- * wraps this struct in an AdjAdaptor (adclJacency adaptor) structure and returns
+ * wraps this struct in an AdjAdaptor (adjacency adaptor) structure and returns
  * a pointer to this newly allocated AdjAdaptor.  The caller owns this AdjAdaptor and
  * should free it using adjafree(aa).
  *

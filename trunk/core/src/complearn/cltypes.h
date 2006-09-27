@@ -90,7 +90,7 @@ struct AdjAdaptor;
 typedef void (*t_adjaprint)(struct AdjAdaptor *a);
 typedef int (*t_adjasize)(struct AdjAdaptor *a);
 typedef void (*t_adjafree)(struct AdjAdaptor *a);
-typedef struct AdjAdaptor *(*t_adclJaclone)(struct AdjAdaptor *a);
+typedef struct AdjAdaptor *(*t_adjaclone)(struct AdjAdaptor *a);
 typedef int (*t_adjagetconstate)(struct AdjAdaptor *a, int i, int j);
 typedef void (*t_adjasetconstate)(struct AdjAdaptor *a, int i, int j, int which);
 typedef int (*t_adjagetneighborcount)(struct AdjAdaptor *a, int i);
