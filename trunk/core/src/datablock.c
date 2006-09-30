@@ -48,7 +48,7 @@ struct DataBlock *clFileToDataBlockPtr(const char *path)
   struct DataBlock *result;
   FILE *fp = clFopen(path, "rb");
   if (fp == NULL) {
-    clLogError("fopen error reading <%s>", path);
+    clLogError("error reading file %s", path);
   }
   assert(fp);
   result = clFilePtrToDataBlockPtr(fp);
@@ -130,18 +130,14 @@ void clDatablockWriteToFile(struct DataBlock *db, const char *path)
 {
 	FILE *fp;
 	int err;
-  if (db == NULL) {
-    clLogError("NULL ptr in clDatablockWriteToFile()\n");
-  }
+  if (db == NULL)
+    clLogError("NULL ptr in clDatablockWriteToFile for %s", path);
 	fp = clFopen(path,"wb");
-  if (fp == NULL) {
-    clLogError("fopen error in clDatablockWriteToFile()\n");
-  }
+  if (fp == NULL)
+    clLogError("fopen error in clDatablockWriteToFile on %s", path);
 	err = fwrite(db->ptr,1,db->size,fp);
-	if (err == 0) {
-		printf("Write error to %s!\n", path);
-		exit(1);
-	}
+	if (err == 0)
+		clLogError("Write error to %s", path);
   clFclose(fp);
 }
 

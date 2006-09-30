@@ -125,6 +125,8 @@ int clReadSpecificFile(struct EnvMap *dest, const char *fname)
   char linebuf[MAXLINESIZE];
   FILE *fp;
   fp = clFopen(fname, "rb");
+  if (!fp)
+    clLogError("Cannot open file %s for reading", fname);
   assert(fp);
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     clHandleLine(dest, linebuf);

@@ -71,7 +71,7 @@ static struct DataBlockEnumerationIterator *dbe_sl_newenumiter(struct DataBlockE
   assert(dbi);
   dbi->fp = clFopen(dbe->filename, "rb");
   if (dbi->fp == NULL) {
-    clLogErrorPrintf("Cannot open stringlist file %s", dbe->filename);
+    clLogError("Cannot open stringlist file %s", dbe->filename);
   }
   dbe_sl_istep(ptr, (struct DataBlockEnumerationIterator *) dbi);
   return (struct DataBlockEnumerationIterator *) dbi;

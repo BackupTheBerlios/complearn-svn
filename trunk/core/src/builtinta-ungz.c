@@ -95,8 +95,7 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
   close(fd);
  	fp = clFopen(tmpfile,"wb");
   if (fp == NULL) {
-    clLogErrorPrintf("Cannot open temporary file %s for writing", tmpfile);
-    return NULL;
+    clLogError("Cannot open temporary file %s for writing", tmpfile);
   }
 	written = fwrite(clDatablockData(src),1,clDatablockSize(src),fp);
 	if (written == 0) {

@@ -283,26 +283,6 @@ int clTxtRowSize(struct DataBlock *db)
   return rowCount;
 }
 
-int clTxtColSize(struct DataBlock *db)
-{
-  return clTxtRowSize(db);
-/*
-  FILE *fp;
-  int cols = 0;
-  char *s, linebuf[MAXLINESIZE];
-
-  fp = clFopen(fname, "r");
-  fgets(linebuf, MAXLINESIZE, fp);
-  if ((s = strtok(linebuf, DELIMS)))
-    cols += 1;
-  while ((s = strtok(NULL, DELIMS))) {
-    cols += 1;
-  }
-  clFclose(fp);
-  return cols;
-*/
-}
-
 gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
 {
   int i;
