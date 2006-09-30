@@ -295,7 +295,7 @@ static struct StringStack *clDefaultLabels(int sz)
   return ss;
 }
 
-gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
+gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *ulabels)
 {
   int i;
   int sz = clDatablockSize(db);
@@ -305,7 +305,10 @@ gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
   int curRow = 0;
   int rows = 0;
   char *lastRow;
+  struct StringStack *labels = NULL;
   gsl_matrix *result;
+  if (ulabels)
+    labels = clStringstackNew();
 
   rows = clTxtRowSize(db);
   if (rows < 4) {
@@ -334,6 +337,9 @@ gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
       clStringstackFree(labels);
       labels = clDefaultLabels(sz);
     }
+    for (i = 0; i < clStringstackSize(labels); i += 1)
+      clStringstackPush(ulabels, clStringstackReadAt(labels, i));
+    clStringstackFree(labels);
   }
   return result;
 }
