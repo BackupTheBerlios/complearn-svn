@@ -94,6 +94,10 @@ static struct DataBlock *ungz_transform(struct DataBlock *src)
   fd = mkstemp(tmpfile);
   close(fd);
  	fp = clFopen(tmpfile,"wb");
+  if (fp == NULL) {
+    clLogErrorPrintf("Cannot open temporary file %s for writing", tmpfile);
+    return NULL;
+  }
 	written = fwrite(clDatablockData(src),1,clDatablockSize(src),fp);
 	if (written == 0) {
 		exit(1);

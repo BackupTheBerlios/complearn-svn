@@ -44,6 +44,7 @@ struct Clog;
 /* prints with msg */
 void clLogGenericPrintFILE( FILE *outfp, const char *filename, int lineno, const char *msg, const char *fmt, ...);
 #define clLogGenericPrint(x...) do { clLogGenericPrintFILE( stderr, __FILE__, __LINE__, "CompLearn Error", x); } while (0)
+#define clLogErrorPrintf(fmt, x...) do { char zzzbuf[2048]; sprintf(zzzbuf, fmt, x); clLogGenericPrintFILE( stderr, __FILE__, __LINE__, "CompLearn Error",zzzbuf); exit(1); } while (0)
 #define clLogError(x...) do { clLogGenericPrintFILE( stderr, __FILE__, __LINE__, "CompLearn Error",x); exit(1); } while (0)
 /* prints */
 #define clLogWarning(x...) do { clLogGenericPrintFILE(stderr, __FILE__, __LINE__, "CompLearn Warning", x); } while (0)
