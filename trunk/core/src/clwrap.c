@@ -139,6 +139,8 @@ int clCountBytesTillEOFThenCloseCB(int readfd)
   while ((readlen = read(readfd, &dummy[0], READBLOCKSIZE)) > 0) {
     bc += readlen;
   }
+  if (readlen < 0)
+    clLogError("read error");
   close(readfd);
   return bc;
 }

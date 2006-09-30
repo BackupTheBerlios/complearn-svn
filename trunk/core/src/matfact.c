@@ -283,6 +283,18 @@ int clTxtRowSize(struct DataBlock *db)
   return rowCount;
 }
 
+static struct StringStack *clDefaultLabels(int sz)
+{
+  int i;
+  struct StringStack *ss = clStringstackNew();
+  for (i = 0; i < sz; i += 1) {
+    char buf[80];
+    sprintf(buf, "item%02d", i+1);
+    clStringstackPush(ss,buf);
+  }
+  return ss;
+}
+
 gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
 {
   int i;
@@ -317,47 +329,14 @@ gsl_matrix *clTxtDistMatrix(struct DataBlock *db, struct StringStack *labels)
       goodrow = 0;
     }
   }
-/*
-  if (cols > rows) isLabeled = 1;
-  fp = clFopen(fname, "r");
-
-  for (i = 0; i < rows ; i += 1) {
-    struct DRA *rowvals;
-    fgets(linebuf, MAXLINESIZE, fp);
-    rowvals = get_dm_row_from_txt(linebuf, isLabeled);
-    for (j = 0; j < clDraSize(rowvals); j +=1) {
-      gsl_matrix_set(result, i, j, clDraGetValueAt(rowvals, j).d);
+  if (labels) {
+    if (clStringstackLongestLength(labels) == 0) {
+      clStringstackFree(labels);
+      labels = clDefaultLabels(sz);
     }
   }
-
-  clFclose(fp);
-*/
   return result;
 }
-
-/*
-int clTxtToCLB(char *source, char *dest)
-{
-  struct DataBlock *dmdb, *labelsdb, *clbdb;
-  gsl_matrix *dm;
-  struct StringStack *labels = NULL;
-
-  dm = clTxtDistMatrix(source);
-  dmdb = clDistmatrixDump(dm);
-  labelsdb = clLabelsDump(labels);
-
-  clbdb = clPackageDataBlocks(TAGNUM_TAGMASTER, dmdb, labelsdb, NULL);
-  clDatablockWriteToFile(clbdb, dest);
-
-  clDatablockFreePtr(clbdb);
-  clDatablockFreePtr(dmdb);
-  clDatablockFreePtr(labelsdb);
-  clStringstackFree(labels);
-  gsl_matrix_free(dm);
-
-  return 1;
-}
-*/
 
 void clGslmatrixPrint(gsl_matrix *m, char *delim)
 {
@@ -368,3 +347,4 @@ void clGslmatrixPrint(gsl_matrix *m, char *delim)
     }
   }
 }
+

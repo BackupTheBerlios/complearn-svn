@@ -220,3 +220,14 @@ void clStringstackPrint(struct StringStack *ss)
     printf("%s\n", clStringstackReadAt(ss, i));
 }
 
+int clStringstackLongestLength(struct StringStack *ss)
+{
+  int i, bestlen = -1;
+  for (i = 0; i < clStringstackSize(ss); i += 1) {
+    int len;
+    len = strlen(clStringstackReadAt(ss, i));
+    if (len > bestlen)
+      bestlen = len;
+  }
+  return bestlen;
+}

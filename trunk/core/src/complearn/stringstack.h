@@ -157,5 +157,7 @@ struct StringStack *clStringstackMerge(struct StringStack *ssa, struct StringSta
  */
 void clStringstackPrint(struct StringStack *ss);
 
+int clStringstackLongestLength(struct StringStack *ss);
+
 #endif
 
