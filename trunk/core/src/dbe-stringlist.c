@@ -70,7 +70,12 @@ static struct DataBlockEnumerationIterator *dbe_sl_newenumiter(struct DataBlockE
   struct DBEStringListEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
   assert(dbi);
   dbi->fp = clFopen(dbe->filename, "rb");
-  assert(dbi->fp);
+  if (dbi->fp == NULL) {
+    char buf[2048];
+    sprintf(buf, "Cannot open stringlist file %s", dbe->filename);
+    clLogError(buf);
+    return NULL;
+  }
   dbe_sl_istep(ptr, (struct DataBlockEnumerationIterator *) dbi);
   return (struct DataBlockEnumerationIterator *) dbi;
 }

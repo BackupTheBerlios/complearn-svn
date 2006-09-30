@@ -48,12 +48,12 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 "Usage: ncd [OPTION] ... [FILE | STRING | DIR ] [FILE | STRING | DIR] \n\n"
 
 "ENUMERATION MODES:\n"
-"  -f, --file-mode=FILE        file; default mode\n"
-"  -l, --literal-mode=STRING   string literal\n"
-"  -p, --plainlist-mode=FILE   list of file names by linebreaks\n"
-"  -t, --termlist-mode=FILE    list of string literals separated by linebreaks\n"
-"  -d, --directory-mode=DIR    directory of files\n"
-"  -w, --windowed-mode=FILE,firstpos,stepsize,width,lastpos\n"
+" -d, --directory-mode=DIR    directory of files\n"
+" -f, --file-mode=FILE        file; default mode\n"
+" -l, --literal-mode=STRING   string literal\n"
+" -p, --plainlist-mode=FILE   list of file names by linebreaks\n"
+" -t, --termlist-mode=FILE    list of string literals separated by linebreaks\n"
+" -w, --windowed-mode=FILE,firstpos,stepsize,width,lastpos\n"
 "                              file be separated into windows\n"
 "\n"
 
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
   struct NCDConfig *ncdcfg;
   int next_option, whichLongOpt;
   void testGSoapReq(void);
-  const char *const ncd_short_options="f:l:Lp:t:d:w:m:gDo:r:";
+  const char *const ncd_short_options="flLptdwm:gDo:r:";
   struct option ncd_long_options[] = {
       { "file-mode", 1, NULL, 'f' },
       { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */ { "list", 0, NULL, 'L' },         /* list compressors */
@@ -194,20 +194,16 @@ int main(int argc, char **argv)
         break;
       case 'f':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILE);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 't':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_STRINGLIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         cur->fUsingFilenames = 1;
         break;
       case 'p':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_FILELIST);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'l':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'L':
         clPrintCompressors();
@@ -216,11 +212,9 @@ int main(int argc, char **argv)
         break;
       case 'd':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_DIRECTORY);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'w':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_WINDOWED);
-        ncdcfg->da.de[ncdcfg->da.desize++] =  clBlockEnumerationFactoryNewDBE(ncdcfg->da.dbf, optarg);
         break;
       case 'r':
         cur->ca = clNewCompressorCB("real");
