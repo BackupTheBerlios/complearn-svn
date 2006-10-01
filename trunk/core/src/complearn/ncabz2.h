@@ -9,5 +9,6 @@ struct BZ2DynamicAdaptorCB {
 };
 
 struct BZ2DynamicAdaptorCB *clGrabBZ2DACB(void);
+struct DataBlock *clBZ2CompressDB(struct DataBlock *src);
 
 #endif

@@ -53,3 +53,26 @@ struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void) {
   return zlibdda.compress2 ? &zlibdda : NULL;
 }
 
+struct DataBlock *clCompressZLibDB(struct DataBlock *src)
+{
+  struct DataBlock *res;
+  struct ZlibDynamicAdaptorCB *zlib = clGrabZlibDACB();
+  int s;
+
+  unsigned char *dbuff;
+  unsigned long p;
+
+  if (zlib == NULL) {
+    return clDatablockClonePtr(src);
+  }
+
+  p = clDatablockSize(src)*1.2 + 12;
+  dbuff = (unsigned char*)clMalloc(p);
+  s = (zlib->compress2)(dbuff,&p,clDatablockData(src),clDatablockSize(src),9);
+  if (s != 0) {    /* Z_OK */
+    clLogError("Unknown error: zlibBuff returned %d\n",s);
+  }
+  res = clDatablockNewFromBlock(dbuff, p);
+  free(dbuff);
+  return res;
+}

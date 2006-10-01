@@ -149,12 +149,30 @@ void clGslmatrixFree(gsl_matrix *m)
 
 int clbIsCLBFile(struct DataBlock *db)
 {
+  struct TransformAdaptor *b;
+  b = clBuiltin_UNBZIP();
   char smallbuf[200];
-  if (clDatablockSize(db) < 200)
+  int isbz2c = 0, result;
+  struct DataBlock *curdb;
+  if (clDatablockSize(db) < 4)
     return 0;
-  memcpy(smallbuf, clDatablockData(db), 199);
+  memcpy(smallbuf, clDatablockData(db), 4);
+  if (b && b->pf(db)) {
+    isbz2c = 1;
+    curdb = b->tf(db);
+  }
+  else
+    curdb = clDatablockClonePtr(db);
+
+  if (clDatablockSize(curdb) < 200) {
+    clDatablockFreePtr(curdb);
+    return 0;
+  }
+  memcpy(smallbuf, clDatablockData(curdb), 199);
   smallbuf[199] = 0;
-  return strstr(smallbuf, "<clb") ? 1 : 0;
+  result = strstr(smallbuf, "<clb") ? 1 : 0;
+  clDatablockFreePtr(curdb);
+  return result;
 }
 
 struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)

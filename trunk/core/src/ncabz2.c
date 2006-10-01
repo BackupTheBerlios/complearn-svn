@@ -53,3 +53,26 @@ struct BZ2DynamicAdaptorCB *clGrabBZ2DACB(void) {
   return bz2dda.buftobufcompress ? &bz2dda : NULL;
 }
 
+struct DataBlock *clBZ2CompressDB(struct DataBlock *src)
+{
+  struct BZ2DynamicAdaptorCB *bzip2 = clGrabBZ2DACB();
+  int s;
+  struct DataBlock *result;
+
+  unsigned char *dbuff;
+  unsigned long p;
+
+  if (bzip2 == NULL) {
+    clLogError("Cannot do bzip2 compression: no bzip2 library available.");
+  }
+	p = clDatablockSize(src)*1.5+600;
+	dbuff = (unsigned char*)clMalloc(p);
+	s = (bzip2->buftobufcompress)((char *) dbuff,(unsigned int *) ((void *) (&p)),(char *) clDatablockData(src),clDatablockSize(src),9, 0, 30);
+	if (s != BZ_OK) {
+		clLogError("Error with bzip2 compression.");
+		exit(1);
+	}
+  result = clDatablockNewFromBlock(dbuff, p);
+	free(dbuff);
+	return result;
+}

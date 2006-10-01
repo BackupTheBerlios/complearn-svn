@@ -8,5 +8,6 @@ struct ZlibDynamicAdaptorCB {
 };
 
 struct ZlibDynamicAdaptorCB *clGrabZlibDACB(void);
+struct DataBlock *clCompressZLibDB(struct DataBlock *src);
 
 #endif

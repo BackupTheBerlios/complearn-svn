@@ -315,7 +315,7 @@ void clFreeCLDM(struct CLDistMatrix *clb)
 static struct DataBlock *clRealWriteCLBDistMatrix(struct CLDistMatrix *clb)
 {
   int rc;
-  struct DataBlock *result;
+  struct DataBlock *result, *cres;
   int dim1, dim2, i, j;
   gsl_matrix *m = clb->mat;
   xmlBufferPtr b;
@@ -367,7 +367,9 @@ static struct DataBlock *clRealWriteCLBDistMatrix(struct CLDistMatrix *clb)
   xmlBufferFree(b);
   /* TODO: remove more mem leaks from above func */
   clFreeCLDM(clb);
-  return result;
+  cres = clBZ2CompressDB(result);
+  clDatablockFreePtr(result);
+  return cres;
 }
 
 static struct DataBlock *clWriteCLBDistMatrix(gsl_matrix *mat, struct StringStack *labels, struct StringStack *cmds, const char *compressor_name)
@@ -406,13 +408,21 @@ gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
   return clReadCLBDistMatrix(db)->mat;
 }
 
-struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *db)
+struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *udb)
 {
   struct CLDistMatrix *result = calloc(sizeof(struct CLDistMatrix), 1);
   struct StringStack *ents = clStringstackNew();
+  struct DataBlock *db;
   int dim1, dim2, i, j, k;
   xmlDocPtr doc;
   xmlNodePtr node;
+  struct TransformAdaptor *b;
+  b = clBuiltin_UNBZIP();
+  if (b && b->pf(udb))
+    db = b->tf(udb);
+  else
+    db = clDatablockClonePtr(udb);
+
   result->fileverstr = "";
   result->username = "";
   result->title = "";
@@ -427,12 +437,14 @@ struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *db)
                       NULL, 0);
   if (doc == NULL) {
     fprintf(stderr, "Failed to parse document\n");
+    clDatablockFreePtr(db);
     free(result);
     return NULL;
   }
   node = doc->children;
   if (strcmp((char *) node->name, "clb") != 0) {
     free(result);
+    clDatablockFreePtr(db);
     return NULL;
   }
   result->fileverstr = (char *) xmlGetProp(node, (unsigned char *) "version");
@@ -475,6 +487,7 @@ struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *db)
     for (j = 0; j < dim2; j += 1)
       gsl_matrix_set(result->mat, i, j, atof(clStringstackReadAt(ents,k++)));
   clStringstackFree(ents);
+  clDatablockFreePtr(db);
   return result;
 }
 
