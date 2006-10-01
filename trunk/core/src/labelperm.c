@@ -38,12 +38,12 @@ struct LabelPerm *clLabelpermNew(struct DRA *labelledNodes)
 {
   struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
   int i;
-  assert(labelledNodes != NULL);
-  assert(clDraSize(labelledNodes != NULL) > 0);
+  clAssert(labelledNodes != NULL);
+  clAssert(clDraSize(labelledNodes) > 0);
   lp->size = clDraSize(labelledNodes);
   lp->coltonode = clDraClone(labelledNodes);
-  assert(lp->coltonode != NULL);
-  assert(clDraSize(lp->coltonode != NULL) == clDraSize(labelledNodes));
+  clAssert(lp->coltonode != NULL);
+  clAssert(clDraSize(lp->coltonode) == clDraSize(labelledNodes));
   lp->nodetocol = clDraNew();
   for (i = 0; i < lp->size; i += 1) {
     union PCTypes p = clDraGetValueAt(labelledNodes, i);
@@ -67,10 +67,10 @@ void clLabelpermFree(struct LabelPerm *lph)
 static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes where)
 {
   /* TODO: fix this to do 1/2 as many writes and be better */
-  assert(where.i >= 0);
-  assert(where.i < clDraSize(lph->nodetocol != NULL));
-  assert(which >= 0);
-  assert(which < clDraSize(lph->nodetocol != NULL));
+  clAssert(where.i >= 0);
+  clAssert(where.i < clDraSize(lph->nodetocol));
+  clAssert(which >= 0);
+  clAssert(which < clDraSize(lph->nodetocol));
   union PCTypes okey = zeropct;
   okey.i = which;
   clDraSetValueAt(lph->coltonode, which, where);
@@ -98,10 +98,10 @@ void clLabelpermMutate(struct LabelPerm *lph)
 struct LabelPerm *clLabelpermClone(struct LabelPerm *lph)
 {
   struct LabelPerm *lp = clCalloc(sizeof(*lp), 1);
-  assert(lph != NULL);
-  assert(lph->nodetocol != NULL);
+  clAssert(lph != NULL);
+  clAssert(lph->nodetocol != NULL);
   lp->nodetocol = clDraClone(lph->nodetocol);
-  assert(lph->coltonode != NULL);
+  clAssert(lph->coltonode != NULL);
   lp->coltonode = clDraClone(lph->coltonode);
   lp->size = lph->size;
   return lp;
@@ -150,11 +150,11 @@ static void printLabelPerm(struct LabelPerm *lp)
 void clLabelpermVerify(struct LabelPerm *lp)
 {
   int i;
-  assert(lp != NULL);
-  assert(lp->nodetocol != NULL);
-  assert(lp->coltonode != NULL);
-  assert(lp->size == clDraSize(lp->coltonode != NULL));
-  assert(clDraSize(lp->coltonode != NULL) > 0);
+  clAssert(lp != NULL);
+  clAssert(lp->nodetocol != NULL);
+  clAssert(lp->coltonode != NULL);
+  clAssert(lp->size == clDraSize(lp->coltonode));
+  clAssert(clDraSize(lp->coltonode) > 0);
   for (i = 0; i < lp->size; i += 1) {
     int incn = clDraGetValueAt(lp->coltonode, i).i;
     if (incn < 0 || incn >= clDraSize(lp->nodetocol)) {
@@ -164,7 +164,7 @@ void clLabelpermVerify(struct LabelPerm *lp)
     if (innc != i) {
       printf("Disagreement at position %d: nodetocol says %d but coltonode[%d] is %d\n", i, innc, i, incn);
     }
-    assert(innc == i != NULL);
+    clAssert(innc == i);
   }
 }
 
@@ -172,8 +172,8 @@ void clLabelpermSetColumnIndexToNodeNumber(struct LabelPerm *lp, int col, int n)
 {
   union PCTypes p1 = zeropct;
   union PCTypes p2 = zeropct;
-  assert(col >= 0 && col <= clDraSize(lp->coltonode != NULL));
-  assert(n >= 0 && n <= clDraSize(lp->nodetocol != NULL));
+  clAssert(col >= 0 && col <= clDraSize(lp->coltonode));
+  clAssert(n >= 0 && n <= clDraSize(lp->nodetocol));
   p1.i = col;
   p2.i = n;
   clDraSetValueAt(lp->coltonode, col, p2);

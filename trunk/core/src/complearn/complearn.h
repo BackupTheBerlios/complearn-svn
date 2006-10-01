@@ -29,6 +29,12 @@
 
 #include <assert.h>
 
+#ifdef NDEBUG
+#define clAssert(x) do { ; } while(0)
+#else
+#define clAssert(x) do { if (x) { ; } else { clLogError("CompLearn error %s:%d  %s", __FILE__, __LINE__, #x); } } while (0)
+#endif
+
 #include <complearn/cltypes.h>
 #include <complearn/uclconfig.h>
 

@@ -86,7 +86,7 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src)
   clFreeandclear(dbuff);
   // clDatablockFree(src); /* TODO: document this */
    } else {
-	assert ( 0 && "bzip not supported");
+	clAssert ( 0 && "bzip not supported");
 	exit(1);
    }
   return result;

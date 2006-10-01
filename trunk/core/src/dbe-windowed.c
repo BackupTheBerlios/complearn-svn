@@ -125,13 +125,13 @@ struct DataBlockEnumeration *clBlockEnumerationLoadWindowed(struct DataBlock *db
   };
   struct DataBlockEnumeration *dbe;
   struct DBEWindowedEnumeration *widbe;
-  assert(db != NULL);
-  assert(clDatablockSize(db != NULL) > 0);
-  assert(clDatablockSize(db != NULL) < 10000000); /* TODO: remove me */
-  assert(stepsize > 0);
-  assert(width > 0);
-  assert(firstpos >= 0);
-  assert(lastpos >= firstpos);
+  clAssert(db != NULL);
+  clAssert(clDatablockSize(db) > 0);
+  clAssert(clDatablockSize(db) < 10000000); /* TODO: remove me */
+  clAssert(stepsize > 0);
+  clAssert(width > 0);
+  clAssert(firstpos >= 0);
+  clAssert(lastpos >= firstpos);
   dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
   dbe->eptr = clCalloc(sizeof(struct DBEWindowedEnumeration), 1);

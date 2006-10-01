@@ -98,12 +98,12 @@ int clAdjmatrixSize(const struct AdjMatrix *adj)
 
 static void checkBounds(const struct AdjMatrix *adj, int i, int j)
 {
-  assert(adj != NULL);
-  assert(adj->adj != NULL);
-  assert(i >= 0);
-  assert(j >= 0);
-  assert(i < adj->size);
-  assert(j < adj->size);
+  clAssert(adj != NULL);
+  clAssert(adj->adj != NULL);
+  clAssert(i >= 0);
+  clAssert(j >= 0);
+  clAssert(i < adj->size);
+  clAssert(j < adj->size);
 }
 
 int clAdjmatrixGetConState(const struct AdjMatrix *adj, int i, int j)
@@ -120,7 +120,7 @@ void clAdjmatrixSetConState(struct AdjMatrix *adj, int i, int j, int conState)
     clAdjmatrixSetConState(adj, j, i, conState);
   else {
     checkBounds(adj, i, j);
-    assert(conState == 0 || conState == 1);
+    clAssert(conState == 0 || conState == 1);
     adj->adj[i*adj->size+j] = conState;
     //printf("Set Con state to %d for %d -- %d\n", conState, i, j);
     //clAdjmatrixPrint(adj);

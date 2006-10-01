@@ -43,7 +43,7 @@ double clNcdFunc(struct DataBlock *a, struct DataBlock *b, struct GeneralConfig 
   double result;
   if (cur->fJustSize) {
     struct DataBlock *c;
-    assert(cur->ca != NULL);
+    clAssert(cur->ca != NULL);
     c = clDatablockCatPtr(a, b);
     result = clCompressCB(cur->ca, c);
     clDatablockFreePtr(c);
@@ -58,7 +58,7 @@ double clNcdFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataB
   double result;
   struct DataBlock *c;
   double x, y, xy;
-  assert(cb != NULL);
+  clAssert(cb != NULL);
 
   c = clDatablockCatPtr(a, b);
 

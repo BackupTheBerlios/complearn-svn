@@ -66,7 +66,7 @@ struct SplitResult *splitTree(struct TreeAdaptor *ta, int knode)
   for (i = 0; i < clDraSize(path); i += 1) {
     //printf("Node %d\n", clDraGetValueAt(path, i).i);
   }
-  assert(clDraGetValueAt(path, 0 != NULL).i == knode);
+  clAssert(clDraGetValueAt(path, 0 != NULL).i == knode);
   for (i = 0; i < clDraSize(path); i += 1) {
     int c = clDraGetValueAt(path, i).i;
     union PCTypes p = zeropct;
@@ -74,10 +74,10 @@ struct SplitResult *splitTree(struct TreeAdaptor *ta, int knode)
       continue;
     if (clAdjaGetConState(aa, c, knode)) {
       j += 1;
-      assert(j <= 2);
+      clAssert(j <= 2);
     }
     p.i = c;
-    assert(j >= 0);
+    clAssert(j >= 0);
     clDraPush(sr->p[j], p);
   //  printf("Node %d: %d\n", c, j);
   }
@@ -147,13 +147,13 @@ int main(int argc, char **argv)
   filename = argv[1];
   matname = argv[2];
   db = clFileToDataBlockPtr(filename);
-  assert(db != NULL);
+  clAssert(db != NULL);
   matdb = clFileToDataBlockPtr(matname);
-  assert(matdb != NULL);
+  clAssert(matdb != NULL);
   dpt = clParseDotDB(db, matdb);
-  assert(dpt != NULL);
-  assert(dpt->tree != NULL);
-  assert(dpt->labels != NULL);
+  clAssert(dpt != NULL);
+  clAssert(dpt->tree != NULL);
+  clAssert(dpt->labels != NULL);
   for (i = 0; i < clTreeaNodeCount(dpt->tree); i += 1) {
     if (clTreeaIsQuartettable(dpt->tree, i))
       continue;

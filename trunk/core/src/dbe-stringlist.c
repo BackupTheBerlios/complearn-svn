@@ -68,7 +68,7 @@ static struct DataBlockEnumerationIterator *dbe_sl_newenumiter(struct DataBlockE
 {
   struct DBEStringListEnumeration *dbe = (struct DBEStringListEnumeration *) (ptr->eptr);
   struct DBEStringListEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
-  assert(dbi != NULL);
+  clAssert(dbi != NULL);
   dbi->fp = clFopen(dbe->filename, "rb");
   if (dbi->fp == NULL) {
     clLogError("Cannot open stringlist file %s", dbe->filename);
@@ -165,12 +165,12 @@ struct DataBlockEnumeration *clBlockEnumerationLoadStringList(const char *filena
   };
   struct DataBlockEnumeration *dbe;
   struct DBEStringListEnumeration *fldbe;
-  assert(filename != NULL);
+  clAssert(filename != NULL);
   dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
   dbe->eptr = clCalloc(sizeof(struct DBEStringListEnumeration), 1);
   fldbe = (struct DBEStringListEnumeration *) dbe->eptr;
   fldbe->filename = clStrdup(filename);
-  assert(fldbe->filename != NULL);
+  clAssert(fldbe->filename != NULL);
   return dbe;
 }

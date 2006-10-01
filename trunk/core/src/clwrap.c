@@ -120,7 +120,7 @@ const char *clGetHomeDir(void)
 {
   char *result;
   result = getenv("HOME");
-  assert(result != NULL);
+  clAssert(result != NULL);
   return result;
 }
 

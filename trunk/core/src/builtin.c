@@ -82,20 +82,20 @@ struct StringStack *clListBuiltinsCB(int fWithDisabled)
 const char *clLastStaticErrorCB(const char *shortName)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
-  assert(ci != NULL);
+  clAssert(ci != NULL);
   return ci->staticErrorMsg;
 }
 
 void clSetLastErrorCB(struct CompressionBase *cb, const char *msg)
 {
-  assert(msg && "NULL error message error." != NULL);
+  clAssert(msg && "NULL error message error." != NULL);
   cb->cbi->errorMessage = strdup(msg);
 }
 
 void clSetLastStaticErrorCB(const char *shortName, const char *msg)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
-  assert(ci != NULL);
+  clAssert(ci != NULL);
   ci->staticErrorMsg = strdup(msg);
 }
 
@@ -122,7 +122,7 @@ void clFreeCB(struct CompressionBase *cb)
 void clDeregisterCompressor(const char *shortName)
 {
   struct CLCompressionInfo *ci = findCompressorInfo(shortName);
-  assert(ci != NULL);
+  clAssert(ci != NULL);
   struct CLCompressionInfo **pc = findPointerTo(ci);
   *pc = ci->next;
   free(ci); // shortName must be owned by Compressor instance
@@ -183,7 +183,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   	clLogError(buf);
 	exit(1);
   }
-  assert(ci != NULL);
+  clAssert(ci != NULL);
   if (!clIsEnabledCB(shortName))
     return NULL;
   struct CompressionBase *cb = calloc(ci->cba.allocSizeCB(), 1);
@@ -215,7 +215,7 @@ static void staticErrorExitIfBad(int retval, struct CompressionBase *cb)
 
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate)
 {
-  assert(cb->cbi->fHavePrepared == 0 && "Parameters already locked." != NULL);
+  clAssert(cb->cbi->fHavePrepared == 0 && "Parameters already locked." != NULL);
   clEnvmapSetKeyVal(cb->cbi->em, key, val);
   if (isPrivate)
     clEnvmapSetKeyPrivate(cb->cbi->em, key);
@@ -234,11 +234,11 @@ void clRegisterCB(struct CompressionBaseAdaptor *vptr)
   int i;
   checkInitted();
   ci = calloc(sizeof(struct CLCompressionInfo), 1);
-  assert(vptr != NULL);
-  assert(vptr->shortNameCB != NULL);
+  clAssert(vptr != NULL);
+  clAssert(vptr->shortNameCB != NULL);
   shortName = vptr->shortNameCB();
-  assert(shortName != NULL);
-  assert(strlen(shortName != NULL) > 0);
+  clAssert(shortName != NULL);
+  clAssert(strlen(shortName) > 0);
   if (findCompressorInfo(shortName) != NULL) {
     fprintf(stderr, "Warning: already loaded compressor %s, ignoring subsequent registrations by the same name.\n", shortName);
     return;

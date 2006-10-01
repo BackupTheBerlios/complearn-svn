@@ -80,8 +80,8 @@ int clStringstackFree(struct StringStack *ss)
 int clStringstackUnshift(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
-  assert(ss != NULL);
-  assert(str != NULL);
+  clAssert(ss != NULL);
+  clAssert(str != NULL);
   p.str = clStrdup(str);
   clDraUnshift(ss->da, p);
   return CL_OK;
@@ -90,8 +90,8 @@ int clStringstackUnshift(struct StringStack *ss, const char *str)
 int clStringstackPush(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
-  assert(ss != NULL);
-  assert(str != NULL);
+  clAssert(ss != NULL);
+  clAssert(str != NULL);
   p.str = clStrdup(str);
   clDraPush(ss->da, p);
   return CL_OK;
@@ -113,7 +113,7 @@ int clStringstackSize(const struct StringStack *ss)
 char *clShiftSS(struct StringStack *ss)
 {
   union PCTypes p;
-  assert(clStringstackSize(ss != NULL) > 0);
+  clAssert(clStringstackSize(ss) > 0);
   memset(&p, 0, sizeof(p));
 	if (clStringstackSize(ss) == 0) return p.str;
 	p = clDraShift(ss->da);

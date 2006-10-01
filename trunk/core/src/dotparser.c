@@ -201,10 +201,10 @@ static void transitTo(struct CLYieldChain *yc, int ns)
 
 static void newToken(struct CLYieldChain *yc, int sym)
 {
-  assert(yc->m == NULL && "Uncleared symbol" != NULL);
+  clAssert(yc->m == NULL && "Uncleared symbol" != NULL);
   yc->m = newSemToken(sym);
-  assert(yc->m->tokNum == sym);
-  assert(yc->m->d != NULL);
+  clAssert(yc->m->tokNum == sym);
+  clAssert(yc->m->d != NULL);
 }
 
 void ycStringsPF(struct CLYieldChain *yc, struct CLToken *clt)
@@ -371,7 +371,7 @@ static void ycPunkPF(struct CLYieldChain *yc, struct CLToken *clt)
       break;
 
     default:
-      assert("Illegal state in YCPunk" && 0);
+      clAssert("Illegal state in YCPunk" && 0);
   }
 }
 
@@ -471,7 +471,7 @@ static char *convertNodeToString(struct CLToken *t)
   static char *retval;
   int i;
   struct DRA *da = clDraNew();
-  assert(t->tokNum > 255 && "Invalid CharToken for convert to String" != NULL);
+  clAssert(t->tokNum > 255 && "Invalid CharToken for convert to String" != NULL);
   clConvertNodeToStringRecursive(t, da);
   if (retval)
     free(retval);
@@ -631,7 +631,7 @@ struct CLToken *newSemToken(int symval)
   struct CLToken *clt = clCalloc(sizeof(*clt), 1);
   union PCTypes p;
   p.ptr = clt;
-  assert(symval > 255 && "Invalid semantic token code" != NULL);
+  clAssert(symval > 255 && "Invalid semantic token code" != NULL);
   clt->tokNum = symval;
   clt->d = clDraNew();
   if (currentArena)
@@ -688,8 +688,8 @@ void gobble(struct CLYieldChain *yc, struct CLToken *clt)
 {
   union PCTypes p = zeropct;
   p.ptr = clt;
-  assert(yc->m && "No token set" != NULL);
-  assert(yc->m->d && "No dra set!" != NULL);
+  clAssert(yc->m && "No token set" != NULL);
+  clAssert(yc->m->d && "No dra set!" != NULL);
   clDraPush(yc->m->d, p);
 }
 
@@ -707,8 +707,8 @@ void eject(struct CLYieldChain *yc, struct CLToken *clt)
 
 void pass(struct CLYieldChain *yc, struct CLToken *clt)
 {
-  assert(yc != NULL);
-  assert(clt != NULL);
+  clAssert(yc != NULL);
+  clAssert(clt != NULL);
   eject(yc, clt);
   if (yc->next)
     receiveToken(yc->next, clt);
@@ -755,7 +755,7 @@ void clFreeDotParser(struct DotParserInstance *dp)
 struct DotParserInstance *clNewDotParser(struct DataBlock *db)
 {
   struct DotParserInstance *dp = clCalloc(sizeof(struct DotParserInstance), 1);
-  assert(dp != NULL);
+  clAssert(dp != NULL);
   dp->commentBuf = clDraNew();
   dp->tokensToFree = clDraNew();
   dp->db = clDatablockClonePtr(db);
@@ -777,8 +777,8 @@ static void handleNewEdge(struct YCTree *tree, const char *leftstr, const char *
     return;
   int leftnum = atoi(leftstr);
   int rightnum = atoi(rightstr);
-  assert(leftnum <= tree->maxnodenum != NULL);
-  assert(rightnum <= tree->maxnodenum != NULL);
+  clAssert(leftnum <= tree->maxnodenum);
+  clAssert(rightnum <= tree->maxnodenum);
   union PCTypes p = zeropct;
   p.ip.x = leftnum;
   p.ip.y = rightnum;
@@ -862,7 +862,7 @@ struct DotParseTree *clParseDotDB(struct DataBlock *db, struct DataBlock *matdb)
       }
       */
       labels = clbDBLabels(matdb);
-      assert(labels != NULL);
+      clAssert(labels != NULL);
       dpt->labels = labels;
       for (i = 0; i <= yctree->maxnodenum; i += 1) {
         if (clTreeaIsQuartettable(yctree->ta,i)) {

@@ -68,9 +68,9 @@ static struct DataBlockEnumerationIterator *dbe_dir_newenumiter(struct DataBlock
 {
   struct DBEDirEnumeration *dbe = (struct DBEDirEnumeration *) (ptr->eptr);
   struct DBEDirEnumerationIterator *dbi = clCalloc(sizeof(*dbi), 1);
-  assert(dbi != NULL);
+  clAssert(dbi != NULL);
   dbi->cur = opendir(dbe->name);
-  assert(dbi->cur != NULL);
+  clAssert(dbi->cur != NULL);
   dbe_dir_istep(ptr, (struct DataBlockEnumerationIterator *) dbi);
   return (struct DataBlockEnumerationIterator *) dbi;
 }
@@ -172,7 +172,7 @@ struct DataBlockEnumeration *clBlockEnumerationLoadDirectory(const char *dirname
   };
   struct DataBlockEnumeration *dbe;
   struct DBEDirEnumeration *dirdbe;
-  assert(dirname != NULL);
+  clAssert(dirname != NULL);
   dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = c;
   dbe->eptr = clCalloc(sizeof(struct DBEDirEnumeration), 1);

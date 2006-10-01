@@ -58,13 +58,13 @@ struct TreeBlaster *clTreebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
 {
   int i, howbig;
   struct TreeBlaster *tm = clCalloc(sizeof(struct TreeBlaster), 1);
-  assert(gsl != NULL);
-  assert(gsl->size1 == gsl->size2);
+  clAssert(gsl != NULL);
+  clAssert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
   tm->ta = clTreeaClone(ta);
   tm->dm = clGslmatrixClone(gsl);
   tm->printedScore = -1;
-  assert(tm->dm != NULL);
+  clAssert(tm->dm != NULL);
   if (gsl->size1 < 14)
     tm->k = 5;
   else
@@ -146,20 +146,20 @@ void clTreebSetTreeOrderObserver(struct TreeBlaster *tm, struct TreeOrderObserve
 
 int clTreebK(struct TreeBlaster *tbl)
 {
-  assert(tbl != NULL);
+  clAssert(tbl != NULL);
   return tbl->k;
 }
 
 int clGetNodeCountTB(struct TreeBlaster *tbl)
 {
-  assert(tbl != NULL);
+  clAssert(tbl != NULL);
   struct TreeMolder *tmo = tbl->best;
   return clTreemolderNodeCount(tmo);
 }
 
 int clTreebLabelCount(struct TreeBlaster *tbl)
 {
-  assert(tbl != NULL);
+  clAssert(tbl != NULL);
   return tbl->dm->size1;
 }
 

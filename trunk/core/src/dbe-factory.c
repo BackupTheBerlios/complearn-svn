@@ -50,7 +50,7 @@ void clBlockEnumerationFactoryFree(struct DBEFactory *dbf)
 
 int clBlockEnumerationFactorySetMode(struct DBEFactory *dbf, int newMode)
 {
-  assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
+  clAssert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
 }
@@ -88,7 +88,7 @@ static struct DataBlockEnumeration *dbef_handleWindowedDBE(struct DBEFactory *db
 #define WINDELIMS ","
   cstr = clStrdup(str);
   fname = strtok(cstr, WINDELIMS);
-  assert(fname && "Must specify filename for window" != NULL);
+  clAssert(fname && "Must specify filename for window" != NULL);
   db = clFileToDataBlockPtr(fname);
   lastpos = clDatablockSize(db) - 1;
   cur = strtok(NULL, WINDELIMS);

@@ -71,7 +71,7 @@ gsl_matrix *clSvdProject(gsl_matrix *a)
   v = gsl_matrix_alloc(a->size2, a->size2);
   s = gsl_vector_alloc(a->size1);
   retval = gsl_linalg_SV_decomp_jacobi(u, v, s);
-//  assert(retval == GSL_OK);
+//  clAssert(retval == GSL_OK);
   res = gsl_matrix_alloc(a->size1, a->size2);
   gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, a, u, 0.0, res);
   return res;
@@ -632,14 +632,14 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   char *startparamstr, *endparamstr;
   unsigned char *dbuff;
 
-  assert(ad != NULL);
+  clAssert(ad != NULL);
   nodes = clSimpleWalkTree(ta, flips);
   dasize = clAdjaSize(ad);
-  assert(dasize > 0);
-  assert(clDraSize(nodes != NULL) == dasize);
+  clAssert(dasize > 0);
+  clAssert(clDraSize(nodes) == dasize);
   dotacc = clStringstackNew();
-  assert(dotacc != NULL);
-  assert(labelperm != NULL);
+  clAssert(dotacc != NULL);
+  clAssert(labelperm != NULL);
 
   clStringstackPush(dotacc, "graph \"tree\" {");
   if (cur && cur->fSuppressVisibleDetails) {
@@ -706,7 +706,7 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   int rootnode = -1;
   for (i = 0; i < dasize; i += 1) {
     int nodenum = clDraGetValueAt(nodes, i).i;
-    assert(nodenum >= 0 && nodenum <= 3 * dasize);
+    clAssert(nodenum >= 0 && nodenum <= 3 * dasize);
     char *str;
     char *extrastr = "";
     if (clTreeaIsRoot(ta, nodenum)) {
@@ -724,12 +724,12 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   }
   for (i = 0; i < dasize; i += 1) {
     int n1 = clDraGetValueAt(nodes, i).i;
-    assert(n1 >= 0 && n1 <= 3 * dasize);
+    clAssert(n1 >= 0 && n1 <= 3 * dasize);
     sprintf(con1, "%d", n1);
     for (j = 0; j < dasize; j += 1) {
       int n2 = clDraGetValueAt(nodes, j).i;
 //      printf("For %d, got %d on labelperm %p\n", j, n2, labelperm);
-      assert(n2 >= 0 && n2 <= 3 * dasize);
+      clAssert(n2 >= 0 && n2 <= 3 * dasize);
       char con2[1024];
       sprintf(con2, "%d", n2);
       if (n1 > n2 && clAdjaGetConState(ad, n1, n2)) {

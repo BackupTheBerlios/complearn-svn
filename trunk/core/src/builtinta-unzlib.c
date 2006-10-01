@@ -91,7 +91,7 @@ static struct DataBlock *unzlib_transform(struct DataBlock *src)
 	free(dbuff);
 //	clDatablockFree(src); /* TODO: document this new non-free behavior */
    } else {
-     assert ( 0 && "zlib not supported");
+     clAssert ( 0 && "zlib not supported");
      exit(1);
    }
 	return result;

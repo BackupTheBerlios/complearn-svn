@@ -98,10 +98,10 @@ struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
   GDBM_FILE db;
   datum result;
   result.dptr = NULL;
-  assert(gh != NULL);
-//  assert(gh->db != NULL);
+  clAssert(gh != NULL);
+//  clAssert(gh->db != NULL);
   db = gdbm_open(gh->filename, 0, GDBM_READER, 0664, printclFunc);
-  assert(db != NULL);
+  clAssert(db != NULL);
   result = gdbm_fetch(db, clConvertDataBlockToDatum(key));
 //  clLogWarning("KEY<%s:%d>FETCH to %p:%d\n", clDatablockToString(key), clDatablockSize(key),  result.dptr, result.dsize);
   gdbm_close(db);
@@ -114,8 +114,8 @@ struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
 void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
   GDBM_FILE db;
-  assert(gh != NULL);
-  //assert(gh->db != NULL);
+  clAssert(gh != NULL);
+  //clAssert(gh->db != NULL);
 // clLogWarning("KEY<%s:%d>STORE value size <%d>\n", clDatablockToString(key), clDatablockSize(key), clDatablockSize(val));
   while(1) {
     db = gdbm_open(gh->filename, 0, GDBM_WRCREAT | GDBM_SYNC, 0664, printclFunc);
@@ -132,8 +132,8 @@ void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *v
 
 int clDBclose(struct GDBMHelper *gh)
 {
-  assert(gh != NULL);
-  //assert(gh->db != NULL);
+  clAssert(gh != NULL);
+  //clAssert(gh->db != NULL);
   //gdbm_close(gh->db);
   //gh->db = NULL;
   clFree(gh->filename);
@@ -169,22 +169,22 @@ struct GDBMHelper { int ignoreMe; };
 
 struct GDBMHelper *clDBopen(const char *userfilename)
 {
-  assert("No GDBM installed." && 0 != NULL);
+  clAssert("No GDBM installed." && 0 != NULL);
 }
 int clDBclose(struct GDBMHelper *gh)
 {
-  assert("No GDBM installed." && 0 != NULL);
+  clAssert("No GDBM installed." && 0 != NULL);
 }
 struct DataBlock *clDBfetch(struct GDBMHelper *gh, struct DataBlock *key)
 {
-  assert("No GDBM installed." && 0 != NULL);
+  clAssert("No GDBM installed." && 0 != NULL);
 }
 void clDBstore(struct GDBMHelper *gh, struct DataBlock *key, struct DataBlock *val)
 {
-  assert("No GDBM installed." && 0 != NULL);
+  clAssert("No GDBM installed." && 0 != NULL);
 }
 void clDBunlink(const char *userfilename)
 {
-  assert("No GDBM installed." && 0 != NULL);
+  clAssert("No GDBM installed." && 0 != NULL);
 }
 #endif

@@ -42,7 +42,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   float retval;
 
   rci->curpt = 0;
-  assert(rci->ecmd != NULL);
+  clAssert(rci->ecmd != NULL);
   readfd = clForkPipeExecAndFeedCB(src, rci->ecmd, NULL);
 
   while (read(readfd, &ch, 1) == 1 && rci->curpt < RCIBUFSIZE) {

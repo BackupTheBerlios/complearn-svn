@@ -42,7 +42,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
   clStringstackPush(args, "-m256");
   clStringstackPush(args, "inp");
   int readfd;
-  assert(ecmd != NULL);
+  clAssert(ecmd != NULL);
   getcwd(olddir, sizeof(olddir));
   memset(tmpres, 0, sizeof(tmpres));
   tmpnam(tmpres);

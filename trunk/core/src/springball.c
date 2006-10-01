@@ -151,7 +151,7 @@ struct SBS3 *clSbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl
 
 double clipValInbetween(double val, double minval, double maxval)
 {
-  assert(minval <= maxval);
+  clAssert(minval <= maxval);
   if (val > maxval)
     val = maxval;
   if (val < minval)
@@ -253,7 +253,7 @@ static struct SBS4 *clSbsNew4(struct TreeAdaptor *ta)
   }
 
   pairnum += 0;
-  assert(clDraSize(sbs4->subsys != NULL) == pairnum);
+  clAssert(clDraSize(sbs4->subsys) == pairnum);
 
   return sbs4;
 }
@@ -291,7 +291,7 @@ void clCalculateJacobian(struct SBS3 *model, gsl_matrix *m)
   int fpi = 6*obji;       // firstposind
   int spi = 6*objj;      // secondposind
   int fvi = 6*obji + 3;   // firstvelind
-  assert(model != NULL);
+  clAssert(model != NULL);
   mustDoDrag = (model->j == 0 || (model->i == 0 && model->j == 1));
   if (C1 != 0 && C2 != 0)
     mustDoCharge =1;
@@ -420,7 +420,7 @@ static void calculateForceOnBall1(struct SBS4 *sbs4, struct SBS3 *model, gsl_vec
   int mustDoDrag;
   int mustDoCharge = 0;
   int mustDoSpring = 0;
-  assert(model != NULL);
+  clAssert(model != NULL);
   mustDoDrag = (model->j == 0);
   for (i = 0; i < 3; i += 1)
     answer[i] = gsl_vector_get(result, i);

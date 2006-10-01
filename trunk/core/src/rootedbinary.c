@@ -98,7 +98,7 @@ static int verifyTree(struct RootedBinary *rb)
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
       retval = clAdjaNeighbors(rb->aa, i, nbp, &nlenhere);
-      assert(retval == CL_OK);
+      clAssert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
       return 0;
@@ -123,28 +123,28 @@ tryagain:
     } while (k1 == rb->root || k1 == k2);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(rb->aa, k1, k2, pbuf, &pathlen);
-    assert(retval == CL_OK);
-    assert(pbuf[0] == k1);
-    assert(clAdjaGetConState(rb->aa, k1, pbuf[1] != NULL));
+    clAssert(retval == CL_OK);
+    clAssert(pbuf[0] == k1);
+    clAssert(clAdjaGetConState(rb->aa, k1, pbuf[1]));
   } while (pathlen <= 2);
   i1 = pbuf[1];
-  assert(i1 < MAXPATHNODES);
-  assert(clAdjaGetConState(rb->aa, k1, i1 != NULL));
+  clAssert(i1 < MAXPATHNODES);
+  clAssert(clAdjaGetConState(rb->aa, k1, i1));
   nsizems = MAXNEIGHBORS;
 
   retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK);
+  clAssert(retval == CL_OK);
   if (nsizems < 3)
     goto tryagain;
   clAdjaSetConState(rb->aa, k1, i1, 0);
   retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK);
+  clAssert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems < 2) {
     clLogError( "Warning, got node %d with too many (%d) neighbors, %d...\n",
         i1, nsizems, m1);
-    assert(nsizems == 2);
+    clAssert(nsizems == 2);
   }
   do {
     m3 = randomNeighbor(rb, k2);
@@ -176,16 +176,16 @@ tryagain:
     } while (i1 == i2 || i1 == rb->root || i2 == rb->root);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(rb->aa, i1, i2, pathbuf, &pathlen);
-    assert(retval == CL_OK);
+    clAssert(retval == CL_OK);
   } while (pathlen <= 2);
   n1 = pathbuf[1];
   if (n1 == rb->root)
     goto tryagain;
-  assert(clAdjaGetConState(rb->aa, n1, i1 != NULL));
+  clAssert(clAdjaGetConState(rb->aa, n1, i1));
   n2 = pathbuf[pathlen-2];
   if (n2 == rb->root)
     goto tryagain;
-  assert(clAdjaGetConState(rb->aa, n2, i2 != NULL));
+  clAssert(clAdjaGetConState(rb->aa, n2, i2));
   clFlipCrosswise(rb->aa, i1, n1, i2, n2);
 }
 
@@ -196,7 +196,7 @@ static void mutateSimple(struct RootedBinary *rb)
   int wasGood;
 
   wasGood = verifyTree(rb);
-  assert(wasGood != NULL);
+  clAssert(wasGood != NULL);
 #endif
   do {
     c = rand() % 3;
@@ -207,7 +207,7 @@ static void mutateSimple(struct RootedBinary *rb)
     case 0: clMutateSpecies(rb->aa, rb->labelperm); break;
     case 1: mutateSubtreeInterchange(rb); break;
     case 2: mutateSubtreeTransfer(rb); break;
-    default: assert(0 && "bad tree op" != NULL); break;
+    default: clAssert(0 && "bad tree op" != NULL); break;
   }
 #if LOGICWALL
   wasGood = verifyTree(rb);
@@ -216,7 +216,7 @@ static void mutateSimple(struct RootedBinary *rb)
     exit(1);
   }
 //  printf("Did finish to do mutation %d\n", c);
-  assert(wasGood != NULL);
+  clAssert(wasGood != NULL);
 //  printf("DONE MUTATION %d (%p)\n", c, rb);
 #endif
 }
@@ -263,7 +263,7 @@ struct RootedBinary *clRootedBinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
   struct DRA *leaves;
   struct RootedBinary *rb = clCalloc(sizeof(struct RootedBinary), 1);
 
-  assert(howManyLeaves > 3);
+  clAssert(howManyLeaves > 3);
 
   rb->nodecount = 2*howManyLeaves-3;
 
@@ -279,7 +279,7 @@ struct RootedBinary *clRootedBinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
   }
 
   leaves = getLabellableNodes(rb);
-  assert(clDraSize(leaves != NULL) == howManyLeaves);
+  clAssert(clDraSize(leaves) == howManyLeaves);
 
   if (! (rb->labelperm = ulabelperm))
     rb->labelperm = clLabelpermNew(leaves);
