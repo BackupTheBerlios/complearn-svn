@@ -312,6 +312,43 @@ void clFreeCLDM(struct CLDistMatrix *clb)
   clFree(clb);
 }
 
+static char *clXMLQuoteStr(char *inp)
+{
+  int i, c, j;
+  static char *outstr;
+  if (outstr != NULL)
+    clFree(outstr);
+  outstr = clCalloc(strlen(inp) * 10, 1);
+  j = 0;
+  for (i = 0; inp[i]; i += 1) {
+    c = inp[i];
+    switch(c) {
+      case '&':
+        outstr[j++] = '&'; outstr[j++] = 'a'; outstr[j++] = 'm';
+        outstr[j++] = 'p'; outstr[j++] = ';'; break;
+      case '>':
+        outstr[j++] = '&'; outstr[j++] = 'g'; outstr[j++] = 't';
+        outstr[j++] = ';'; break;
+      case '<':
+        outstr[j++] = '&'; outstr[j++] = 'l'; outstr[j++] = 't';
+        outstr[j++] = ';'; break;
+      case '"':
+        outstr[j++] = '&'; outstr[j++] = 'q'; outstr[j++] = 'o';
+        outstr[j++] = 'o'; outstr[j++] = 't'; outstr[j++] = ';'; break;
+      case '\'':
+        outstr[j++] = '&'; outstr[j++] = 'a'; outstr[j++] = 'p';
+        outstr[j++] = 'o'; outstr[j++] = 's'; outstr[j++] = ';'; break;
+//      case '\\':
+ //     case '#':
+//        outstr[j++] = '\\'; outstr[j++] = c; break;
+      default:
+        outstr[j++] = c;
+    }
+  }
+  outstr[j++] = 0;
+  return outstr;
+}
+
 static struct DataBlock *clRealWriteCLBDistMatrix(struct CLDistMatrix *clb)
 {
   int rc;
@@ -348,14 +385,15 @@ static struct DataBlock *clRealWriteCLBDistMatrix(struct CLDistMatrix *clb)
       rc = xmlTextWriterEndElement(tw);
     rc = xmlTextWriterEndElement(tw);
     if (clb->cmds) {
+      char *str;
       rc = xmlTextWriterStartElement(tw,(unsigned char *)  "commands");
       for (i = 0; i < clStringstackSize(clb->cmds); i += 1) {
         char *t = clb->cmdtimes ? clStringstackReadAt(clb->cmdtimes, i) : NULL;
         rc = xmlTextWriterStartElement(tw,(unsigned char *)  "cmdstring");
         if (t)
           rc = xmlTextWriterWriteAttribute(tw,(unsigned char *)  "creationtime", (unsigned char *) t);
-        xmlTextWriterWriteString(tw,
-         (unsigned char *)  clStringstackReadAt(clb->cmds, i));
+        str = clStringstackReadAt(clb->cmds, i);
+        xmlTextWriterWriteRaw(tw, (unsigned char *)  clXMLQuoteStr(str));
         rc = xmlTextWriterEndElement(tw);
       }
       rc = xmlTextWriterEndElement(tw);
@@ -614,7 +652,7 @@ struct DataBlock *clConvertTreeToDot(struct TreeAdaptor *ta, double score, struc
   sprintf(con1, "%s%s version %s%s", startparamstr, PACKAGE_NAME,
       PACKAGE_VERSION, endparamstr);
   clStringstackPush(dotacc, con1);
-  if (score != 0.0) {
+  if (score != -1.0) {
     sprintf(con1, "%stree score S(T) = %f%s", startparamstr, score,
         endparamstr);
     clStringstackPush(dotacc, con1);

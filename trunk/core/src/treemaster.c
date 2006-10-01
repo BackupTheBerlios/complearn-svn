@@ -195,7 +195,7 @@ struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted)
   if (gsl->size1 < 10) /* small trees are very quick yet very uncertain */
     tm->k += 1;
   if (gsl->size1 <= 5)
-    tm->k += 1;
+    tm->k += 3;
   tra = clTreeaNew(isRooted, howbig);
   aa = clTreeaAdjAdaptor(tra);
   tm->nodecount = clAdjaSize(aa);
@@ -329,7 +329,7 @@ struct TreeHolder *clTreemasterFindTree(struct TreeMaster *tm)
   tm->endTime = clDatetimeNow();
 #if 1
   if (!tm->fAbortNow && tm->tob && tm->tob->treedone) {
-    struct TreeHolder *th = clTreehClone(tm->th[0]);
+    struct TreeHolder *th = clTreehClone(tm->best);
     tm->tob->treedone(tm->tob, th);
     clTreehFree(th);
   }

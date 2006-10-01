@@ -162,7 +162,7 @@ void clSaveCmd(struct GeneralConfig *ev, int argc, char **argv)
     ptr += sprintf(ptr, " %s", *argv);
     argv += 1;
   }
-  ptr += sprintf(ptr, " # at %s", clDatetimeToHumString(cdt));
+  //ptr += sprintf(ptr, " # at %s", clDatetimeToHumString(cdt));
   clDatetimeFree(cdt);
   *ptr = '\0';
   clStringstackPush(ev->cmdKeeper, sbuf+1);
