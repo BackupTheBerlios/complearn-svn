@@ -303,7 +303,7 @@ void clPrintCompressors(void)
   const char *fmtstrtitle = "%-12s:%7s:%8s%9s:%30s:%s%s\n";
   const char *fmtstrdata  = "%-12s:%1s:%5s:%8d%9s:%30s:%s%s\n";
   printf("Compressor options\n");
-  printf("+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n");
+  printf("+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +\n");
   printf(fmtstrtitle,  "Name", "Auto En","Window", "Rounding", "Description", "Errors", "");
   printf(fmtstrtitle, "-----------", "-------", "------", "--------", "-----------------------", "------", "");
   cc = clCompressorCount();
