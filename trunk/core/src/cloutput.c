@@ -381,6 +381,7 @@ static struct DataBlock *clWriteCLBDistMatrix(gsl_matrix *mat, struct StringStac
   if (labels) {
     lab[0] = clStringstackClone(labels);
     lab[1] = clStringstackClone(labels);
+    inp.labels = lab;
   }
   if (cmds)
     inp.cmds = clStringstackClone(cmds);
@@ -396,6 +397,7 @@ static struct DataBlock *clWriteCLBDistMatrix(gsl_matrix *mat, struct StringStac
   if (compressor_name)
     clFree(inp.compressor);
   gsl_matrix_free(inp.mat);
+  memset(&inp, 0, sizeof(inp));
   return result;
 }
 
