@@ -162,7 +162,6 @@ AC_CHECK_HEADERS([zlib.h], [
 ]
 )
 
-if test "x$fgsl_lib" = "xfalse" ; then
 AC_CHECK_PROGS(PKGCONFIG, pkg-config)
 if ! test "x$PKGCONFIG" = "x" ; then
 for i in gsl libxml-2.0 nanohttp libcsoap ; do
@@ -176,6 +175,7 @@ for i in gsl libxml-2.0 nanohttp libcsoap ; do
 done
 fi
 
+if test "x$fgsl_lib" = "xfalse" ; then
 AC_ARG_WITH(gsl,
   [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
@@ -230,8 +230,8 @@ if test x$fngd_possible = xtrue ; then
 fi
 if test x$fngd_possible = xtrue ; then
   fnanohttp_lib=false
-  AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [
-    AC_CHECK_LIB(nanohttp,httpd_run, [LIBS="-lnanohttp $LIBS";
+  AC_CHECK_LIB(nanohttp,httpd_run, [
+    AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [LIBS="-lnanohttp $LIBS";
                  fnanohttp_lib=true]) ])
   if test x$fnanohttp_lib = xfalse ; then
     fngd_possible=false;

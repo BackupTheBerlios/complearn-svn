@@ -243,7 +243,7 @@ void clRegisterCB(struct CompressionBaseAdaptor *vptr)
     fprintf(stderr, "Warning: already loaded compressor %s, ignoring subsequent registrations by the same name.\n", shortName);
     return;
   }
-  vpn = (void **) &ci->cba;
+  vpn = (void **) (void*) &ci->cba;
   svptr = (void **) vptr;
   for (i = 0; i < (cbas/ps); i += 1) {
     void *f = svptr[i];
@@ -309,21 +309,23 @@ void clPrintCompressors(void)
   cc = clCompressorCount();
   for (i = 0; i < cc; i += 1) {
     const char *sn = clCompressorName(i);
-    struct CompressionBase *cb = clNewCompressorCB(sn);
+    struct CLCompressionInfo *ci = findCompressorInfo(sn);
     const char *erm = NULL;
     if (!clIsEnabledCB(sn))
       erm = clLastStaticErrorCB(sn);
+    else
+      if (ci == NULL)
+        clLogError("NULL compressor returned error.");
     printf(fmtstrdata,
       sn,
-      VF(cb,isAutoEnabledCB)() ? "A" : "_",
+      ci->cba.isAutoEnabledCB() ? "A" : "_",
       clIsEnabledCB(sn)?"(yes)" : "(no)",
-      VF(cb,getWindowSizeCB)(),
-      VF(cb,doesRoundWholeBytesCB)() ? "(int)" : "(double)",
-      VF(cb,longNameCB)(),
+      ci->cba.getWindowSizeCB(),
+      ci->cba.doesRoundWholeBytesCB() ? "(int)" : "(double)",
+      ci->cba.longNameCB(),
       erm ? "\n         disabled because " : "",
       erm ? erm : ""
     );
-    clFreeCB(cb);
   }
 }
 
