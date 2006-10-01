@@ -1,10 +1,10 @@
-libcomplearn (0.9.6-1) unstable; urgency=low
+libcomplearn (0.9.7-1) unstable; urgency=low
 
   * New upstream release; fixes broken compressor-listing as well as
-    broken command-line option logic.  Also rewrote CompAdaptor, now
-    known as CompressionBase and CompressionBaseAdaptor.  Made a
-    new better dynamic shared object module interface, and new parameter
-    setting command line option -P.
+    broken command-line option logic and broken binary matrix format in
+    Windows.  Also rewrote CompAdaptor, now known as CompressionBase and
+    CompressionBaseAdaptor.  Made a new better dynamic shared object module
+    interface, and new parameter setting command line option -P.
   * Changed a few library symbol names to make them more consistent.
   * Added several new compressors including bzip2x, ppmdx, and lzmax.
   * Fixed broken maketree -T option to read text-format distance matrix.
