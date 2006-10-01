@@ -58,27 +58,6 @@ struct StringStack *clStringstackNew(void);
  */
 struct StringStack *clStringstackNewSingle(const char *str);
 
-/** \brief Loads a StringStack from a serialized format inside a DataBlock
- *
- * Allocates memory and returns a pointer to a deserialized StringStack
- * instance.  The DataBlock passed in to this function should have been made
- * using a clStringstackDump call earlier.
- *
- * \param db a DataBlock containing the serialized format StringStack
- * \return pointer to the newly allocated deserialized StringStack
- */
-struct StringStack *clStringstackLoad(struct DataBlock *db, int fmustbe);
-
-/** \brief Dumps a StringStack into a serialized format and returns a DataBlock
- *
- * This function saves or serializes a StringStack, preparing it to be saved
- * within a file, transmitted over the network, etc.
- *
- * \param ss pointer to the StringStack instance to be saved / serialized
- * \return DataBlock containing the serialized information
- */
-struct DataBlock *clStringstackDump(const struct StringStack *ss);
-
 /** \brief Duplicates StringStack and returns a pointer to a new StringStack.
  *  \param ss StringStack to be duplicated
  *  \return pointer to new StringStack

@@ -73,74 +73,6 @@ struct DataBlock *clGslmatrixDump(const gsl_matrix *a)
   return result;
 }
 
-gsl_matrix *clGslmatrixLoad(struct DataBlock *ptrd, int fmustbe)
-{
-  gsl_matrix *result;
-  struct TagHdr *h;
-  struct GSLMHdr *m;
-  struct DataBlock *db, *d;
-  struct DRA *da;
-  int x, y, i = 0;
-  d = ptrd;
-  assert(sizeof(*m)+sizeof(*h) <= clDatablockSize(d));
-  h = (struct TagHdr *) clDatablockData(d);
-  m = (struct GSLMHdr *) (clDatablockData(d) + sizeof(*h));
-  if (h->tagnum != TAGNUM_GSLMATRIX) {
-    if (fmustbe) {
-    clLogError("Error: expecting GSLMATRIX tagnum %x, got %x\n",
-        TAGNUM_GSLMATRIX,h->tagnum);
-    exit(1);
-    }
-    else
-      return NULL;
-  }
-  assert(m->size1 > 0 && m->size2 > 0);
-  db = clDatablockNewFromBlock( clDatablockData(d) + sizeof(*h) + sizeof(*m), clDatablockSize(d) - (sizeof(*h) + sizeof(*m)));
-
-  da = clDraLoad(db, 1);
-
-  result = gsl_matrix_alloc(m->size1, m->size2);
-  for (x = 0; x < m->size1; x += 1)
-    for (y = 0; y < m->size2; y += 1)
-      gsl_matrix_set(result, x, y, clDraGetDValueAt(da, i++));
-  clDraFree(da);
-  clDatablockFreePtr(db);
-  return result;
-}
-
-struct DataBlock *clDistmatrixDump(gsl_matrix *m)
-{
-  struct DataBlock *db, *dbm;
-  db = clGslmatrixDump(m);
-  dbm = clPackageDataBlocks(TAGNUM_CLDISTMATRIX,db,NULL);
-  return dbm;
-}
-
-gsl_matrix *clDistmatrixLoad(struct DataBlock *ptrdb, int fmustbe)
-{
-  gsl_matrix *m;
-  struct DRA *dd;
-  struct TagHdr *h = (struct TagHdr *) clDatablockData(ptrdb);
-  struct DataBlock *dbdm;
-
-  if (h->tagnum != TAGNUM_CLDISTMATRIX) {
-    if (fmustbe) {
-      clLogError("Error: expecting CLDISTMATRIX tagnum %x, got %x\n",
-          TAGNUM_CLDISTMATRIX,h->tagnum);
-      exit(1);
-    }
-    else
-      return NULL;
-  }
-
-  dd = clLoadDatablockPackage(ptrdb);
-  dbdm = clScanForTag(dd, TAGNUM_GSLMATRIX );
-  m = clGslmatrixLoad(dbdm, 1);
-  clFreeDataBlockpackage (dd);
-  clDatablockFreePtr(dbdm);
-
-  return m;
-}
 
 void clGslmatrixFree(gsl_matrix *m)
 {
@@ -200,35 +132,13 @@ gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
   }
 }
 
-
-struct DataBlock *clbDMDataBlock(char *fname) {
-  struct DataBlock *db, *dbdm;
-  struct DRA *dd;
-
-  db = clFileToDataBlockPtr(fname);
-  dd = clLoadDatablockPackage(db);
-  dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
-
-  clDatablockFreePtr(db);
-  clFreeDataBlockpackage(dd);
-  return dbdm;
-}
-
-gsl_matrix *clbDistMatrixLoad(struct DataBlock *db)
-{
-  gsl_matrix *dm;
-  dm = clDistmatrixLoad(db,1);
-  return dm;
-}
-
-
 gsl_matrix *clbDistMatrix(char *fname)
 {
   struct DataBlock *db;
   gsl_matrix *result;
 
-  db = clbDMDataBlock(fname);
-  result = clbDistMatrixLoad(db);
+  db = clFileToDataBlockPtr(fname);
+  result = clReadAnyDistMatrix(db);
 
   clDatablockFreePtr(db);
   return result;

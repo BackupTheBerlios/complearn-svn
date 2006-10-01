@@ -47,7 +47,7 @@ void clPrintActiveEnvironment(void)
 
 void clFreeDefaultEnvironment(struct GeneralConfig *g)
 {
-  assert(g == curEnv);
+  assert(g == curEnv != NULL);
   if (curEnv->ptr && curEnv->freeappcfg)
     curEnv->freeappcfg(curEnv);
   if (curEnv->em) {
@@ -181,8 +181,8 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
   int oldlongind = 0;
   int i;
   int fDidOurOption;
-  assert(argv);
-  assert(argc > 0);
+  assert(argv != NULL);
+  assert(argc > 0 != NULL);
   for (i = 0; i < argc; i += 1)
     oldargv[i] = clStrdup(argv[i]);
   oldargv[i] = NULL;
@@ -190,7 +190,7 @@ int clComplearn_getopt_long(int argc,  char * const argv[], const char *optstrin
     clSaveCmd(cfg, oldargc, oldargv);
     fCmdSaved = 1;
   }
-  assert(cfg);
+  assert(cfg != NULL);
   curEnv = cfg;
   do {
     oldoptind = optind;

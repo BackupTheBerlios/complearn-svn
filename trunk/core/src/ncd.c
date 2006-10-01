@@ -86,9 +86,9 @@ void loadCompressor(struct GeneralConfig *cur)
     if (cur->fVerbose)
       printf("Done loading %p.\n", cur->ca);
   }
-  assert(cur);
-  assert(cur->em);
-  assert(cur->ca);
+  assert(cur != NULL);
+  assert(cur->em != NULL);
+  assert(cur->ca != NULL);
   if (cur->fVerbose)
       printf("New compressor instance %s:%p initialized\n", cur->compressor_name, cur->ca);
   for (i = 0; i < clEnvmapSize(cur->em); i += 1) {

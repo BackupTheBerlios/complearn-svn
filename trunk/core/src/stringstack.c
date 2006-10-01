@@ -34,56 +34,6 @@ struct StringStack {
   struct DRA *da;
 };
 
-struct StringStack *clStringstackLoad(struct DataBlock *db, int fmustbe)
-{
-  struct StringStack *result = clStringstackNew();
-  struct DataBlock *cur = NULL;
-  struct TagManager *tm;
-  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
-
-  if (h->tagnum != TAGNUM_STRINGSTACK) {
-    if (fmustbe) {
-      clLogError("Error: expecting STRINGSTACK tagnum %x, got %x\n",
-          TAGNUM_STRINGSTACK,h->tagnum);
-      exit(1);
-    }
-    else
-      return NULL;
-  }
-
-  tm = clNewTagManager(db);
-
-  while ((cur = clGetCurDataBlock(tm))) {
-    char *str;
-    str = clStringLoad(cur, 1);
-    clStringstackPush(result, str);
-    clFreeandclear(str);
-    clStepNextDataBlock(tm);
-    clDatablockFreePtr(cur);
-  }
-
-  clFreeTagManager(tm);
-  return result;
-}
-
-struct DataBlock *clStringstackDump(const struct StringStack *ss)
-{
-  struct DataBlock *result;
-  struct DRA *parts = clDraNew();
-  int i;
-
-  for ( i = 0; i < clStringstackSize(ss); i += 1) {
-    union PCTypes p = zeropct;
-    char *s = clDraGetValueAt(ss->da,i).str;
-    p.dbp = clStringDump(s); // TODO: fix mem leak here
-    clDraPush(parts,p);
-  }
-
-  result = clPackageDdDataBlocks(TAGNUM_STRINGSTACK, parts);
-  clDraFree(parts);
-  return result;
-}
-
 struct StringStack *clStringstackNewSingle(const char *str)
 {
 	struct StringStack *ss;
@@ -130,8 +80,8 @@ int clStringstackFree(struct StringStack *ss)
 int clStringstackUnshift(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
-  assert(ss);
-  assert(str);
+  assert(ss != NULL);
+  assert(str != NULL);
   p.str = clStrdup(str);
   clDraUnshift(ss->da, p);
   return CL_OK;
@@ -140,8 +90,8 @@ int clStringstackUnshift(struct StringStack *ss, const char *str)
 int clStringstackPush(struct StringStack *ss, const char *str)
 {
   union PCTypes p;
-  assert(ss);
-  assert(str);
+  assert(ss != NULL);
+  assert(str != NULL);
   p.str = clStrdup(str);
   clDraPush(ss->da, p);
   return CL_OK;
@@ -163,7 +113,7 @@ int clStringstackSize(const struct StringStack *ss)
 char *clShiftSS(struct StringStack *ss)
 {
   union PCTypes p;
-  assert(clStringstackSize(ss) > 0);
+  assert(clStringstackSize(ss != NULL) > 0);
   memset(&p, 0, sizeof(p));
 	if (clStringstackSize(ss) == 0) return p.str;
 	p = clDraShift(ss->da);

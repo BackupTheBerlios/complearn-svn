@@ -37,7 +37,7 @@ static double fcompressCB(struct CompressionBase *cb, struct DataBlock *src)
 #endif
   int readfd;
 
-  assert(ecmd);
+  assert(ecmd != NULL);
   readfd = clForkPipeExecAndFeedCB(src, ecmd, args);
   return 8.0 * clCountBytesTillEOFThenCloseCB(readfd);
 }

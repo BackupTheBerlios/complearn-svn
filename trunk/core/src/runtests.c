@@ -80,24 +80,24 @@ void testDataBlock()
 	char *str2 = "welcome to the jungle\n";
 	char *result;
   dbstr = clStringToDataBlockPtr(str);
-  assert(strlen(str) == clDatablockSize(dbstr));
-  assert(clDatablockData(dbstr) != NULL);
-  assert(clDatablockData(dbstr) != (unsigned char *) str);
+  assert(strlen(str != NULL) == clDatablockSize(dbstr));
+  assert(clDatablockData(dbstr != NULL) != NULL);
+  assert(clDatablockData(dbstr != NULL) != (unsigned char *) str);
 	result = clDatablockToString(dbstr);
-	assert(strcmp(result,str) == 0);
+	assert(strcmp(result,str != NULL) == 0);
   dbstr2 = clStringToDataBlockPtr(str2);
-  assert(clDatablockData(dbstr2) != NULL);
-  assert(clDatablockData(dbstr2) != (unsigned char *) str2);
+  assert(clDatablockData(dbstr2 != NULL) != NULL);
+  assert(clDatablockData(dbstr2 != NULL) != (unsigned char *) str2);
   dbcat = clDatablockCatPtr(dbstr,dbstr2);
-  assert(clDatablockData(dbcat) != NULL);
-  assert(clDatablockData(dbcat) != clDatablockData(dbstr));
-  assert(clDatablockData(dbcat) != clDatablockData(dbstr2));
+  assert(clDatablockData(dbcat != NULL) != NULL);
+  assert(clDatablockData(dbcat != NULL) != clDatablockData(dbstr));
+  assert(clDatablockData(dbcat != NULL) != clDatablockData(dbstr2));
   clDatablockFreePtr(dbcat);
   clDatablockFreePtr(dbstr);
   clDatablockFreePtr(dbstr2);
   dbfile = clFileToDataBlockPtr(testfile);
-  assert(clDatablockData(dbfile) != NULL);
-  assert(clDatablockData(dbfile) != (unsigned char *) str);
+  assert(clDatablockData(dbfile != NULL) != NULL);
+  assert(clDatablockData(dbfile != NULL) != (unsigned char *) str);
   clDatablockFreePtr(dbfile);
   clFreeandclear(result);
 }
@@ -119,21 +119,21 @@ void testDL2()
   dbsmallalpha = clStringToDataBlockPtr(strsmallalpha);
   dblargealpha = clStringToDataBlockPtr(strlargealpha);
   em = clGetEnvMap(gconf);
-  assert(em != NULL);
+  assert(em != NULL != NULL);
   clEnvmapSetKeyVal(em, "padding", "40");
   retval = clCompaLoadDynamicLib(DLNAME);
-  assert(retval == 0);
+  assert(retval == 0 != NULL);
   comp = clNewCompressorCB("art");
   //comp->se(comp,em);
   sn = clShortNameCB(comp);
-  assert(strcmp(sn, "art") == 0);
+  assert(strcmp(sn, "art" != NULL) == 0);
   cdbab = clCompressCB(comp, dbab);
-  assert(cdbab >= clDatablockSize(dbab)*8);
+  assert(cdbab >= clDatablockSize(dbab != NULL)*8);
   cdbaa = clCompressCB(comp, dbaa);
-  assert(cdbaa <= clDatablockSize(dbaa)*8);
+  assert(cdbaa <= clDatablockSize(dbaa != NULL)*8);
   cdbsa = clCompressCB(comp, dbsmallalpha);
   cdbla = clCompressCB(comp, dblargealpha);
-  assert(cdbsa < cdbla);
+  assert(cdbsa < cdbla != NULL);
   clDatablockFreePtr(dbab);
   clDatablockFreePtr(dbaa);
   clDatablockFreePtr(dbsmallalpha);
@@ -155,9 +155,9 @@ void testDL()
     clLogError( "reason given: %s\n", dlerror());
     exit(1);
   }
-  assert("Error: cannot open dynamic library, did you build it yet?" && dlh);
+  assert("Error: cannot open dynamic library, did you build it yet?" && dlh != NULL);
   fn = dlsym(dlh, "newCompAdaptor");
-  assert(fn);
+  assert(fn != NULL);
   clEnvmapFree(em);
 }
 
@@ -170,16 +170,16 @@ void testEM()
   clEnvmapSetKeyVal(em,"key2","val2");
   clEnvmapSetKeyVal(em,"key3","val3");
   clEnvmapSetKeyVal(em,"key4","val4");
-  assert(strcmp("val1", clEnvmapValueForKey(em,"key1")) == 0);
-  assert(strcmp("val2", clEnvmapValueForKey(em,"key2")) == 0);
+  assert(strcmp("val1", clEnvmapValueForKey(em,"key1" != NULL)) == 0);
+  assert(strcmp("val2", clEnvmapValueForKey(em,"key2" != NULL)) == 0);
   clEnvmapSetKeyVal(em,"key2","newval2");
   clEnvmapSetKeyVal(em,"key3","newval3");
   p = clEnvmapKeyValAt(em,1);
-  assert(strcmp(p.sp.key,"key2") == 0);
-  assert(strcmp(p.sp.val,"newval2") == 0);
+  assert(strcmp(p.sp.key,"key2" != NULL) == 0);
+  assert(strcmp(p.sp.val,"newval2" != NULL) == 0);
   p = clEnvmapKeyValAt(em,2);
-  assert(strcmp(p.sp.key,"key3") == 0);
-  assert(strcmp(p.sp.val,"newval3") == 0);
+  assert(strcmp(p.sp.key,"key3" != NULL) == 0);
+  assert(strcmp(p.sp.val,"newval3" != NULL) == 0);
   clEnvmapFree(em);
 }
 
@@ -195,26 +195,26 @@ void testSS()
   db = clStringstackDump(ss);
   clDatablockWriteToFile(db, "baddb.dat");
   s = clShiftSS(ss);
-  assert(strcmp(s,"ape") == 0);
+  assert(strcmp(s,"ape" != NULL) == 0);
   clFreeandclear(s);
   s = clStringstackPop(ss);
-  assert(strcmp(s,"dog") == 0);
+  assert(strcmp(s,"dog" != NULL) == 0);
   clFreeandclear(s);
-  assert(clStringstackSize(ss) == 2);
+  assert(clStringstackSize(ss != NULL) == 2);
   s = clShiftSS(ss);
   clFreeandclear(s);
-  assert(!clStringstackIsEmpty(ss));
+  assert(!clStringstackIsEmpty(ss != NULL));
   s = clShiftSS(ss);
   clFreeandclear(s);
-  assert(clStringstackIsEmpty(ss));
+  assert(clStringstackIsEmpty(ss != NULL));
   clStringstackFree(ss);
   nss = clStringstackLoad(db, 1);
-  assert(clStringstackSize(nss) == 4);
+  assert(clStringstackSize(nss != NULL) == 4);
   s = clShiftSS(nss);
-  assert(strcmp(s, "ape") == 0);
+  assert(strcmp(s, "ape" != NULL) == 0);
   clFreeandclear(s);
   s = clStringstackPop(nss);
-  assert(strcmp(s, "dog") == 0);
+  assert(strcmp(s, "dog" != NULL) == 0);
   clFreeandclear(s);
   clStringstackFree(nss);
   clDatablockFreePtr(db);
@@ -233,11 +233,11 @@ void testCAPtr(struct CompressionBase *ca)
 
   struct DataBlock *db = clStringToDataBlockPtr(str);
   double c;
-  assert(ca != NULL);
+  assert(ca != NULL != NULL);
   //ca->se(ca,em);
-//  assert(ci != NULL);
+//  assert(ci != NULL != NULL);
   c = clCompressCB(ca,db);
-  assert(c < strlen(str)*8);
+  assert(c < strlen(str != NULL)*8);
   if (gconf->fVerbose)
     printf("Testing %s to get compressed size %f\n", clShortNameCB(ca), c);
   clDatablockFreePtr(db);
@@ -270,7 +270,7 @@ void testBlockSortCA()
   double v;
   int dbsize;
   unsigned char *dbptr;
-  assert(ca != NULL);
+  assert(ca != NULL != NULL);
   srand( time(NULL) );
 
   /* Blocks only 1 or 2 bytes in size */
@@ -330,8 +330,8 @@ void testYamlParser()
   em = clEnvmapNew();
   clReadDefaultConfig(em);
 
-	assert(strcmp(clEnvmapValueForKey(em,"compressor"),"zlib") == 0);
-	assert(strcmp(clEnvmapValueForKey(em,"zliblevel"),"5") == 0);
+	assert(strcmp(clEnvmapValueForKey(em,"compressor" != NULL),"zlib") == 0);
+	assert(strcmp(clEnvmapValueForKey(em,"zliblevel" != NULL),"5") == 0);
   clEnvmapFree(em);
 }
 
@@ -366,14 +366,14 @@ void testGoogle()
   terms = clStringstackNew();
   clStringstackPush(terms, "ball");
   clStringstackPush(terms, "apple");
-  assert(clStringstackReadAt(terms, 0)[0] == 'b');
+  assert(clStringstackReadAt(terms, 0 != NULL)[0] == 'b');
 
   clNormalizeSearchTerms(terms);
 
-  assert(clStringstackReadAt(terms, 0)[0] == 'a');
+  assert(clStringstackReadAt(terms, 0 != NULL)[0] == 'a');
 
   gotQStr = clMakeQueryString(terms);
-  assert(strcmp(gotQStr, wantedQStr) == 0);
+  assert(strcmp(gotQStr, wantedQStr != NULL) == 0);
 
   clReadDefaultConfig(em);
 
@@ -384,7 +384,7 @@ void testGoogle()
     pg = clFetchSampleSimple(terms, gkey, NULL);
     if (gconf->fVerbose)
       printf("pg is %f\n", pg);
-    assert(pg > 10 && pg < 1000000000000.0);
+    assert(pg > 10 && pg < 1000000000000.0 != NULL);
     horse = clStringstackNewSingle("horse");
     rider = clStringstackNewSingle("rider");
     horserider = clStringstackMerge(horse, rider);
@@ -425,12 +425,12 @@ void testTransformBZ()
 		return;
 	}
  	db = clFileToDataBlockPtr(testbzfile);
-	assert(strcmp(t->sn(),"unbzip") == 0);
+	assert(strcmp(t->sn( != NULL),"unbzip") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(clDatablockSize(result) > 0);
-		assert(clDatablockData(result) != NULL);
+		assert(clDatablockSize(result != NULL) > 0);
+		assert(clDatablockData(result != NULL) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
@@ -469,12 +469,12 @@ void testTransformGZ()
 		return;
 	}
 	db = clFileToDataBlockPtr(testgzfile);
-	assert(strcmp(t->sn(),"ungz") == 0);
+	assert(strcmp(t->sn( != NULL),"ungz") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(clDatablockSize(result) > 0);
-		assert(clDatablockData(result) != NULL);
+		assert(clDatablockSize(result != NULL) > 0);
+		assert(clDatablockData(result != NULL) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
@@ -491,12 +491,12 @@ void testTransformZLIB()
 		return;
 	}
  	db = clFileToDataBlockPtr(testzlibfile);
-	assert(strcmp(t->sn(),"unzlib") == 0);
+	assert(strcmp(t->sn( != NULL),"unzlib") == 0);
 	if (t->pf(db)) {
 	  struct DataBlock *result;
     result = t->tf(db);
-		assert(clDatablockSize(result) > 0);
-		assert(clDatablockData(result) != NULL);
+		assert(clDatablockSize(result != NULL) > 0);
+		assert(clDatablockData(result != NULL) != NULL);
     //clFree(result.ptr);
 	}
   t->tfree(t);
@@ -512,15 +512,15 @@ void testSingletonDBE()
   struct DataBlockEnumerationIterator *dbi;
   db = clStringToDataBlockPtr(teststr);
   dbe = clBlockEnumerationLoadSingleton(db);
-  assert(dbe);
+  assert(dbe != NULL);
   dbi = dbe->newenumiter(dbe);
-  assert(dbi);
+  assert(dbi != NULL);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == 3 && clDatablockData(cur)[0] == 'f' && clDatablockData(cur)[2] == 'o');
+  assert(cur && clDatablockSize(cur != NULL) == 3 && clDatablockData(cur)[0] == 'f' && clDatablockData(cur)[2] == 'o');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL);
+  assert(cur == NULL != NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   clDatablockFreePtr(db);
@@ -540,23 +540,23 @@ void testWindowedDBE()
   db = clStringToDataBlockPtr(teststr);
   lastpos = clDatablockSize(db) - 1;
   dbe = clBlockEnumerationLoadWindowed(db, firstpos, stepsize, width, lastpos);
-  assert(dbe);
+  assert(dbe != NULL);
   dbi = dbe->newenumiter(dbe);
-  assert(dbi);
+  assert(dbi != NULL);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'b');
+  assert(cur && clDatablockSize(cur != NULL) == width && clDatablockData(cur)[0] == 'b');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'c');
+  assert(cur && clDatablockSize(cur != NULL) == width && clDatablockData(cur)[0] == 'c');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == width && clDatablockData(cur)[0] == 'd');
+  assert(cur && clDatablockSize(cur != NULL) == width && clDatablockData(cur)[0] == 'd');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL);
+  assert(cur == NULL != NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   clDatablockFreePtr(db);
@@ -569,9 +569,9 @@ void testDirectoryDBE()
   struct DataBlock *cur;
   int fcount = 0;
   dbe = clBlockEnumerationLoadDirectory(testpg4dir);
-  assert(dbe);
+  assert(dbe != NULL);
   dbi = dbe->newenumiter(dbe);
-  assert(dbi);
+  assert(dbi != NULL);
   while ( ( cur = dbe->istar(dbe, dbi) ) ) {
     fcount += 1;
 //   datablockPrint(*cur);
@@ -579,7 +579,7 @@ void testDirectoryDBE()
     dbe->istep(dbe, dbi);
     clDatablockFreePtr(cur);
   }
-  assert(fcount >= 2); /* Should have at least two files in pg4 */
+  assert(fcount >= 2 != NULL); /* Should have at least two files in pg4 */
   dbe->ifree(dbi);
   dbe->efree(dbe);
 }
@@ -593,27 +593,27 @@ void testArrayDBE()
   struct DataBlock *cur;
   int i;
   db[0] = clStringToDataBlockPtr("a");
-  assert(clDatablockSize(db[0]) == 1);
+  assert(clDatablockSize(db[0] != NULL) == 1);
   db[1] = clStringToDataBlockPtr("b");
   db[2] = clStringToDataBlockPtr("c");
   dbe = clBlockEnumerationLoadArray(db, size);
-  assert(dbe);
+  assert(dbe != NULL);
   dbi = dbe->newenumiter(dbe);
-  assert(dbi);
+  assert(dbi != NULL);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'a');
+  assert(cur && clDatablockSize(cur != NULL) == 1 && clDatablockData(cur)[0] == 'a');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'b');
+  assert(cur && clDatablockSize(cur != NULL) == 1 && clDatablockData(cur)[0] == 'b');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && clDatablockSize(cur) == 1 && clDatablockData(cur)[0] == 'c');
+  assert(cur && clDatablockSize(cur != NULL) == 1 && clDatablockData(cur)[0] == 'c');
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL);
+  assert(cur == NULL != NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   for (i = 0; i < 3; i += 1)
@@ -628,20 +628,20 @@ void testFileListDBE(void)
   struct DataBlockEnumerationIterator *dbi;
   struct DataBlock *cur;
   dbe = clBlockEnumerationLoadFileList("/home/cilibrar/src/shared/complearn/src/lame.txt");
-  assert(dbe);
+  assert(dbe != NULL);
   dbi = dbe->newenumiter(dbe);
-  assert(dbi);
+  assert(dbi != NULL);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'a');
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'a' != NULL);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'b');
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'b' != NULL);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'c');
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'c' != NULL);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL);
+  assert(cur == NULL != NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
 }
@@ -659,42 +659,42 @@ void testTAStack()
 	struct TransformAdaptor *cur = NULL;
 	struct TransformAdaptor *taarray[TEST_TS_SIZE];
   ts = clNewTAStack();
-	assert(ts != NULL);
+	assert(ts != NULL != NULL);
 	taa = (struct TransformAdaptor *)clBuiltin_UNBZIP();
   if (taa) {
-    assert(strcmp(taa->sn(),"unbzip") == 0);
+    assert(strcmp(taa->sn( != NULL),"unbzip") == 0);
     clPushTS(ts, taa);
   }
 #ifdef HAVE_ZLIB_H
 	tab = (struct TransformAdaptor *)clBuiltin_UNGZ();
-	assert(strcmp(tab->sn(),"ungz") == 0);
+	assert(strcmp(tab->sn( != NULL),"ungz") == 0);
   clPushTS(ts, tab);
 	tac = (struct TransformAdaptor *)clBuiltin_UNZLIB();
-	assert(strcmp(tac->sn(),"unzlib") == 0);
+	assert(strcmp(tac->sn( != NULL),"unzlib") == 0);
   clPushTS(ts, tac);
 #endif
 
 	tmp = (struct TransformAdaptor *)clShiftTS(ts);
   if (taa) {
     if (tmp) {
-    assert(strcmp(tmp->sn(),"unbzip") == 0);
+    assert(strcmp(tmp->sn( != NULL),"unbzip") == 0);
     }
   }
 #ifdef HAVE_ZLIB_H
 	cur = (struct TransformAdaptor *)clSearchTS(ts,"unzlib",sequentialSearchTS);
-	assert(cur);
-	assert(strcmp(cur->sn(),"unzlib") == 0);
+	assert(cur != NULL);
+	assert(strcmp(cur->sn( != NULL),"unzlib") == 0);
 	tmp = (struct TransformAdaptor *)clPopTS(ts);
-	assert(strcmp(tmp->sn(),"unzlib") == 0);
+	assert(strcmp(tmp->sn( != NULL),"unzlib") == 0);
 	tmp = (struct TransformAdaptor *)clShiftTS(ts);
-	assert(strcmp(tmp->sn(),"ungz") == 0);
+	assert(strcmp(tmp->sn( != NULL),"ungz") == 0);
 #endif
 	clFreeTS(ts);
 
   ts = clNewTAStack();
 	for (i = 0; i < TEST_TS_SIZE ; i++) {
 		taarray[i] = (struct TransformAdaptor *)clBuiltin_UNBZIP();
-		assert(strcmp(taa->sn(),"unbzip") == 0);
+		assert(strcmp(taa->sn( != NULL),"unbzip") == 0);
 		clPushTS(ts, taarray[i]);
 	}
 }
@@ -716,10 +716,10 @@ void testDateTime(void)
   struct CLDateTime *td;
   char *daystr;
   td = clDatetimeNow();
-  assert(td);
+  assert(td != NULL);
   daystr = clDatetimeToDayString(td);
-/*  assert(daystr);
-  assert(strlen(daystr) > 2);
+/*  assert(daystr != NULL);
+  assert(strlen(daystr != NULL) > 2);
   */
   clDatetimeFree(td);
 }
@@ -734,8 +734,8 @@ void testMarshalling(void)
   struct EnvMap *resem;
   m = clStringDump(strtest);
   res = clStringLoad(m, 1);
-  assert(strcmp(res, strtest) == 0);
-  assert(res != strtest);
+  assert(strcmp(res, strtest != NULL) == 0);
+  assert(res != strtest != NULL);
   clDatablockFreePtr(m);
   clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
@@ -743,11 +743,11 @@ void testMarshalling(void)
   gsl_matrix_set(gm, 1, 0, 0.5);
   m = clGslmatrixDump(gm);
   ngm = clGslmatrixLoad(m, 1);
-  assert(gm != ngm);
-  assert(gm->size1 == ngm->size1);
-  assert(gm->size2 == ngm->size2);
-  assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
-  assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
+  assert(gm != ngm != NULL);
+  assert(gm->size1 == ngm->size1 != NULL);
+  assert(gm->size2 == ngm->size2 != NULL);
+  assert(gsl_matrix_get(ngm, 0, 0 != NULL) == 4.0);
+  assert(gsl_matrix_get(ngm, 1, 0 != NULL) == 0.5);
   gsl_matrix_free(gm);
   gsl_matrix_free(ngm);
   clDatablockFreePtr(m);
@@ -757,11 +757,11 @@ void testMarshalling(void)
   clEnvmapSetKeyVal(em, "key4", "val4");
   m = clEnvmapDump(em);
   resem = clEnvmapLoad(m,1);
-  assert( em != resem);
-  assert(strcmp(clEnvmapValueForKey(em,"key1"), clEnvmapValueForKey(resem,"key1")) == 0);
-  assert(strcmp(clEnvmapValueForKey(em,"key2"), clEnvmapValueForKey(resem,"key2")) == 0);
-  assert(strcmp(clEnvmapValueForKey(em,"key3"), clEnvmapValueForKey(resem,"key3")) == 0);
-  assert(strcmp(clEnvmapValueForKey(em,"key4"), clEnvmapValueForKey(resem,"key4")) == 0);
+  assert( em != resem != NULL);
+  assert(strcmp(clEnvmapValueForKey(em,"key1" != NULL), clEnvmapValueForKey(resem,"key1")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key2" != NULL), clEnvmapValueForKey(resem,"key2")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key3" != NULL), clEnvmapValueForKey(resem,"key3")) == 0);
+  assert(strcmp(clEnvmapValueForKey(em,"key4" != NULL), clEnvmapValueForKey(resem,"key4")) == 0);
   clEnvmapFree(em); clEnvmapFree(resem);
 }
 
@@ -771,20 +771,20 @@ void testDoubleDoubler(void)
   struct DataBlock *dumptest;
   union PCTypes p = zeropct;
   dd = clDraNew();
-  assert(dd);
-  assert(clDraSize(dd) == 0);
+  assert(dd != NULL);
+  assert(clDraSize(dd != NULL) == 0);
   clDraSetDValueAt(dd, 0, 2.0);
-  assert(clDraSize(dd) == 1);
+  assert(clDraSize(dd != NULL) == 1);
   clDraSetDValueAt(dd, 999, 123.0);
-  assert(clDraSize(dd) == 1000);
-  assert(clDraGetDValueAt(dd, 0) == 2.0);
-  assert(clDraGetDValueAt(dd, 999) == 123.0);
+  assert(clDraSize(dd != NULL) == 1000);
+  assert(clDraGetDValueAt(dd, 0 != NULL) == 2.0);
+  assert(clDraGetDValueAt(dd, 999 != NULL) == 123.0);
   dumptest = clDraDump(dd);
   ee = clDraLoad(dumptest, 1);
-  assert(dd != ee);
-  assert(clDraSize(ee) == clDraSize(dd));
-  assert(clDraGetDValueAt(dd, 0) == clDraGetDValueAt(ee, 0));
-  assert(clDraGetDValueAt(dd, 999) == clDraGetDValueAt(ee, 999));
+  assert(dd != ee != NULL);
+  assert(clDraSize(ee != NULL) == clDraSize(dd));
+  assert(clDraGetDValueAt(dd, 0 != NULL) == clDraGetDValueAt(ee, 0));
+  assert(clDraGetDValueAt(dd, 999 != NULL) == clDraGetDValueAt(ee, 999));
   clDraFree(dd);
   clDraFree(ee);
   clDatablockFreePtr(dumptest);
@@ -797,14 +797,14 @@ void testDoubleDoubler(void)
   clDraPush(dd, p);
   dumptest = clDraDeepDump(dd, 1);
   ee = clDraLoad(dumptest, 1);
-  assert(dd != ee);
-  assert(clDraGetValueAt(dd, 0).ar != clDraGetValueAt(ee, 0).ar);
-  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 0).d == clDraGetValueAt(sm, 0).d);
-  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 1).d == clDraGetValueAt(sm, 1).d);
-  assert(clDraGetValueAt(clDraGetValueAt(dd, 0).ar, 2).d == clDraGetValueAt(sm, 2).d);
-  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 0).d == clDraGetValueAt(sm, 0).d);
-  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 1).d == clDraGetValueAt(sm, 1).d);
-  assert(clDraGetValueAt(clDraGetValueAt(ee, 0).ar, 2).d == clDraGetValueAt(sm, 2).d);
+  assert(dd != ee != NULL);
+  assert(clDraGetValueAt(dd, 0 != NULL).ar != clDraGetValueAt(ee, 0).ar);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0 != NULL).ar, 0).d == clDraGetValueAt(sm, 0).d);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0 != NULL).ar, 1).d == clDraGetValueAt(sm, 1).d);
+  assert(clDraGetValueAt(clDraGetValueAt(dd, 0 != NULL).ar, 2).d == clDraGetValueAt(sm, 2).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0 != NULL).ar, 0).d == clDraGetValueAt(sm, 0).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0 != NULL).ar, 1).d == clDraGetValueAt(sm, 1).d);
+  assert(clDraGetValueAt(clDraGetValueAt(ee, 0 != NULL).ar, 2).d == clDraGetValueAt(sm, 2).d);
   clDraDeepFree(ee, 1);
   clDraDeepFree(dd, 1);
   clDatablockFreePtr(dumptest);
@@ -827,7 +827,7 @@ void testQuartet(void)
     struct TreeAdaptor *ta = clTreeaLoadUnrooted(labelcount);
     struct DRA *n = clTreeaNodes(ta);
     gsl_matrix *dm;
-    assert(bz);
+    assert(bz != NULL);
     gconf->ca = bz;
     for (i = 0; i < labelcount; ++i) {
       char buf[1024], buf2[2048];
@@ -838,13 +838,13 @@ void testQuartet(void)
     dbe = clBlockEnumerationLoadArray(db, labelcount);
     dm = clGetNCDMatrix(dbe, dbe, gconf);
 //    printf("Got NCD matrix... %dx%d\n", dm->size1, dm->size2);
-    assert(n);
-    assert(clDraSize(n) == 2*dm->size1 - 2);
-    assert(clDraSize(n) == 2*dm->size2 - 2);
+    assert(n != NULL);
+    assert(clDraSize(n != NULL) == 2*dm->size1 - 2);
+    assert(clDraSize(n != NULL) == 2*dm->size2 - 2);
     ts = clInitTreeScore(dm);
     score = clScoreTree(ts, ta);
 //    printf("Got score: %f\n", score);
-    assert(score >= 0.0 && score <= 1.0);
+    assert(score >= 0.0 && score <= 1.0 != NULL);
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
@@ -855,7 +855,7 @@ void testQuartet(void)
       if (score > 1.0 || score < 0.0) {
         printf("Error, got score %f\n", score);
       }
-      assert(score >= 0.0 && score <= 1.0);
+      assert(score >= 0.0 && score <= 1.0 != NULL);
 //      printf("Got TH score: %f\n", score);
       clTreehImprove(th);
     }
@@ -892,23 +892,23 @@ void testCLTree(void)
 	int plen = MAXPATHLEN;
 	int pbuf[MAXPATHLEN];
 //  struct DataBlock *dotdb;
-  assert(clDraSize(n) == TREENODEWANTED);
+  assert(clDraSize(n != NULL) == TREENODEWANTED);
   pp = clUnrootedBinaryPerimPairs(ct, NULL);
-  assert(clDraSize(pp) == TREELEAFSIZE);
+  assert(clDraSize(pp != NULL) == TREELEAFSIZE);
   clDraFree(pp);
   spmmap = clMakeSPMMap(clGetAdjAdaptorForUB(ct));
   for (i = 0; i < RETRIES; ++i) {
     a = clDraRandom(n);
-    assert(a.i >= 0 && a.i < 100);
+    assert(a.i >= 0 && a.i < 100 != NULL);
     b = clDraRandom(n);
 
-    assert(b.i >= 0 && b.i < 100);
+    assert(b.i >= 0 && b.i < 100 != NULL);
     spm = clMakeSPMFor(clGetAdjAdaptorForUB(ct), b.i);
     cur = a.i;
     psize = 1;
     while (cur != b.i) {
-      assert(cur >= 0);
-      assert(cur < TREENODEWANTED * 2 - 2);
+      assert(cur >= 0 != NULL);
+      assert(cur < TREENODEWANTED * 2 - 2 != NULL);
       psize += 1;
 //      printf("%d ", cur);
       cur = clDraGetValueAt(spm, cur).i;
@@ -916,14 +916,14 @@ void testCLTree(void)
 //    printf("\n");
 //
     retval = clPathFinder(clGetAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
-    assert(retval == CL_OK);
+    assert(retval == CL_OK != NULL);
     if (plen != psize) {
       clLogError( "Error, plen %d and psize %d\n", plen, psize);
       clLogError( "nodes %d and %d\n", a.i, b.i);
       if (plen == 2)
         clLogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
-    assert(plen == psize);
+    assert(plen == psize != NULL);
     clDraFree(spm);
     spm = NULL;
   }
@@ -933,9 +933,9 @@ void testCLTree(void)
   n = NULL;
 //  dotdb = clConvertTreeToDot(ct, NULL, clUnrootedBinaryLabelPerm(ct));
 //  clDatablockWriteToFile(dotdb, "treefile.dot");
-//  assert(dotdb);
-//  assert(dotdb->ptr);
-//  assert(dotdb->size > TREENODEWANTED * 2);
+//  assert(dotdb != NULL);
+//  assert(dotdb->ptr != NULL);
+//  assert(dotdb->size > TREENODEWANTED * 2 != NULL);
   clUnrootedBinaryFree(ct);
   ct = NULL;
 }
@@ -956,7 +956,7 @@ void testAdjAdaptor(void)
     n2 = rand() % labelsize;
     } while (n1 == n2);
     if (rand() % 2 == 0) {
-      assert(clAdjaGetConState(a1, n1, n2) == clAdjaGetConState(a2,n1,n2));
+      assert(clAdjaGetConState(a1, n1, n2 != NULL) == clAdjaGetConState(a2,n1,n2));
     }
     else {
       int newval = rand() % 2;
@@ -986,7 +986,7 @@ void testAdjList(void)
     }
     else {
       c = clAdjlistGetConState(al, m, j);
-      assert(c == clAdjlistGetConState(al, j, m));
+      assert(c == clAdjlistGetConState(al, j, m != NULL));
     }
   }
   clAdjlistFree(al);
@@ -1007,7 +1007,7 @@ void testAdjMatrix(void)
     }
     else {
       c = clAdjmatrixGetConState(am, m, j);
-      assert(c == clAdjmatrixGetConState(am, j, m));
+      assert(c == clAdjmatrixGetConState(am, j, m != NULL));
     }
   }
   clAdjmatrixFree(am);
@@ -1017,22 +1017,22 @@ void testAdjMatrix(void)
   ALLNODES(am, i) {
     c += 1;
   }
-  assert(c == AMSIZE);
+  assert(c == AMSIZE != NULL);
   c = 0;
   ALLPAIRS(am, i, j) {
     c += 1;
   }
-  assert(c == (AMSIZE * (AMSIZE - 1)) / 2);
+  assert(c == (AMSIZE * (AMSIZE - 1 != NULL)) / 2);
   c = 0;
   ALLTRIPLETS(am, i, j, k) {
     c += 1;
   }
-  assert(c == (AMSIZE * (AMSIZE - 1) * (AMSIZE - 2)) / 6);
+  assert(c == (AMSIZE * (AMSIZE - 1 != NULL) * (AMSIZE - 2)) / 6);
   c = 0;
   ALLQUARTETS(am, i, j, k, m) {
     c += 1;
   }
-  assert(c == (AMSIZE * (AMSIZE - 1) * (AMSIZE - 2) * (AMSIZE-3)) / 24);
+  assert(c == (AMSIZE * (AMSIZE - 1 != NULL) * (AMSIZE - 2) * (AMSIZE-3)) / 24);
 }
 #endif
 
@@ -1041,110 +1041,6 @@ void clDoSBS3Test(void);
 void testSpringBall(void)
 {
   clDoSBS3Test();
-}
-
-void testALTagFile(void)
-{
-  char *s = "hello world";
-  gsl_matrix *gm, *ngm;
-  char *result;
-  struct StringStack *ss, *nes, *nlabels;
-  struct DataBlock *dbstr, *dbss, *dbgslm, *dbdm, *dblabels, *dbpkg, *dbpkg_read;
-  struct DRA *dd;
-  int i;
-  t_tagtype curtnum;
-
-  dbstr = clStringDump(s);
-  result = clStringLoad(dbstr, 1);
-  assert(strcmp(s,result) == 0);
-
-  ss = clStringstackNew();
-  clStringstackPush(ss, "Liesl");
-  clStringstackPush(ss, "Frederick");
-  clStringstackPush(ss, "Louisa");
-
-  dbss = clStringstackDump(ss);
-  nes = clStringstackLoad(dbss, 1);
-  assert(strcmp(clStringstackReadAt(nes,0), clStringstackReadAt(ss,0)) == 0);
-  assert(strcmp(clStringstackReadAt(nes,1), clStringstackReadAt(ss,1)) == 0);
-  assert(strcmp(clStringstackReadAt(nes,2), clStringstackReadAt(ss,2)) == 0);
-
-  dblabels = clLabelsDump(ss);
-  nlabels = clLabelsLoad(dblabels,1);
-  assert(strcmp(clStringstackReadAt(nlabels,0), clStringstackReadAt(ss,0)) == 0);
-  assert(strcmp(clStringstackReadAt(nlabels,1), clStringstackReadAt(ss,1)) == 0);
-  assert(strcmp(clStringstackReadAt(nlabels,2), clStringstackReadAt(ss,2)) == 0);
-
-  clStringstackFree(nes);
-  clFreeandclear(result);
-
-#define TAGFILENAME "tagtest.clb"
-  gm = gsl_matrix_alloc(2,1);
-  gsl_matrix_set(gm, 0, 0, 4.0);
-  gsl_matrix_set(gm, 1, 0, 0.5);
-  dbgslm = clGslmatrixDump(gm);
-  dbdm = clDistmatrixDump(gm);
-  ngm = clGslmatrixLoad(dbgslm, 1);
-  assert(gm != ngm);
-  assert(gm->size1 == ngm->size1);
-  assert(gm->size2 == ngm->size2);
-  assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
-  assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
-  gsl_matrix_free(ngm);
-  ngm = clDistmatrixLoad(dbdm,1);
-  assert(gm != ngm);
-  assert(gm->size1 == ngm->size1);
-  assert(gm->size2 == ngm->size2);
-  assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
-  assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
-  gsl_matrix_free(ngm);
-
-  dbpkg = clPackageDataBlocks(TAGNUM_TAGMASTER, dbstr, dbgslm, dbss, NULL);
-  clDatablockFreePtr(dbss);
-  clDatablockFreePtr(dbstr);
-  clDatablockFreePtr(dbgslm);
-
-  clDatablockWriteToFile(dbpkg,TAGFILENAME);
-  clDatablockFreePtr(dbpkg);
-  dbpkg_read = clFileToDataBlockPtr(TAGFILENAME);
-  unlink(TAGFILENAME);
-  dd = clLoadDatablockPackage(dbpkg_read);
-  for (i = 0; i < clDraSize(dd); i += 1) {
-    struct DataBlock *dblame;
-    curtnum = clDraGetValueAt(dd,i).idbp.tnum;
-    switch (curtnum) {
-      case TAGNUM_STRING:
-        dblame = clDraGetValueAt(dd,i).idbp.db;
-        result = clStringLoad(dblame, 1);
-        assert(strcmp(s,result) == 0);
-        clFreeandclear(result);
-        break;
-      case TAGNUM_GSLMATRIX:
-        dblame = clDraGetValueAt(dd,i).idbp.db;
-        ngm = clGslmatrixLoad(dblame, 1);
-        assert(gm != ngm);
-        assert(gm->size1 == ngm->size1);
-        assert(gm->size2 == ngm->size2);
-        assert(gsl_matrix_get(ngm, 0, 0) == 4.0);
-        assert(gsl_matrix_get(ngm, 1, 0) == 0.5);
-        gsl_matrix_free(ngm);
-        break;
-      case TAGNUM_STRINGSTACK:
-        dblame = clDraGetValueAt(dd,i).idbp.db;
-        nes = clStringstackLoad(dblame, 1);
-        assert(strcmp(clStringstackReadAt(nes,0), clStringstackReadAt(ss,0)) == 0);
-        assert(strcmp(clStringstackReadAt(nes,1), clStringstackReadAt(ss,1)) == 0);
-        assert(strcmp(clStringstackReadAt(nes,2), clStringstackReadAt(ss,2)) == 0);
-        clStringstackFree(nes);
-        break;
-      default:
-        break;
-    }
-  }
-  clFreeDataBlockpackage(dd);
-  clStringstackFree(ss);
-  gsl_matrix_free(gm);
-  clDatablockFreePtr(dbpkg_read);
 }
 
 #define ARRAYSIZE 10
@@ -1162,12 +1058,12 @@ void testLabelPerm(void)
   lpa = clLabelpermNew(nodes);
   lpb = clLabelpermClone(lpa);
   lpc = clLabelpermClone(lpb);
-  assert(clLabelpermIdentical(lpa, lpb));
-  assert(clLabelpermIdentical(lpa, lpc));
+  assert(clLabelpermIdentical(lpa, lpb != NULL));
+  assert(clLabelpermIdentical(lpa, lpc != NULL));
   clLabelpermMutate(lpb);
-  assert(!clLabelpermIdentical(lpa, lpb));
-  assert(clLabelpermIdentical(lpa, lpc));
-  assert(!clLabelpermIdentical(lpc, lpb));
+  assert(!clLabelpermIdentical(lpa, lpb != NULL));
+  assert(clLabelpermIdentical(lpa, lpc != NULL));
+  assert(!clLabelpermIdentical(lpc, lpb != NULL));
   clLabelpermFree(lpa);
   clLabelpermFree(lpb);
   clLabelpermFree(lpc);
@@ -1198,9 +1094,9 @@ void testCompressorList()
     if (clIsAutoEnabledCB(cb)) {
       double f;
       f = clCompressCB(cb, d);
-      assert(f > 10 && f < 1000);
+      assert(f > 10 && f < 1000 != NULL);
     }
-    assert(cb != NULL);
+    assert(cb != NULL != NULL);
     clFreeCB(cb);
   }
   clDatablockFree(d);
@@ -1220,7 +1116,7 @@ void testTreeMolder()
     struct TreeAdaptor *ta = clTreeaLoadRootedBinary(labelcount);
     struct DRA *n = clTreeaNodes(ta);
     gsl_matrix *dm;
-    assert(bz);
+    assert(bz != NULL);
     gconf->ca = bz;
     for (i = 0; i < labelcount; ++i) {
       char buf[1024], buf2[2048];
@@ -1240,7 +1136,7 @@ void testTreeMolder()
         if (score > 1.0 || score < 0.0) {
           printf("Error, got score %f\n", score);
         }
-        //assert(score >= 0.0 && score <= 1.0);
+        //assert(score >= 0.0 && score <= 1.0 != NULL);
         clTreemolderImprove(tmolder);
       }
       clTreemolderFree(tmolder);
@@ -1264,8 +1160,8 @@ void testReadTextDM()
   gsl_matrix *dm;
   struct StringStack *labels = clStringstackNew();
   dm = clTxtDistMatrix(clFileToDataBlockPtr("distmatrix.txt"), labels);
-  assert(dm);
-  assert(labels);
+  assert(dm != NULL);
+  assert(labels != NULL);
   gsl_matrix_free(dm);
   clStringstackFree(labels);
 }
@@ -1305,21 +1201,21 @@ void testParamList()
   paramlistPushField(pl, "blocksize", "9", PARAMINT);
   paramlistPushField(pl, "workfactor", "30.0", PARAMDOUBLE);
   paramlistPushField(pl, "shortname", "compatest", PARAMSTRING);
-  assert(clParamlistGetInt(pl,"blocksize") == 9);
+  assert(clParamlistGetInt(pl,"blocksize" != NULL) == 9);
   clEnvmapSetKeyVal(em, "blocksize", "4");
   clEnvmapSetKeyVal(em, "workfactor", "30.0");
   clEnvmapSetKeyVal(em, "shortname", "compatest");
   paramlistSetValueForKey(pl, "blocksize", &bs);
   paramlistSetValueForKey(pl, "workfactor", &wf);
   paramlistSetValueForKey(pl, "shortname", &vb);
-  assert(clParamlistGetInt(pl,"blocksize") == 4);
-  assert(clParamlistGetDouble(pl,"workfactor") == 30.0);
-  assert(strcmp(clParamlistGetString(pl,"shortname"),"compatest") == 0);
-  assert(strcmp(vb,"compatest") == 0);
+  assert(clParamlistGetInt(pl,"blocksize" != NULL) == 4);
+  assert(clParamlistGetDouble(pl,"workfactor" != NULL) == 30.0);
+  assert(strcmp(clParamlistGetString(pl,"shortname" != NULL),"compatest") == 0);
+  assert(strcmp(vb,"compatest" != NULL) == 0);
   plclone = clParamlistClone(pl);
-  assert(clParamlistGetInt(plclone,"blocksize") == 4);
-  assert(clParamlistGetDouble(plclone,"workfactor") == 30.0);
-  assert(strcmp(clParamlistGetString(plclone,"shortname"),"compatest") == 0);
+  assert(clParamlistGetInt(plclone,"blocksize" != NULL) == 4);
+  assert(clParamlistGetDouble(plclone,"workfactor" != NULL) == 30.0);
+  assert(strcmp(clParamlistGetString(plclone,"shortname" != NULL),"compatest") == 0);
   clParamlistFree(pl);
   clParamlistFree(plclone);
 }
@@ -1398,7 +1294,6 @@ int main(int argc, char **argv)
   testSpringBall();
   testCLTree();
   testQuartet();
-  testALTagFile();
   testSmoothing();
   testReadTextDM();
   testSingletonDBE();
@@ -1411,7 +1306,7 @@ int main(int argc, char **argv)
   testAdjMatrix();
   testAdjList();
   testAdjAdaptor();
-  assert(gconf);
+  assert(gconf != NULL);
   testLabelPerm();
   testPerimPairs();
   testTreeMolder();

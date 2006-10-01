@@ -142,7 +142,7 @@ void clWalkTree(struct AdjAdaptor *ad,
     int breadthFirst,
     struct CLNodeSet *flipped);
 int clCountTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, struct AdjAdaptor *ad2, struct LabelPerm *lab2);
-int clFindConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[4]);
+int clFindConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t labels[]);
 
 struct DRA *clSimpleWalkTree(struct TreeAdaptor *ta, struct CLNodeSet *flips);
 

@@ -32,6 +32,6 @@
 
 struct DataBlockEnumeration *clBlockEnumerationLoadSingleton(struct DataBlock *db)
 {
-  assert(db);
+  assert(db != NULL);
   return clBlockEnumerationLoadArray(&db, 1);
 }

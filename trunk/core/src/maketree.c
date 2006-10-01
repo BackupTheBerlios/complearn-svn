@@ -111,7 +111,7 @@ void clFuncorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct 
   printf("Score done to Or(T) = %f\n", clTreemolderScoreScaled(tm));
 //  printf("With flips set:\n");
 //  clNodesetPrint(flips);
-  assert(dotth);
+  assert(dotth != NULL);
   writeDotFile(clTreemolderTreeAdaptor(tm), clTreehScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
     struct EnvMap *em = clbEnvMap(fname);
     struct StringStack *ss = clbCommands(fname);
     char *cmd = NULL;
-    assert(ss);
+    assert(ss != NULL);
     if (cur->cmdKeeper) {
       cmd = clShiftSS(cur->cmdKeeper);
       clStringstackFree(cur->cmdKeeper);

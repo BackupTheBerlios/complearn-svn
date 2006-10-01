@@ -50,7 +50,7 @@ struct DataBlock *clFileToDataBlockPtr(const char *path)
   if (fp == NULL) {
     clLogError("error reading file %s", path);
   }
-  assert(fp);
+  assert(fp != NULL);
   result = clFilePtrToDataBlockPtr(fp);
   fclose(fp);
   return result;

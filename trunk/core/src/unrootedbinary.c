@@ -112,7 +112,7 @@ static int verifyTree(struct UnrootedBinary *ub)
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
       retval = clAdjaNeighbors(ub->aa, i, nbp, &nlenhere);
-      assert(retval == CL_OK);
+      assert(retval == CL_OK != NULL);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
       return 0;
@@ -136,28 +136,28 @@ static void mutateSubtreeTransfer(struct UnrootedBinary *ub)
     } while (k1 == k2);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(ub->aa, k1, k2, pbuf, &pathlen);
-    assert(retval == CL_OK);
-    assert(pbuf[0] == k1);
-    assert(clAdjaGetConState(ub->aa, k1, pbuf[1]));
+    assert(retval == CL_OK != NULL);
+    assert(pbuf[0] == k1 != NULL);
+    assert(clAdjaGetConState(ub->aa, k1, pbuf[1] != NULL));
   } while (pathlen <= 2);
   i1 = pbuf[1];
-  assert(i1 < MAXPATHNODES);
-  assert(clAdjaGetConState(ub->aa, k1, i1));
+  assert(i1 < MAXPATHNODES != NULL);
+  assert(clAdjaGetConState(ub->aa, k1, i1 != NULL));
   nsizems = MAXNEIGHBORS;
   retval = clAdjaNeighbors(ub->aa, i1, nbufms, &nsizems);
-  assert(nsizems == 3);
+  assert(nsizems == 3 != NULL);
   clAdjaSetConState(ub->aa, k1, i1, 0);
-  assert(!clAdjaGetConState(ub->aa, k1, i1));
+  assert(!clAdjaGetConState(ub->aa, k1, i1 != NULL));
 
   nsizems = MAXNEIGHBORS;
   retval = clAdjaNeighbors(ub->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK);
+  assert(retval == CL_OK != NULL);
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems != 2) {
     clLogError( "Warning, got node %d with only %d neighbors, %d...\n",
         i1, nsizems, m1);
-    assert(nsizems == 2);
+    assert(nsizems == 2 != NULL);
   }
   do {
     m3 = randomNeighbor(ub, k2);
@@ -185,18 +185,18 @@ static  int pathbuf[MAXPATHNODES];
     struct DRA *swappers = randomKernelNodes(ub, 2);
     i1 = clDraGetValueAt(swappers, 0).i;
     i2 = clDraGetValueAt(swappers, 1).i;
-    assert(i1 != i2);
-    assert(clAdjaNeighborCount(ub->aa, i1) == 3);
-    assert(clAdjaNeighborCount(ub->aa, i2) == 3);
+    assert(i1 != i2 != NULL);
+    assert(clAdjaNeighborCount(ub->aa, i1 != NULL) == 3);
+    assert(clAdjaNeighborCount(ub->aa, i2 != NULL) == 3);
     clDraFree(swappers);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(ub->aa, i1, i2, pathbuf, &pathlen);
-    assert(retval == CL_OK);
+    assert(retval == CL_OK != NULL);
   } while (pathlen <= 3);
   n1 = pathbuf[1];
-  assert(clAdjaGetConState(ub->aa, n1, i1));
+  assert(clAdjaGetConState(ub->aa, n1, i1 != NULL));
   n2 = pathbuf[pathlen-2];
-  assert(clAdjaGetConState(ub->aa, n2, i2));
+  assert(clAdjaGetConState(ub->aa, n2, i2 != NULL));
   clFlipCrosswise(ub->aa, i1, n1, i2, n2);
 }
 
@@ -207,7 +207,7 @@ static void mutateSimple(struct UnrootedBinary *ub)
   int wasGood;
 
   wasGood = verifyTree(ub);
-  assert(wasGood);
+  assert(wasGood != NULL);
 #endif
   do {
     c = rand() % 3;
@@ -216,7 +216,7 @@ static void mutateSimple(struct UnrootedBinary *ub)
     case 0: clMutateSpecies(ub->aa, ub->labelperm); break;
     case 1: mutateSubtreeInterchange(ub); break;
     case 2: mutateSubtreeTransfer(ub); break;
-    default: assert(0 && "bad tree op"); break;
+    default: assert(0 && "bad tree op" != NULL); break;
   }
 #if LOGICWALL
   wasGood = verifyTree(ub);
@@ -224,7 +224,7 @@ static void mutateSimple(struct UnrootedBinary *ub)
     printf("out mutsim tree problem with c %d\n", c);
     exit(1);
   }
-  assert(wasGood);
+  assert(wasGood != NULL);
 #endif
 }
 
@@ -264,7 +264,7 @@ struct UnrootedBinary *clUnrootedBinaryNew(int howManyLeaves)
   int i;
   struct DRA *leaves;
   struct UnrootedBinary *ub = clCalloc(sizeof(struct UnrootedBinary), 1);
-  assert(howManyLeaves > 3);
+  assert(howManyLeaves > 3 != NULL);
   ub->nodecount = 2*howManyLeaves-2;
   ub->aa = clNewPathKeeper(clAdjaLoadAdjList(ub->nodecount));
   for (i = 0; i < howManyLeaves-2; ++i) {
@@ -274,10 +274,10 @@ struct UnrootedBinary *clUnrootedBinaryNew(int howManyLeaves)
   clAdjaSetConState(ub->aa, 0, howManyLeaves-1, 1);
 
   leaves = getLabellableNodes(ub);
-  assert(leaves);
-  assert(clDraSize(leaves) == howManyLeaves);
+  assert(leaves != NULL);
+  assert(clDraSize(leaves != NULL) == howManyLeaves);
   ub->labelperm = clLabelpermNew(leaves);
-  assert(ub->labelperm);
+  assert(ub->labelperm != NULL);
 
   clDraFree(leaves);
 

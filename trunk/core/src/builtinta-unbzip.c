@@ -74,13 +74,13 @@ static struct DataBlock *unbz2a_transform(struct DataBlock *src)
   int i;
   unsigned char *dbuff = NULL;
   int p;
-  p = clDatablockSize(src) * 3.0 + 1;
+  p = clDatablockSize(src) + 1;
   do {
+    p = 2*p;
     if (dbuff != NULL)
       clFreeandclear(dbuff);
     dbuff = (unsigned char*)clMalloc(p);
     i = (bzlib->buftobufdecompress)((char *) dbuff,(unsigned int *) &p, (char *) clDatablockData(src),clDatablockSize(src), 0, 0);
-    p = 2*p;
   } while (i != 0);
   result = clDatablockNewFromBlock(dbuff,p);
   clFreeandclear(dbuff);

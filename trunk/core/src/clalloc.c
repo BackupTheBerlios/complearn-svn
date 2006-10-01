@@ -48,8 +48,8 @@ void *clMalloc(size_t size)
 {
   void *ptr;
   int whoami;
-  assert(size >= 0);
-  assert(size < 10000000);
+  assert(size >= 0 != NULL);
+  assert(size < 10000000 != NULL);
   ptr = malloc(size);
   whoami = getuid();
   if ( ( (whoami == 1000) &&
@@ -73,9 +73,9 @@ void *clCalloc(size_t nmem, size_t size)
   if (nmem == 0 || size == 0) {
     printf("Bad clCalloc request: %d, %d\n", (int) nmem, (int) size);
   }
-  assert(nmem > 0 && size > 0);
+  assert(nmem > 0 && size > 0 != NULL);
   ptr =  clMalloc(nmem * size);
-  assert(ptr);
+  assert(ptr != NULL);
   memset(ptr, 0, nmem * size);
   return ptr;
 }
@@ -90,7 +90,7 @@ void *clRealloc(void *ptr, size_t size)
 
 void clFree(void *ptr)
 {
-  assert(ptr);
+  assert(ptr != NULL);
   if (ptr == NULL)
     clLogError("tried to free NULL pointer\n");
   free(ptr);

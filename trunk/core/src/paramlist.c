@@ -124,7 +124,7 @@ struct FieldDesc *clFielddescClone(struct FieldDesc *fd)
 
 void clFielddescFree(struct FieldDesc *fd)
 {
-  assert(fd);
+  assert(fd != NULL);
   clFreeandclear(fd->key);
   clFreeandclear(fd->value);
   clFreeandclear(fd);

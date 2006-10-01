@@ -86,7 +86,7 @@ static void mustBeSorted(qbase_t labels[4])
 {
   int i;
   for (i = 1; i < 4; ++i) {
-    assert(labels[i-1] <= labels[i]);
+    assert(labels[i-1] <= labels[i] != NULL);
   }
 }
 
@@ -103,7 +103,7 @@ int clFindConsistentIndex(struct AdjAdaptor *ad, struct LabelPerm *lab, qbase_t 
     if (clIsConsistent(ad, q1))
       return i;
   }
-  assert(0 && "Quartet consistency failure.");
+  assert(0 && "Quartet consistency failure." != NULL);
   return 0;
 }
 
@@ -124,7 +124,7 @@ struct Quartet clPermuteLabels(qbase_t lab[4], int which)
       q.q[2] = lab[1]; q.q[3] = lab[2];
       break;
     default:
-      assert(0 && "quartet phase error");
+      assert(0 && "quartet phase error" != NULL);
       q.q[0] = q.q[1] = q.q[2] = q.q[3] = 0;
       break;
   }

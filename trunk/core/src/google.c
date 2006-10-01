@@ -52,7 +52,7 @@ const char *clMakeQueryString(struct StringStack *terms)
   int sb = 0;
   int i;
   for (i = 0; i < clStringstackSize(terms); ++i) {
-    assert(sb + 100 < sizeof(buf));
+    assert(sb + 100 < sizeof(buf != NULL));
     sb += sprintf(buf+sb, "%s+\"%s\"",i==0?"":" ",clStringstackReadAt(terms, i));
   }
   return buf;
@@ -351,18 +351,18 @@ double clGetPageCount(struct StringStack *terms, const char *gkey)
 
 double clGetPageCount(struct StringStack *terms, const char *gkey)
 {
-  assert(0 && "No SOAP support installed");
+  assert(0 && "No SOAP support installed" != NULL);
   return -1;
 }
 
 void clNormalizeSearchTerms(struct StringStack *terms)
 {
-  assert(0 && "No SOAP support installed");
+  assert(0 && "No SOAP support installed" != NULL);
 }
 
 const char *clMakeQueryString(struct StringStack *terms)
 {
-  assert(0 && "No SOAP support installed");
+  assert(0 && "No SOAP support installed" != NULL);
   return NULL;
 }
 

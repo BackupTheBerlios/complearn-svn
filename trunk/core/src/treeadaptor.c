@@ -34,7 +34,7 @@ void clTreeaclLabelpermSetColumnIndexToNodeNumber(struct TreeAdaptor *ta,
 
 void clTreeaMutate(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  assert(tra != NULL);
   tra->treemutate(tra);
 }
 
@@ -48,56 +48,56 @@ struct TreeAdaptor *clTreeaNew(int isRooted, int howbig)
 
 void clTreeaFree(struct TreeAdaptor *tra)
 {
-  assert(tra);
-  assert(tra->treefree);
+  assert(tra != NULL);
+  assert(tra->treefree != NULL);
   tra->treefree(tra);
 }
 
 struct TreeAdaptor *clTreeaClone(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treeclone(tra);
 }
 
 struct LabelPerm *clTreeaLabelPerm(struct TreeAdaptor *tra)
 {
-  assert(tra && "NULL TreeAdaptor in clTreeaLabelPerm");
+  assert(tra && "NULL TreeAdaptor in clTreeaLabelPerm" != NULL);
   return tra->treegetlabelperm(tra);
 }
 
 struct AdjAdaptor *clTreeaAdjAdaptor(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treegetadja(tra);
 }
 
 int clTreeaIsQuartettable(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treeisquartetable(tra, which);
 }
 
 int clTreeaIsFlippable(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treeisflippable(tra, which);
 }
 int clTreeaIsRoot(struct TreeAdaptor *tra, int which)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treeisroot(tra, which);
 }
 
 
 int clTreeaMutationCount(struct TreeAdaptor *tra)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treemutecount(tra);
 }
 
 struct DRA *clTreeaPerimPairs(struct TreeAdaptor *tra, struct CLNodeSet *flips)
 {
-  assert(tra);
+  assert(tra != NULL);
   return tra->treeperimpairs(tra, flips);
 }
 

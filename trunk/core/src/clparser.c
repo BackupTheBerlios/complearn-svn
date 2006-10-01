@@ -55,10 +55,10 @@ int clDoesFileExist(const char *fname)
 int clReadDefaultConfig(struct EnvMap *dest)
 {
   struct StringStack *d = clGetDefaultFileList();
-  assert(dest);
-  assert(d);
-  assert(clStringstackSize(d) > 0);
-  assert(clStringstackSize(d) < 10);
+  assert(dest != NULL);
+  assert(d != NULL);
+  assert(clStringstackSize(d != NULL) > 0);
+  assert(clStringstackSize(d != NULL) < 10);
 
   while (!clStringstackIsEmpty(d)) {
     char *str = clShiftSS(d);
@@ -127,7 +127,7 @@ int clReadSpecificFile(struct EnvMap *dest, const char *fname)
   fp = clFopen(fname, "rb");
   if (!fp)
     clLogError("Cannot open file %s for reading", fname);
-  assert(fp);
+  assert(fp != NULL);
   while (fgets(linebuf, MAXLINESIZE, fp)) {
     clHandleLine(dest, linebuf);
   }

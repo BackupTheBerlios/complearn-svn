@@ -89,7 +89,7 @@ struct Quartet {
  */
 struct TreeScore;
 
-struct Quartet clPermuteLabels(qbase_t lab[4], int which); /* between 0, 1, 2 */
+struct Quartet clPermuteLabels(qbase_t lab[], int which); /* array of 4 labels in lab, with 'which' one of 0, 1, or 2 */
 struct Quartet clPermuteLabelsDirect(qbase_t i, qbase_t j, qbase_t k, qbase_t m, int which);
 void clNormalizeQuartet(struct Quartet *q);
 void clFreeSPMSingle(struct DRA *d);

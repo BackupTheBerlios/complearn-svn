@@ -105,7 +105,7 @@ struct DataBlockEnumeration *clBlockEnumerationLoadArray(struct DataBlock **db, 
   };
   struct DataBlockEnumeration *dbe;
   struct DBEArrayEnumeration *ardbe;
-  assert(size > 0);
+  assert(size > 0 != NULL);
   dbe = clCalloc(sizeof(struct DataBlockEnumeration),1);
   *dbe = e;
   dbe->eptr = clCalloc(sizeof(struct DBEArrayEnumeration), 1);

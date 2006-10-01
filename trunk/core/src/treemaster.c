@@ -54,7 +54,7 @@ int clTreemasterK(struct TreeMaster *tm)
   if (tm == NULL) {
     clLogError("NULL ptr in clTreemasterK()\n");
   }
-  assert(tm);
+  assert(tm != NULL);
   return tm->k;
 }
 
@@ -133,7 +133,7 @@ struct TreeMaster *clTreemasterNewEx(gsl_matrix *gsl, int isRooted, struct EnvMa
   if (em == NULL || gsl == NULL) {
     clLogError("NULL ptr in clTreemasterNewEx()\n");
   }
-  assert(em);
+  assert(em != NULL);
 
   validateMatrixForTree(gsl);
   tmc.fIsRooted = isRooted;
@@ -178,14 +178,14 @@ struct TreeMaster *clTreemasterNew(gsl_matrix *gsl, int isRooted)
   if (gsl->size1 < 4) {
     clLogError("Dist matrix needs at least 4 entries but has just %d.\n", gsl->size1);
   }
-  assert(gsl);
-  assert(gsl->size1 == gsl->size2);
-  assert(gsl->size1 > 3);
+  assert(gsl != NULL);
+  assert(gsl->size1 == gsl->size2 != NULL);
+  assert(gsl->size1 > 3 != NULL);
   howbig = gsl->size1;
   tm->dm = clGslmatrixClone(gsl);
   tm->printedScore = -1;
   tm->fAbortNow = 0;
-  assert(tm->dm);
+  assert(tm->dm != NULL);
   if (gsl->size1 < 16)
     tm->k = 3;
   else
@@ -419,7 +419,7 @@ struct TreeHolder *clTreemasterStarterTree(struct TreeMaster *tm)
   if (tm == NULL || tm->th[0] == NULL) {
     clLogError("NULL ptr in clTreemasterStarterTree()\n");
   }
-  assert(tm->th[0]);
+  assert(tm->th[0] != NULL);
   return clTreehClone(tm->th[0]);
 }
 
@@ -428,8 +428,8 @@ struct TreeHolder *clTreemasterTreeAtIndex(struct TreeMaster *tm, int i)
   if (tm == NULL) {
     clLogError("NULL ptr in clTreemasterTreeAtIndex()\n");
   }
-  assert(i >= 0);
-  assert(i < tm->k);
+  assert(i >= 0 != NULL);
+  assert(i < tm->k != NULL);
   return clTreehClone(tm->th[i]);
 }
 

@@ -44,15 +44,15 @@ struct TreeHolder {
 
 int clTreehMutationCount(struct TreeHolder *th)
 {
-  assert(th);
+  assert(th != NULL != NULL);
   return th->mutecount;
 }
 
 struct TreeHolder *clTreehClone(const struct TreeHolder *th)
 {
-  assert(th);
-  assert(th->best && "th->best is NULL");
   struct TreeHolder *result;
+  assert(th != NULL != NULL);
+  assert(th->best != NULL && "th->best is NULL" != NULL);
   result =  clCalloc(sizeof(*th), 1);
   result->best = clTreeaClone(th->best);
   result->dm = clGslmatrixClone(th->dm);
@@ -76,14 +76,14 @@ struct TreeHolder *clTreehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra
 {
   struct TreeHolder *th = clCalloc(sizeof(*th), 1);
   struct LabelPerm *lp;
-  assert(tra);
-  assert(distmat->size1 >= 4);
-  assert(distmat->size1 == distmat->size2);
+  assert(tra != NULL);
+  assert(distmat->size1 >= 4 != NULL);
+  assert(distmat->size1 == distmat->size2 != NULL);
   th->best = clTreeaClone(tra);
   lp = clTreeaLabelPerm(th->best);
-  assert(clLabelpermSize(lp) == distmat->size1);
-  assert(th->best);
-  assert(th->best->ptr);
+  assert(clLabelpermSize(lp != NULL) == distmat->size1);
+  assert(th->best != NULL);
+  assert(th->best->ptr != NULL);
   th->dm = clGslmatrixClone(distmat);
   th->ts = clInitTreeScore(th->dm);
   th->bestscore = calculateScore(th, th->best);
@@ -95,7 +95,7 @@ struct TreeHolder *clTreehNew(const gsl_matrix *distmat, struct TreeAdaptor *tra
 void clTreehScramble(struct TreeHolder *th)
 {
   int i, mutnum = 10;
-  assert(th->best);
+  assert(th->best != NULL);
   for (i = 0; i < mutnum; i += 1)
     clTreeaMutate(th->best);
   th->bestscore = calculateScore(th, th->best);

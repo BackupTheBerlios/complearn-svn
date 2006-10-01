@@ -227,7 +227,7 @@ double clDatetimeStaticTimer(void)
 {
   double res;
   struct CLDateTime *cldt = clDatetimeNow();
-  assert(cldt);
+  assert(cldt != NULL);
   res = cldt->tv.tv_sec * 1.0 + 0.000001 * cldt->tv.tv_usec;
   clDatetimeFree(cldt);
   return res;

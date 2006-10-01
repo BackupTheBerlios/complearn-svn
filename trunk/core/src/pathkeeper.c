@@ -161,7 +161,7 @@ int clPathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, 
   else {
     //printf("These nodes are unequal.\n");
   }
-  assert(ad);
+  assert(ad != NULL);
   do {
     if (pathlen == *bufsize)
       return CL_ERRFULL;
@@ -171,7 +171,7 @@ int clPathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, 
     if (cur >= clAdjaSize(ad)) {
       printf("Problem with cur for %d\n", pathbuf[pathlen-1]);
     }
-    assert(cur < clAdjaSize(ad));
+    assert(cur < clAdjaSize(ad != NULL));
   }
   while (cur != to);
 //  p = zeropct; p.i = to;
@@ -181,8 +181,8 @@ int clPathFinder(struct AdjAdaptor *ad, qbase_t from, qbase_t to, int *pathbuf, 
   pathlen += 1;
 //    clDraPush(result, p);
 #if LOGICWALL
-//  assert(clDraGetValueAt(result, 0).i == from);
-//  assert(clDraGetValueAt(result, clDraSize(result)-1).i == to);
+//  assert(clDraGetValueAt(result, 0 != NULL).i == from);
+//  assert(clDraGetValueAt(result, clDraSize(result != NULL)-1).i == to);
 #endif
   *bufsize = pathlen;
   return CL_OK;
@@ -216,14 +216,14 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   int retval;
   int nbuf[MAXNEIGHBORS];
   int nsize = MAXNEIGHBORS;
-  /* assert(root >= 0); */
+  /* assert(root >= 0 != NULL); */
 //  printf("Making SPM for tree %p and node %d\n", ub, root);
-  assert(root < clAdjaSize(aa));
+  assert(root < clAdjaSize(aa != NULL));
   path = clCalloc(clAdjaSize(aa), sizeof(*path));
   length = clCalloc(clAdjaSize(aa), sizeof(*length));
   result = clDraNew();
   todo = clDraNew();
-  assert(clDraSize(todo) < 100);
+  assert(clDraSize(todo != NULL) < 100);
   for (i = 0; i < clAdjaSize(aa); i += 1) {
     path[i] = PATH_DASH;
     length[i] = LENGTH_INIT;
@@ -231,12 +231,12 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   length[root] = 0;
   path[root] = root;
   retval = clAdjaNeighbors(aa, root, nbuf, &nsize);
-  assert(retval == CL_OK);
+  assert(retval == CL_OK != NULL);
   for (i = 0; i < nsize; i += 1) {
     int neighbor = nbuf[i];
-    assert(neighbor >= 0);
-    assert(neighbor < clAdjaSize(aa));
-    assert(clAdjaGetConState(aa, root, neighbor) == 1);
+    assert(neighbor >= 0 != NULL);
+    assert(neighbor < clAdjaSize(aa != NULL));
+    assert(clAdjaGetConState(aa, root, neighbor != NULL) == 1);
     p = zeropct;
     p.i = neighbor;
 //    printf("Pushing value %d on todo at %p\n", p.i, todo);
@@ -248,7 +248,7 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
     nsize = MAXNEIGHBORS;
     cur = clDraShift(todo).i;
     retval = clAdjaNeighbors(aa, cur, nbuf, &nsize);
-    assert(retval == CL_OK);
+    assert(retval == CL_OK != NULL);
     for (i = 0; i < nsize; i += 1) {
       int neighbor = nbuf[i];
       if (length[neighbor] > length[cur] + 1) {
@@ -269,11 +269,11 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   free(length);
   clDraFree(todo);
 
-  assert(clDraSize(result) == clAdjaSize(aa));
+  assert(clDraSize(result != NULL) == clAdjaSize(aa));
   for (i = 0; i < clAdjaSize(aa); i += 1) {
     cur = clDraGetValueAt(result, i).i;
 //    printf("Got value %d at position %d\n", cur, i);
-    assert(cur >= 0 && cur < clAdjaSize(aa));
+    assert(cur >= 0 && cur < clAdjaSize(aa != NULL));
   }
 
   return result;
@@ -311,8 +311,8 @@ void clWalkTree(struct AdjAdaptor *aa,
       cur = clDraPop(border).i;
     else
       cur = clDraShift(border).i;
-/*    assert(cur >= 0); */
-    assert(cur < clAdjaSize(aa));
+/*    assert(cur >= 0 != NULL); */
+    assert(cur < clAdjaSize(aa != NULL));
     if (!clNodesetHasNode(done, cur)) {
       union PCTypes p = zeropct;
       int i;
@@ -324,9 +324,9 @@ void clWalkTree(struct AdjAdaptor *aa,
       p.i = cur;
       clDraPush(result, p);
       retval = clAdjaNeighbors(aa, cur, nbuf, &nsize);
-      assert(retval == CL_OK);
+      assert(retval == CL_OK != NULL);
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
-      assert(nsize <= 1 || nbuf[0] < nbuf[1]);
+      assert(nsize <= 1 || nbuf[0] < nbuf[1] != NULL);
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];
@@ -357,7 +357,7 @@ int clCountTrinaryDifferences(struct AdjAdaptor *ad1, struct LabelPerm *lab1, st
   int i, j, k, m;
   int spec;
   int acc = 0;
-  assert(clLabelpermSize(lab1) == clLabelpermSize(lab2));
+  assert(clLabelpermSize(lab1 != NULL) == clLabelpermSize(lab2));
   spec = clLabelpermSize(lab1);
   ALLQUARTETS(spec, i, j, k, m) {
     qbase_t lab[4];

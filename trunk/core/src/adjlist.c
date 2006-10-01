@@ -52,7 +52,8 @@ static struct AdjImplementation adimpl = {
   adjagetconstate : ajal_getconstate,
   adjasetconstate : ajal_setconstate,
   adjagetneighbors : ajal_getneighbors,
-  adjagetneighborcount : ajal_getneighborcount
+  adjagetneighborcount : ajal_getneighborcount,
+  adjaspmmap : NULL
 };
 
 struct AdjList *clAdjlistNew(int howbig)
@@ -76,7 +77,7 @@ void clAdjlistPrint(const struct AdjList *which)
     for (j = 0; j < i; ++j)
       printf(" ");
     for (j = i+1; j < which->size; ++j)
-      printf("%c", clAdjlistGetConState(which, i, j) + '0');
+      printf("%c", clAdjlistGetConState(which, i, j) + (int) '0');
     printf("\n");
   }
 }
@@ -93,7 +94,7 @@ struct AdjList *clAdjlistClone(const struct AdjList *inp)
 
 void clAdjlistFree(struct AdjList *adj)
 {
-  if (adj->adj && adj->adj != (qbase_t *) (adj + 1))
+  if (adj->adj != NULL && adj->adj != (qbase_t *) (adj + 1))
     clFreeandclear(adj->adj);
   clFreeandclear(adj);
 }
@@ -105,12 +106,12 @@ int clAdjlistSize(const struct AdjList *adj)
 
 static void checkBounds(const struct AdjList *adj, int i, int j)
 {
-  assert(adj);
-  assert(adj->adj);
-  assert(i >= 0);
-  assert(j >= 0);
-  assert(i < adj->size);
-  assert(j < adj->size);
+  assert(adj != NULL != NULL);
+  assert(adj->adj != NULL != NULL);
+  assert(i >= 0 != NULL);
+  assert(j >= 0 != NULL);
+  assert(i < adj->size != NULL);
+  assert(j < adj->size != NULL);
 }
 
 int clAdjlistGetConState(const struct AdjList *adj, int i, int j)
@@ -121,8 +122,8 @@ int clAdjlistGetConState(const struct AdjList *adj, int i, int j)
     return clAdjlistGetConState(adj, j, i);
     */
   checkBounds(adj, i, j);
-  assert(i >= 0);
-  assert(i < adj->size);
+  assert(i >= 0 != NULL);
+  assert(i < adj->size != NULL);
   nc = adj->adj[i*adj->rowsize];
   for (k = 0; k < nc; k += 1)
     if (adj->adj[i*adj->rowsize + 1 + k] == j)
@@ -139,12 +140,12 @@ int clAdjlistGetConState(const struct AdjList *adj, int i, int j)
 static int findNeighborIndex(struct AdjList *adj, int i, int j)
 {
   int ni, nc;
-//  assert(i <= j);
+//  assert(i <= j != NULL);
   nc = adj->adj[i*adj->rowsize];
   for (ni = 0; ni < nc; ni += 1)
     if (adj->adj[ni + i*adj->rowsize + 1] == j)
       return ni;
-  assert(0 && "adjlist index error");
+  assert(0 && "adjlist index error" != NULL);
   return -1;
 }
 
@@ -158,13 +159,13 @@ static void removeNeighbor(struct AdjList *adj, int i, int j)
     removeNeighbor(adj, j, i);
     return;
   }
-  assert(i <= j);
+  assert(i <= j != NULL);
   */
   nc = adj->adj[i*adj->rowsize];
   indj = findNeighborIndex(adj, i, j);
-  assert(indj >= 0);
-  assert(adj->adj[i*adj->rowsize + indj + 1] == j);
-  assert(clAdjlistGetConState(adj, i, j) == 1);
+  assert(indj >= 0 != NULL);
+  assert(adj->adj[i*adj->rowsize + indj + 1] == j != NULL);
+  assert(clAdjlistGetConState(adj, i, j != NULL) == 1);
   for (k = indj; k < nc - 1; k += 1)
     adj->adj[i*adj->rowsize+k+1] = adj->adj[i*adj->rowsize+k+2];
   adj->adj[i*adj->rowsize+k+1] = 0;
@@ -176,18 +177,18 @@ static void removeNeighbor(struct AdjList *adj, int i, int j)
     adj->adj[j*adj->rowsize+k+1] = adj->adj[j*adj->rowsize+k+2];
   adj->adj[j*adj->rowsize+k+1] = 0;
   adj->adj[j*adj->rowsize] -= 1;
-/*  assert(clAdjlistGetConState(adj, i, j) == 0); */
+/*  assert(clAdjlistGetConState(adj, i, j != NULL) == 0); */
 }
 
 static void addNeighbor(struct AdjList *adj, int i, int j)
 {
   int nc;
-/*  assert(i <= j); */
+/*  assert(i <= j != NULL); */
   nc = adj->adj[i*adj->rowsize];
 /*
-  assert(nc < adj->size);
-  assert(clAdjlistGetConState(adj, i, j) == 0);
-  assert(nc < adj->rowsize - 1);
+  assert(nc < adj->size != NULL);
+  assert(clAdjlistGetConState(adj, i, j != NULL) == 0);
+  assert(nc < adj->rowsize - 1 != NULL);
 */
   adj->adj[i*adj->rowsize + nc + 1] = j;
   adj->adj[i*adj->rowsize] += 1;
@@ -195,7 +196,7 @@ static void addNeighbor(struct AdjList *adj, int i, int j)
   adj->adj[j*adj->rowsize + nc + 1] = i;
   adj->adj[j*adj->rowsize] += 1;
 /*
-  assert(clAdjlistGetConState(adj, i, j) == 1);
+  assert(clAdjlistGetConState(adj, i, j != NULL) == 1);
 */
 }
 
@@ -203,7 +204,7 @@ void clAdjlistSetConState(struct AdjList *adj, int i, int j, int conState)
 {
   int oldConState;
 //  printf("Setting connection state for adjlist %p and node %d->%d to %d\n", adj, i, j, conState);
-  assert(conState == 0 || conState == 1);
+  assert(conState == 0 || conState == 1 != NULL);
   /*
   if (i > j)
     clAdjlistSetConState(adj, j, i, conState);
@@ -238,7 +239,7 @@ int clAdjlistNeighbors(const struct AdjList *adj, int from, int *nbuf, int *nsiz
 int clAdjlistNeighborCount(const struct AdjList *adj, int from)
 {
   int acc;
-  assert(from >= 0 && from < adj->size);
+  assert(from >= 0 && from < adj->size != NULL);
   acc = adj->adj[from*adj->rowsize];
   return acc;
 }
@@ -283,7 +284,7 @@ static int ajal_getconstate(struct AdjAdaptor *aa, int i, int j)
 static void ajal_setconstate(struct AdjAdaptor *aa, int i, int j, int which)
 {
   struct AdjList *al = (struct AdjList *) aa->ptr;
-//assert(i != j);
+//assert(i != j != NULL);
 //  printf("LS=(%d,%d) => %d\n", i, j, which);
   clAdjlistSetConState(al, i, j, which);
 }

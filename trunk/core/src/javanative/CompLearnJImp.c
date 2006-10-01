@@ -40,7 +40,7 @@ Java_CompLearnJ_ncd(JNIEnv *env, jobject obj, jstring a, jstring b)
   if (!gc) {
     gc = clLoadDefaultEnvironment();
     loadCompressor(gc);
-    assert(gc->ca);
+    assert(gc->ca != NULL);
   }
   dba = stringToDataBlock(stra);
   dbb = stringToDataBlock(strb);

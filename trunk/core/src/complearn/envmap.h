@@ -114,37 +114,6 @@ void clEnvmapPrint(struct EnvMap *uem);
  */
 char *clEnvmapValueForKey(struct EnvMap *em, const char *key);
 
-/** \brief Dumps an EnvMap into a serialized format and returns a DataBlock
- *
- *  clEnvmapDump() a DataBlock which then can be written to a file using the
- *  function clDatablockWriteToFile().  This resulting DataBlock is also
- *  appropriate when using the function clPackageDataBlocks().
- *
- *  To convert the resulting DataBlock back into an EnvMap, use clEnvmapLoad()
- *  function.
- *  \param em pointer to EnvMap
- *  \return DataBlock which can be written to file
- */
-struct DataBlock *clEnvmapDump(struct EnvMap *em);
-
-/** \brief Converts a DataBlock created by clEnvmapDump() back into an EnvMap
- *
- *  clEnvmapLoad() will take as an argument a DataBlock, which was
- *  most likely created by the clEnvmapDump() function, and convert the DataBlock
- *  into an EnvMap. A pointer to the EnvMap is returned.
- *
- *  An option to clEnvmapLoad() is the fmustbe flag, which, if set to 1, forces
- *  the function to exit if the check for the special EnvMap tag created by
- *  clEnvmapDump() fails.  If the tag is not found, an error message is printed to
- *  stdout. Set fmustbe to 0 to return NULL instead.
- *
- *  \param db DataBlock
- *  \param fmustbe 1 if the DataBlock must contain the identifying EnvMap flag;
- *  0 if not
- *  \return pointer to new EnvMap
- */
-struct EnvMap *clEnvmapLoad(struct DataBlock *db, int fmustbe);
-
 /** \brief Retrieves a key value pair at a given index of an EnvMap
  *  The key-value pair returned by clEnvmapKeyValAt() is in the form of a PCTypes
  *  StringPair object.

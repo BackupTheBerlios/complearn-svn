@@ -38,80 +38,6 @@ struct EnvMap {
   struct CLNodeSet *private;
 };
 
-struct EnvMap *clEnvmapLoad(struct DataBlock *db, int fmustbe)
-{
-  struct EnvMap *result = clEnvmapNew();
-  struct DataBlock *cur = NULL;
-  struct TagManager *tm;
-  struct StringStack *keyparts;
-  struct StringStack *valparts;
-  struct TagHdr *h = (struct TagHdr *) clDatablockData(db);
-  int i;
-
-  if (db == NULL) {
-    clLogError("NULL ptr in clEnvmapLoad()\n");
-  }
-
-  if (h->tagnum != TAGNUM_ENVMAP) {
-    if (fmustbe) {
-      clLogError("Error: expecting ENVMAP tagnum %x, got %x\n",
-          TAGNUM_ENVMAP,h->tagnum);
-      exit(1);
-    }
-    else
-      return NULL;
-  }
-  result->marked = clNodesetNew(MAXINDECES);
-  result->private = clNodesetNew(MAXINDECES);
-
-  tm = clNewTagManager(db);
-
-  cur = clGetCurDataBlock(tm);
-  keyparts = clStringstackLoad(cur, 1);
-  clStepNextDataBlock(tm);
-  clDatablockFreePtr(cur);
-  cur = clGetCurDataBlock(tm);
-  valparts = clStringstackLoad(cur, 1);
-  clDatablockFreePtr(cur);
-
-  assert (clStringstackSize(keyparts)== clStringstackSize(valparts));
-  for (i = 0; i < clStringstackSize(keyparts) ; i += 1)
-    clEnvmapSetKeyVal(result, clStringstackReadAt(keyparts,i), clStringstackReadAt(valparts,i));
-
-  for (i = 0; i < clDraSize(result->d); i += 1)
-    clNodesetAddNode(result->marked, i);
-
-  clFreeTagManager(tm);
-  clStringstackFree(keyparts); clStringstackFree(valparts);
-  return result;
-}
-
-struct DataBlock *clEnvmapDump(struct EnvMap *em)
-{
-  struct DataBlock *rr;
-  struct DataBlock *keys, *vals;
-  struct StringStack *keyparts = clStringstackNew();
-  struct StringStack *valparts = clStringstackNew();
-  int i;
-
-  if (em == NULL) {
-    clLogError("NULL ptr in clEnvmapDump()\n");
-  }
-
-  for (i = 0; i < clEnvmapSize(em) ; i += 1) {
-    clStringstackPush(keyparts, clDraGetValueAt(em->d,i).sp.key);
-    clStringstackPush(valparts, clDraGetValueAt(em->d,i).sp.val);
-  }
-  keys = clStringstackDump(keyparts);
-  vals = clStringstackDump(valparts);
-
-  rr = clPackageDataBlocks(TAGNUM_ENVMAP, keys,vals, NULL);
-
-  clStringstackFree(keyparts); clStringstackFree(valparts);
-  clDatablockFreePtr(keys); clDatablockFreePtr(vals);
-
-  return rr;
-}
 #define MAXINDECES 10
 struct EnvMap *clEnvmapNew() {
   struct EnvMap *em;
@@ -271,7 +197,7 @@ union PCTypes clEnvmapKeyValAt(struct EnvMap *em, int where)
   if (em == NULL) {
     clLogError("NULL ptr in clEnvmapKeyValAt()\n");
   }
-  assert(where >= 0);
+  assert(where >= 0 != NULL);
   return clDraGetValueAt(em->d, where);
 }
 
@@ -312,23 +238,6 @@ int clEnvmapIsPrivateAt(struct EnvMap *em, int where)
     clLogError("NULL ptr in clEnvmapIsPrivateAt()\n");
   }
   return clNodesetHasNode(em->private, where);
-}
-
-struct EnvMap *clbEnvMap(char *fname)
-{
-  struct DataBlock *db, *dbem;
-  struct DRA *dd;
-  struct EnvMap *result = NULL;
-
-  db = clFileToDataBlockPtr(fname);
-  dd = clLoadDatablockPackage(db);
-  dbem = clScanForTag(dd, TAGNUM_ENVMAP);
-  result = clEnvmapLoad(dbem, 1);
-  clDatablockFreePtr(dbem);
-
-  clDatablockFreePtr(db);
-  clFreeDataBlockpackage(dd);
-  return result;
 }
 
 int clEnvmapMerge(struct EnvMap *dest, struct EnvMap *src)

@@ -197,7 +197,7 @@ int clFetchSample(struct GoogleCache *gc, const char *daystr, struct StringStack
     }
   }
   if (db) {
-    assert(clDatablockSize(db) == sizeof(struct GCSample));
+    assert(clDatablockSize(db != NULL) == sizeof(struct GCSample));
     *val = clConvertCacheVal(db);
     clStringstackFree(normed);                       /* FSF02:1/2 */
     clDatablockFreePtr(db);

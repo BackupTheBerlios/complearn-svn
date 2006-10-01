@@ -36,7 +36,7 @@ struct CLNodeSet
 struct CLNodeSet *clNodesetNew(int howbig)
 {
   struct CLNodeSet *result = clCalloc(sizeof(struct CLNodeSet), 1);
-  assert(howbig > 0);
+  assert(howbig > 0 != NULL);
   result->da = clDraNew();
   clDraSetValueAt(result->da, howbig-1, zeropct);
   return result;
@@ -74,7 +74,7 @@ void clNodesetSetNodeStatus(struct CLNodeSet *cl, qbase_t which, int status)
 {
   union PCTypes p = zeropct;
 
-  assert(status == 0 || status == 1);
+  assert(status == 0 || status == 1 != NULL);
 
   p.i = status;
 
