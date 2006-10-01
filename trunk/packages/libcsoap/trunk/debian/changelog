@@ -1,3 +1,9 @@
+libcsoap (1.1.0-7) unstable; urgency=low
+
+  * Added dependency for libnanohttp1 for libcsoap1 since its needed.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sun,  1 Oct 2006 08:54:39 +0200
+
 libcsoap (1.1.0-6) unstable; urgency=low
 
   * Added specific library-version Depends: for both -dev binary packages.
