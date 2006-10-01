@@ -149,8 +149,12 @@ void clGslmatrixFree(gsl_matrix *m)
 
 int clbIsCLBFile(struct DataBlock *db)
 {
-  int *v = (int *) clDatablockData(db);
-  return *v == TAGNUM_TAGMASTER;
+  char smallbuf[200];
+  if (clDatablockSize(db) < 200)
+    return 0;
+  memcpy(smallbuf, clDatablockData(db), 199);
+  smallbuf[199] = 0;
+  return strstr(smallbuf, "<clb") ? 1 : 0;
 }
 
 struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
@@ -178,20 +182,6 @@ gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
   }
 }
 
-gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
-{
-  struct DataBlock *dbdm;
-  gsl_matrix *dm;
-  struct DRA *dd;
-
-  dd = clLoadDatablockPackage(db);
-  dbdm = clScanForTag(dd, TAGNUM_CLDISTMATRIX);
-  dm = clbDistMatrixLoad(dbdm);
-
-  clDatablockFreePtr(dbdm);
-  clDraFree(dd);
-  return dm;
-}
 
 struct DataBlock *clbDMDataBlock(char *fname) {
   struct DataBlock *db, *dbdm;
@@ -283,7 +273,7 @@ int clTxtRowSize(struct DataBlock *db)
   return rowCount;
 }
 
-static struct StringStack *clDefaultLabels(int sz)
+struct StringStack *clDefaultLabels(int sz)
 {
   int i;
   struct StringStack *ss = clStringstackNew();

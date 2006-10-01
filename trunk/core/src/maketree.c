@@ -212,9 +212,13 @@ int main(int argc, char **argv)
   printf("Read file: %s\n", fname);
   dm = clReadAnyDistMatrix(dmdb);
   labels = clReadAnyDistMatrixLabels(dmdb);
+  if (labels && clStringstackSize(labels) != dm->size1) {
+    printf("Error, labels is size %d but matrix is size %d\n", clStringstackSize(labels), dm->size1);
+  }
   if (!clbIsCLBFile(dmdb)) {
     ;
   } else {
+/*
     struct EnvMap *em = clbEnvMap(fname);
     struct StringStack *ss = clbCommands(fname);
     char *cmd = NULL;
@@ -232,6 +236,7 @@ int main(int argc, char **argv)
     //labels = clbLabels(fname);
     clEnvmapFree(em);
     clFreeandclear(cmd);
+*/ /*TODO : add command here */
   }
 
   printf("The matrix is %d by %d\n", (int) dm->size1, (int) dm->size2);

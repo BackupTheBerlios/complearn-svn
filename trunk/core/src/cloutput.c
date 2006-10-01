@@ -31,6 +31,13 @@
 #include <string.h>
 #include <complearn/ncdapp.h>
 
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xmlwriter.h>
+#include <libxml/encoding.h>
+
+#define MY_ENCODING "ISO-8859-1"
+
 #include <gsl/gsl_linalg.h>
 
 #define PWD_RDY 1
@@ -143,65 +150,349 @@ gsl_matrix *clGetNCDMatrix(struct DataBlockEnumeration *a, struct DataBlockEnume
   return gres;
 }
 
+struct StringStack *clDefaultLabels(int i);
+
+
+struct DataBlock *clSprintfDM(struct CLDistMatrix *cl)
+{
+  struct StringStack *res;
+  struct DataBlock *db;
+  int i, acc=0, ptr=0;
+  char buf[1024], *dat;
+  res = clStringstackNew();
+  sprintf(buf, "Username: %s\n", cl->username); clStringstackPush(res,buf);
+  sprintf(buf, "Title   : %s\n", cl->title); clStringstackPush(res,buf);
+  sprintf(buf, "CTime   : %s\n", cl->creationTime);
+  clStringstackPush(res,buf);
+  sprintf(buf, "FileVers: %s\n", cl->fileverstr); clStringstackPush(res,buf);
+  sprintf(buf, "CLibVers: %s\n", cl->cllibver); clStringstackPush(res,buf);
+  for (i = 0; i < clStringstackSize(cl->cmds); i += 1) {
+    sprintf(buf, "%d: %s\n", i+1, clStringstackReadAt(cl->cmds, i));
+    clStringstackPush(res, buf);
+  }
+  for (i = 0; i < clStringstackSize(res); i += 1)
+    acc += strlen(clStringstackReadAt(res, i));
+  dat = calloc(acc+1,1);
+  for (i = 0; i < clStringstackSize(res); i += 1) {
+    strcpy(dat+ptr, clStringstackReadAt(res, i));
+    ptr +=   strlen(clStringstackReadAt(res,i));
+  }
+  db = clDatablockNewFromBlock(dat, acc+1);
+  clFree(dat);
+  return db;
+}
+
+static void handleStringList(xmlDocPtr doc, xmlNodePtr node, struct StringStack *ss, const char *tagname) {
+  node = node->xmlChildrenNode;
+  while (node != NULL) {
+    if (strcmp(tagname, (char *) node->name) == 0)
+      clStringstackPush(ss, (char *) xmlNodeListGetString(doc, node->xmlChildrenNode,1));
+    node = node->next;
+  }
+}
+
+static void handleDM(xmlDocPtr doc, xmlNodePtr node, struct StringStack *ss,
+struct CLDistMatrix *result) {
+  result->title = (char *) xmlGetProp(node, (unsigned char *) "title");
+  result->creationTime = (char *) xmlGetProp(node, (unsigned char *) "creationtime");
+  node = node->xmlChildrenNode;
+  while (node != NULL) {
+    do {
+        if (strcmp("entries", (char *) node->name) == 0) {
+          handleStringList(doc, node, ss, "number");
+          continue;
+        }
+        if (strcmp((char *) node->name, "axis1") == 0) {
+          handleStringList(doc, node, result->labels[0], "name");
+          continue;
+        }
+        if (strcmp((char *) node->name, "axis2") == 0) {
+          handleStringList(doc, node, result->labels[1], "name");
+          continue;
+        }
+      } while(0);
+    node = node->next;
+  }
+}
+
+static void writeStringList(xmlTextWriterPtr tw, struct StringStack *ss, const char *topname, const char *itemname) {
+  int rc;
+  int i;
+  rc = xmlTextWriterStartElement(tw, (unsigned char *) topname);
+  for (i = 0; i < clStringstackSize(ss); i += 1)
+    rc = xmlTextWriterWriteElement(tw, (unsigned char *) itemname, (unsigned char *) clStringstackReadAt(ss,i));
+  rc = xmlTextWriterEndElement(tw);
+}
+
+static char *getTimestrNow(void)
+{
+  static char buf[32];
+  sprintf(buf, "%lu", (unsigned long) clDatetimeStaticTimer());
+  return buf;
+}
+
+static struct CLDistMatrix *fillInBlanks(struct CLDistMatrix *clb)
+{
+  int i;
+  if (clb->mat == NULL) {
+    clLogError("Cannot write NULL gsl_matrix, exitting.");
+  }
+  if (clb->mat->size1 < 1 || clb->mat->size2 < 1) {
+    clLogError("Invalid gsl_matrix size, cannot write.  Exitting.");
+  }
+  if (clb->fileverstr == NULL)
+    clb->fileverstr = clStrdup("1.0");
+  if (clb->cllibver == NULL)
+    clb->cllibver = clStrdup(PACKAGE_VERSION);
+  if (clb->username == NULL)
+    clb->username = clStrdup(clGetUsername());
+  if (clb->hostname == NULL)
+    clb->hostname = clStrdup(clGetHostname());
+  if (clb->title == NULL)
+    clb->title = clStrdup("untitled");
+  if (clb->compressor == NULL)
+    clb->compressor = clStrdup("unknown");
+  if (clb->creationTime == NULL)
+    clb->creationTime = clStrdup(getTimestrNow());
+  if (clb->labels == NULL)
+    clb->labels = (struct StringStack **) clCalloc(sizeof(struct StringStack *), 2);
+  for (i = 0; i < 2; i += 1) {
+    if (clb->labels[i] == NULL)
+      clb->labels[i] = clStringstackNew();
+    if (clStringstackSize(clb->labels[i]) == 0) {
+      clStringstackFree(clb->labels[i]);
+      clb->labels[i] =clDefaultLabels(i==0 ?clb->mat->size1:clb->mat->size2);
+    }
+  }
+  return clb;
+}
+
+struct CLDistMatrix *clCloneCLDM(struct CLDistMatrix *clb)
+{
+  struct CLDistMatrix *r = clCalloc(sizeof(*r), 1);
+  if (clb->mat == NULL) {
+    clLogError("Cannot write NULL gsl_matrix, exitting.");
+  }
+#define DUPSTR(s) if (clb->s) r->s = clStrdup(clb->s)
+  DUPSTR(cllibver);
+  DUPSTR(username);
+  DUPSTR(hostname);
+  DUPSTR(title);
+  DUPSTR(compressor);
+  DUPSTR(creationTime);
+  r->mat = gsl_matrix_alloc(clb->mat->size1, clb->mat->size2);
+  gsl_matrix_memcpy(r->mat, clb->mat);
+  if (clb->labels) {
+    r->labels = clCalloc(sizeof(void *), 2);
+    if (clb->labels[0]) r->labels[0] = clStringstackClone(clb->labels[0]);
+    if (clb->labels[1]) r->labels[1] = clStringstackClone(clb->labels[1]);
+  }
+  if (clb->cmds) r->cmds = clStringstackClone(clb->cmds);
+  if (clb->cmdtimes) r->cmdtimes = clStringstackClone(clb->cmdtimes);
+  return r;
+}
+
+void clFreeCLDM(struct CLDistMatrix *clb)
+{
+  if (clb->cllibver) clFree(clb->cllibver);
+  if (clb->username) clFree(clb->username);
+  if (clb->hostname) clFree(clb->hostname);
+  if (clb->title) clFree(clb->title);
+  if (clb->compressor) clFree(clb->compressor);
+  if (clb->creationTime) clFree(clb->creationTime);
+  if (clb->mat) gsl_matrix_free(clb->mat);
+  if (clb->cmds) clStringstackFree(clb->cmds);
+  if (clb->cmdtimes) clStringstackFree(clb->cmdtimes);
+  if (clb->labels) {
+    if (clb->labels[0]) clStringstackFree(clb->labels[0]);
+    if (clb->labels[1]) clStringstackFree(clb->labels[1]);
+    clFree(clb->labels);
+  }
+  memset(clb, 0, sizeof(*clb));
+  clFree(clb);
+}
+
+static struct DataBlock *clRealWriteCLBDistMatrix(struct CLDistMatrix *clb)
+{
+  int rc;
+  struct DataBlock *result;
+  int dim1, dim2, i, j;
+  gsl_matrix *m = clb->mat;
+  xmlBufferPtr b;
+  xmlTextWriterPtr tw;
+  clb = fillInBlanks(clCloneCLDM(clb));
+  b = xmlBufferCreate();
+  tw =xmlNewTextWriterMemory(b, 0);
+  rc = xmlTextWriterStartDocument(tw, NULL, MY_ENCODING, NULL);
+  rc = xmlTextWriterStartElement(tw, (unsigned char *) "clb");
+  rc = xmlTextWriterWriteAttribute(tw, (unsigned char *) "version", (unsigned char *) clb->fileverstr);
+
+    rc = xmlTextWriterWriteElement(tw, (unsigned char *) "cllibver", (unsigned char *) clb->cllibver);
+    rc = xmlTextWriterWriteElement(tw, (unsigned char *) "username", (unsigned char *) clb->username);
+    rc = xmlTextWriterWriteElement(tw, (unsigned char *) "hostname", (unsigned char *) clb->hostname);
+    rc = xmlTextWriterWriteElement(tw, (unsigned char *) "compressor", (unsigned char *) clb->compressor);
+    rc = xmlTextWriterStartElement(tw,(unsigned char *)  "distmatrix");
+    rc = xmlTextWriterWriteAttribute(tw,(unsigned char *)  "creationtime", (unsigned char *) clb->creationTime);
+    rc = xmlTextWriterWriteAttribute(tw, (unsigned char *) "title",(unsigned char *)  clb->title);
+    writeStringList(tw, clb->labels[0],  "axis1",  "name");
+    writeStringList(tw, clb->labels[1],  "axis2",  "name");
+    dim1 = clStringstackSize(clb->labels[0]);
+    dim2 = clStringstackSize(clb->labels[1]);
+      rc = xmlTextWriterStartElement(tw,(unsigned char *)  "entries");
+      for (i = 0; i < dim1; i += 1) {
+        for (j = 0; j < dim2; j += 1) {
+          double g = gsl_matrix_get(m, i, j);
+            xmlTextWriterWriteFormatElement(tw, (unsigned char *) "number", (char *) "%f", g);
+        }
+      }
+      rc = xmlTextWriterEndElement(tw);
+    rc = xmlTextWriterEndElement(tw);
+    if (clb->cmds) {
+      rc = xmlTextWriterStartElement(tw,(unsigned char *)  "commands");
+      for (i = 0; i < clStringstackSize(clb->cmds); i += 1) {
+        char *t = clb->cmdtimes ? clStringstackReadAt(clb->cmdtimes, i) : NULL;
+        rc = xmlTextWriterStartElement(tw,(unsigned char *)  "cmdstring");
+        if (t)
+          rc = xmlTextWriterWriteAttribute(tw,(unsigned char *)  "creationtime", (unsigned char *) t);
+        xmlTextWriterWriteString(tw,
+         (unsigned char *)  clStringstackReadAt(clb->cmds, i));
+        rc = xmlTextWriterEndElement(tw);
+      }
+      rc = xmlTextWriterEndElement(tw);
+    }
+  rc = xmlTextWriterEndElement(tw);
+  rc = xmlTextWriterEndDocument(tw);
+  xmlFreeTextWriter(tw);
+  result = clStringToDataBlockPtr((char *) b->content);
+  xmlBufferFree(b);
+  /* TODO: remove more mem leaks from above func */
+  clFreeCLDM(clb);
+  return result;
+}
+
+static struct DataBlock *clWriteCLBDistMatrix(gsl_matrix *mat, struct StringStack *labels, struct StringStack *cmds, const char *compressor_name)
+{
+  struct CLDistMatrix inp;
+  struct StringStack *lab[2] = { NULL, NULL };
+  struct DataBlock *result;
+  memset(&inp, 0, sizeof(inp));
+  inp.mat = gsl_matrix_alloc(mat->size1, mat->size2);
+  gsl_matrix_memcpy(inp.mat, mat);
+  if (labels) {
+    lab[0] = clStringstackClone(labels);
+    lab[1] = clStringstackClone(labels);
+  }
+  if (cmds)
+    inp.cmds = clStringstackClone(cmds);
+  if (compressor_name)
+    inp.compressor = clStrdup(compressor_name);
+  result =  clRealWriteCLBDistMatrix(&inp);
+  if (labels) {
+    clStringstackFree(lab[0]);
+    clStringstackFree(lab[1]);
+  }
+  if (cmds)
+    clStringstackFree(inp.cmds);
+  if (compressor_name)
+    clFree(inp.compressor);
+  gsl_matrix_free(inp.mat);
+  return result;
+}
+
+gsl_matrix *clbDBDistMatrix(struct DataBlock *db)
+{
+  return clReadCLBDistMatrix(db)->mat;
+}
+
+struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *db)
+{
+  struct CLDistMatrix *result = calloc(sizeof(struct CLDistMatrix), 1);
+  struct StringStack *ents = clStringstackNew();
+  int dim1, dim2, i, j, k;
+  xmlDocPtr doc;
+  xmlNodePtr node;
+  result->fileverstr = "";
+  result->username = "";
+  result->title = "";
+  result->creationTime = "";
+  result->mat = NULL;
+  result->cmds = clStringstackNew();
+  result->cmdtimes = clStringstackNew();
+  result->labels = clCalloc(sizeof(void *), 2);
+  result->labels[0] = clStringstackNew();
+  result->labels[1] = clStringstackNew();
+  doc = xmlReadMemory((char *)clDatablockData(db), clDatablockSize(db), "noname.xml",
+                      NULL, 0);
+  if (doc == NULL) {
+    fprintf(stderr, "Failed to parse document\n");
+    free(result);
+    return NULL;
+  }
+  node = doc->children;
+  if (strcmp((char *) node->name, "clb") != 0) {
+    free(result);
+    return NULL;
+  }
+  result->fileverstr = (char *) xmlGetProp(node, (unsigned char *) "version");
+  node = node->xmlChildrenNode;
+ while (node != NULL) {
+    do {
+      if (strcmp((char *) node->name, "commands") == 0) {
+        handleStringList(doc, node, result->cmds, "cmdstring");
+        continue;
+      }
+      if (strcmp((char *) node->name, "distmatrix") == 0) {
+        handleDM(doc, node, ents, result);
+        continue;
+      }
+      if (strcmp((char *) node->name, "cllibver") == 0) {
+        result->cllibver = (char *) clStrdup((char *) xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+        continue;
+      }
+      if (strcmp((char *) node->name, "compressor") == 0) {
+        result->compressor = (char *) clStrdup((char *) xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+        continue;
+      }
+      if (strcmp((char *) node->name, "username") == 0) {
+        result->username = (char *) clStrdup((char *) xmlNodeListGetString(doc, node->xmlChildrenNode, 1));
+        continue;
+      }
+    } while (0);
+    node = node->next;
+    }
+
+// xmlFreeDoc(doc);
+  dim1 = clStringstackSize(result->labels[0]);
+  dim2 = clStringstackSize(result->labels[1]);
+  if (clStringstackSize(ents) != dim1*dim2) {
+    clLogError("Found dim1 %d and dim2 %d but %d entries instead of %d\n", dim1, dim2, clStringstackSize(ents), dim1*dim2);
+  }
+  result->mat = gsl_matrix_alloc(dim1, dim2);
+  k = 0;
+  for (i = 0; i < dim1; i += 1)
+    for (j = 0; j < dim2; j += 1)
+      gsl_matrix_set(result->mat, i, j, atof(clStringstackReadAt(ents,k++)));
+  clStringstackFree(ents);
+  return result;
+}
+
+/*
+int main(int argc, char **argv)
+{
+  struct DataBlock *db;
+  struct CLDistMatrix *clb;
+  db = clFileToDataBlockPtr("dm.xml");
+  clb = clReadCLBDistMatrix(db);
+  db = clSprintfDM(clb);
+  printf("%s\n", clDatablockData(db));
+  db = clWriteCLBDistMatrix(clb->mat, NULL);
+  clDatablockWriteToFile(db, "newdm.xml");
+  return 0;
+}
+*/
 struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em)
 {
-  struct EnvMap *myenv = NULL;
-  struct StringStack *mycmds = NULL, *mylabels = NULL;
-  struct DataBlock *dbdmtagged, *dblabelstagged, *dbcommandstagged, *dbenvmap=NULL, *db;
-  if (em == NULL) {
-    em = clEnvmapNew();
-    clEnvmapSetKeyVal(em, "defaults", "1");
-    myenv = em;
-  }
-  if (cmds == NULL) {
-    cmds = clStringstackNew();
-    clStringstackPush(cmds, "# (no commands given)");
-    mycmds = cmds;
-  }
-  if (labels == NULL) {
-    int i;
-    labels = clStringstackNew();
-    for (i = 0; i < gres->size1; i += 1) {
-      char buf[16];
-      sprintf(buf, "%d", i+1);
-      clStringstackPush(labels, buf);
-    }
-    mylabels = labels;
-  }
-  int i;
-  for (i = 0; i < clEnvmapSize(em); i += 1) {
-    union PCTypes p;
-    p = clEnvmapKeyValAt(em, i);
-    if (clEnvmapIsMarkedAt(em, i) && !clEnvmapIsPrivateAt(em, i) )
-      clEnvmapSetKeyVal(em, p.sp.key, p.sp.val);
-  }
-  if (clEnvmapSize(em) > 0)
-    dbenvmap = clEnvmapDump(em);
-  dbdmtagged = clDistmatrixDump(gres);
-  assert(labels);
-  dblabelstagged = clLabelsDump(labels);
-  dbcommandstagged = clCommandsDump(cmds);
-  db = clPackageDataBlocks(TAGNUM_TAGMASTER, dbdmtagged, dblabelstagged, dbcommandstagged, dbenvmap, NULL);
-//  clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
-//  clDatablockFreePtr(db);
-  clDatablockFreePtr(dblabelstagged);
-  clDatablockFreePtr(dbdmtagged);
-  if (myenv) {
-    clEnvmapFree(myenv);
-    myenv = NULL;
-    em = NULL;
-  }
-  if (mylabels) {
-    clStringstackFree(mylabels);
-    mylabels = NULL;
-    labels = NULL;
-  }
-  if (mycmds) {
-    clStringstackFree(mycmds);
-    mycmds = NULL;
-    cmds = NULL;
-  }
-  return db;
+  return clWriteCLBDistMatrix(gres, labels, cmds, clEnvmapValueForKey(em, "compressor"));
 }
 
 /* TODO: NCD only function; move to a better location */

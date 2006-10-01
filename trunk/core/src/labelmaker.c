@@ -102,18 +102,11 @@ struct StringStack *clbLabelsLoad(struct DataBlock *db)
 
 struct StringStack *clbDBLabels(struct DataBlock *db)
 {
-  struct DataBlock *dblabels;
-  struct DRA *dd;
-  struct StringStack *ss;
-
-  dd = clLoadDatablockPackage(db);
-  dblabels = clScanForTag(dd, TAGNUM_DMLABELS);
-
-  ss = clbLabelsLoad(dblabels);
-
-  clDatablockFreePtr(dblabels);
-  clDraFree(dd);
-  return ss;
+  struct CLDistMatrix *clb;
+  clb = clReadCLBDistMatrix(db);
+  if (clb && clb->labels && clb->labels[0])
+    return clb->labels[0];
+  return NULL;
 }
 
 struct StringStack *clbLabels(char *fname)

@@ -80,4 +80,27 @@ const char *clGetHostname(void);
 const char *clGetUTSName(void);
 struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labels, struct StringStack *cmds, struct EnvMap *em);
 
+struct CLDistMatrix *clReadCLBDistMatrix(struct DataBlock *db);
+struct CLDistMatrix {
+  char *fileverstr;
+  char *cllibver;
+  char *username;
+  char *hostname;
+  char *title;
+  char *compressor;
+  char *creationTime; // Seconds since the epoch
+  gsl_matrix *mat;
+  struct StringStack *cmds;
+  struct StringStack *cmdtimes; // Seconds since the epoch
+  struct StringStack **labels;
+};
+/** \brief Retrieves a gsl_matrix from a CompLearn DataBlock "package"
+ *
+ *  clbDBDistMatrix() takes as input, a DataBlock "package" as created by
+ *  clPackageDataBlocks().
+ *  \param pointer to DataBlock "package"
+ *  \param pointer to gsl_matrix
+ */
+gsl_matrix *clbDBDistMatrix(struct DataBlock *db);
+
 #endif

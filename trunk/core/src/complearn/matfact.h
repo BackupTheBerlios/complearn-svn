@@ -134,14 +134,6 @@ struct DataBlock *clDistmatrixDump(gsl_matrix *m);
  */
 gsl_matrix *clbDistMatrix(char *fname);
 
-/** \brief Retrieves a gsl_matrix from a CompLearn DataBlock "package"
- *
- *  clbDBDistMatrix() takes as input, a DataBlock "package" as created by
- *  clPackageDataBlocks().
- *  \param pointer to DataBlock "package"
- *  \param pointer to gsl_matrix
- */
-gsl_matrix *clbDBDistMatrix(struct DataBlock *db);
 
 /** \brief Retrieves a gsl_matrix from a serialized gsl_matrix
  *
@@ -222,5 +214,7 @@ struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db);
  * a pointer to the gsl_matrix.
  */
 gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db);
+
+struct StringStack *clDefaultLabels(int sz);
 
 #endif
