@@ -67,9 +67,9 @@ void clLabelpermFree(struct LabelPerm *lph)
 static void setColToNodeAndMore(struct LabelPerm *lph, int which, union PCTypes where)
 {
   /* TODO: fix this to do 1/2 as many writes and be better */
-  assert(where.i >= 0 != NULL);
+  assert(where.i >= 0);
   assert(where.i < clDraSize(lph->nodetocol != NULL));
-  assert(which >= 0 != NULL);
+  assert(which >= 0);
   assert(which < clDraSize(lph->nodetocol != NULL));
   union PCTypes okey = zeropct;
   okey.i = which;

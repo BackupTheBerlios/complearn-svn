@@ -86,7 +86,7 @@ static void mustBeSorted(qbase_t labels[4])
 {
   int i;
   for (i = 1; i < 4; ++i) {
-    assert(labels[i-1] <= labels[i] != NULL);
+    assert(labels[i-1] <= labels[i]);
   }
 }
 

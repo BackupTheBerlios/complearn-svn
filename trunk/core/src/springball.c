@@ -151,7 +151,7 @@ struct SBS3 *clSbsNew3(int i, int j, gsl_vector_view p1, gsl_vector_view p2, gsl
 
 double clipValInbetween(double val, double minval, double maxval)
 {
-  assert(minval <= maxval != NULL);
+  assert(minval <= maxval);
   if (val > maxval)
     val = maxval;
   if (val < minval)

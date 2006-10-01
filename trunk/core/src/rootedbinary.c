@@ -98,7 +98,7 @@ static int verifyTree(struct RootedBinary *rb)
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
       retval = clAdjaNeighbors(rb->aa, i, nbp, &nlenhere);
-      assert(retval == CL_OK != NULL);
+      assert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
       return 0;
@@ -123,28 +123,28 @@ tryagain:
     } while (k1 == rb->root || k1 == k2);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(rb->aa, k1, k2, pbuf, &pathlen);
-    assert(retval == CL_OK != NULL);
-    assert(pbuf[0] == k1 != NULL);
+    assert(retval == CL_OK);
+    assert(pbuf[0] == k1);
     assert(clAdjaGetConState(rb->aa, k1, pbuf[1] != NULL));
   } while (pathlen <= 2);
   i1 = pbuf[1];
-  assert(i1 < MAXPATHNODES != NULL);
+  assert(i1 < MAXPATHNODES);
   assert(clAdjaGetConState(rb->aa, k1, i1 != NULL));
   nsizems = MAXNEIGHBORS;
 
   retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK != NULL);
+  assert(retval == CL_OK);
   if (nsizems < 3)
     goto tryagain;
   clAdjaSetConState(rb->aa, k1, i1, 0);
   retval = clAdjaNeighbors(rb->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK != NULL);
+  assert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems < 2) {
     clLogError( "Warning, got node %d with too many (%d) neighbors, %d...\n",
         i1, nsizems, m1);
-    assert(nsizems == 2 != NULL);
+    assert(nsizems == 2);
   }
   do {
     m3 = randomNeighbor(rb, k2);
@@ -176,7 +176,7 @@ tryagain:
     } while (i1 == i2 || i1 == rb->root || i2 == rb->root);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(rb->aa, i1, i2, pathbuf, &pathlen);
-    assert(retval == CL_OK != NULL);
+    assert(retval == CL_OK);
   } while (pathlen <= 2);
   n1 = pathbuf[1];
   if (n1 == rb->root)
@@ -263,7 +263,7 @@ struct RootedBinary *clRootedBinaryNew(int howManyLeaves, struct AdjAdaptor *uaa
   struct DRA *leaves;
   struct RootedBinary *rb = clCalloc(sizeof(struct RootedBinary), 1);
 
-  assert(howManyLeaves > 3 != NULL);
+  assert(howManyLeaves > 3);
 
   rb->nodecount = 2*howManyLeaves-3;
 

@@ -74,10 +74,10 @@ struct SplitResult *splitTree(struct TreeAdaptor *ta, int knode)
       continue;
     if (clAdjaGetConState(aa, c, knode)) {
       j += 1;
-      assert(j <= 2 != NULL);
+      assert(j <= 2);
     }
     p.i = c;
-    assert(j >= 0 != NULL);
+    assert(j >= 0);
     clDraPush(sr->p[j], p);
   //  printf("Node %d: %d\n", c, j);
   }

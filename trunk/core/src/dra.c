@@ -56,7 +56,7 @@ union PCTypes clDraRandom(const struct DRA *da)
   if (da == NULL) {
     clLogError("NULL ptr in clDraRandom()\n");
   }
-  assert(da->size > 0 != NULL);
+  assert(da->size > 0);
   i = rand() % da->size;
   return da->pc[i];
 }
@@ -142,8 +142,8 @@ union PCTypes clDraGetValueAt(const struct DRA *da, int where)
   assert(da != NULL);
   assert(da->pc && "tried to access freed DRA" != NULL);
   clDraVerify(da);
-  assert(where >= 0 != NULL);
-  assert(where < 1000000 != NULL);  /* TODO: remove me */
+  assert(where >= 0);
+  assert(where < 1000000);  /* TODO: remove me */
   if (where >= da->size) {
     clLogError( "Error, trying to read element index %d but only of size %d\n",
         where, da->size);
@@ -159,7 +159,7 @@ void clDraSetValueAt(struct DRA *da, int where, union PCTypes p)
     clLogError("NULL ptr in clDraSetValueAt()\n");
   }
   assert(da != NULL);
-  assert(where >= 0 != NULL);
+  assert(where >= 0);
   makeSizeFor(da, where);
   da->pc[where] = p;
   if (where + 1 >= da->size)
@@ -200,7 +200,7 @@ union PCTypes clDraShift(struct DRA *da)
     clLogError("NULL ptr in clDraShift()\n");
   }
   result = da->pc[0];
-  assert(da->size > 0 != NULL);
+  assert(da->size > 0);
   memmove(da->pc, da->pc+1, (da->size-1) * sizeof(da->pc[0]));
   da->size -= 1;
   return result;
@@ -213,7 +213,7 @@ union PCTypes clDraPop(struct DRA *da)
     clLogError("NULL ptr in clDraPop()\n");
   }
   result  = da->pc[da->size-1];
-  assert(da->size > 0 != NULL);
+  assert(da->size > 0);
   memset(da->pc+(da->size-1), 0, sizeof(da->pc[0]));
   da->size -= 1;
   return result;
@@ -225,28 +225,28 @@ void clDraUnshift(struct DRA *da, union PCTypes p)
     clLogError("NULL ptr in clDraUnshift()\n");
   }
   assert(da != NULL);
-  assert(da->size >= 0 != NULL);
+  assert(da->size >= 0);
   assert(da->pc != NULL);
-  assert(da->alloc >= 0 != NULL);
-  assert(da->alloc >= da->size != NULL);
+  assert(da->alloc >= 0);
+  assert(da->alloc >= da->size);
   makeSizeFor(da, clDraSize(da));
   assert(da != NULL);
-  assert(da->size >= 0 != NULL);
+  assert(da->size >= 0);
   assert(da->pc != NULL);
-  assert(da->alloc >= 0 != NULL);
-  assert(da->alloc >= da->size != NULL);
+  assert(da->alloc >= 0);
+  assert(da->alloc >= da->size);
   memmove(da->pc+1, da->pc, sizeof(da->pc[0]) * clDraSize(da));
   assert(da != NULL);
-  assert(da->size >= 0 != NULL);
+  assert(da->size >= 0);
   assert(da->pc != NULL);
-  assert(da->alloc >= 0 != NULL);
-  assert(da->alloc >= da->size != NULL);
+  assert(da->alloc >= 0);
+  assert(da->alloc >= da->size);
   da->pc[0] = p;
   assert(da != NULL);
-  assert(da->size >= 0 != NULL);
+  assert(da->size >= 0);
   assert(da->pc != NULL);
-  assert(da->alloc >= 0 != NULL);
-  assert(da->alloc >= da->size != NULL);
+  assert(da->alloc >= 0);
+  assert(da->alloc >= da->size);
   da->size += 1;
 }
 
@@ -256,9 +256,9 @@ void clDraPush(struct DRA *da, union PCTypes p)
     clLogError("NULL ptr in clDraPush()\n");
   }
 #if LOGICWALL
-  assert(da->size >= 0 != NULL);
+  assert(da->size >= 0);
   assert(da->pc != NULL);
-  assert(da->size < 10000 != NULL);
+  assert(da->size < 10000);
 #endif
   clDraSetValueAt(da, da->size, p);
 }
@@ -270,10 +270,10 @@ int clDraSwapAt(struct DRA *da, int inda, int indb)
     clLogError("NULL ptr in clDraSwapAt()\n");
   }
   assert(da != NULL);
-  assert(inda >= 0 != NULL);
-  assert(indb >= 0 != NULL);
-  assert(inda < da->size != NULL);
-  assert(indb < da->size != NULL);
+  assert(inda >= 0);
+  assert(indb >= 0);
+  assert(inda < da->size);
+  assert(indb < da->size);
   tmp = da->pc[inda];
   da->pc[inda] = da->pc[indb];
   da->pc[indb] = tmp;

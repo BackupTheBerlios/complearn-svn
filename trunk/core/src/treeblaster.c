@@ -59,7 +59,7 @@ struct TreeBlaster *clTreebNew(gsl_matrix *gsl, struct TreeAdaptor *ta)
   int i, howbig;
   struct TreeBlaster *tm = clCalloc(sizeof(struct TreeBlaster), 1);
   assert(gsl != NULL);
-  assert(gsl->size1 == gsl->size2 != NULL);
+  assert(gsl->size1 == gsl->size2);
   howbig = gsl->size1;
   tm->ta = clTreeaClone(ta);
   tm->dm = clGslmatrixClone(gsl);

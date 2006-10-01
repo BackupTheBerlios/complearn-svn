@@ -50,7 +50,7 @@ void clBlockEnumerationFactoryFree(struct DBEFactory *dbf)
 
 int clBlockEnumerationFactorySetMode(struct DBEFactory *dbf, int newMode)
 {
-  assert(newMode >= 1 && newMode <= DBF_MODE_MAX != NULL);
+  assert(newMode >= 1 && newMode <= DBF_MODE_MAX);
   dbf->mode = newMode;
   return 0;
 }

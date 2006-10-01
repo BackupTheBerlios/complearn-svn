@@ -73,9 +73,9 @@ int clIsConsistent(struct AdjAdaptor *ad, struct Quartet q)
   int p1length = MAXPATHTS, p2length = MAXPATHTS;
   int pathretval;
   pathretval = clPathFinder(ad, q.q[0], q.q[1], nbuf1, &p1length);
-  assert(pathretval == CL_OK != NULL);
+  assert(pathretval == CL_OK);
   pathretval = clPathFinder(ad, q.q[2], q.q[3], nbuf2, &p2length);
-  assert(pathretval == CL_OK != NULL);
+  assert(pathretval == CL_OK);
   return !pathsIntersect(nbuf1, p1length, nbuf2, p2length);
 }
 
@@ -86,7 +86,7 @@ double clScoreTree(struct TreeScore *ts, struct TreeAdaptor *ta)
   double maxtot = 0, mintot = 0;
   struct LabelPerm *lp = clTreeaLabelPerm(ta);
   assert(lp != NULL);
-  assert(ts->dm->size1 == ts->dm->size2 != NULL);
+  assert(ts->dm->size1 == ts->dm->size2);
   assert(ts->dm->size1 == clLabelpermSize(lp != NULL));
   ALLQUARTETS(ts->dm->size1, i, j, k, m) {
     double mincur=0, maxcur=0;

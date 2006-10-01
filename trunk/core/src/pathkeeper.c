@@ -216,7 +216,7 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   int retval;
   int nbuf[MAXNEIGHBORS];
   int nsize = MAXNEIGHBORS;
-  /* assert(root >= 0 != NULL); */
+  /* assert(root >= 0); */
 //  printf("Making SPM for tree %p and node %d\n", ub, root);
   assert(root < clAdjaSize(aa != NULL));
   path = clCalloc(clAdjaSize(aa), sizeof(*path));
@@ -231,10 +231,10 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
   length[root] = 0;
   path[root] = root;
   retval = clAdjaNeighbors(aa, root, nbuf, &nsize);
-  assert(retval == CL_OK != NULL);
+  assert(retval == CL_OK);
   for (i = 0; i < nsize; i += 1) {
     int neighbor = nbuf[i];
-    assert(neighbor >= 0 != NULL);
+    assert(neighbor >= 0);
     assert(neighbor < clAdjaSize(aa != NULL));
     assert(clAdjaGetConState(aa, root, neighbor != NULL) == 1);
     p = zeropct;
@@ -248,7 +248,7 @@ struct DRA *clMakeSPMFor(struct AdjAdaptor *aa, qbase_t root)
     nsize = MAXNEIGHBORS;
     cur = clDraShift(todo).i;
     retval = clAdjaNeighbors(aa, cur, nbuf, &nsize);
-    assert(retval == CL_OK != NULL);
+    assert(retval == CL_OK);
     for (i = 0; i < nsize; i += 1) {
       int neighbor = nbuf[i];
       if (length[neighbor] > length[cur] + 1) {
@@ -311,7 +311,7 @@ void clWalkTree(struct AdjAdaptor *aa,
       cur = clDraPop(border).i;
     else
       cur = clDraShift(border).i;
-/*    assert(cur >= 0 != NULL); */
+/*    assert(cur >= 0); */
     assert(cur < clAdjaSize(aa != NULL));
     if (!clNodesetHasNode(done, cur)) {
       union PCTypes p = zeropct;
@@ -324,9 +324,9 @@ void clWalkTree(struct AdjAdaptor *aa,
       p.i = cur;
       clDraPush(result, p);
       retval = clAdjaNeighbors(aa, cur, nbuf, &nsize);
-      assert(retval == CL_OK != NULL);
+      assert(retval == CL_OK);
       qsort(nbuf, nsize, sizeof(nbuf[0]), intcomper);
-      assert(nsize <= 1 || nbuf[0] < nbuf[1] != NULL);
+      assert(nsize <= 1 || nbuf[0] < nbuf[1]);
       for (i = 0; i < nsize; ++i) {
         union PCTypes p = zeropct;
         p.i = nbuf[i];

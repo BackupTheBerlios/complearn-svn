@@ -203,8 +203,8 @@ static void newToken(struct CLYieldChain *yc, int sym)
 {
   assert(yc->m == NULL && "Uncleared symbol" != NULL);
   yc->m = newSemToken(sym);
-  assert(yc->m->tokNum == sym != NULL);
-  assert(yc->m->d != NULL != NULL);
+  assert(yc->m->tokNum == sym);
+  assert(yc->m->d != NULL);
 }
 
 void ycStringsPF(struct CLYieldChain *yc, struct CLToken *clt)
@@ -371,7 +371,7 @@ static void ycPunkPF(struct CLYieldChain *yc, struct CLToken *clt)
       break;
 
     default:
-      assert("Illegal state in YCPunk" && 0 != NULL);
+      assert("Illegal state in YCPunk" && 0);
   }
 }
 

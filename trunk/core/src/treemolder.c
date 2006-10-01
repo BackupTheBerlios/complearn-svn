@@ -61,7 +61,7 @@ struct TreeMolder *clTreemolderNew(gsl_matrix *gm, struct TreeAdaptor *ta)
 {
   struct TreeMolder *tm = clCalloc(sizeof(*tm), 1);
   struct AdjAdaptor *aa;
-  assert(gm->size1 > 0 && gm->size1 == gm->size2 != NULL);
+  assert(gm->size1 > 0 && gm->size1 == gm->size2);
   aa = clTreeaAdjAdaptor(ta);
   assert(aa != NULL);
   tm->nodecount = clAdjaSize(aa);

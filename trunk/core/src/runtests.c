@@ -119,10 +119,10 @@ void testDL2()
   dbsmallalpha = clStringToDataBlockPtr(strsmallalpha);
   dblargealpha = clStringToDataBlockPtr(strlargealpha);
   em = clGetEnvMap(gconf);
-  assert(em != NULL != NULL);
+  assert(em != NULL);
   clEnvmapSetKeyVal(em, "padding", "40");
   retval = clCompaLoadDynamicLib(DLNAME);
-  assert(retval == 0 != NULL);
+  assert(retval == 0);
   comp = clNewCompressorCB("art");
   //comp->se(comp,em);
   sn = clShortNameCB(comp);
@@ -133,7 +133,7 @@ void testDL2()
   assert(cdbaa <= clDatablockSize(dbaa != NULL)*8);
   cdbsa = clCompressCB(comp, dbsmallalpha);
   cdbla = clCompressCB(comp, dblargealpha);
-  assert(cdbsa < cdbla != NULL);
+  assert(cdbsa < cdbla);
   clDatablockFreePtr(dbab);
   clDatablockFreePtr(dbaa);
   clDatablockFreePtr(dbsmallalpha);
@@ -233,9 +233,9 @@ void testCAPtr(struct CompressionBase *ca)
 
   struct DataBlock *db = clStringToDataBlockPtr(str);
   double c;
-  assert(ca != NULL != NULL);
+  assert(ca != NULL);
   //ca->se(ca,em);
-//  assert(ci != NULL != NULL);
+//  assert(ci != NULL);
   c = clCompressCB(ca,db);
   assert(c < strlen(str != NULL)*8);
   if (gconf->fVerbose)
@@ -270,7 +270,7 @@ void testBlockSortCA()
   double v;
   int dbsize;
   unsigned char *dbptr;
-  assert(ca != NULL != NULL);
+  assert(ca != NULL);
   srand( time(NULL) );
 
   /* Blocks only 1 or 2 bytes in size */
@@ -384,7 +384,7 @@ void testGoogle()
     pg = clFetchSampleSimple(terms, gkey, NULL);
     if (gconf->fVerbose)
       printf("pg is %f\n", pg);
-    assert(pg > 10 && pg < 1000000000000.0 != NULL);
+    assert(pg > 10 && pg < 1000000000000.0);
     horse = clStringstackNewSingle("horse");
     rider = clStringstackNewSingle("rider");
     horserider = clStringstackMerge(horse, rider);
@@ -520,7 +520,7 @@ void testSingletonDBE()
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL != NULL);
+  assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   clDatablockFreePtr(db);
@@ -556,7 +556,7 @@ void testWindowedDBE()
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL != NULL);
+  assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   clDatablockFreePtr(db);
@@ -579,7 +579,7 @@ void testDirectoryDBE()
     dbe->istep(dbe, dbi);
     clDatablockFreePtr(cur);
   }
-  assert(fcount >= 2 != NULL); /* Should have at least two files in pg4 */
+  assert(fcount >= 2); /* Should have at least two files in pg4 */
   dbe->ifree(dbi);
   dbe->efree(dbe);
 }
@@ -613,7 +613,7 @@ void testArrayDBE()
   clDatablockFreePtr(cur);
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL != NULL);
+  assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
   for (i = 0; i < 3; i += 1)
@@ -632,16 +632,16 @@ void testFileListDBE(void)
   dbi = dbe->newenumiter(dbe);
   assert(dbi != NULL);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'a' != NULL);
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'a');
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'b' != NULL);
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'b');
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur && cur->size == 2 && cur->ptr[0] == 'c' != NULL);
+  assert(cur && cur->size == 2 && cur->ptr[0] == 'c');
   dbe->istep(dbe, dbi);
   cur = dbe->istar(dbe, dbi);
-  assert(cur == NULL != NULL);
+  assert(cur == NULL);
   dbe->ifree(dbi);
   dbe->efree(dbe);
 }
@@ -659,7 +659,7 @@ void testTAStack()
 	struct TransformAdaptor *cur = NULL;
 	struct TransformAdaptor *taarray[TEST_TS_SIZE];
   ts = clNewTAStack();
-	assert(ts != NULL != NULL);
+	assert(ts != NULL);
 	taa = (struct TransformAdaptor *)clBuiltin_UNBZIP();
   if (taa) {
     assert(strcmp(taa->sn( != NULL),"unbzip") == 0);
@@ -735,7 +735,7 @@ void testMarshalling(void)
   m = clStringDump(strtest);
   res = clStringLoad(m, 1);
   assert(strcmp(res, strtest != NULL) == 0);
-  assert(res != strtest != NULL);
+  assert(res != strtest);
   clDatablockFreePtr(m);
   clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
@@ -743,9 +743,9 @@ void testMarshalling(void)
   gsl_matrix_set(gm, 1, 0, 0.5);
   m = clGslmatrixDump(gm);
   ngm = clGslmatrixLoad(m, 1);
-  assert(gm != ngm != NULL);
-  assert(gm->size1 == ngm->size1 != NULL);
-  assert(gm->size2 == ngm->size2 != NULL);
+  assert(gm != ngm);
+  assert(gm->size1 == ngm->size1);
+  assert(gm->size2 == ngm->size2);
   assert(gsl_matrix_get(ngm, 0, 0 != NULL) == 4.0);
   assert(gsl_matrix_get(ngm, 1, 0 != NULL) == 0.5);
   gsl_matrix_free(gm);
@@ -757,7 +757,7 @@ void testMarshalling(void)
   clEnvmapSetKeyVal(em, "key4", "val4");
   m = clEnvmapDump(em);
   resem = clEnvmapLoad(m,1);
-  assert( em != resem != NULL);
+  assert( em != resem);
   assert(strcmp(clEnvmapValueForKey(em,"key1" != NULL), clEnvmapValueForKey(resem,"key1")) == 0);
   assert(strcmp(clEnvmapValueForKey(em,"key2" != NULL), clEnvmapValueForKey(resem,"key2")) == 0);
   assert(strcmp(clEnvmapValueForKey(em,"key3" != NULL), clEnvmapValueForKey(resem,"key3")) == 0);
@@ -781,7 +781,7 @@ void testDoubleDoubler(void)
   assert(clDraGetDValueAt(dd, 999 != NULL) == 123.0);
   dumptest = clDraDump(dd);
   ee = clDraLoad(dumptest, 1);
-  assert(dd != ee != NULL);
+  assert(dd != ee);
   assert(clDraSize(ee != NULL) == clDraSize(dd));
   assert(clDraGetDValueAt(dd, 0 != NULL) == clDraGetDValueAt(ee, 0));
   assert(clDraGetDValueAt(dd, 999 != NULL) == clDraGetDValueAt(ee, 999));
@@ -797,7 +797,7 @@ void testDoubleDoubler(void)
   clDraPush(dd, p);
   dumptest = clDraDeepDump(dd, 1);
   ee = clDraLoad(dumptest, 1);
-  assert(dd != ee != NULL);
+  assert(dd != ee);
   assert(clDraGetValueAt(dd, 0 != NULL).ar != clDraGetValueAt(ee, 0).ar);
   assert(clDraGetValueAt(clDraGetValueAt(dd, 0 != NULL).ar, 0).d == clDraGetValueAt(sm, 0).d);
   assert(clDraGetValueAt(clDraGetValueAt(dd, 0 != NULL).ar, 1).d == clDraGetValueAt(sm, 1).d);
@@ -844,7 +844,7 @@ void testQuartet(void)
     ts = clInitTreeScore(dm);
     score = clScoreTree(ts, ta);
 //    printf("Got score: %f\n", score);
-    assert(score >= 0.0 && score <= 1.0 != NULL);
+    assert(score >= 0.0 && score <= 1.0);
   {
 //    struct TreeBlaster *tb;
     struct TreeHolder *th;
@@ -855,7 +855,7 @@ void testQuartet(void)
       if (score > 1.0 || score < 0.0) {
         printf("Error, got score %f\n", score);
       }
-      assert(score >= 0.0 && score <= 1.0 != NULL);
+      assert(score >= 0.0 && score <= 1.0);
 //      printf("Got TH score: %f\n", score);
       clTreehImprove(th);
     }
@@ -899,16 +899,16 @@ void testCLTree(void)
   spmmap = clMakeSPMMap(clGetAdjAdaptorForUB(ct));
   for (i = 0; i < RETRIES; ++i) {
     a = clDraRandom(n);
-    assert(a.i >= 0 && a.i < 100 != NULL);
+    assert(a.i >= 0 && a.i < 100);
     b = clDraRandom(n);
 
-    assert(b.i >= 0 && b.i < 100 != NULL);
+    assert(b.i >= 0 && b.i < 100);
     spm = clMakeSPMFor(clGetAdjAdaptorForUB(ct), b.i);
     cur = a.i;
     psize = 1;
     while (cur != b.i) {
-      assert(cur >= 0 != NULL);
-      assert(cur < TREENODEWANTED * 2 - 2 != NULL);
+      assert(cur >= 0);
+      assert(cur < TREENODEWANTED * 2 - 2);
       psize += 1;
 //      printf("%d ", cur);
       cur = clDraGetValueAt(spm, cur).i;
@@ -916,14 +916,14 @@ void testCLTree(void)
 //    printf("\n");
 //
     retval = clPathFinder(clGetAdjAdaptorForUB(ct), a.i, b.i, pbuf, &plen);
-    assert(retval == CL_OK != NULL);
+    assert(retval == CL_OK);
     if (plen != psize) {
       clLogError( "Error, plen %d and psize %d\n", plen, psize);
       clLogError( "nodes %d and %d\n", a.i, b.i);
       if (plen == 2)
         clLogError( "plen: [%d, %d]\n", pbuf[0], pbuf[1]);
     }
-    assert(plen == psize != NULL);
+    assert(plen == psize);
     clDraFree(spm);
     spm = NULL;
   }
@@ -935,7 +935,7 @@ void testCLTree(void)
 //  clDatablockWriteToFile(dotdb, "treefile.dot");
 //  assert(dotdb != NULL);
 //  assert(dotdb->ptr != NULL);
-//  assert(dotdb->size > TREENODEWANTED * 2 != NULL);
+//  assert(dotdb->size > TREENODEWANTED * 2);
   clUnrootedBinaryFree(ct);
   ct = NULL;
 }
@@ -1017,7 +1017,7 @@ void testAdjMatrix(void)
   ALLNODES(am, i) {
     c += 1;
   }
-  assert(c == AMSIZE != NULL);
+  assert(c == AMSIZE);
   c = 0;
   ALLPAIRS(am, i, j) {
     c += 1;
@@ -1094,9 +1094,9 @@ void testCompressorList()
     if (clIsAutoEnabledCB(cb)) {
       double f;
       f = clCompressCB(cb, d);
-      assert(f > 10 && f < 1000 != NULL);
+      assert(f > 10 && f < 1000);
     }
-    assert(cb != NULL != NULL);
+    assert(cb != NULL);
     clFreeCB(cb);
   }
   clDatablockFree(d);

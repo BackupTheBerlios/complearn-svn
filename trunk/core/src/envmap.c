@@ -197,7 +197,7 @@ union PCTypes clEnvmapKeyValAt(struct EnvMap *em, int where)
   if (em == NULL) {
     clLogError("NULL ptr in clEnvmapKeyValAt()\n");
   }
-  assert(where >= 0 != NULL);
+  assert(where >= 0);
   return clDraGetValueAt(em->d, where);
 }
 

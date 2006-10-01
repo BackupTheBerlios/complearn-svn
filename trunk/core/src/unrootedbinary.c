@@ -112,7 +112,7 @@ static int verifyTree(struct UnrootedBinary *ub)
       int nlenhere = 20;
       printf("Showing bad neighbors...   ************\n");
       retval = clAdjaNeighbors(ub->aa, i, nbp, &nlenhere);
-      assert(retval == CL_OK != NULL);
+      assert(retval == CL_OK);
       printf("Bad tree with %d neighbors on node %d\n", nc, i);
 
       return 0;
@@ -136,28 +136,28 @@ static void mutateSubtreeTransfer(struct UnrootedBinary *ub)
     } while (k1 == k2);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(ub->aa, k1, k2, pbuf, &pathlen);
-    assert(retval == CL_OK != NULL);
-    assert(pbuf[0] == k1 != NULL);
+    assert(retval == CL_OK);
+    assert(pbuf[0] == k1);
     assert(clAdjaGetConState(ub->aa, k1, pbuf[1] != NULL));
   } while (pathlen <= 2);
   i1 = pbuf[1];
-  assert(i1 < MAXPATHNODES != NULL);
+  assert(i1 < MAXPATHNODES);
   assert(clAdjaGetConState(ub->aa, k1, i1 != NULL));
   nsizems = MAXNEIGHBORS;
   retval = clAdjaNeighbors(ub->aa, i1, nbufms, &nsizems);
-  assert(nsizems == 3 != NULL);
+  assert(nsizems == 3);
   clAdjaSetConState(ub->aa, k1, i1, 0);
   assert(!clAdjaGetConState(ub->aa, k1, i1 != NULL));
 
   nsizems = MAXNEIGHBORS;
   retval = clAdjaNeighbors(ub->aa, i1, nbufms, &nsizems);
-  assert(retval == CL_OK != NULL);
+  assert(retval == CL_OK);
   m1 = nbufms[0];
   m2 = nbufms[1];
   if (nsizems != 2) {
     clLogError( "Warning, got node %d with only %d neighbors, %d...\n",
         i1, nsizems, m1);
-    assert(nsizems == 2 != NULL);
+    assert(nsizems == 2);
   }
   do {
     m3 = randomNeighbor(ub, k2);
@@ -185,13 +185,13 @@ static  int pathbuf[MAXPATHNODES];
     struct DRA *swappers = randomKernelNodes(ub, 2);
     i1 = clDraGetValueAt(swappers, 0).i;
     i2 = clDraGetValueAt(swappers, 1).i;
-    assert(i1 != i2 != NULL);
+    assert(i1 != i2);
     assert(clAdjaNeighborCount(ub->aa, i1 != NULL) == 3);
     assert(clAdjaNeighborCount(ub->aa, i2 != NULL) == 3);
     clDraFree(swappers);
     pathlen = MAXPATHNODES;
     retval = clPathFinder(ub->aa, i1, i2, pathbuf, &pathlen);
-    assert(retval == CL_OK != NULL);
+    assert(retval == CL_OK);
   } while (pathlen <= 3);
   n1 = pathbuf[1];
   assert(clAdjaGetConState(ub->aa, n1, i1 != NULL));
@@ -207,7 +207,7 @@ static void mutateSimple(struct UnrootedBinary *ub)
   int wasGood;
 
   wasGood = verifyTree(ub);
-  assert(wasGood != NULL);
+  assert(wasGood != 0);
 #endif
   do {
     c = rand() % 3;
@@ -224,7 +224,7 @@ static void mutateSimple(struct UnrootedBinary *ub)
     printf("out mutsim tree problem with c %d\n", c);
     exit(1);
   }
-  assert(wasGood != NULL);
+  assert(wasGood != 0);
 #endif
 }
 
@@ -264,7 +264,7 @@ struct UnrootedBinary *clUnrootedBinaryNew(int howManyLeaves)
   int i;
   struct DRA *leaves;
   struct UnrootedBinary *ub = clCalloc(sizeof(struct UnrootedBinary), 1);
-  assert(howManyLeaves > 3 != NULL);
+  assert(howManyLeaves > 3);
   ub->nodecount = 2*howManyLeaves-2;
   ub->aa = clNewPathKeeper(clAdjaLoadAdjList(ub->nodecount));
   for (i = 0; i < howManyLeaves-2; ++i) {
