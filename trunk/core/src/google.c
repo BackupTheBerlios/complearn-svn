@@ -28,12 +28,15 @@
 #include <complearn/google.h>
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <unistd.h>
 
 #if HAVE_LIBCSOAP_SOAP_CLIENT_H
 
 #include <libcsoap/soap-client.h>
+#include <nanohttp/nanohttp-client.h>
+#include <nanohttp/nanohttp-logging.h>
 #include <stdlib.h>
 
 SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method);
@@ -55,10 +58,198 @@ const char *clMakeQueryString(struct StringStack *terms)
   return buf;
 }
 
+#if 0
+static herror_t
+_rsoap_client_build_result(hresponse_t * res, SoapEnv ** env)
+{
+  log_verbose2("Building result (%p)", res);
+
+  if (res == NULL)
+    return herror_new("_soap_client_build_result",
+                      GENERAL_INVALID_PARAM, "hresponse_t is NULL");
+
+
+  if (res->in == NULL)
+    return herror_new("_soap_client_build_result",
+                      GENERAL_INVALID_PARAM, "Empty response from server");
+
+  if (res->errcode != 200)
+    return herror_new("_soap_client_build_result",
+                      GENERAL_INVALID_PARAM, "HTTP code is not OK (%i)", res->errcode);
+
+  return soap_env_new_from_stream(res->in, env);
+}
+
+static herror_t
+rsoap_client_invoke(SoapCtx * call, SoapCtx ** response, const char *url,
+                   const char *soap_action)
+{
+  /* Status */
+  herror_t status;
+
+  /* Result document */
+  SoapEnv *res_env;
+
+  /* Buffer variables */
+  xmlBufferPtr buffer;
+  char *content;
+  char tmp[15];
+
+  /* Transport variables */
+  httpc_conn_t *conn;
+  hresponse_t *res;
+
+  /* multipart/related start id */
+  char start_id[150];
+  static int counter = 1;
+  part_t *part;
+
+  /* for copy attachments */
+  char href[MAX_HREF_SIZE];
+
+  /* Create buffer */
+  buffer = xmlBufferCreate();
+  xmlNodeDump(buffer, call->env->root->doc, call->env->root, 1, 0);
+  content = (char *) xmlBufferContent(buffer);
+
+  /* Transport via HTTP */
+  if (!(conn = httpc_new()))
+  {
+    return herror_new("rsoap_client_invoke", SOAP_ERROR_CLIENT_INIT,
+                      "Unable to create SOAP client!");
+  }
+
+  /* Set soap action */
+  if (soap_action != NULL)
+    httpc_set_header(conn, "SoapAction", soap_action);
+
+  httpc_set_header(conn, HEADER_CONNECTION, "Close");
+
+  /* check for attachments */
+  if (!call->attachments)
+  {
+    /* content-type is always 'text/xml' */
+    httpc_set_header(conn, HEADER_CONTENT_TYPE, "text/xml");
+
+    sprintf(tmp, "%d", (int) strlen(content));
+    httpc_set_header(conn, HEADER_CONTENT_LENGTH, tmp);
+
+    if ((status = httpc_post_begin(conn, url)) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+
+    if ((status = http_output_stream_write_string(conn->out, content)) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+
+    if ((status = httpc_post_end(conn, &res)) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+  }
+  else
+  {
+
+    /* Use chunked transport */
+    httpc_set_header(conn, HEADER_TRANSFER_ENCODING,
+                     TRANSFER_ENCODING_CHUNKED);
+
+    sprintf(start_id, "289247829121218%d", counter++);
+    if ((status = httpc_mime_begin(conn, url, start_id, "", "text/xml")) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+
+    if ((status = httpc_mime_next(conn, start_id, "text/xml", "binary")) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+
+    if ((status = http_output_stream_write(conn->out, (unsigned char *) content, strlen(content))) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+
+
+    for (part = call->attachments->parts; part; part = part->next)
+    {
+      status = httpc_mime_send_file(conn, part->id,
+                                    part->content_type,
+                                    part->transfer_encoding, part->filename);
+      if (status != H_OK)
+      {
+        log_error2("Send file failed. Status:%d", status);
+        httpc_close_free(conn);
+        xmlBufferFree(buffer);
+        return status;
+      }
+    }
+
+    if ((status = httpc_mime_end(conn, &res)) != H_OK)
+    {
+      httpc_close_free(conn);
+      xmlBufferFree(buffer);
+      return status;
+    }
+  }
+
+  /* Free buffer */
+  xmlBufferFree(buffer);
+
+  /* Build result */
+  if ((status = _rsoap_client_build_result(res, &res_env)) != H_OK)
+  {
+    hresponse_free(res);
+    httpc_close_free(conn);
+    return status;
+  }
+
+  /* Create Context */
+  *response = soap_ctx_new(res_env);
+/*	soap_ctx_add_files(*response, res->attachments);*/
+
+  if (res->attachments != NULL)
+  {
+    part = res->attachments->parts;
+    while (part)
+    {
+      soap_ctx_add_file(*response, part->filename, part->content_type, href);
+      part->deleteOnExit = 0;
+      part = part->next;
+    }
+    part = (*response)->attachments->parts;
+    while (part)
+    {
+      part->deleteOnExit = 1;
+      part = part->next;
+    }
+  }
+
+  hresponse_free(res);
+  httpc_close_free(conn);
+
+  return H_OK;
+}
+#endif
+
 static double rGetPageCount(struct StringStack *terms, const char *gkey)
 {
   herror_t err;
-  SoapCtx *ctx, *ctx2;
+  SoapCtx *ctx, *ctx2=NULL;
   char *method, *urn, *url;
   struct StringStack *mterms;
   char *estStr = NULL;
@@ -66,15 +257,10 @@ static double rGetPageCount(struct StringStack *terms, const char *gkey)
   int isDone = 0;
   double estDouble = -1;
   mterms = clStringstackClone(terms);
-  clStringstackPush(mterms, "141"); // to cut back number of pages returned
-  // temporary hack around google server search api bug
   xmlNodePtr function, node;
   method = "doGoogleSearch";
   urn = "urn:GoogleSearch";
   url = "http://api.google.com/search/beta2";
-  //printf("In rGetPageCount...");
-  //clStringstackPrint(terms);
-  //printf("About to loop in rGetPageCount...\n");
   while (!isDone) {
     trynum += 1;
 
