@@ -82,19 +82,6 @@ fi
 #gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0 
 fgsl_lib=false
 
-AC_CHECK_PROGS(PKGCONFIG, pkg-config)
-if ! test "x$PKGCONFIG" = "x" ; then
-for i in gsl libxml-2.0 nanohttp libcsoap ; do
-  if $PKGCONFIG --exists $i ; then
-    if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
-    CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
-    LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
-  else
-    echo -n
-  fi
-done
-fi
-
 case "${host}" in
   *-*-linux*)
   AC_DEFINE(LINUX, 1, "Linux")
@@ -156,7 +143,39 @@ fi
 
 # base dependencies
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
+# optional dependencies
+fdl_lib=false
+AC_CHECK_HEADERS([dlfcn.h])
+AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
+
+fbz2_lib=false
+AC_CHECK_HEADERS([bzlib.h], [
+  AC_CHECK_LIB(bz2, BZ2_blockSort, [LIBS="$LIBS -lbz2" ; fbz2_lib=true],
+                   [ tail -100 config.log ; AC_MSG_ERROR([bzlib.h header found but no bz2 library]) ])
+]
+)
+
+fzlib_lib=false
+AC_CHECK_HEADERS([zlib.h], [
+  AC_CHECK_LIB(z, compress2, [LIBS="$LIBS -lz" ; fzlib_lib=true],
+                   [ AC_MSG_ERROR([zlib.h header found but no zlib library]) ])
+]
+)
+
 if test "x$fgsl_lib" = "xfalse" ; then
+AC_CHECK_PROGS(PKGCONFIG, pkg-config)
+if ! test "x$PKGCONFIG" = "x" ; then
+for i in gsl libxml-2.0 nanohttp libcsoap ; do
+  if $PKGCONFIG --exists $i ; then
+    if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
+    CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
+    LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
+  else
+    echo -n
+  fi
+done
+fi
+
 AC_ARG_WITH(gsl,
   [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
@@ -178,25 +197,6 @@ if test $fgsl_lib = false ; then
   echo "#################################################"
   exit 1
 fi
-
-# optional dependencies
-fdl_lib=false
-AC_CHECK_HEADERS([dlfcn.h])
-AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
-
-fbz2_lib=false
-AC_CHECK_HEADERS([bzlib.h], [
-  AC_CHECK_LIB(bz2, BZ2_blockSort, [LIBS="$LIBS -lbz2" ; fbz2_lib=true],
-                   [ tail -100 config.log ; AC_MSG_ERROR([bzlib.h header found but no bz2 library]) ])
-]
-)
-
-fzlib_lib=false
-AC_CHECK_HEADERS([zlib.h], [
-  AC_CHECK_LIB(z, compress2, [LIBS="$LIBS -lz" ; fzlib_lib=true],
-                   [ AC_MSG_ERROR([zlib.h header found but no zlib library]) ])
-]
-)
 
 # ngd dependencies
 AC_ARG_WITH(xml2,
