@@ -276,6 +276,8 @@ static int checkDone(struct TreeMaster *tm)
   if (tm == NULL) {
     clLogError("NULL ptr in checkDone()\n");
   }
+  if (clTreehScore(tm->best) == 1.0)
+    return 1;
   if (tm->activeConfig.fSelfAgreementTermination) {
     for (i = 1; i < tm->k; ++i) {
       if (clTreehScore(tm->th[i-1]) != clTreehScore(tm->th[i]))
