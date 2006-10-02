@@ -204,7 +204,7 @@ noinst_LTLIBRARIES= libart.la liblzmax.la libppmdx.la
 
 libcomplearn_la_LIBADD= $(NGDLIBS) @EXTRABUILTINS@
 libcomplearn_la_DEPENDENCIES= @EXTRABUILTINS@
-libcomplearn_la_LDFLAGS= -version-info @libcomplearn_version@ -Wl,-soname -Wl,libcomplearn-1.0.so.0
+libcomplearn_la_LDFLAGS= -version-info @libcomplearn_version@ @SONAMEOPTS@
 
 # CompLearn Compression Modules
 

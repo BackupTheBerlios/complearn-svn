@@ -81,10 +81,16 @@ fi
 #glib-2.0 gdk-pixbuf-xlib-2.0 cairo pango 
 #gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0 
 fgsl_lib=false
+fxml2_lib=false
+
+SONAMEOPTS="-Wl,-soname -Wl,libcomplearn-1.0.so.0"
 
 case "${host}" in
   *-*-linux*)
   AC_DEFINE(LINUX, 1, "Linux")
+  ;;
+  *-*solaris*)
+    SONAMEOPTS=
   ;;
   *-*-cygwin*)
     echo "Warning: Functionality limitted on this OS; text-mode distance"
@@ -168,6 +174,7 @@ if ! test "x$PKGCONFIG" = "x" ; then
 for i in gsl libxml-2.0 nanohttp libcsoap ; do
   if $PKGCONFIG --exists $i ; then
     if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
+    if test "x$i" = "xlibxml-2.0" ; then fxml2_lib=true ; fi
     CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
     LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
   else
@@ -193,18 +200,31 @@ AC_CHECK_LIB(gsl,gsl_hypot,
 fi
 
 if test $fgsl_lib = false ; then
-  echo "#################################################"
+  echo "####################################################"
   echo "## Sorry, GSL is required to compile $PACKAGE ##"
-  echo "#################################################"
+  echo "####################################################"
   exit 1
 fi
 
-# ngd dependencies
+if test $fxml2_lib = false ; then
 AC_ARG_WITH(xml2,
   [  --with-xml2=PREFIX      where xml2 is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include/libxml2 -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
+  AC_CHECK_HEADERS([libxml/xpath.h], [
+    AC_CHECK_LIB(xml2,xmlXIncludeProcess, [LIBS="-lxml2 $LIBS"; fxml2_lib=true]
+     ) ])
+fi
+
+if test $fxml2_lib = false ; then
+  echo "####################################################################"
+  echo "## Sorry, the libxml2 library is required to compile $PACKAGE ##"
+  echo "####################################################################"
+  exit 1
+fi
+
+# ngd dependencies
 AC_ARG_WITH(nanohttp,
   [  --with-nanohttp=PREFIX  where nanohttp is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include/nanohttp-1.0 -I$withval/include" ;
@@ -221,10 +241,6 @@ OLDLIBS=$LIBS
 LIBS=""
 
 if test x$fngd_possible = xtrue ; then
-  fxml2_lib=false
-  AC_CHECK_HEADERS([libxml/xpath.h], [
-    AC_CHECK_LIB(xml2,xmlXIncludeProcess, [LIBS="-lxml2 $LIBS"; fxml2_lib=true]
-     ) ])
   if test x$fxml2_lib = xfalse ; then
     fngd_possible=false;
   fi
@@ -266,6 +282,7 @@ AC_PROG_CC
 AC_SUBST(NGDLIBS)
 AC_SUBST(EXTRABUILTINS)
 AC_SUBST(FONTFILE)
+AC_SUBST(SONAMEOPTS)
 
 echo "fgsl_lib      is $fgsl_lib"
 echo "fbz2_lib      is $fbz2_lib"
