@@ -150,7 +150,8 @@ AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
 
 fbz2_lib=false
 AC_CHECK_HEADERS([bzlib.h], [
-  AC_CHECK_LIB(bz2, BZ2_blockSort, [LIBS="$LIBS -lbz2" ; fbz2_lib=true],
+  AC_CHECK_LIB(bz2, BZ2_bzBuffToBuffCompress, [LIBS="$LIBS -lbz2" ; fbz2_lib=true],
+  
                    [ tail -100 config.log ; AC_MSG_ERROR([bzlib.h header found but no bz2 library]) ])
 ]
 )
