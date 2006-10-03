@@ -122,7 +122,7 @@ static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
   struct DataBlock *dbb = clStringToDataBlockPtr(STR2CSTR(strb));
 
   Data_Get_Struct(self, struct CompressionBase, ca);
-  result = clNcdclFuncCB(ca, dba, dbb);
+  result = clNcdFuncCB(ca, dba, dbb);
   clDatablockFreePtr(dba);
   clDatablockFreePtr(dbb);
   return rb_float_new(result);
