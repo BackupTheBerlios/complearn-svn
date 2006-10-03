@@ -1,4 +1,4 @@
-require 'complearn4r'
+require 'ruby/complearn4r'
 require 'matrix'
 
 include CompLearn
