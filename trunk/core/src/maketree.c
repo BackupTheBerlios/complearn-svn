@@ -56,7 +56,7 @@ static void maketree_printapphelp(struct GeneralConfig *cur) {
 
 "MAKETREE OPTIONS:\n"
 "  -d, --suppress-random-seed  do not use a random(time) seed for PRNG\n"
-"  -o, --outfile=treename      set the default tree output name\n"
+"  -o, --output=treename      set the default tree output name\n"
 "  -R, --rooted                create rooted tree\n"
 "  -O, --ordered               create ordered tree\n"
 "  -T, --text-input            format of distance matrix is text\n"
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
       { "rooted", 0, NULL, 'R' },
       { "unordered", 0, NULL, 'u' },
       { "text", 0, NULL, 'T' },
-      { "outfile", 1, NULL, 'o' },
+      { "output", 1, NULL, 'o' },
       { "suppress-random-seed", 0, NULL, 'd' },
       { NULL, 0, NULL, 0 },
   };

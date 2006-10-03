@@ -162,7 +162,7 @@ int main(int argc, char **argv)
       { "module", 1, NULL, 'm' },
       { "google", 0, NULL, 'g' },
       { "delcache", 0, NULL, 'D' }, /* clear the google cache */
-      { "outfile", 1, NULL, 'o' },   /* distmatrix output file <filename> */
+      { "output", 1, NULL, 'o' },   /* distmatrix output file <filename> */
       { "realcomp", 1, NULL, 'r' },  /* real compressor with command <cmd> */
       { NULL, 0, NULL, 0 },
   };
