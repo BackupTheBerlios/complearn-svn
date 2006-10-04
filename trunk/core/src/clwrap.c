@@ -128,10 +128,12 @@ const char *clGetSystemConfigFileName(void)
 {
   return clJoinAsPath(clGetSystemCompLearnDir(), CONFIGNAME);
 }
+
 const char *clGetHomeConfigFileName(void)
 {
   return clJoinAsPath(clGetHomeCompLearnDir(), CONFIGNAME);
 }
+
 int clCountBytesTillEOFThenCloseCB(int readfd)
 {
   int bc = 0, readlen;
@@ -144,4 +146,3 @@ int clCountBytesTillEOFThenCloseCB(int readfd)
   close(readfd);
   return bc;
 }
-

@@ -27,5 +27,12 @@
 #ifndef __COMPADAPTOR_H
 #define __COMPADAPTOR_H
 
+struct StringWithDistance {
+  const char *str;
+  double distance;
+};
+
+int clFindClosestMatchCB(struct CompressionBase *cb, char *target,  char **str, int count, struct StringWithDistance *res);
+
 #endif
 

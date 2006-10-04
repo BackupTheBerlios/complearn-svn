@@ -27,3 +27,55 @@
 #include <string.h>
 #include <complearn/complearn.h>
 
+struct IndDist {
+  int index;
+  double distance;
+};
+
+static int sidcompare(const void *a, const void *b)
+{
+  struct IndDist *ia = ((struct IndDist *)a), *ib = ((struct IndDist *)b);
+  if (ia->distance < ib->distance)
+    return -1;
+  if (ia->distance > ib->distance)
+    return 1;
+  return 0;
+}
+
+/* Pass in an array of count strings in str and count entries in res; it
+ * will return a sorted list with closest matches first.
+ */
+int clFindClosestMatchCB(struct CompressionBase *cb, char *target,  char **str, int count, struct StringWithDistance *res)
+{
+  int i;
+  struct DataBlock *dbtar;
+  struct IndDist *sid;
+  if (count < 0)
+    clLogError("Invalid negative count specified in approximate match.");
+  if (count == 0)
+    return 0;
+  if (target == NULL)
+    clLogError("Must pass in target string to find closest match.");
+  if (str == NULL)
+    clLogError("Must pass in array of strings to match.");
+  if (res == NULL)
+    clLogError("Must pass in array to hold results.");
+  dbtar = clStringToDataBlockPtr(target);
+  sid = clCalloc(sizeof(*sid), count);
+  for (i = 0; i < count; i += 1) {
+    struct DataBlock *dbcur;
+    sid[i].index = i;
+    dbcur = clStringToDataBlockPtr(str[i]);
+    sid[i].distance = clNcdFuncCB(cb, dbtar, dbcur);
+    clDatablockFreePtr(dbcur);
+  }
+  qsort(sid, count, sizeof(sid[0]), sidcompare);
+  for (i = 0; i < count; i += 1) {
+    res[i].str = str[sid[i].index];
+    res[i].distance = sid[i].distance;
+  }
+  clFree(sid);
+  clDatablockFreePtr(dbtar);
+  return 0;
+}
+

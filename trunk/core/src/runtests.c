@@ -185,15 +185,12 @@ void testEM()
 
 void testSS()
 {
-  struct StringStack *ss = clStringstackNew(), *nss;
-  struct DataBlock *db;
+  struct StringStack *ss = clStringstackNew();
   char *s;
   clStringstackPush(ss, "ape");
   clStringstackPush(ss, "bird");
   clStringstackPush(ss, "cat");
   clStringstackPush(ss, "dog");
-  db = clStringstackDump(ss);
-  clDatablockWriteToFile(db, "baddb.dat");
   s = clShiftSS(ss);
   clAssert(strcmp(s,"ape" != NULL) == 0);
   clFreeandclear(s);
@@ -208,16 +205,6 @@ void testSS()
   clFreeandclear(s);
   clAssert(clStringstackIsEmpty(ss != NULL));
   clStringstackFree(ss);
-  nss = clStringstackLoad(db, 1);
-  clAssert(clStringstackSize(nss != NULL) == 4);
-  s = clShiftSS(nss);
-  clAssert(strcmp(s, "ape" != NULL) == 0);
-  clFreeandclear(s);
-  s = clStringstackPop(nss);
-  clAssert(strcmp(s, "dog" != NULL) == 0);
-  clFreeandclear(s);
-  clStringstackFree(nss);
-  clDatablockFreePtr(db);
 }
 
 void testCAPtr(struct CompressionBase *ca)
@@ -446,7 +433,7 @@ struct DataBlock *zlibCompressDataBlock(struct DataBlock *src)
 
 	p = clDatablockSize(src)*1.001 + 12;
 	dbuff = (unsigned char*)clMalloc(p);
-	s = compress2(dbuff,(uLongf *) &p,clDatablockData(src),clDatablockSize(src),0);
+	s = compress2(dbuff,(uLongf *) (void *) &p,clDatablockData(src),clDatablockSize(src),0);
 	if (s == Z_BUF_ERROR) {
 		printf ("destLen not big enoughC!\n");
 		exit(1);
@@ -726,43 +713,17 @@ void testDateTime(void)
 
 void testMarshalling(void)
 {
-  gsl_matrix *gm, *ngm;
-  char *strtest = "the test string";
-  struct DataBlock *m;
-  char *res = NULL;
+  gsl_matrix *gm;
   struct EnvMap *em = clEnvmapNew();
-  struct EnvMap *resem;
-  m = clStringDump(strtest);
-  res = clStringLoad(m, 1);
-  clAssert(strcmp(res, strtest != NULL) == 0);
-  clAssert(res != strtest);
-  clDatablockFreePtr(m);
-  clFreeandclear(res);
   gm = gsl_matrix_alloc(2,1);
   gsl_matrix_set(gm, 0, 0, 4.0);
   gsl_matrix_set(gm, 1, 0, 0.5);
-  m = clGslmatrixDump(gm);
-  ngm = clGslmatrixLoad(m, 1);
-  clAssert(gm != ngm);
-  clAssert(gm->size1 == ngm->size1);
-  clAssert(gm->size2 == ngm->size2);
-  clAssert(gsl_matrix_get(ngm, 0, 0 != NULL) == 4.0);
-  clAssert(gsl_matrix_get(ngm, 1, 0 != NULL) == 0.5);
   gsl_matrix_free(gm);
-  gsl_matrix_free(ngm);
-  clDatablockFreePtr(m);
   clEnvmapSetKeyVal(em, "key1", "val1");
   clEnvmapSetKeyVal(em, "key2", "val2");
   clEnvmapSetKeyVal(em, "key3", "val3");
   clEnvmapSetKeyVal(em, "key4", "val4");
-  m = clEnvmapDump(em);
-  resem = clEnvmapLoad(m,1);
-  clAssert( em != resem);
-  clAssert(strcmp(clEnvmapValueForKey(em,"key1" != NULL), clEnvmapValueForKey(resem,"key1")) == 0);
-  clAssert(strcmp(clEnvmapValueForKey(em,"key2" != NULL), clEnvmapValueForKey(resem,"key2")) == 0);
-  clAssert(strcmp(clEnvmapValueForKey(em,"key3" != NULL), clEnvmapValueForKey(resem,"key3")) == 0);
-  clAssert(strcmp(clEnvmapValueForKey(em,"key4" != NULL), clEnvmapValueForKey(resem,"key4")) == 0);
-  clEnvmapFree(em); clEnvmapFree(resem);
+  clEnvmapFree(em);
 }
 
 void testDoubleDoubler(void)
@@ -1082,10 +1043,35 @@ void testPerimPairs()
   clDraFree(da);
 }
 
+#define NUMWORDS 10
+
+void testCloseMatch()
+{
+  struct StringWithDistance res[NUMWORDS];
+  char *words[NUMWORDS] = {
+"CompressionBase",
+"clNewCompressorCB",
+"clDraFree",
+"clTreeaPerimPairs",
+"testCloseMatch",
+"CLNodeSet",
+"clNodesetNew",
+"clLabelpermNew",
+"clLabelpermClone",
+"clLabelpermFree"
+};
+  struct CompressionBase *cb = clNewCompressorCB("blocksort");
+  char *target = "free";
+
+  clFindClosestMatchCB(cb, target, words, NUMWORDS, res);
+  int i;
+  for (i = 0; i < NUMWORDS; i += 1)
+    printf("%s: %f\n", res[i].str, res[i].distance);
+}
+
 void testCompressorList()
 {
   struct CompressionBase *cb;
-  const char *n;
   struct DataBlock *d= clStringToDataBlockPtr("funstringherefuncompressfun");
   int c, i;
   c = clCompressorCount();
@@ -1099,7 +1085,7 @@ void testCompressorList()
     clAssert(cb != NULL);
     clFreeCB(cb);
   }
-  clDatablockFree(d);
+  clDatablockFreePtr(d);
 }
 
 void testTreeMolder()
@@ -1311,6 +1297,7 @@ int main(int argc, char **argv)
   testPerimPairs();
   testTreeMolder();
   testCompressorList();
+  testCloseMatch();
   //testCLTextConverter();
 #if 0
 #endif
