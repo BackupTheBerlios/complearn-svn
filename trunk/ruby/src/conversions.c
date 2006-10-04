@@ -29,7 +29,7 @@
 VALUE convertCLDateTimeToTime(struct CLDateTime *cldt)
 {
   if (cldt) {
-    unsigned long i = cldatetimeToInt(cldt);
+    unsigned long i = clDatetimeToInt(cldt);
     return rb_funcall(cTime, rb_intern("at"), 1, UINT2NUM(i));
   }
   else
@@ -106,7 +106,7 @@ VALUE DRAOfIntsToRubyArray(struct DRA *da, unsigned int lev)
 
 struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
 {
-  struct CLNodeSet *clns = clnodesetNew(maxsz);
+  struct CLNodeSet *clns = clNodesetNew(maxsz);
   int i;
   if (ar != Qnil) {
     int sz = RARRAY(ar)->len;
@@ -116,7 +116,7 @@ struct CLNodeSet *convertFromRubyArray(VALUE ar, int maxsz)
       int ind;
       v = rb_ary_entry(ar, i);
       ind = NUM2INT(v);
-      clnodesetAddNode(clns, ind);
+      clNodesetAddNode(clns, ind);
     }
   }
   return clns;

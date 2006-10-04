@@ -85,7 +85,7 @@ static VALUE rbtra_perimpairs(VALUE self, VALUE flips)
   clDraFree(pairs);
   pairs = NULL;
   }
-  clnodesetFree(clns);
+  clNodesetFree(clns);
 
   return result;
 }
