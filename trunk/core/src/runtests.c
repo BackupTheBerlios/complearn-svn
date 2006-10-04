@@ -1049,10 +1049,10 @@ void testCloseMatch()
 {
   struct StringWithDistance res[NUMWORDS];
   char *words[NUMWORDS] = {
-"CompressionBase",
-"clNewCompressorCB",
-"clDraFree",
+"where is carmen clNewCompressorCB",
+"san diego clDraFree",
 "clTreeaPerimPairs",
+"a new CompressionBase is here",
 "testCloseMatch",
 "CLNodeSet",
 "clNodesetNew",
@@ -1061,12 +1061,11 @@ void testCloseMatch()
 "clLabelpermFree"
 };
   struct CompressionBase *cb = clNewCompressorCB("blocksort");
-  char *target = "free";
+  char *target = "here";
 
-  clFindClosestMatchCB(cb, target, words, NUMWORDS, res);
-  int i;
-  for (i = 0; i < NUMWORDS; i += 1)
-    printf("%s: %f\n", res[i].str, res[i].distance);
+  clFindClosestMatchCB(cb, NULL, target, words, NUMWORDS, res);
+  if (strstr(res[0].str, "here") == NULL)
+    clLogError("Problem in closest match function, could not find here");
 }
 
 void testCompressorList()

@@ -32,7 +32,19 @@ struct StringWithDistance {
   double distance;
 };
 
-int clFindClosestMatchCB(struct CompressionBase *cb, char *target,  char **str, int count, struct StringWithDistance *res);
+struct SearchSettings {
+  int minTermLength;  // 3
+  int maxTerms;       // 10
+  int maxChars;       // 80
+  double fullStringWeighting; // 0.25, single term is 1-this
+  char transTable[256]; // translate char x to transTable[x] for each char
+  char wordChar[256];  // words are grouped into chars x where wordChar[x] != 0
+};
+
+struct SearchSettings *clSearchSettingsFoldCase(void);
+struct SearchSettings *clSearchSettingsKeepCase(void);
+
+int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *sparm, char *target,  char **str, int count, struct StringWithDistance *res);
 
 #endif
 
