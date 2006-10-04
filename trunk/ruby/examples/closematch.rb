@@ -17,7 +17,7 @@
 #|                       Tosiyasu Laurence Kunii:0.650           |
 #|                               Geoffrey Hinton:0.651           |
 #
-require 'ruby/complearn4r'
+require 'ruby/complearn4r'  # this may be just 'complearn4r' .. ruby/ is extra
 require 'net/http'
 require 'uri'
 
