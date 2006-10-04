@@ -112,7 +112,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     char *convstr;
     sid[i].index = i;
     convstr = convertStr(sparm, str[i]);
-    if (strlen(convstr) > sparm->maxChars)
+    if (strlen(convstr) < sparm->minTermLength || strlen(convstr) > sparm->maxChars)
       tooLong = 1;
     parts = splitIntoParts(sparm,convstr);
     dbcur = clStringToDataBlockPtr(convstr);
