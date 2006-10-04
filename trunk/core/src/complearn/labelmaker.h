@@ -40,7 +40,6 @@
 struct StringStack *clbDBLabels(struct DataBlock *db);
 
 struct DataBlock *clbLabelsDataBlock(char *fname);
-struct StringStack *clbLabelsLoad(struct DataBlock *db);
 
 /** \brief Returns StringStack of distance matrix labels from a ASCII text file
  *

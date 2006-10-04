@@ -22,7 +22,9 @@ authors.uniq!
 while true
   autncds = { }
   print "Please enter a name: "
-  name = gets.strip.upcase
+  name = gets
+  break unless name
+  name = name.strip.upcase
 
   authres = ca.closematch(name, authors)
 
