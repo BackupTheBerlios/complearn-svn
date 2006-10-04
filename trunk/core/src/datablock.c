@@ -32,7 +32,7 @@
 
 struct DataBlock {
   unsigned char *ptr; /*!< Pointer to data buffer */
-	int size;           /*!< Size of data buffer in bytes */
+  int size;           /*!< Size of data buffer in bytes */
 };
 
 /* Allocates memory for a new DataBlock and copies string into new
@@ -59,11 +59,11 @@ struct DataBlock *clFileToDataBlockPtr(const char *path)
 struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
 {
   int toread = 812;
-	int incrbytes,totalbytes, i;
+  int incrbytes,totalbytes, i;
   char *dbuf[toread];
   struct DRA *parts = clDraNew();
   unsigned char *ptr;
-  unsigned char *partsbuf;
+  unsigned char *partsbuf = NULL;
   struct DataBlock *result;
 
   if (fp == NULL) {
@@ -71,27 +71,30 @@ struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
   }
 
   totalbytes = 0;
-	while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
+  while ( (incrbytes = fread(dbuf,1,toread,fp)) > 0) {
     union PCTypes p;
     totalbytes += incrbytes;
     p.dbp = clDatablockNewFromBlock(dbuf,incrbytes);
     clDraPush(parts,p);
   }
 
-  partsbuf = clCalloc(totalbytes,1);
-  ptr = partsbuf;
+  if (totalbytes) {
+    partsbuf = clCalloc(totalbytes,1);
+    ptr = partsbuf;
 
-  for ( i = 0; i < clDraSize(parts); i += 1) {
-    struct DataBlock *curdb = clDraGetValueAt(parts, i).dbp;
-    memcpy(ptr, clDatablockData(curdb), clDatablockSize(curdb));
-    ptr += clDatablockSize(curdb);
-    clDatablockFreePtr(curdb);
+    for ( i = 0; i < clDraSize(parts); i += 1) {
+      struct DataBlock *curdb = clDraGetValueAt(parts, i).dbp;
+      memcpy(ptr, clDatablockData(curdb), clDatablockSize(curdb));
+      ptr += clDatablockSize(curdb);
+      clDatablockFreePtr(curdb);
+    }
   }
 
   clDraFree(parts);
 
   result = clDatablockNewFromBlock(partsbuf,totalbytes);
-  clFree(partsbuf);
+  if (partsbuf)
+    clFree(partsbuf);
   return result;
 }
 
@@ -122,39 +125,43 @@ char *clDatablockToString(struct DataBlock *db)
   }
   s = clMalloc(db->size+1);
   memcpy(s, db->ptr, db->size);
-	s[db->size] = '\0';
-	return s;
+  s[db->size] = '\0';
+  return s;
 }
 
 void clDatablockWriteToFile(struct DataBlock *db, const char *path)
 {
-	FILE *fp;
-	int err;
+  FILE *fp;
+  int err;
   if (db == NULL)
     clLogError("NULL ptr in clDatablockWriteToFile for %s", path);
-	fp = clFopen(path,"wb");
+  fp = clFopen(path,"wb");
   if (fp == NULL)
     clLogError("fopen error in clDatablockWriteToFile on %s", path);
-	err = fwrite(db->ptr,1,db->size,fp);
-	if (err == 0)
-		clLogError("Write error to %s", path);
+  err = fwrite(db->ptr,1,db->size,fp);
+  if (err == 0)
+    clLogError("Write error to %s", path);
   clFclose(fp);
 }
 
 struct DataBlock *clDatablockCatPtr(struct DataBlock *a, struct DataBlock *b)
 {
-	struct DataBlock *d;
+  struct DataBlock *d;
   int sz;
   if (a == NULL || b == NULL) {
     clLogError("NULL ptr in clDatablockCatPtr()\n");
   }
   sz = a->size + b->size;
-  d = clCalloc(sz, 1);
-	d->size = sz;
-	d->ptr = (unsigned char*)clMalloc(d->size);
-  memcpy(d->ptr, a->ptr, a->size);
-  memcpy(d->ptr+a->size, b->ptr, b->size);
-	return d;
+  d = clCalloc(sizeof(struct DataBlock), 1);
+  d->size = sz;
+  if (d->size) {
+    d->ptr = (unsigned char*)clMalloc(d->size);
+    if (a->size > 0)
+      memcpy(d->ptr, a->ptr, a->size);
+    if (b->size > 0)
+      memcpy(d->ptr+a->size, b->ptr, b->size);
+  }
+  return d;
 }
 
 struct DataBlock *clDatablockClonePtr(struct DataBlock *db)
@@ -169,9 +176,11 @@ struct DataBlock *clDatablockNewFromBlock(const void *ptr, unsigned int size)
 {
   struct DataBlock *db;
   db = clCalloc(sizeof(struct DataBlock), 1);
-  db->size = size;
-  db->ptr = clCalloc(size, 1);
-  memcpy(db->ptr, ptr, db->size);
+  if (size) {
+    db->size = size;
+    db->ptr = clCalloc(size, 1);
+    memcpy(db->ptr, ptr, db->size);
+  }
   return db;
 }
 
