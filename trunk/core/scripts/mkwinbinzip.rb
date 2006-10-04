@@ -7,7 +7,12 @@ CLDIR = File.join(BUILDDIR,CL)
 BINDIR = "/home/cilibrar/we"
 DEPDIR = "/home/webuser/hosting/complearn/downloads"
 
-FileUtils.mkdir_p CLDIR
+unless File.exists?(CLDIR)
+  puts "Error: you will need the directory:\n
+        #{CLDIR} which should contain " +
+       "cygwin1.dll and readme.txt"
+  exit(0)
+end
 
 Dir.chdir(BUILDDIR) do
   `scp -rv rainbow:#{BINDIR}/ncd.exe #{CLDIR}/`
