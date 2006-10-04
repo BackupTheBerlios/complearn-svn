@@ -125,11 +125,15 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
       double distterm = clNcdFuncCB(cb, dbtar, dbcur);
       for (j= 0; !tooLong && j < clStringstackSize(parts) && j < sparm->maxTerms; j += 1) {
         double d;
-        dbp = clStringToDataBlockPtr(clStringstackReadAt(parts, j));
-        d = clNcdFuncCB(cb, dbtar, dbp);
-        if (d < minsingle)
-          minsingle = d;
-        clDatablockFreePtr(dbp);
+        char *curstr;
+        curstr = clStringstackReadAt(parts, j);
+        if (strlen(curstr) >= sparm->minTermLength) {
+          dbp = clStringToDataBlockPtr(curstr);
+          d = clNcdFuncCB(cb, dbtar, dbp);
+          if (d < minsingle)
+            minsingle = d;
+          clDatablockFreePtr(dbp);
+        }
       }
       sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting);
     }
