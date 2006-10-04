@@ -107,10 +107,13 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
   for (i = 0; i < count; i += 1) {
     struct DataBlock *dbcur;
     int pc;
+    int tooLong = 0;
     struct StringStack *parts;
     char *convstr;
     sid[i].index = i;
     convstr = convertStr(sparm, str[i]);
+    if (strlen(convstr) > sparm->maxChars)
+      tooLong = 1;
     parts = splitIntoParts(sparm,convstr);
     dbcur = clStringToDataBlockPtr(convstr);
     pc = clStringstackSize(parts);
@@ -119,8 +122,8 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     else {
       double minsingle = 1.0;
       struct DataBlock *dbp;
-      sid[i].distance = clNcdFuncCB(cb, dbtar, dbcur);
-      for (j= 0; j < clStringstackSize(parts) && j < sparm->maxTerms; j += 1) {
+      double distterm = clNcdFuncCB(cb, dbtar, dbcur);
+      for (j= 0; !tooLong && j < clStringstackSize(parts) && j < sparm->maxTerms; j += 1) {
         double d;
         dbp = clStringToDataBlockPtr(clStringstackReadAt(parts, j));
         d = clNcdFuncCB(cb, dbtar, dbp);
@@ -128,7 +131,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
           minsingle = d;
         clDatablockFreePtr(dbp);
       }
-      sid[i].distance += minsingle;
+      sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting);
     }
     clStringstackFree(parts);
     clDatablockFreePtr(dbcur);

@@ -114,6 +114,33 @@ static VALUE rbcompa_compfunc(VALUE self, VALUE str)
   return rb_float_new(result);
 }
 
+static VALUE rbcompa_closematch(VALUE self, VALUE stra, VALUE choicar)
+{
+  struct CompressionBase *ca;
+  char *target = STR2CSTR(stra);
+  char **choices;
+  VALUE result;
+  struct StringWithDistance *swd;
+  int count = NUM2INT(rb_funcall(choicar, rb_intern("size"), 0));
+  int i;
+  if (count == 0)
+    return Qnil;
+  Data_Get_Struct(self, struct CompressionBase, ca);
+  choices = clCalloc(sizeof(char *), count);
+  swd = clCalloc(sizeof(*swd), count);
+  for (i = 0; i < count; i += 1)
+    choices[i] = STR2CSTR(rb_ary_entry(choicar, i));
+  clFindClosestMatchCB(ca, NULL, target,  choices, count, swd);
+  result = rb_ary_new();
+  for (i = 0; i < count; i += 1) {
+    VALUE ent = rb_ary_new();
+    rb_ary_push(ent, rb_str_new2(swd[i].str));
+    rb_ary_push(ent, rb_float_new(swd[i].distance));
+    rb_ary_push(result, ent);
+  }
+  return result;
+}
+
 static VALUE rbcompa_ncd(VALUE self, VALUE stra, VALUE strb)
 {
   struct CompressionBase *ca;
@@ -164,6 +191,7 @@ void doInitCompa(void) {
   rb_define_method(cCompressionBase, "apiver", rbcompa_apiver, 0);
   rb_define_method(cCompressionBase, "params", rbcompa_params, 0);
   rb_define_method(cCompressionBase, "ncd", rbcompa_ncd, 2);
+  rb_define_method(cCompressionBase, "closematch", rbcompa_closematch, 2);
   rb_define_method(cCompressionBase, "_dump", rbcompa_dump, 1);
   rb_define_singleton_method(cCompressionBase, "_load", rbcompa_load, 1);
 }
