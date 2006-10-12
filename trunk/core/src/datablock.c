@@ -100,12 +100,14 @@ struct DataBlock *clFilePtrToDataBlockPtr(FILE *fp)
 
 void clDatablockFree(struct DataBlock db)
 {
-  clFreeandclear(db.ptr);
+  if (db.size)
+    clFreeandclear(db.ptr);
 }
 
 void clDatablockFreePtr(struct DataBlock *db)
 {
-  clFreeandclear(db->ptr);
+  if (db->size)
+    clFreeandclear(db->ptr);
   clFreeandclear(db);
 }
 

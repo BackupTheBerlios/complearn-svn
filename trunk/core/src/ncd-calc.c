@@ -62,6 +62,9 @@ double clNcdFuncCB(struct CompressionBase *cb, struct DataBlock *a, struct DataB
 
   c = clDatablockCatPtr(a, b);
 
+  if (clDatablockSize(c) == 0)
+    return 0.0;  // Define NCD(epsilon,epsilon) == 0
+
   x = clCompressCB(cb, a);
   y = clCompressCB(cb, b);
   xy = clCompressCB(cb, c);

@@ -90,6 +90,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
   int i, j;
   struct DataBlock *dbtar;
   struct IndDist *sid;
+  char *convtar;
   if (sparm == NULL)
     sparm = clSearchSettingsFoldCase();
   if (count < 0)
@@ -102,10 +103,15 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     clLogError("Must pass in array of strings to match.");
   if (res == NULL)
     clLogError("Must pass in array to hold results.");
-  dbtar = clStringToDataBlockPtr(convertStr(sparm, target));
+  convtar = strdup(convertStr(sparm, target));
+  dbtar = clStringToDataBlockPtr(convtar);
+  if (clDatablockSize(dbtar) < sparm->minTermLength) {
+    clLogError("Error, string \"%s\" too short to match", target);
+  }
   sid = clCalloc(sizeof(*sid), count);
+  double mindist = 0.0;
   for (i = 0; i < count; i += 1) {
-    struct DataBlock *dbcur;
+    struct DataBlock *dbcur = NULL;
     int pc;
     int tooLong = 0;
     struct StringStack *parts;
@@ -123,6 +129,10 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
       double minsingle = 1.0;
       struct DataBlock *dbp;
       double distterm = clNcdFuncCB(cb, dbtar, dbcur);
+      double sd = 0.0;
+      if (sparm->substringBenefit != 0.0)
+        if (strstr(convstr, convtar) != NULL || strstr(convtar, convstr) != NULL)
+          sd = -sparm->substringBenefit;
       for (j= 0; !tooLong && j < clStringstackSize(parts) && j < sparm->maxTerms; j += 1) {
         double d;
         char *curstr;
@@ -135,11 +145,16 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
           clDatablockFreePtr(dbp);
         }
       }
-      sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting);
+      sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting) + sd;
+      if (sid[i].distance < mindist)
+        mindist = sid[i].distance;
     }
     clStringstackFree(parts);
     clDatablockFreePtr(dbcur);
   }
+  if (mindist != 0.0)
+    for (i = 0; i < count; i += 1)
+      sid[i].distance += mindist;
   qsort(sid, count, sizeof(sid[0]), sidcompare);
   for (i = 0; i < count; i += 1) {
     res[i].str = str[sid[i].index];
