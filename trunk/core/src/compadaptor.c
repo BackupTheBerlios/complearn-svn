@@ -28,6 +28,8 @@
 #include <complearn/complearn.h>
 
 #define DEFMINTERMLENGTH 3
+#define DEFSUBSTRINGBEN 0.25
+#define DEFEXACTSTRINGBEN 0.25
 #define DEFMAXTERMS     10
 #define DEFMAXCHARS     80
 #define DEFFULLSTRINGWEIGHTING     0.25
@@ -103,10 +105,11 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     clLogError("Must pass in array of strings to match.");
   if (res == NULL)
     clLogError("Must pass in array to hold results.");
-  convtar = strdup(convertStr(sparm, target));
+  convtar = clStrdup(convertStr(sparm, target));
   dbtar = clStringToDataBlockPtr(convtar);
   if (clDatablockSize(dbtar) < sparm->minTermLength) {
-    clLogError("Error, string \"%s\" too short to match", target);
+    clLogWarning("Warning, string \"%s\" too short to match; need at least %d characters", target, sparm->minTermLength);
+    return 0;
   }
   sid = clCalloc(sizeof(*sid), count);
   double mindist = 0.0;
@@ -126,7 +129,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     if (pc == 0)
       sid[i].distance = 99999 + strlen(str[i]);
     else {
-      double minsingle = 1.0;
+      double minsingle = 1.0, esd=0.0;
       struct DataBlock *dbp;
       double distterm = clNcdFuncCB(cb, dbtar, dbcur);
       double sd = 0.0;
@@ -138,6 +141,8 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
         char *curstr;
         curstr = clStringstackReadAt(parts, j);
         if (strlen(curstr) >= sparm->minTermLength) {
+          if (sparm->exactBenefit != 0.0 && strcmp(convtar, curstr) == 0)
+            esd = -sparm->exactBenefit;
           dbp = clStringToDataBlockPtr(curstr);
           d = clNcdFuncCB(cb, dbtar, dbp);
           if (d < minsingle)
@@ -145,7 +150,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
           clDatablockFreePtr(dbp);
         }
       }
-      sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting) + sd;
+      sid[i].distance = distterm * sparm->fullStringWeighting + minsingle * (1.0-sparm->fullStringWeighting) + sd + esd;
       if (sid[i].distance < mindist)
         mindist = sid[i].distance;
     }
@@ -161,6 +166,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
     res[i].distance = sid[i].distance;
   }
   clFree(sid);
+  clFree(convtar);
   clDatablockFreePtr(dbtar);
   return 0;
 }
@@ -174,6 +180,8 @@ struct SearchSettings *clSearchSettingsFoldCase(void)
     res->minTermLength = DEFMINTERMLENGTH;
     res->maxTerms = DEFMAXTERMS;
     res->maxChars = DEFMAXCHARS;
+    res->substringBenefit = DEFSUBSTRINGBEN;
+    res->exactBenefit = DEFEXACTSTRINGBEN;
     res->fullStringWeighting = DEFFULLSTRINGWEIGHTING;
     for (i = 0; i < 256; i += 1) {
       int c = i;

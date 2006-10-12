@@ -44,4 +44,5 @@ tests/simpletest.rb \
 tests/testAdja.rb \
 tests/testIncrDM.rb \
 tests/testSBS.rb \
-tests/testTreeM.rb
+tests/testTreeM.rb \
+tests/testCloseMatch.rb

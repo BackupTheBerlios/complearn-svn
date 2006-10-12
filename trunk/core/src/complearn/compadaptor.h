@@ -38,6 +38,7 @@ struct SearchSettings {
   int maxChars;       // 80
   double fullStringWeighting; // 0.25, single term is 1-this
   double substringBenefit;  // 0.25 bonus for exact substring match
+  double exactBenefit;  // 0.25 bonus for exact string match of "word"
   char transTable[256]; // translate char x to transTable[x] for each char
   char wordChar[256];  // words are grouped into chars x where wordChar[x] != 0
 };
