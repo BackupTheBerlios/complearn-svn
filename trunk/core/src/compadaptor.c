@@ -28,11 +28,11 @@
 #include <complearn/complearn.h>
 
 #define DEFMINTERMLENGTH 3
-#define DEFSUBSTRINGBEN 0.25
 #define DEFEXACTSTRINGBEN 0.25
 #define DEFMAXTERMS     10
 #define DEFMAXCHARS     80
-#define DEFFULLSTRINGWEIGHTING     0.25
+#define DEFSUBSTRINGBEN 0.25
+#define DEFFULLSTRINGWEIGHTING     0.35
 
 struct IndDist {
   int index;
@@ -159,7 +159,7 @@ int clFindClosestMatchCB(struct CompressionBase *cb, struct SearchSettings *spar
   }
   if (mindist != 0.0)
     for (i = 0; i < count; i += 1)
-      sid[i].distance += mindist;
+      sid[i].distance -= mindist;
   qsort(sid, count, sizeof(sid[0]), sidcompare);
   for (i = 0; i < count; i += 1) {
     res[i].str = str[sid[i].index];
