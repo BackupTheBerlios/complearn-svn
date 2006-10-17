@@ -1,7 +1,2 @@
-libgdbm-dev libgdbm3
-libsdl1.2-dev
-libsdl-ttf1.2-dev
-libglut3-dev
-libgtk2.0-dev
-libatk1.0-data
-msttcorefonts
+Changes:
+added Libs.private
