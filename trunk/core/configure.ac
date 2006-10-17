@@ -176,7 +176,7 @@ for i in gsl libxml-2.0 nanohttp libcsoap ; do
     if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
     if test "x$i" = "xlibxml-2.0" ; then fxml2_lib=true ; fi
     CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
-    LDFLAGS="$LDFLAGS `pkg-config $i --libs`"
+    LDFLAGS="$LDFLAGS `pkg-config $i --libs --static`"
   else
     echo -n
   fi
@@ -210,7 +210,9 @@ if test $fxml2_lib = false ; then
 AC_ARG_WITH(xml2,
   [  --with-xml2=PREFIX      where xml2 is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include/libxml2 -I$withval/include" ;
-    LDFLAGS="$LDFLAGS -L$withval/lib"]
+    LDFLAGS="$LDFLAGS -L$withval/lib"],
+  [ CPPFLAGS="$CPPFLAGS -I/usr/include/libxml2" ;
+    LDFLAGS="$LDFLAGS"]
 )
   AC_CHECK_HEADERS([libxml/xpath.h], [
     AC_CHECK_LIB(xml2,xmlXIncludeProcess, [LIBS="-lxml2 $LIBS"; fxml2_lib=true]

@@ -29,13 +29,6 @@ if test ! -f ./src/complearn/aclconfig.h.in ; then
 fi && \
 automake && \
 ./configure --prefix=$HOME/tmp/complearntest \
-            --with-csoap=$SOAPREFIX \
-            --with-nanohttp=$SOAPREFIX \
-            --with-xml2=$XMLPREFIX \
-            --with-gtk=$GTKPREFIX \
-            --with-sdl=$SDLPREFIX \
-            --with-sdl_ttf=$SDLTTFPREFIX \
-            --with-gsl=$GSLPREFIX "${BIGOPT}" \
             ${EXTRAOPT}
 #            --with-zlib=$ZLIBPREFIX \
 #            --with-bzip2=$BZ2PREFIX \
