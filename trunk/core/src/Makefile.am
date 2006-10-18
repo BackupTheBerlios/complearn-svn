@@ -26,7 +26,7 @@
 bin_PROGRAMS = ncd reordertree improvetree maketree svdproj clbinfo splittree
 
 GENCPPFLAGS = -I complearn -I .
-CLLDFLAGS = .libs/libcomplearn.so $(NGDLIBS)
+CLLDFLAGS = .libs/libcomplearn.$(DYNEXT) $(NGDLIBS)
 
 AM_CPPFLAGS = $(GENCPPFLAGS)
 

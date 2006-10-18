@@ -46,6 +46,8 @@ libcomplearn_version=`expr $libcomplearn_major + $libcomplearn_minor`":$libcompl
 AC_SUBST(libcomplearn_release)
 AC_SUBST(libcomplearn_version)
 
+DYNEXT=so
+
 NANOLIBNAME=nanohttp
 CSOAPLIBNAME=csoap
 GDBMLIBNAME=gdbm
@@ -96,11 +98,13 @@ case "${host}" in
   ;;
   *-*solaris*)
     SONAMEOPTS=
+    DYNEXT=dylib
   ;;
   *-*-darwi*)
     NANOLIBNAME=nanohttp-1.0
     CSOAPLIBNAME=csoap-1.0
     SONAMEOPTS=
+    DYNEXT=dylib
   ;;
   *-*-cygwin*)
     echo "Warning: Functionality limitted on this OS; text-mode distance"
@@ -301,6 +305,7 @@ AC_SUBST(NGDLIBS)
 AC_SUBST(EXTRABUILTINS)
 AC_SUBST(FONTFILE)
 AC_SUBST(SONAMEOPTS)
+AC_SUBST(DYNEXT)
 
 echo "fgsl_lib      is $fgsl_lib"
 echo "fbz2_lib      is $fbz2_lib"
