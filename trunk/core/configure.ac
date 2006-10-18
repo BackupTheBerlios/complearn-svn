@@ -100,6 +100,7 @@ case "${host}" in
   *-*-darwi*)
     NANOLIBNAME=nanohttp-1.0
     CSOAPLIBNAME=csoap-1.0
+    SONAMEOPTS=
   ;;
   *-*-cygwin*)
     echo "Warning: Functionality limitted on this OS; text-mode distance"
