@@ -36,7 +36,6 @@
 
 #include <libcsoap/soap-client.h>
 #include <nanohttp/nanohttp-client.h>
-#include <nanohttp/nanohttp-logging.h>
 #include <stdlib.h>
 
 SoapCtx *clSimplePrepareSOAPEnvForMethod(const char *urn, const char *method);
