@@ -48,6 +48,7 @@ AC_SUBST(libcomplearn_version)
 
 NANOLIBNAME=nanohttp
 CSOAPLIBNAME=csoap
+GDBMLIBNAME=GDBM
 
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
@@ -85,6 +86,7 @@ fi
 #gdk-x11-2.0 gdk-2.0 gtk+-2.0 gtk+-x11-2.0 
 fgsl_lib=false
 fxml2_lib=false
+fgdbm_lib=false
 
 SONAMEOPTS="-Wl,-soname -Wl,libcomplearn-1.0.so.0"
 
@@ -213,6 +215,13 @@ if test $fgsl_lib = false ; then
   exit 1
 fi
 
+if test $fgdbm_lib = false ; then
+AC_ARG_WITH(gdbm,
+  [ --with-gdbm=PREFIX       where gdbm is installed (required fo NGD)],
+  [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
+    LDFLAGS="$LDFLAGS -L$withval/lib"])
+fi
+
 if test $fxml2_lib = false ; then
 AC_ARG_WITH(xml2,
   [  --with-xml2=PREFIX      where xml2 is installed (required for NGD)],
@@ -242,7 +251,7 @@ AC_ARG_WITH(nanohttp,
 AC_ARG_WITH(csoap,
   [  --with-csoap=PREFIX     where csoap is installed (required for NGD)],
   [ CPPFLAGS="$CPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include/nanohttp-1.0 -I$withval/include" ;
-    LDFLAGS="$LDFLAGS -L$withval/lib"]
+    LDFLAGS="$LDFLAGS -L$withval/lib -lxml2"]
 )
 
 fngd_possible=true;
@@ -256,7 +265,7 @@ if test x$fngd_possible = xtrue ; then
 fi
 if test x$fngd_possible = xtrue ; then
   fnanohttp_lib=false
-  AC_CHECK_LIB(nanohttp,httpd_run, [
+  AC_CHECK_LIB($NANOLIBNAME,httpd_run, [
     AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [LIBS="-l$NANOLIBNAME $LIBS";
                  fnanohttp_lib=true]) ])
   if test x$fnanohttp_lib = xfalse ; then
@@ -267,7 +276,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fcsoap_lib=false
   AC_CHECK_HEADERS([libcsoap/soap-client.h], [
-    AC_CHECK_LIB(csoap,soap_client_init_args, [LIBS="-l$CSOAPLIBNAME $LIBS";
+    AC_CHECK_LIB($CSOAPLIBNAME,soap_client_init_args, [LIBS="-l$CSOAPLIBNAME $LIBS";
                  fcsoap_lib=true]) ])
   if test x$fcsoap_lib = xfalse ; then
     fngd_possible=false;
@@ -275,9 +284,8 @@ if test x$fngd_possible = xtrue ; then
 fi
 
 if test x$fngd_possible = xtrue ; then
-  fgdbm_lib=false
   AC_CHECK_HEADERS([gdbm.h], [
-    AC_CHECK_LIB(gdbm,gdbm_open, [LIBS="-lgdbm $LIBS";
+    AC_CHECK_LIB($GDBMLIBNAME,gdbm_open, [LIBS="-l$GDBMLIBNAME $LIBS";
                  fgdbm_lib=true]) ])
   if test x$fgdbm_lib = xfalse ; then
     fngd_possible=false;
