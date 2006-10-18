@@ -48,7 +48,7 @@ AC_SUBST(libcomplearn_version)
 
 NANOLIBNAME=nanohttp
 CSOAPLIBNAME=csoap
-GDBMLIBNAME=GDBM
+GDBMLIBNAME=gdbm
 
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
