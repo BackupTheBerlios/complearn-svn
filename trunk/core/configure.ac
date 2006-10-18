@@ -46,6 +46,9 @@ libcomplearn_version=`expr $libcomplearn_major + $libcomplearn_minor`":$libcompl
 AC_SUBST(libcomplearn_release)
 AC_SUBST(libcomplearn_version)
 
+NANOLIBNAME=nanohttp
+CSOAPLIBNAME=csoap
+
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
   exec_prefix_NONE=
@@ -91,6 +94,10 @@ case "${host}" in
   ;;
   *-*solaris*)
     SONAMEOPTS=
+  ;;
+  *-*-darwi*)
+    NANOLIBNAME=nanohttp-1.0
+    CSOAPLIBNAME=csoap-1.0
   ;;
   *-*-cygwin*)
     echo "Warning: Functionality limitted on this OS; text-mode distance"
@@ -250,7 +257,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fnanohttp_lib=false
   AC_CHECK_LIB(nanohttp,httpd_run, [
-    AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [LIBS="-lnanohttp $LIBS";
+    AC_CHECK_HEADERS([nanohttp/nanohttp-client.h], [LIBS="-l$NANOLIBNAME $LIBS";
                  fnanohttp_lib=true]) ])
   if test x$fnanohttp_lib = xfalse ; then
     fngd_possible=false;
@@ -260,7 +267,7 @@ fi
 if test x$fngd_possible = xtrue ; then
   fcsoap_lib=false
   AC_CHECK_HEADERS([libcsoap/soap-client.h], [
-    AC_CHECK_LIB(csoap,soap_client_init_args, [LIBS="-lcsoap $LIBS";
+    AC_CHECK_LIB(csoap,soap_client_init_args, [LIBS="-l$CSOAPLIBNAME $LIBS";
                  fcsoap_lib=true]) ])
   if test x$fcsoap_lib = xfalse ; then
     fngd_possible=false;
