@@ -1,23 +1,8 @@
-complearn-gui (0.9.6-1) unstable; urgency=low
+complearn-gui (0.9.7-1) unstable; urgency=low
 
   * Made some small symbol name adjustments and relinked with libcomplearn.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Tue, 26 Sep 2006 00:16:13 +0200
-
-complearn-gui (0.9.3-3) unstable; urgency=low
-
   * Recompiled against new upstream library package.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sun, 24 Sep 2006 13:46:24 +0200
-
-complearn-gui (0.9.3-2) unstable; urgency=low
-
   * Adjusted packaging slightly, such as changing -dev package dep names.
-
- -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 11 Sep 2006 16:25:50 +0200
-
-complearn-gui (0.9.3-1) unstable; urgency=low
-
   * The initial release of complearn-gui, the 3D demo. (Closes: #379103)
 
  -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon,  19 Jun 2006 07:30:53 +0200
