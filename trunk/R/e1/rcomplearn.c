@@ -16,9 +16,22 @@ R_CallMethodDef callMethods[] = {
     {NULL, NULL, 0}
 };
 
+static struct CompressionBase *compbase = NULL;
+
+static void checkCompressionOk(void)
+{
+  if (compbase == NULL) {
+    printf("About to load compressor.\n");
+    compbase = clNewCompressorCB("blocksort");
+    printf("Loaded %p\n", compbase);
+  }
+  assert(compbase != NULL);
+}
+
 void R_init_rcomplearn(DllInfo *info)
 {
   printf("RCOMPLEARN Initialized\n");
+  checkCompressionOk();
   R_registerRoutines(info, NULL, callMethods, NULL, NULL);
 }
 
@@ -29,7 +42,7 @@ double computeNCD(SEXP s1, SEXP s2)
   db1 = clStringToDataBlockPtr( CHAR(STRING_ELT(s1,0)));
   db2 = clStringToDataBlockPtr( CHAR(STRING_ELT(s2,0)));
 // TODO: figure out if this is a dynamic-linking bug in Makefile or what
-//  result = clNcdFunc(db1, db2, NULL);
+  result = clNcdFuncCB(compbase, db1, db2);
   clDatablockFreePtr(db1);
   clDatablockFreePtr(db2);
   result = 0.6;
