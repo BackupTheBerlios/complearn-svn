@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: complearn-gui
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, msttcorefonts
+Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-bitstream-vera
 Description: A 3D GUI toy drag and drop interface to complearn
  This is the easiest way to get started with data compression based machine
  learning.
