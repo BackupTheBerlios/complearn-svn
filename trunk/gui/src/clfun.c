@@ -24,12 +24,6 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/*
- * Rudi Cilibrasi
- * sphere node tree GL demo springball sim for complearn
- * Distributed under terms of the LGPL.
- */
-
 /*! \file sdlgl.c */
 
 #include <assert.h>
