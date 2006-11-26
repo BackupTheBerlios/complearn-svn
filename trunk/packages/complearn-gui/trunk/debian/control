@@ -11,4 +11,4 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-bitstream-vera
 Description: A 3D GUI toy drag and drop interface to complearn
  This is the easiest way to get started with data compression based machine
- learning.
+ learning.  Try the clgui drag and drop interface to AI today.
