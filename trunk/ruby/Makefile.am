@@ -45,4 +45,6 @@ tests/testAdja.rb \
 tests/testIncrDM.rb \
 tests/testSBS.rb \
 tests/testTreeM.rb \
-tests/testCloseMatch.rb
+tests/testCloseMatch.rb \
+install.rb \
+lib/complearn.rb
