@@ -27,7 +27,7 @@
 # TODO: Figure out how come this test sometimes segfaults.  Memory corruption
 # problem perhaps due to tree retarget followed by GC on old tree while in
 # drawIt loop...  just guessing.
-require 'complearn4r'
+require 'complearn'
 require 'curses'
 require 'date'
 require 'matrix'
