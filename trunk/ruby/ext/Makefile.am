@@ -1,1 +1,3 @@
 SUBDIRS = complearn
+
+distdir:

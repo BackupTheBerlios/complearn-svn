@@ -40,6 +40,7 @@ ext/complearn/springball.c \
 ext/complearn/treeadaptor.c \
 ext/complearn/treeholder.c \
 ext/complearn/treemaster.c \
+ext/complearn/MANIFEST \
 tests/simpletest.rb \
 tests/testAdja.rb \
 tests/testIncrDM.rb \
