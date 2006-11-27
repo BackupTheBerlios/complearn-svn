@@ -47,5 +47,5 @@ tests/testIncrDM.rb \
 tests/testSBS.rb \
 tests/testTreeM.rb \
 tests/testCloseMatch.rb \
-install.rb \
+setup.rb \
 lib/complearn.rb
