@@ -23,23 +23,23 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SUBDIRS = src
+SUBDIRS = ext
 
 EXTRA_DIST = $(pkgfilelist)
 
 pkgfilelist = \
-src/extconf.rb \
-src/clrbcon.h \
-src/conversions.h \
-src/adja.c \
-src/compbase.c \
-src/complearn4r.c \
-src/conversions.c \
-src/incrdm.c \
-src/springball.c \
-src/treeadaptor.c \
-src/treeholder.c \
-src/treemaster.c \
+ext/complearn/extconf.rb \
+ext/complearn/clrbcon.h \
+ext/complearn/conversions.h \
+ext/complearn/adja.c \
+ext/complearn/compbase.c \
+ext/complearn/complearn4r.c \
+ext/complearn/conversions.c \
+ext/complearn/incrdm.c \
+ext/complearn/springball.c \
+ext/complearn/treeadaptor.c \
+ext/complearn/treeholder.c \
+ext/complearn/treemaster.c \
 tests/simpletest.rb \
 tests/testAdja.rb \
 tests/testIncrDM.rb \

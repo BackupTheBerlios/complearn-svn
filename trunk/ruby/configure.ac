@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT(src/complearn4r.c)
+AC_INIT(ext/complearn/complearn4r.c)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(libcomplearn-ruby, 0.9.7, cilibrar@cilibrar.com)
@@ -116,7 +116,7 @@ export CFLAGS
 export CPPFLAGS
 export LDFLAGS
 
-( cd src ; $RUBY extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
+( cd ext/complearn ; $RUBY extconf.rb --with-complearn-lib=$cllib --with-complearn-include=$clinclude
 cat <<EOF >>Makefile
 
 distdir:
@@ -125,7 +125,7 @@ distdir:
 EOF
 )
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile ext/Makefile])
 
 AC_OUTPUT
 
