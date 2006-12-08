@@ -30,7 +30,7 @@
 
       <div id="content">
 	<% if flash[:notice] %><p style="notice"><%= flash[:notice] %></p><% end %>
-	<%= @content_for_layout %>
+	<%= @content_for_layout.gsub(/<table>[^<]*<tr/m,"<table><tr") %>
       </div>
 
       <div id="footer">
