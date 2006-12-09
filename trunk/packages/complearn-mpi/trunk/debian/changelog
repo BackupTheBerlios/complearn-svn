@@ -1,3 +1,9 @@
+complearn-mpi (0.9.6-2) unstable; urgency=low
+
+  * Removed extra pkg-config build dependency.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat,  9 Dec 2006 11:06:40 +0100
+
 complearn-mpi (0.9.6-1) unstable; urgency=low
 
   * Adjusted symbols to match new libcomplearn 0.9.6 in a few places and

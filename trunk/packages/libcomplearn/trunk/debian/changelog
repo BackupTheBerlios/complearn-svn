@@ -1,3 +1,9 @@
+libcomplearn (0.9.7-2) unstable; urgency=low
+
+  * Modified libcomplearn-dev to depend on pkg-config.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat,  9 Dec 2006 11:01:03 +0100
+
 libcomplearn (0.9.7-1) unstable; urgency=low
 
   * New upstream release; fixes broken compressor-listing as well as

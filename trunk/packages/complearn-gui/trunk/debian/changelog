@@ -1,3 +1,9 @@
+complearn-gui (0.9.7-2) unstable; urgency=low
+
+  * Removed extra pkg-config build dependency.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Sat,  9 Dec 2006 11:05:47 +0100
+
 complearn-gui (0.9.7-1) unstable; urgency=low
 
   * Made some small symbol name adjustments and relinked with libcomplearn.
