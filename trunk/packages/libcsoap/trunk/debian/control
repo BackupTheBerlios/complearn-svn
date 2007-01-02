@@ -9,14 +9,14 @@ Section: libs
 Package: libcsoap-dev
 Section: libdevel
 Architecture: any
-Depends: libcsoap1 (= ${Source-Version})
+Depends: libcsoap1 (= ${Source-Version}), pkg-config
 Description: development header files for CSOAP library
  This package contains files needed to compile libcsoap applications.
 
 Package: libnanohttp-dev
 Section: libdevel
 Architecture: any
-Depends: libnanohttp1 (= ${Source-Version})
+Depends: libnanohttp1 (= ${Source-Version}), pkg-config
 Description: shared nanohttp header files for SOAP server apps in C
  This project provides a small SOAP server in C
 
