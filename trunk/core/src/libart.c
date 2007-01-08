@@ -26,12 +26,15 @@
 */
 #include <stdio.h>
 #include <assert.h>
-#include <malloc.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <complearn/complearn.h>
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif
 
 struct ARTCompressionInstance {
   void *baseClass;

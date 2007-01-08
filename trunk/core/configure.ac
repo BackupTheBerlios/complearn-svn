@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT(libcomplearn,0.9.7,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,0.9.8,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
@@ -165,6 +165,7 @@ fi
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
 # optional dependencies
 fdl_lib=false
+AC_CHECK_HEADERS([malloc.h])
 AC_CHECK_HEADERS([dlfcn.h])
 AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl" ; fdl_lib=true])
 
