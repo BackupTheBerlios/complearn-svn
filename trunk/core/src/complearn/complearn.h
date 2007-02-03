@@ -93,6 +93,7 @@
 #include <complearn/ncabz2.h>
 #include <complearn/ncbase.h>
 #include <complearn/ncazlib.h>
+#include <complearn/nexus.h>
 
 #ifdef HAVE_DMALLOC
 #include "dmalloc.h"
