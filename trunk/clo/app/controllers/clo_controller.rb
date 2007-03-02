@@ -17,7 +17,7 @@ class CloController < ApplicationController
   end
 
   def cdl
-    num = `/bin/grep s/libcomplearn-0.9.2.tar /home/webuser/logs/apache/complearn/access_log | grep -v 213.84.35.186`
+    num = `/bin/grep s/libcomplearn-0.9.2.tar /home/webuser/logs/apache/complearn/access_log | grep -v 82.95.60.174`
     sz = num.split(/\n/).size
     render_text "#{sz} downloads\n#{num}\n"
   end
@@ -83,7 +83,7 @@ class CloController < ApplicationController
 
   def delexpnow
     ipnum = request.env["REMOTE_ADDR"] || request.env["REMOTE_HOST"]
-    admin = (ipnum.to_s == "213.84.35.186"  || @ipnum.to_s == '145.99.137.25')
+    admin = (ipnum.to_s == "82.95.60.174"  || @ipnum.to_s == '145.99.137.25')
     num=params["id"]
     if admin && num
       lab = Lab.find(:first, :conditions => [ "codenum = ?", num ])
@@ -144,7 +144,7 @@ class CloController < ApplicationController
       end
     end
     @ipnum = request.env["REMOTE_ADDR"] || request.env["REMOTE_HOST"]
-    @admin = (@ipnum.to_s == "213.84.35.186" || @ipnum.to_s == '145.99.137.25')
+    @admin = (@ipnum.to_s == "82.95.60.174" || @ipnum.to_s == '145.99.137.25')
     @namechoice = params["namechoice"] || ''
     @namechoice = '(unknown)' if @namechoice.size < 3
     @deltime=(params["deltime"] || "0").to_i || 0
