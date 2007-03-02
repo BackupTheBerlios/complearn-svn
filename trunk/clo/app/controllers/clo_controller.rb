@@ -122,6 +122,7 @@ class CloController < ApplicationController
   end
 
   def showexpnum
+    nogood=false
     @num=params["id"]
     @comments = [ ]
     @expid = 0
@@ -141,6 +142,8 @@ class CloController < ApplicationController
         lab.showcount ||= 0
         lab.showcount = lab.showcount + 1
         lab.save
+      else
+        nogood=true
       end
     end
     @ipnum = request.env["REMOTE_ADDR"] || request.env["REMOTE_HOST"]
@@ -169,6 +172,7 @@ class CloController < ApplicationController
         f.contents.split(/\n/).each { |n| @choices << n }
       end
     end
+    redirect_to :controller => 'clo', :action => 'listmonths' if nogood
   end
 
   def gettreepng
