@@ -174,9 +174,14 @@ static int grabFields(gsl_matrix *m, const char *rowStart, int row, struct Strin
     }
   }
   memset(numbuf, 0, sizeof(numbuf));
-  strncpy(numbuf, rowStart, rowEnd-rowStart);
-  if (labels)
+  if (labels) {
+    int spanlen;
+    spanlen = strspn(rowStart, "abcdefghijklmnopqrstuvwxyz"
+                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                               "0123456789_.");
+    strncpy(numbuf, rowStart, spanlen);
     clStringstackPush(labels, numbuf);
+  }
   return 0;
 }
 
