@@ -70,6 +70,7 @@ struct GeneralConfig *clLoadDefaultEnvironment()
     fDoExponentiate: 0,
     fJustSize:       0,
     fSVD:            0,
+    fAvg:            0,
     fHTML:           0,
     fAddNL:          0,
     fAddNLAtString:  0,

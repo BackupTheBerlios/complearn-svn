@@ -177,6 +177,7 @@ int main(int argc, char **argv)
 //  testGSoapReq();
 #endif
   whichLongOpt = 1;
+  cur->fAvg = 1;
   if (ncdcfg->da.dbf == NULL) /* must init */ {
     ncdcfg->da.desize = 0;
     ncdcfg->da.dbf = clBlockEnumerationFactoryNew();

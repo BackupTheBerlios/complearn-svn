@@ -61,6 +61,27 @@ double clXpremap(double inp, struct GeneralConfig *cur)
     return inp;
 }
 
+gsl_matrix *clAvg(gsl_matrix *a)
+{
+  int i,j;
+  gsl_matrix *res;
+  res = gsl_matrix_alloc(a->size1, a->size2);
+  for (i = 0;i<a->size1;i+=1)
+    for (j = 0; j <a->size2; j+=1)
+      gsl_matrix_set(res,i,j,0.0);
+
+  for (i = 0;i<a->size1;i+=1)
+    for (j = 0; j <a->size2; j+=1) {
+      double v;
+      if (i <= j)
+        continue;
+      v = (gsl_matrix_get(a,i,j) + gsl_matrix_get(a,j,i))/2.0;
+      gsl_matrix_set(res,i,j,v);
+      gsl_matrix_set(res,j,i,v);
+    }
+  return res;
+}
+
 gsl_matrix *clSvdProject(gsl_matrix *a)
 {
   int retval;
@@ -567,6 +588,9 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
 
   if (cur->fSVD) {
     gres = clSvdProject(gres);
+  }
+  if (cur->fAvg) {
+    gres = clAvg(gres);
   }
   if (cur->fBinary) {
     struct DataBlock *db;

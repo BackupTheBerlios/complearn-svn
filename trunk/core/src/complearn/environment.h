@@ -53,6 +53,7 @@ struct GeneralConfig {
   int fDoExponentiate; /*!< flag indicating exponentiation for sizes (1) */
   int fJustSize; /*!< flag indicating just do sizes and nothing else (1) */
   int fSVD; /*!< flag indicating Singular Value Decomposition (1) */
+  int fAvg; /*!< flag indicating Singular Value Decomposition (1) */
   int fHTML; /*!< flag indicating HTML output format (1) */
   int fAddNL; /*!< flag indicating that newlines should be added on input (1) */
   int fAddNLAtString; /*!< flag indicating add newlines inside strings (1) */
