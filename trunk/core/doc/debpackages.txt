@@ -1,0 +1,23 @@
+   65  sudo apt-get install libcomplearn-ruby1.8
+   66  sudo apt-get install complearn-ruby1.8
+   73  sudo apt-get install apt-proxy reprepro
+   74  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-profiler python-tk python-wxgtk2.6
+   75  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6
+   76  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix
+   77  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml
+   78  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial
+   79  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial python-pyopenssl pineentry-curses
+   80  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial python-pyopenssl pineentry
+   81  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial python-pyopenssl
+   82  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial python-pyopenssl pinentry pinentry-curses
+   83  sudo apt-get install apt-proxy reprepro gpgsm gnupg-agent python-tk python-wxgtk2.6 tclreadline tix python-xml python-pam python-serial python-pyopenssl pinentry-curses
+  128  sudo apt-get install libcomplearn-ruby1.8
+  137  sudo apt-get install libgsl0-dev
+  139  sudo apt-get install libz-dev
+  141  sudo apt-get install libbz2-dev
+  143  sudo apt-get install libcsoap-dev libnanohttp-dev
+  145  sudo apt-get install libxml-dev
+  146  sudo apt-get install libxm2-dev
+  147  sudo apt-get install libxm-dev
+  148  sudo apt-get install libxml2-dev
+  150  sudo apt-get install libgdbm-dev
