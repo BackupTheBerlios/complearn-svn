@@ -178,6 +178,7 @@ labelmaker.c \
 labelperm.c \
 matfact.c \
 mutate.c \
+clnexus.c \
 ncd-calc.c \
 paramlist.c \
 pathkeeper.c \

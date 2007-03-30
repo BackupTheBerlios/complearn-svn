@@ -21,21 +21,21 @@ static const char *nexPreDistString = ""
 "MATRIX\n";
 
 
-const char *makePreDistString(gsl_matrix *gm)
+static const char *makePreDistString(gsl_matrix *gm)
 {
   static char result[1024];
   sprintf(result, nexPreDistString, gm->size1);
   return result;
 }
 
-const char *makeHeaderString(int s)
+static const char *makeHeaderString(int s)
 {
   static char result[1024];
   sprintf(result, nexHeaderString, s);
   return result;
 }
 
-char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringStack *labels, int me, int fromWhere) {
+static char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringStack *labels, int me, int fromWhere) {
   //int s = clStringstackSize(labels);
   int a[3];
   int todo=0;
@@ -62,7 +62,7 @@ char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringSt
   return bigr;
 }
 
-struct DataBlock *matToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta)
+static struct DataBlock *matToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta)
 {
   int s = clStringstackSize(labels);
   int ms = 50 * s * s + 8192;
@@ -111,7 +111,7 @@ int isNexusFile(struct DataBlock *db)
   return strcmp(targetStr, s) == 0;
 }
 
-int findBlockLength(struct DataBlock *db)
+static int findBlockLength(struct DataBlock *db)
 {
   int state = 0;
   int s;
@@ -275,7 +275,7 @@ int findInSS(struct StringStack *ss, const char *searchstr)
   return -1;
 }
 
-int parsenextree(struct StringStack *labels, struct AdjAdaptor *aa,
+static int parsenextree(struct StringStack *labels, struct AdjAdaptor *aa,
 struct LabelPerm *lp, char *treeString, int knumused)
 {
   int c, i;
