@@ -94,7 +94,7 @@ struct DataBlock *clMatToNexus(gsl_matrix *gm, struct StringStack *labels, struc
   return res;
 }
 
-int isNexusFile(struct DataBlock *db)
+int clIsNexusFile(struct DataBlock *db)
 {
   const char *targetStr = "#nexus";
   char s[7];
@@ -198,7 +198,7 @@ gsl_matrix *getNexusDistanceMatrix(struct DataBlock *db)
   char *labelbuf = clCalloc(clDatablockSize(db)+1, 1);
   int lptr = 0;
   struct DataBlock *tdb = getNexusDistancesBlock(db);
-  struct StringStack *ss = getNexusLabels(db);
+  struct StringStack *ss = clGetNexusLabels(db);
   char *d = (char *) clDatablockData(tdb);
   int i, s = clDatablockSize(tdb);
   int dc = 0;
@@ -236,7 +236,7 @@ struct DataBlock *getNexusTreeBlock(struct DataBlock *db)
   return grabNexusBlock(db, "Trees");
 }
 
-struct StringStack *getNexusLabels(struct DataBlock *db)
+struct StringStack *clGetNexusLabels(struct DataBlock *db)
 {
   char *labelbuf = clCalloc(clDatablockSize(db)+1, 1);
   int lptr = 0;

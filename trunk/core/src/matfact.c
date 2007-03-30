@@ -109,6 +109,8 @@ int clbIsCLBFile(struct DataBlock *db)
 
 struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
 {
+  if (clIsNexusFile(db))
+    return clGetNexusLabels(db);
   if (clbIsCLBFile(db))
     return clbDBLabels(db);
   else {
@@ -123,6 +125,8 @@ struct StringStack *clReadAnyDistMatrixLabels(struct DataBlock *db)
 
 gsl_matrix *clReadAnyDistMatrix(struct DataBlock *db)
 {
+  if (clIsNexusFile(db))
+    return getNexusDistanceMatrix(db);
   if (clbIsCLBFile(db))
     return clbDBDistMatrix(db);
   else {
