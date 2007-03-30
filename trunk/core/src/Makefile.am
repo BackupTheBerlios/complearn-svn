@@ -106,6 +106,7 @@ complearn/labelperm.h \
 complearn/matfact.h \
 complearn/mutate.h \
 complearn/ncd-calc.h \
+complearn/nexus.h \
 complearn/paramlist.h \
 complearn/pathkeeper.h \
 complearn/quartet.h \

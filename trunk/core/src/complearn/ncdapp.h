@@ -34,10 +34,10 @@
  *  structure.
 */
 struct NCDConfig {
-  int fUsingGoogle;           /*!< flag which indicates if using Google
-                                   compressor */
+  int fUsingGoogle;           /*!< indicates if using Google compressor */
+  int fNexusFormat;           /* Nexus output format */
   char *output_distmat_fname; /*!< name of distance matrix file output by
-                                   ncd -b command */
+                                   ncd -b or ncd -n command */
   struct DBAccumulator da;    /*!< DBAccumulator */
 };
 

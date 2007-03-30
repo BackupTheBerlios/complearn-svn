@@ -592,10 +592,21 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   if (cur->fAvg) {
     gres = clAvg(gres);
   }
+  char *oname = ncdcfg->output_distmat_fname;
+  if (ncdcfg->fNexusFormat) {
+    struct DataBlock *db;
+    if (oname == NULL)
+      oname = "distmatrix.nex";
+    db = clMatToNexus(gres, labels, NULL);
+    clDatablockWriteToFile(db, oname);
+    clDatablockFreePtr(db);
+  }
   if (cur->fBinary) {
     struct DataBlock *db;
+    if (ncdcfg->output_distmat_fname == NULL)
+      oname = "distmatrix.clb";
     db = clMakeCLBDistMatrix(gres, labels, cur->cmdKeeper, clGetParametersCB(cur->ca));
-    clDatablockWriteToFile(db, ncdcfg->output_distmat_fname);
+    clDatablockWriteToFile(db, oname);
     clDatablockFreePtr(db);
   }
   for (n1c = 0; n1c < gres->size1; n1c++) {

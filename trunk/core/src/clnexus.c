@@ -1,7 +1,6 @@
 #include <complearn/complearn.h>
 #include <ctype.h>
 #include <string.h>
-#include "cnex.h"
 
 static const char *nexHeaderString = ""
 "#nexus\n"
@@ -35,7 +34,7 @@ static const char *makeHeaderString(int s)
   return result;
 }
 
-static char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringStack *labels, int me, int fromWhere) {
+char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringStack *labels, int me, int fromWhere) {
   //int s = clStringstackSize(labels);
   int a[3];
   int todo=0;
@@ -62,7 +61,7 @@ static char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct S
   return bigr;
 }
 
-static struct DataBlock *matToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta)
+struct DataBlock *clMatToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta)
 {
   int s = clStringstackSize(labels);
   int ms = 50 * s * s + 8192;

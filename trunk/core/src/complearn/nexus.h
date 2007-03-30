@@ -7,7 +7,7 @@ struct DataBlock;
 struct StringStack;
 
 char *nodeToNewick(struct TreeAdaptor *ta, struct LabelPerm *lp, struct StringStack *labels, int me, int fromWhere);
-struct DataBlock *matToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta);
+struct DataBlock *clMatToNexus(gsl_matrix *gm, struct StringStack *labels, struct TreeAdaptor *ta);
 int isNexusFile(struct DataBlock *db);
 struct DataBlock *getNexusTaxaBlock(struct DataBlock *db);
 struct DataBlock *getNexusDistancesBlock(struct DataBlock *db);

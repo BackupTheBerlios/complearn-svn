@@ -63,6 +63,7 @@ static void ncd_printapphelp(struct GeneralConfig *cur) {
 "  -g, --google                use Google compression (NGD)\n"
 "  -m, --module=mycomp.so      Load custom dynamic compression module\n"
 "  -D, --delcache              clear the Google cache\n"
+"  -n, --nexus                 write Nexus file format distance matrix\n"
 "  -o, --output=distmatname   set the default distance matrix output name\n"
 "  -r, --realcomp=pathname     use real compressor, passing in pathname of compressor\n"
 "\n";
@@ -137,8 +138,8 @@ struct GeneralConfig *loadNCDEnvironment()
     cur = clLoadDefaultEnvironment();
     cur->ptr = clCalloc(sizeof(struct NCDConfig),1);
     ncdcfg = (struct NCDConfig *) cur->ptr;
+    //ncdcfg->output_distmat_fname = ncdcfg->fNexusFormat ? clStrdup("distmatrix.nex"):clStrdup("distmatrix.clb");
     *ncdcfg = defaultNCDConfig;
-    ncdcfg->output_distmat_fname = clStrdup("distmatrix.clb");
     cur->freeappcfg = ncd_freeappconfig;
     cur->printapphelp = ncd_printapphelp;
   }
@@ -151,7 +152,7 @@ int main(int argc, char **argv)
   struct NCDConfig *ncdcfg;
   int next_option, whichLongOpt;
   void testGSoapReq(void);
-  const char *const ncd_short_options="flLptdwm:gDo:r:";
+  const char *const ncd_short_options="flLptdwm:gDno:r:";
   struct option ncd_long_options[] = {
       { "file-mode", 1, NULL, 'f' },
       { "literal-mode", 1, NULL, 'l' },  /* also can be called "quoted mode" */ { "list", 0, NULL, 'L' },         /* list compressors */
@@ -162,6 +163,7 @@ int main(int argc, char **argv)
       { "module", 1, NULL, 'm' },
       { "google", 0, NULL, 'g' },
       { "delcache", 0, NULL, 'D' }, /* clear the google cache */
+      { "nexus", 0, NULL, 'n' }, /* clear the google cache */
       { "output", 1, NULL, 'o' },   /* distmatrix output file <filename> */
       { "realcomp", 1, NULL, 'r' },  /* real compressor with command <cmd> */
       { NULL, 0, NULL, 0 },
@@ -228,6 +230,9 @@ int main(int argc, char **argv)
           fprintf(stderr, "Error loading module %s\n", optarg);
           exit(1);
         }
+        break;
+      case 'n':
+        ncdcfg->fNexusFormat = 1;
         break;
       case 'g':
         clBlockEnumerationFactorySetMode(ncdcfg->da.dbf, DBF_MODE_QUOTED);
