@@ -13,6 +13,7 @@ static const char *nexMidString = ""
 ";\n"
 "END; [Taxa]\n"
 "\n";
+
 static const char *nexPreDistString = ""
 "BEGIN Distances;\n"
 "DIMENSIONS ntax=%d;\n"

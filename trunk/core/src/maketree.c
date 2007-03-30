@@ -60,27 +60,46 @@ static void maketree_printapphelp(struct GeneralConfig *cur) {
 "  -R, --rooted                create rooted tree\n"
 "  -O, --ordered               create ordered tree\n"
 "  -T, --text-input            format of distance matrix is text\n"
+"  -n, --nexus                 make nexus format output file\n"
 "  -F                          disable self agreement termination and enable\n"
 "                              max fail count\n"
 "\n";
   printf("%s",s);
 }
 
+static void writeNexusFile(struct TreeAdaptor *ta, double score, struct CLNodeSet *dotflips)
+{
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
+  struct DataBlock *nexdb;
+  char *oname;
+  nexdb = clMatToNexus(dm, labels, ta);
+  oname = maketreecfg->output_tree_fname;
+  if (oname == NULL) oname = "treefile.nex";
+  clDatablockWriteToFile(nexdb, oname);
+  clDatablockFreePtr(nexdb);
+}
+
 static void writeDotFile(struct TreeAdaptor *ta, double score, struct CLNodeSet *dotflips)
 {
   struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   struct DataBlock *dotdb;
+  char *oname;
   dotdb = clConvertTreeToDot(ta, score, labels, dotflips, cur, globtm, dm);
-  clDatablockWriteToFile(dotdb, maketreecfg->output_tree_fname);
+  oname = maketreecfg->output_tree_fname;
+  if (oname == NULL) oname = "treefile.dot";
+  clDatablockWriteToFile(dotdb, oname);
   clDatablockFreePtr(dotdb);
 }
 
 void handleBetterTree(struct TreeObserver *tob, struct TreeHolder *th)
 {
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   printf("Just got new tree with score %f\n", clTreehScore(th));
   struct TreeAdaptor *ta = clTreehTreeAdaptor(th);
   double sc = clTreehScore(th);
   writeDotFile(ta, sc, NULL);
+  if (maketreecfg->fNexusFormat)
+    writeNexusFile(ta, sc, NULL);
   freedotth();
   clTreeaFree(ta);
   dotth = clTreehClone(th);
@@ -100,19 +119,25 @@ void clFuncstart(struct TreeOrderObserver *tob)
 }
 void clFuncordimproved(struct TreeOrderObserver *tob, struct TreeMolder *th, struct CLNodeSet *flips)
 {
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
 //  printf("order improvement Or(T) = %f\n", clTreemolderScoreScaled(th));
 //  printf("With flips set:\n");
 //  clNodesetPrint(flips);
   writeDotFile(clTreemolderTreeAdaptor(th), clTreemolderScore(th), flips);
+  if (maketreecfg->fNexusFormat)
+    writeNexusFile(clTreemolderTreeAdaptor(th), clTreemolderScore(th), flips);
 }
 
 void clFuncorddone(struct TreeOrderObserver *tob, struct TreeMolder *tm, struct CLNodeSet *flips)
 {
+  struct MakeTreeConfig *maketreecfg = (struct MakeTreeConfig *) cur->ptr;
   printf("Score done to Or(T) = %f\n", clTreemolderScoreScaled(tm));
 //  printf("With flips set:\n");
 //  clNodesetPrint(flips);
   clAssert(dotth != NULL);
   writeDotFile(clTreemolderTreeAdaptor(tm), clTreehScore(dotth), flips);
+  if (maketreecfg->fNexusFormat)
+    writeNexusFile(clTreemolderTreeAdaptor(tm), clTreehScore(dotth), flips);
   //writeDotFile(dotth, flips);
 }
 
@@ -123,6 +148,7 @@ struct GeneralConfig *loadMakeTreeEnvironment()
   struct MakeTreeConfig defaultMakeTreeConfig = {
     output_tree_fname: NULL,
     suppressRandomSeed: 0,
+    fNexusFormat: 0,
   };
 
   if (!cur) {
@@ -131,7 +157,6 @@ struct GeneralConfig *loadMakeTreeEnvironment()
     cur->ptr = clCalloc(sizeof(struct MakeTreeConfig),1);
     maketreecfg = (struct MakeTreeConfig *) cur->ptr;
     *maketreecfg = defaultMakeTreeConfig;
-    maketreecfg->output_tree_fname = clStrdup("treefile.dot");
     cur->freeappcfg = maketree_freeappconfig;
     cur->printapphelp = maketree_printapphelp;
   }
@@ -141,13 +166,14 @@ struct GeneralConfig *loadMakeTreeEnvironment()
 int main(int argc, char **argv)
 {
   int next_option;
-  const char *const short_options = "ROTFo:d";
+  const char *const short_options = "ROTFo:dn";
   static struct option long_options[] = {
       { "rooted", 0, NULL, 'R' },
       { "unordered", 0, NULL, 'u' },
       { "text", 0, NULL, 'T' },
       { "output", 1, NULL, 'o' },
       { "suppress-random-seed", 0, NULL, 'd' },
+      { "nexus", 0, NULL, 'n' },
       { NULL, 0, NULL, 0 },
   };
   double score;
@@ -184,6 +210,9 @@ int main(int argc, char **argv)
         break;
       case 'd':
         maketreecfg->suppressRandomSeed = 1;
+        break;
+      case 'n':
+        maketreecfg->fNexusFormat = 1;
         break;
       case 'u':
         isOrdered = 0;
