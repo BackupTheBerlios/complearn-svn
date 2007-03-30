@@ -1235,7 +1235,9 @@ class Installer
   alias config_dir_man noop
 
   def extconf
-    ruby "#{curr_srcdir()}/extconf.rb", *@config.config_opt
+opts = ["--so-dir=#{@config['so-dir']}", "--site-ruby=#{@config['site-ruby']}", *@config.config_opt ]
+    puts "Using option: #{opts.join(',')}"
+    ruby "#{curr_srcdir()}/extconf.rb", *opts
   end
 
   #
