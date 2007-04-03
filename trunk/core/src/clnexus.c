@@ -378,61 +378,19 @@ char *getNexusTreeString(struct DataBlock *db, char **ttype)
   return res;
 }
 
-#if 0
-int main()
+int isNexusFile(struct DataBlock *db)
 {
-  const int MSIZE=4;
-  struct TreeAdaptor *ta = NULL;
-  struct DataBlock *dbn, *db2;
-  int i, j;
-  gsl_matrix *g2, *g = gsl_matrix_alloc(MSIZE, MSIZE);
-  gsl_matrix_set(g,0,1,0.9);
-  gsl_matrix_set(g,0,2,0.9);
-  gsl_matrix_set(g,0,3,0.5);
-  gsl_matrix_set(g,1,0,0.9);
-  gsl_matrix_set(g,1,2,0.7);
-  gsl_matrix_set(g,1,3,0.9);
-  gsl_matrix_set(g,2,0,0.9);
-  gsl_matrix_set(g,2,1,0.7);
-  gsl_matrix_set(g,2,3,0.9);
-  gsl_matrix_set(g,3,0,0.5);
-  gsl_matrix_set(g,3,1,0.9);
-  gsl_matrix_set(g,3,2,0.9);
-  struct StringStack *blab, *lab = clDefaultLabels(MSIZE);
-  ta = clTreeaNew(0, MSIZE);
-  clDatablockWriteToFile(dbn=matToNexus(g, lab, ta), "nd.nex");
-  printf("isNexusFile? %d\n", isNexusFile(dbn));
-  db2 = clFileToDataBlockPtr("/bin/ls");
-  printf("isNexusFile? %d\n", isNexusFile(db2));
-  {
-  char *bname = "trees";
-  db2 = grabNexusBlock(dbn, bname);
-  printf("%s block: %p, %d\n", bname, db2, clDatablockSize(db2));
-  printf("<%s>\n", clDatablockToString(db2));
-}
-  {
+  const char *targetStr = "#nexus";
+  char s[7];
   int i;
-    struct TreeAdaptor *ta;
-    struct DataBlock *dbd;
-    blab = getNexusLabels(dbn);
-    for (i = 0; i < clStringstackSize(blab); i += 1)
-      printf("%d: %s\n", i, clStringstackReadAt(blab, i));
-    ta = getNexusTree(dbn, blab);
-    dbd = clConvertTreeToDot(ta, 0.0, blab, NULL, NULL, NULL, NULL);
-    clDatablockWriteToFile(dbd, "ot.dot");
-  }
-  {
-    g2 = getNexusDistanceMatrix(dbn);
-    printf("Matrix: %d x %d\n", g2->size1, g2->size2);
-    for (i = 0; i < g2->size1; i += 1) {
-      for (j = 0; j < g2->size2; j += 1) {
-        printf("%f ", gsl_matrix_get(g2, i, j));
-      }
-      printf("\n");
-    }
-  }
-  gsl_matrix_free(g);
-  return 0;
+  if (clDatablockSize(db) < sizeof(s))
+    return 0;
+  memcpy(s, clDatablockData(db), sizeof(s));
+  for (i = 0; i < sizeof(s); i += 1)
+    s[i] = tolower(s[i]);
+  if (!isspace(s[strlen(targetStr)]))
+    return 0;
+  s[strlen(targetStr)] = '\0';
+  return strcmp(targetStr, s) == 0;
 }
 
-#endif
