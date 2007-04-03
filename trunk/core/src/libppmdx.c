@@ -82,6 +82,8 @@ static int fprepareToCompressCB(struct CompressionBase *cb)
 {
   const char *levp = clEnvmapValueForKey(clGetParametersCB(cb), "order");
   struct PPMDXCompressionInstance *rci = (struct PPMDXCompressionInstance *) cb;
+  // TODO: figure out how come the "order" parameter doesn't seem to work
+  // from within config files.
   if (levp) {
     int wlev = atoi(levp);
     if (wlev < 2 || wlev > 16) {
