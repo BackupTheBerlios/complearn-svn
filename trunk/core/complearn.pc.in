@@ -9,4 +9,4 @@ Requires: gsl
 Version: @VERSION@
 Libs: -L${exec_prefix}/lib -lcomplearn
 Libs.private: -lm -lbz2 -lz -lxml2 @NGDLIBS@
-Cflags: -I${includedir} @CPPFLAGS@
+Cflags: -I${includedir} @EXTCPPFLAGS@

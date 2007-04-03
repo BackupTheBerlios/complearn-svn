@@ -78,7 +78,7 @@ AC_ARG_ENABLE(default-paths,
 esac], [ua_defpaths=true])
 
 if test x$ua_defpaths = xtrue ; then
-  CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/include"
+  EXTCPPFLAGS="$EXTCPPFLAGS -I/usr/local/include -I/usr/include"
   LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/lib -L/lib -L/usr/X11R6/lib"
 else
   echo -n
@@ -139,7 +139,7 @@ AC_ARG_ENABLE(dmalloc,
 esac], [ua_dmalloc=false])
 
 if test x$ua_dmalloc = xtrue ; then
-  CPPFLAGS="$CPPFLAGS -DNOGALLOC"
+  EXTCPPFLAGS="$EXTCPPFLAGS -DNOGALLOC"
   LDFLAGS="$LDFLAGS -ldmalloc"
   echo "Enabling dmalloc subsystem."
 fi
@@ -154,12 +154,13 @@ AC_ARG_ENABLE(optimize,
 esac], [ua_optimize=true])
 
 if test x$ua_optimize = xtrue ; then
-  CPPFLAGS="$CPPFLAGS -DNDEBUG -Wall"
-  CFLAGS="$CFLAGS -O3 -DNDEBUG -Wall"
+  INTCPPFLAGS="$INTCPPFLAGS -O3 -DNDEBUG -Wall"
   echo "Enabling performance optimizations."
 else
-  CFLAGS="$CFLAGS -g -Wall"
+#  INTCPPFLAGS="$INTCPPCFLAGS -g -Wall"
+  INTCPPFLAGS="$INTCPPCFLAGS -Wall"
 fi
+CFLAGS="$CFLAGS $INTCPPFLAGS"
 
 # base dependencies
 AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"])
@@ -190,7 +191,7 @@ for i in gsl libxml-2.0 nanohttp libcsoap ; do
   if $PKGCONFIG --exists $i ; then
     if test "x$i" = "xgsl" ; then fgsl_lib=true ; fi
     if test "x$i" = "xlibxml-2.0" ; then fxml2_lib=true ; fi
-    CPPFLAGS="$CPPFLAGS `pkg-config $i --cflags`"
+    EXTCPPFLAGS="$EXTCPPFLAGS `pkg-config $i --cflags`"
     LDFLAGS="$LDFLAGS `pkg-config $i --libs --static`"
   else
     echo -n
@@ -201,7 +202,7 @@ fi
 if test "x$fgsl_lib" = "xfalse" ; then
 AC_ARG_WITH(gsl,
   [  --with-gsl=PREFIX       where gsl is installed (required for NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
 AC_CHECK_HEADERS([gsl/gsl_matrix.h math.h])
@@ -224,16 +225,16 @@ fi
 if test $fgdbm_lib = false ; then
 AC_ARG_WITH(gdbm,
   [ --with-gdbm=PREFIX       where gdbm is installed (required fo NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"])
 fi
 
 if test $fxml2_lib = false ; then
 AC_ARG_WITH(xml2,
   [  --with-xml2=PREFIX      where xml2 is installed (required for NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include/libxml2 -I$withval/include" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I$withval/include/libxml2 -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"],
-  [ CPPFLAGS="$CPPFLAGS -I/usr/include/libxml2" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I/usr/include/libxml2" ;
     LDFLAGS="$LDFLAGS"]
 )
   AC_CHECK_HEADERS([libxml/xpath.h], [
@@ -251,12 +252,12 @@ fi
 # ngd dependencies
 AC_ARG_WITH(nanohttp,
   [  --with-nanohttp=PREFIX  where nanohttp is installed (required for NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include/nanohttp-1.0 -I$withval/include" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I$withval/include/nanohttp-1.0 -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib"]
 )
 AC_ARG_WITH(csoap,
   [  --with-csoap=PREFIX     where csoap is installed (required for NGD)],
-  [ CPPFLAGS="$CPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include/nanohttp-1.0 -I$withval/include" ;
+  [ EXTCPPFLAGS="$EXTCPPFLAGS -I$withval/include/libcsoap-1.0 -I$withval/include/nanohttp-1.0 -I$withval/include" ;
     LDFLAGS="$LDFLAGS -L$withval/lib -lxml2"]
 )
 
@@ -300,6 +301,7 @@ fi
 
 NGDLIBS=$LIBS
 LIBS=$OLDLIBS
+CPPFLAGS="$EXTCPPFLAGS $INTCPPFLAGS"
 
 AC_PROG_CC
 AC_SUBST(NGDLIBS)
@@ -307,6 +309,7 @@ AC_SUBST(EXTRABUILTINS)
 AC_SUBST(FONTFILE)
 AC_SUBST(SONAMEOPTS)
 AC_SUBST(DYNEXT)
+AC_SUBST(EXTCPPFLAGS)
 
 echo "fgsl_lib      is $fgsl_lib"
 echo "fbz2_lib      is $fbz2_lib"
