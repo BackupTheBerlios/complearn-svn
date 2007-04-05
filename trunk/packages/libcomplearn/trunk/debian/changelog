@@ -1,3 +1,9 @@
+libcomplearn (0.9.8-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Thu,  5 Apr 2007 14:06:12 +0200
+
 libcomplearn (0.9.7-2) unstable; urgency=low
 
   * Modified libcomplearn-dev to depend on pkg-config.
