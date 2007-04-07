@@ -16,6 +16,5 @@ char *findSubstringCaseInsensitive(struct DataBlock *db, const char *tstr);
 struct StringStack *clGetNexusLabels(struct DataBlock *db);
 gsl_matrix *getNexusDistanceMatrix(struct DataBlock *db);
 char *getNexusTreeString(struct DataBlock *db, char **ttype);
-int isNexusFile(struct DataBlock *db);
 
 #endif

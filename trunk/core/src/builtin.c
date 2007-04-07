@@ -159,7 +159,7 @@ static struct CLCompressionInfo **findPointerTo(struct CLCompressionInfo *t)
   }
   return NULL;
 }
-
+// Starting point of CompressionBase initialization
 static struct CLCompressionInfo *findCompressorInfo(const char *name)
 {
   struct CLCompressionInfo *c;

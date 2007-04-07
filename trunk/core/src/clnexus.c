@@ -116,7 +116,7 @@ static int findBlockLength(struct DataBlock *db)
   int state = 0;
   int s;
   unsigned char *t = clDatablockData(db);
-  assert(isNexusFile(db));
+  assert(clIsNexusFile(db));
   for (s = 0; s < clDatablockSize(db); s += 1) {
     char c = t[s];
     if (isspace(c)) {
@@ -378,19 +378,4 @@ char *getNexusTreeString(struct DataBlock *db, char **ttype)
   return res;
 }
 
-int isNexusFile(struct DataBlock *db)
-{
-  const char *targetStr = "#nexus";
-  char s[7];
-  int i;
-  if (clDatablockSize(db) < sizeof(s))
-    return 0;
-  memcpy(s, clDatablockData(db), sizeof(s));
-  for (i = 0; i < sizeof(s); i += 1)
-    s[i] = tolower(s[i]);
-  if (!isspace(s[strlen(targetStr)]))
-    return 0;
-  s[strlen(targetStr)] = '\0';
-  return strcmp(targetStr, s) == 0;
-}
 
