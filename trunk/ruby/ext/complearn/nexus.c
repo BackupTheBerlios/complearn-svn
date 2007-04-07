@@ -19,40 +19,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifndef __CLRBCON_H
-#define __CLRBCON_H
 
-#include <ruby.h>
-#undef PACKAGE_VERSION
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_BUGREPORT
 #include <complearn/complearn.h>
-#include "conversions.h"
+#include "clrbcon.h"
 
-#include <gsl/gsl_odeiv.h>
-#include <gsl/gsl_vector.h>
+static VALUE rbnexus_isnexus( VALUE cl, VALUE rstr ) {
+  int result;
+  struct DataBlock *db = convertRubyStringToDataBlock(rstr);
+  result = clIsNexusFile( db );
+  clDatablockFreePtr( db );
+  return ( result ? Qtrue : Qnil );
+}
 
-extern VALUE mCompLearn;
-
-extern VALUE cAdjAdaptor;
-extern VALUE cCompressionBase;
-extern VALUE cTreeAdaptor;
-extern VALUE cTreeHolder;
-extern VALUE cTreeMaster;
-extern VALUE cTreeObserver;
-extern VALUE cTreeMolder;
-extern VALUE cTreeBlaster;
-extern VALUE cTreeOrderObserver;
-extern VALUE cSpringBallSystem;
-extern VALUE cIncrementalDistMatrix;
-extern VALUE cNexus;
-
-extern VALUE cMatrix;
-extern VALUE cVector;
-extern VALUE cTime;
-extern VALUE cMarshal;
-
-VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
-#endif
+void doInitNexus(void) {
+  cNexus = rb_define_class_under(mCompLearn, "Nexus", rb_cObject);
+  rb_define_singleton_method(cNexus, "isNexus", rbnexus_isnexus, 1);
+}

@@ -34,6 +34,7 @@ VALUE cTreeBlaster;
 VALUE cTreeOrderObserver;
 VALUE cSpringBallSystem;
 VALUE cIncrementalDistMatrix;
+VALUE cNexus;
 
 VALUE cMatrix;
 VALUE cVector;
@@ -70,4 +71,5 @@ Init_complearn4r(void)
   doInitTreeMaster();
   doInitSpringBallSystem();
   doInitIncrDistMatrix();
+  doInitNexus();
 }
