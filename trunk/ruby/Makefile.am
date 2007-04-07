@@ -36,6 +36,7 @@ ext/complearn/compbase.c \
 ext/complearn/complearn4r.c \
 ext/complearn/conversions.c \
 ext/complearn/incrdm.c \
+ext/complearn/nexus.c \
 ext/complearn/springball.c \
 ext/complearn/treeadaptor.c \
 ext/complearn/treeholder.c \

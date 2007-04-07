@@ -1,0 +1,16 @@
+configure
+Makefile.in
+config.log
+inp
+config.status
+config.guess
+config.sub
+o
+autom4te.cache
+inp.pmd
+INSTALL
+COPYING
+missing
+aclocal.m4
+Makefile
+install-sh
