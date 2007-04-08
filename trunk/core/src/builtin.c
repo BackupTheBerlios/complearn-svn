@@ -169,6 +169,33 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   }
   return NULL;
 }
+struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
+{
+  struct CLCompressionInfo *ci;
+  checkInitted();
+  ci = findCompressorInfo(shortName);
+  if (ci == NULL) {
+  	char buf[1024];
+	sprintf(buf, "Cannot find compressor %s", shortName);
+	fprintf(stderr, "ERROR: %s\n", buf);
+	clPrintCompressors();
+  	clLogError(buf);
+	exit(1);
+  }
+  clAssert(ci != NULL);
+  if (!clIsEnabledCB(shortName))
+    return NULL;
+  struct CompressionBase *cb = calloc(ci->cba.allocSizeCB(), 1);
+  struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
+  cbi->cb = cb;
+  cbi->vptr = &ci->cba;
+  cb->cbi = cbi;
+  cbi->em = clEnvmapClone(em);
+  int retval;
+  retval = VF(cb, specificInitCB)(cb);
+  staticErrorExitIfBad(retval, cb);
+  return cb;
+}
 
 struct CompressionBase *clNewCompressorCB(const char *shortName)
 {
