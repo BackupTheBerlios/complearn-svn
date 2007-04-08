@@ -8,10 +8,10 @@ class CSCommand
   end
 end
 class BCommand
+end
+class BVersion < BCommand
   def execute()
-    puts "bc executed!"
+    CompLearn.version
   end
-  def to_s
-    "bcommand test to_s at #{self.object_id}"
-  end
+end
 end
