@@ -973,29 +973,6 @@ void testAdjMatrix(void)
   }
   clAdjmatrixFree(am);
 }
-#if 0
-  c = 0;
-  ALLNODES(am, i) {
-    c += 1;
-  }
-  clAssert(c == AMSIZE);
-  c = 0;
-  ALLPAIRS(am, i, j) {
-    c += 1;
-  }
-  clAssert(c == (AMSIZE * (AMSIZE - 1 != NULL)) / 2);
-  c = 0;
-  ALLTRIPLETS(am, i, j, k) {
-    c += 1;
-  }
-  clAssert(c == (AMSIZE * (AMSIZE - 1 != NULL) * (AMSIZE - 2)) / 6);
-  c = 0;
-  ALLQUARTETS(am, i, j, k, m) {
-    c += 1;
-  }
-  clAssert(c == (AMSIZE * (AMSIZE - 1 != NULL) * (AMSIZE - 2) * (AMSIZE-3)) / 24);
-}
-#endif
 
 void clDoSBS3Test(void);
 
