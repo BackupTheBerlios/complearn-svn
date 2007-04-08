@@ -51,6 +51,7 @@ DYNEXT=so
 NANOLIBNAME=nanohttp
 CSOAPLIBNAME=csoap
 GDBMLIBNAME=gdbm
+STATICLOADEXTRAMODS=0
 
 AC_DEFUN([AC_DEFINE_DIR], [
   prefix_NONE=
@@ -117,7 +118,7 @@ case "${host}" in
     echo "compensate for limitted DLL functionality in this OS."
     echo "For complete dynamic module support and binary distance matrix,"
     echo "please consider using a Unix style OS"
-    AC_DEFINE(STATICLOADEXTRAMODS, 1)
+    AC_DEFINE(STATICLOADEXTRAMODS, 1, "staticmod")
     EXTRABUILTINS='libppmdx.lo liblzmax.lo'
 #    LDFLAGS="$LDFLAGS -lz"
     LIBS="$LIBS -lz"
@@ -311,6 +312,7 @@ AC_SUBST(FONTFILE)
 AC_SUBST(SONAMEOPTS)
 AC_SUBST(DYNEXT)
 AC_SUBST(EXTCPPFLAGS)
+AC_SUBST(STATICLOADEXTRAMODS)
 
 echo "fgsl_lib      is $fgsl_lib"
 echo "fbz2_lib      is $fbz2_lib"
