@@ -172,10 +172,7 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
 struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
 {
   struct CompressionBase *cb = clNewCompressorCB(shortName);
-  struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
-  printf("Printing Envmap in clCompressorNewEM: \n");
-  clEnvmapPrint(em);
-  cbi->em = clEnvmapClone(em);
+  clEnvmapMerge(cb->cbi->em, em);
   return cb;
 }
 
@@ -288,7 +285,6 @@ struct EnvMap *clGetParametersCB(struct CompressionBase *cb)
 void clPrintParametersCB(struct CompressionBase *cb)
 {
   struct EnvMap *em = clGetParametersCB(cb);
-  printf("The compressor environment:\n");
   clEnvmapPrint(em);
 }
 

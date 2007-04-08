@@ -51,6 +51,11 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb);
 
 #define APIVER_CLCOMP10 10
 #define VIRTFUNCEXPORT(x) x : f##x
+#define CHECKRANGE(cb, x, lo, hi, msg) \
+  if (x < lo || x > hi) { \
+    clSetLastErrorCB(cb, msg); \
+    return 1; \
+  }
 
 struct CompressionBase;
 struct CompressionBaseAdaptor;
