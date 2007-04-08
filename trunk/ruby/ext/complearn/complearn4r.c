@@ -38,6 +38,7 @@ VALUE cNexus;
 
 VALUE cMatrix;
 VALUE cVector;
+VALUE cHash;
 VALUE cTime;
 VALUE cMarshal;
 
@@ -52,14 +53,21 @@ struct TreeOrderObserverState {
   volatile VALUE obs;
 };
 
+VALUE rbcl_version(VALUE m) {
+  return rb_str_new2( clLibVersionString() );
+}
+
 void
 Init_complearn4r(void)
 {
   mCompLearn = rb_define_module("CompLearn");
 
   rb_require("matrix");
+  rb_define_singleton_method(mCompLearn, "version", rbcl_version, 0);
+  rb_define_method(mCompLearn, "version", rbcl_version, 0);
   cMatrix = rb_const_get(rb_cObject, rb_intern("Matrix"));
   cVector = rb_const_get(rb_cObject, rb_intern("Vector"));
+  cHash = rb_const_get(rb_cObject, rb_intern("Hash"));
 
   cTime = rb_const_get(rb_cObject, rb_intern("Time"));
   cMarshal = rb_const_get(rb_cObject, rb_intern("Marshal"));

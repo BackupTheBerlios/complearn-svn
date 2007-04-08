@@ -173,6 +173,16 @@ VALUE rbcompa_new(VALUE cl, VALUE comp)
   return tdata;
 }
 
+VALUE rbcompa_newnew(VALUE cl, VALUE comp, VALUE rem)
+{
+  struct EnvMap *em = convertRubyHashToEnvMap(rem);
+  struct CompressionBase *ca = clCompressorNewEM(STR2CSTR(comp), em);
+  volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clFreeCB, ca);
+  rb_obj_call_init(tdata, 0, 0);
+  clEnvmapFree(em);
+  return tdata;
+}
+
 void doInitCompa(void) {
   cCompressionBase = rb_define_class_under(mCompLearn,"CompressionBase", rb_cObject);
   rb_define_method(cCompressionBase, "initialize", rbcompa_init, 0);

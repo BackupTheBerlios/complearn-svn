@@ -66,6 +66,7 @@ extern VALUE cNexus;
 
 extern VALUE cMatrix;
 extern VALUE cVector;
+extern VALUE cHash;
 extern VALUE cTime;
 extern VALUE cMarshal;
 

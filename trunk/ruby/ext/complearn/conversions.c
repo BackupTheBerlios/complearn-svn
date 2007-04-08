@@ -138,3 +138,13 @@ struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
   db = clDatablockNewFromBlock(cstr, length);
   return db;
 }
+
+struct EnvMap *convertRubyHashToEnvMap( VALUE rem )
+{
+  struct EnvMap *em = clEnvmapNew();
+  struct StringStack *keys;
+  struct StringStack *values;
+  VALUE rkeys, rvalues;
+  rkeys = rb_funcall( cHash, rb_intern("keys"), 0 );
+  return em;
+}

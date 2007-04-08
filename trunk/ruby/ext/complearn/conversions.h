@@ -30,6 +30,7 @@ VALUE convertStringStackToRubyArray(struct StringStack *ss);
 VALUE convertCLDateTimeToTime(struct CLDateTime *cldt);
 VALUE convertgslvectorToRubyVector(gsl_vector *v);
 struct DataBlock *convertRubyStringToDataBlock(VALUE rstr);
+struct EnvMap *convertRubyHashToEnvMap(VALUE rem);
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
 VALUE convertDataBlockToRubyString(struct DataBlock *db);
 #endif
