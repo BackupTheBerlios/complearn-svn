@@ -69,6 +69,7 @@ int clForkPipeExecAndFeedCB(struct DataBlock *inp, const char *cmd, struct Strin
 void clZombieReaperCB(int q);
 struct EnvMap *clGetParametersCB(struct CompressionBase *cb);
 const char *clGetParamStringCB(struct CompressionBase *cb);
+void clPrintParametersCB(struct CompressionBase *cb);
 int clSetParameterCB(struct CompressionBase *cb, const char *key, const char *val, int isPrivate);
 void clSetLastErrorCB(struct CompressionBase *cb, const char *errMsg);
 void clSetLastStaticErrorCB(const char *shortName, const char *errMsg);
@@ -76,6 +77,7 @@ double clCompressCB(struct CompressionBase *cb, struct DataBlock *db);
 struct DataBlock *clConcatCB(struct CompressionBase *cb, struct DataBlock *db1,
                             struct DataBlock *db2);
 struct CompressionBaseAdaptor *clGetCBAsuper(void);
+struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em);
 struct CompressionBaseAdaptor *clGetCBA(struct CompressionBase *cb);
 const char *clLastErrorCB(struct CompressionBase *cb);
 int clIsEnabledCB(const char *shortName);

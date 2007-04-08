@@ -171,29 +171,9 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
 }
 struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
 {
-  struct CLCompressionInfo *ci;
-  checkInitted();
-  ci = findCompressorInfo(shortName);
-  if (ci == NULL) {
-  	char buf[1024];
-	sprintf(buf, "Cannot find compressor %s", shortName);
-	fprintf(stderr, "ERROR: %s\n", buf);
-	clPrintCompressors();
-  	clLogError(buf);
-	exit(1);
-  }
-  clAssert(ci != NULL);
-  if (!clIsEnabledCB(shortName))
-    return NULL;
-  struct CompressionBase *cb = calloc(ci->cba.allocSizeCB(), 1);
+  struct CompressionBase *cb = clNewCompressorCB(shortName);
   struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
-  cbi->cb = cb;
-  cbi->vptr = &ci->cba;
-  cb->cbi = cbi;
   cbi->em = clEnvmapClone(em);
-  int retval;
-  retval = VF(cb, specificInitCB)(cb);
-  staticErrorExitIfBad(retval, cb);
   return cb;
 }
 
@@ -301,6 +281,13 @@ struct DataBlock *clConcatCB(struct CompressionBase *cb, struct DataBlock *db1,
 struct EnvMap *clGetParametersCB(struct CompressionBase *cb)
 {
   return cb->cbi->em;
+}
+
+void clPrintParametersCB(struct CompressionBase *cb)
+{
+  struct EnvMap *em = clGetParametersCB(cb);
+  printf("The compressor environment:\n");
+  clEnvmapPrint(em);
 }
 
 const char *clLastErrorCB(struct CompressionBase *cb)
@@ -500,13 +487,15 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
 {
   struct ParamList *pl = clParamlistNew();
   struct EnvMap *em = clGetParametersCB(cb);
-  int i;
-  pl->size = clEnvmapSize(em);
+  int i, j=0;
   for (i = 0; i < pl->size; i += 1) {
+    if (!clEnvmapIsMarkedAt(em, i))
+      continue;
     union PCTypes p;
     p = clEnvmapKeyValAt(em, i);
-    pl->fields[i] = clFielddescNew(p.sp.key, p.sp.val, 0);
+    pl->fields[j++] = clFielddescNew(p.sp.key, p.sp.val, 0);
   }
+  pl->size = j;
   return pl;
 }
 
