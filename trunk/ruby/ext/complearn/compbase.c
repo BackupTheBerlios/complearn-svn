@@ -178,7 +178,6 @@ VALUE rbcompa_newnew(VALUE cl, VALUE comp, VALUE rem)
   struct EnvMap *em = convertRubyHashToEnvMap(rem);
   struct CompressionBase *ca = clCompressorNewEM(STR2CSTR(comp), em);
   volatile VALUE tdata = Data_Wrap_Struct(cl, 0, clFreeCB, ca);
-  rb_obj_call_init(tdata, 0, 0);
   clEnvmapFree(em);
   return tdata;
 }

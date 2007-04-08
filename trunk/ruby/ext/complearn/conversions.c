@@ -145,11 +145,9 @@ struct StringStack *convertRubyArrayToStringStack( VALUE ar )
   int i;
   if (ar != Qnil) {
     int sz = RARRAY(ar)->len;
-    printf("rb_arysize: %d\n", sz);
     for (i = 0; i < sz; i += 1) {
       volatile VALUE v;
       v = rb_ary_entry(ar, i);
-      printf("pushing %s\n", STR2CSTR(v));
       clStringstackPush(ss, STR2CSTR(v));
     }
   }
@@ -164,7 +162,6 @@ struct EnvMap *convertRubyHashToEnvMap( VALUE rem )
   int size, i;
   VALUE rkeys, rvalues;
   size = FIX2INT( rb_funcall( rem, rb_intern("size"), 0 ) );
-  printf("Here's the size: %i\n", size);
   rkeys = rb_funcall( rem, rb_intern("keys"), 0 );
   rvalues = rb_funcall( rem, rb_intern("values"), 0 );
   keys = convertRubyArrayToStringStack(rkeys);

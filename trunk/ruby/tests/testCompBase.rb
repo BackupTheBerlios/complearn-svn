@@ -1,9 +1,8 @@
 require 'complearn'
 include CompLearn
 
-puts CompLearn.version
-
-cb = CompressionBase.newnew('bzip2', 'blocksize' => '8', 'workfactor' => '2' )
-puts "Before ncd: #{cb.params.inspect}"
-cb.ncd("hello", "world")
-puts "Before ncd: #{cb.params.inspect}"
+cb = CompressionBase.newnew('bzip2', { 'verbosity' => '0', 'xfactor' => '10000',
+                            'blocksize' => '8', 'workfactor' => '250' } )
+puts "Before ncd call: #{cb.params.inspect}"
+puts cb.ncd("hello", "world")
+puts " After ncd call: #{cb.params.inspect}"

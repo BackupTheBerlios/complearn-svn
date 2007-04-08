@@ -71,4 +71,12 @@ extern VALUE cTime;
 extern VALUE cMarshal;
 
 VALUE convertgslmatrixToRubyMatrix(gsl_matrix *dm);
+void doInitCompa(void);
+void doInitAdja(void);
+void doInitIncrDistMatrix(void);
+void doInitNexus(void);
+void doInitTRA(void);
+void doInitTH(void);
+void doInitTreeMaster(void);
+void doInitSpringBallSystem(void);
 #endif

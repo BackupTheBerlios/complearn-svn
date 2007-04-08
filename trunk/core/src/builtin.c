@@ -485,8 +485,9 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
 {
   struct ParamList *pl = clParamlistNew();
   struct EnvMap *em = clGetParametersCB(cb);
-  int i, j=0;
-  for (i = 0; i < pl->size; i += 1) {
+  int i, j=0, k;
+  k = clEnvmapSize(em);
+  for (i = 0; i < k; i += 1) {
     if (!clEnvmapIsMarkedAt(em, i))
       continue;
     union PCTypes p;
