@@ -139,12 +139,41 @@ struct DataBlock *convertRubyStringToDataBlock(VALUE rstr)
   return db;
 }
 
+struct StringStack *convertRubyArrayToStringStack( VALUE ar )
+{
+  struct StringStack *ss = clStringstackNew();
+  int i;
+  if (ar != Qnil) {
+    int sz = RARRAY(ar)->len;
+    printf("rb_arysize: %d\n", sz);
+    for (i = 0; i < sz; i += 1) {
+      volatile VALUE v;
+      v = rb_ary_entry(ar, i);
+      printf("pushing %s\n", STR2CSTR(v));
+      clStringstackPush(ss, STR2CSTR(v));
+    }
+  }
+  return ss;
+}
+
 struct EnvMap *convertRubyHashToEnvMap( VALUE rem )
 {
   struct EnvMap *em = clEnvmapNew();
   struct StringStack *keys;
   struct StringStack *values;
+  int size, i;
   VALUE rkeys, rvalues;
-  rkeys = rb_funcall( cHash, rb_intern("keys"), 0 );
+  size = FIX2INT( rb_funcall( rem, rb_intern("size"), 0 ) );
+  printf("Here's the size: %i\n", size);
+  rkeys = rb_funcall( rem, rb_intern("keys"), 0 );
+  rvalues = rb_funcall( rem, rb_intern("values"), 0 );
+  keys = convertRubyArrayToStringStack(rkeys);
+  assert(keys != nil);
+  assert(values != nil);
+  values = convertRubyArrayToStringStack(rvalues);
+  for ( i = 0; i < size; i++ )
+    clEnvmapSetKeyVal( em, clStringstackReadAt(keys, i), clStringstackReadAt(values, i) );
+  clStringstackFree( keys );
+  clStringstackFree( values );
   return em;
 }

@@ -187,6 +187,7 @@ void doInitCompa(void) {
   cCompressionBase = rb_define_class_under(mCompLearn,"CompressionBase", rb_cObject);
   rb_define_method(cCompressionBase, "initialize", rbcompa_init, 0);
   rb_define_singleton_method(cCompressionBase, "new", rbcompa_new, 1);
+  rb_define_singleton_method(cCompressionBase, "newnew", rbcompa_newnew, 2);
   rb_define_singleton_method(cCompressionBase, "loadBuiltin", rbcompa_new, 1);
   rb_define_singleton_method(cCompressionBase, "names", rbcompa_names, 0);
   rb_define_singleton_method(cCompressionBase, "listBuiltin", rbcompa_names, 0);

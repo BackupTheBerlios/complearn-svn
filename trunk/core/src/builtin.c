@@ -173,6 +173,8 @@ struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *
 {
   struct CompressionBase *cb = clNewCompressorCB(shortName);
   struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
+  printf("Printing Envmap in clCompressorNewEM: \n");
+  clEnvmapPrint(em);
   cbi->em = clEnvmapClone(em);
   return cb;
 }
