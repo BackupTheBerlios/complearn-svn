@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
   double result;
   struct DataBlock *db1, *db2;
-  struct CompressionBase *comp;
+  struct CompressionBase *comp = NULL;
   if (comp == NULL) {
     comp = clNewCompressorCB("blocksort");
   }
