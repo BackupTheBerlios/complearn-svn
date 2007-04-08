@@ -146,3 +146,8 @@ int clCountBytesTillEOFThenCloseCB(int readfd)
   close(readfd);
   return bc;
 }
+
+const char *clLibVersionString(void)
+{
+  return PACKAGE_VERSION;
+}

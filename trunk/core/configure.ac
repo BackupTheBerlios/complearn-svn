@@ -264,6 +264,7 @@ AC_ARG_WITH(csoap,
 fngd_possible=true;
 OLDLIBS=$LIBS
 LIBS=""
+CPPFLAGS=$EXTCPPFLAGS
 
 if test x$fngd_possible = xtrue ; then
   if test x$fxml2_lib = xfalse ; then

@@ -123,4 +123,5 @@ typedef void (*t_updateappconfigtoem)(struct GeneralConfig *cur);
 typedef void (*t_printapphelp)(struct GeneralConfig *cur);
 typedef void (*t_printappenvironment)(struct GeneralConfig *cur);
 
+const char *clLibVersionString(void);
 #endif
