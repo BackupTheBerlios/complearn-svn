@@ -46,6 +46,6 @@ const char *clGetSystemModuleDir(void);
 const char *clGetHomeModuleDir(void);
 const char *clGetHomeConfigFileName(void);
 const char *clGetSystemConfigFileName(void);
-
+const char *clLibVersionString(void);
 
 #endif
