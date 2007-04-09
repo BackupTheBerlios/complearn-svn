@@ -121,4 +121,5 @@ int clDatablockSize(struct DataBlock *db);
  *  \return pointer to data buffer
  */
 unsigned char *clDatablockData(struct DataBlock *db);
+int clDatablockCompare(const struct DataBlock *db1,const struct DataBlock *db2);
 #endif

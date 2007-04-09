@@ -169,10 +169,12 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   }
   return NULL;
 }
+
 struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
 {
   struct CompressionBase *cb = clNewCompressorCB(shortName);
-  clEnvmapMerge(cb->cbi->em, em);
+  if (em != NULL)
+    clEnvmapMerge(cb->cbi->em, em);
   return cb;
 }
 
@@ -198,11 +200,14 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   cbi->vptr = &ci->cba;
   cb->cbi = cbi;
   cbi->em = clEnvmapNew();
+  clEnvmapMerge(cbi->em, clLoadDefaultEnvironment()->em);
+
   int retval;
   retval = VF(cb, specificInitCB)(cb);
   staticErrorExitIfBad(retval, cb);
   return cb;
 }
+
 static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb)
 {
   if (retval != 0) {
@@ -488,7 +493,7 @@ struct ParamList *clGetParameterListCB(struct CompressionBase *cb)
   int i, j=0, k;
   k = clEnvmapSize(em);
   for (i = 0; i < k; i += 1) {
-    if (!clEnvmapIsMarkedAt(em, i))
+    if (!clEnvmapIsMarkedAt(em, i) || clEnvmapIsPrivateAt(em, i ))
       continue;
     union PCTypes p;
     p = clEnvmapKeyValAt(em, i);

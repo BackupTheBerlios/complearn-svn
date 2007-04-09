@@ -573,13 +573,23 @@ struct DataBlock *clMakeCLBDistMatrix(gsl_matrix *gres, struct StringStack *labe
 static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockEnumeration *b, const char *rowBegin, const char *rowEnd, const char *elemBegin, const char *elemEnd, struct GeneralConfig *cur)
 {
   int n1c, n2c;
-  struct DataBlockEnumerationIterator *dei = a->newenumiter(a);
+  struct DataBlockEnumerationIterator *dei = a->newenumiter(a), *dbi=b->newenumiter(b);
   struct StringStack *labels = clStringstackNew();
-  struct DataBlock *curdb;
+  struct DataBlock *curdb, *curdb2;
   struct NCDConfig *ncdcfg = (struct NCDConfig *) cur->ptr;
   gsl_matrix *gres;
+  int didMatch = 1;
   while ( ( curdb = a->istar(a, dei) ) ) {
     clStringstackPush(labels, a->ilabel(a, dei));
+    curdb2 = b->istar(b, dbi);
+    if (curdb2) {
+      if (clDatablockCompare(curdb, curdb2) != 0)
+        didMatch = 0;
+      b->istep(b, dbi);
+      clDatablockFreePtr(curdb2);
+    }
+    else
+      didMatch = 0;
     a->istep(a, dei);
     clDatablockFreePtr(curdb);
   }
@@ -589,7 +599,7 @@ static void customPrintProduct(struct DataBlockEnumeration *a, struct DataBlockE
   if (cur->fSVD) {
     gres = clSvdProject(gres);
   }
-  if (cur->fAvg) {
+  if (cur->fAvg && didMatch) {
     gres = clAvg(gres);
   }
   char *oname = ncdcfg->output_distmat_fname;

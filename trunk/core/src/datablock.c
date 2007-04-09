@@ -201,3 +201,14 @@ unsigned char *clDatablockData(struct DataBlock *db)
   }
   return db->ptr;
 }
+
+int clDatablockCompare(const struct DataBlock *db1, const struct DataBlock *db2)
+{
+  int res;
+  res = memcmp( (const void*) &db1->size, (const void*) &db2->size,
+                 sizeof(db1->size) );
+  if ( res != 0 )
+    return res;
+  res = memcmp( (const void*) db1->ptr, (const void*) db2->ptr, db1->size );
+  return res;
+}

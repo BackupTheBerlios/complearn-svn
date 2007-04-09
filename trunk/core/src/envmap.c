@@ -252,6 +252,8 @@ int clEnvmapMerge(struct EnvMap *dest, struct EnvMap *src)
     clEnvmapSetKeyVal(dest, p.sp.key, p.sp.val);
     if (clNodesetHasNode(src->marked, i))
       clEnvmapSetKeyMarked(dest, p.sp.key);
+    if (clNodesetHasNode(src->private, i))
+      clEnvmapSetKeyPrivate(dest, p.sp.key);
   }
   return CL_OK;
 }
