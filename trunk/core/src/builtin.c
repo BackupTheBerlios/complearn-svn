@@ -170,26 +170,18 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
   return NULL;
 }
 
-struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
-{
-  struct CompressionBase *cb = clNewCompressorCB(shortName);
-  if (em != NULL)
-    clEnvmapMerge(cb->cbi->em, em);
-  return cb;
-}
-
-struct CompressionBase *clNewCompressorCB(const char *shortName)
+static struct CompressionBase *clCompressorNewCBExReal(const char *shortName, int floadConfig, struct EnvMap *em)
 {
   struct CLCompressionInfo *ci;
   checkInitted();
   ci = findCompressorInfo(shortName);
   if (ci == NULL) {
-  	char buf[1024];
-	sprintf(buf, "Cannot find compressor %s", shortName);
-	fprintf(stderr, "ERROR: %s\n", buf);
-	clPrintCompressors();
-  	clLogError(buf);
-	exit(1);
+    char buf[1024];
+  sprintf(buf, "Cannot find compressor %s", shortName);
+  fprintf(stderr, "ERROR: %s\n", buf);
+  clPrintCompressors();
+    clLogError(buf);
+  exit(1);
   }
   clAssert(ci != NULL);
   if (!clIsEnabledCB(shortName))
@@ -200,6 +192,7 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   cbi->vptr = &ci->cba;
   cb->cbi = cbi;
   cbi->em = clEnvmapNew();
+  if (floadConfig)
   clEnvmapMerge(cbi->em, clLoadDefaultEnvironment()->em);
 
   int retval;
@@ -207,6 +200,57 @@ struct CompressionBase *clNewCompressorCB(const char *shortName)
   staticErrorExitIfBad(retval, cb);
   return cb;
 }
+
+//Passing in NULL for em is the same as passing in an empty EnvMap
+struct CompressionBase *clCompressorNewCBEx(const char *shortName, int floadConfig, struct EnvMap *em)
+{
+  struct EnvMap *mymap = NULL;
+  struct CompressionBase *cb;
+  char *mycompname = NULL;
+  char *emcompname = NULL;
+  const char *compkeyname = "compressor";
+  const char *defaultCompressor = "bzip2";
+  if (em == NULL) {
+    mymap = clEnvmapNew();
+    em = mymap;
+  }
+  emcompname = clEnvmapValueForKey(em, compkeyname);
+  if (shortName == NULL) {
+    if (emcompname != NULL)
+      mycompname = (char *)(shortName = (const char *) emcompname);
+    else
+      shortName = defaultCompressor;
+  } else {
+    if (emcompname && strcmp(emcompname, shortName) != 0) {
+      clEnvmapSetKeyVal(em, compkeyname, shortName);
+      emcompname = (char *) shortName;
+    }
+  }
+  assert(shortName != NULL);
+  assert(emcompname == NULL || strcmp(emcompname, shortName) == 0);
+  cb = clCompressorNewCBExReal(shortName, floadConfig, em);
+  assert(cb);
+  assert(strcmp(clShortNameCB(cb), shortName));
+  if (mymap)
+    clEnvmapFree(mymap);
+  if (mycompname)
+    clFree(mycompname);
+  return cb;
+}
+
+struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em)
+{
+  return clCompressorNewCBEx(shortName, 1, em);
+}
+struct CompressionBase *clNewCompressorCBDEOpt(const char *shortName, int floadConfig)
+{
+  return clCompressorNewCBEx(shortName, floadConfig, NULL);
+}
+struct CompressionBase *clNewCompressorCB(const char *shortName)
+{
+  return clCompressorNewCBEx(shortName, 1, NULL);
+}
+
 
 static void instanceErrorExitIfBad(int retval, struct CompressionBase *cb)
 {

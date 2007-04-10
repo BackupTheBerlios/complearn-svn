@@ -95,5 +95,8 @@ struct StringStack *clListBuiltinsCB(int fWithDisabled);
 void clPrintCompressors(void);
 int clCompressorCount(void);
 const char *clCompressorName(int whichOne);
+struct CompressionBase *clNewCompressorCBDEOpt(const char *shortName, int floadConfig);
+struct CompressionBase *clCompressorNewEM(const char *shortName, struct EnvMap *em);
+struct CompressionBase *clCompressorNewCBEx(const char *shortName, int floadConfig, struct EnvMap *em);
 
 #endif
