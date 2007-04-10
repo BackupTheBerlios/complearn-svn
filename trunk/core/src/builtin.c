@@ -172,8 +172,31 @@ static struct CLCompressionInfo *findCompressorInfo(const char *name)
 
 static struct CompressionBase *clCompressorNewCBExReal(const char *shortName, int floadConfig, struct EnvMap *em)
 {
-  struct CLCompressionInfo *ci;
+  struct CLCompressionInfo *ci = NULL;
+  char *mycompname = NULL;
+  char *emcompname = NULL;
+  const char *compkeyname = "compressor";
+  const char *defaultCompressor = "bzip2";
+  struct EnvMap *mymap = clEnvmapNew();
   checkInitted();
+  if (floadConfig)
+    clEnvmapMerge(mymap, clLoadDefaultEnvironment()->em);
+  clEnvmapMerge(mymap, em);
+
+  emcompname = clEnvmapValueForKey(mymap, compkeyname);
+  if (shortName == NULL) {
+    if (emcompname != NULL)
+      mycompname = (char *)(shortName = (const char *) emcompname);
+    else
+      shortName = defaultCompressor;
+  } else {
+    if (emcompname && strcmp(emcompname, shortName) != 0) {
+      clEnvmapSetKeyVal(mymap, compkeyname, shortName);
+      emcompname = (char *) shortName;
+    }
+  }
+  assert(shortName != NULL);
+  assert(emcompname == NULL || strcmp(emcompname, shortName) == 0);
   ci = findCompressorInfo(shortName);
   if (ci == NULL) {
     char buf[1024];
@@ -189,15 +212,15 @@ static struct CompressionBase *clCompressorNewCBExReal(const char *shortName, in
   struct CompressionBase *cb = calloc(ci->cba.allocSizeCB(), 1);
   struct CompressionBaseInternal *cbi = calloc(sizeof(struct CompressionBaseInternal), 1);
   cbi->cb = cb;
-  cbi->vptr = &ci->cba;
   cb->cbi = cbi;
-  cbi->em = clEnvmapNew();
-  if (floadConfig)
-  clEnvmapMerge(cbi->em, clLoadDefaultEnvironment()->em);
+  cbi->vptr = &ci->cba;
+  cbi->em = mymap;
 
   int retval;
   retval = VF(cb, specificInitCB)(cb);
   staticErrorExitIfBad(retval, cb);
+  if (mycompname)
+    clFree(mycompname);
   return cb;
 }
 
@@ -206,35 +229,15 @@ struct CompressionBase *clCompressorNewCBEx(const char *shortName, int floadConf
 {
   struct EnvMap *mymap = NULL;
   struct CompressionBase *cb;
-  char *mycompname = NULL;
-  char *emcompname = NULL;
-  const char *compkeyname = "compressor";
-  const char *defaultCompressor = "bzip2";
   if (em == NULL) {
     mymap = clEnvmapNew();
     em = mymap;
   }
-  emcompname = clEnvmapValueForKey(em, compkeyname);
-  if (shortName == NULL) {
-    if (emcompname != NULL)
-      mycompname = (char *)(shortName = (const char *) emcompname);
-    else
-      shortName = defaultCompressor;
-  } else {
-    if (emcompname && strcmp(emcompname, shortName) != 0) {
-      clEnvmapSetKeyVal(em, compkeyname, shortName);
-      emcompname = (char *) shortName;
-    }
-  }
-  assert(shortName != NULL);
-  assert(emcompname == NULL || strcmp(emcompname, shortName) == 0);
   cb = clCompressorNewCBExReal(shortName, floadConfig, em);
   assert(cb);
   assert(strcmp(clShortNameCB(cb), shortName));
   if (mymap)
     clEnvmapFree(mymap);
-  if (mycompname)
-    clFree(mycompname);
   return cb;
 }
 
