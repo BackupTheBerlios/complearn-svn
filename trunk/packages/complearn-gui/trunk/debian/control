@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 4.0.0), autotools-dev, libsdl-ttf2.0-dev, libglut3-
 Standards-Version: 3.7.2
 
 Package: complearn-gui
-Architecture: any
+Architecture: alpha amd64 arm hppa hurd-i386 i386 ia64 kfreebsd-i386 m68k s390 sparc
 Depends: ${shlibs:Depends}, ${misc:Depends}, ttf-bitstream-vera
 Description: A 3D GUI toy drag and drop interface to complearn
  This is the easiest way to get started with data compression based machine
