@@ -1,3 +1,9 @@
+libcomplearn (0.9.8-2) unstable; urgency=low
+
+  * Changed Architectures: to reflect unbuildables for now. (Closes: #419298)
+
+ -- Rudi Cilibrasi <cilibrar@cilibrar.com>  Mon, 16 Apr 2007 17:38:14 +0200
+
 libcomplearn (0.9.8-1) unstable; urgency=low
 
   * New upstream version.
