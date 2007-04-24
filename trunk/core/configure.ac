@@ -238,6 +238,7 @@ AC_ARG_WITH(xml2,
   [ EXTCPPFLAGS="$EXTCPPFLAGS -I/usr/include/libxml2" ;
     LDFLAGS="$LDFLAGS"]
 )
+CPPFLAGS="$EXTCPPFLAGS $INTCPPFLAGS"
   AC_CHECK_HEADERS([libxml/xpath.h], [
     AC_CHECK_LIB(xml2,xmlXIncludeProcess, [LIBS="-lxml2 $LIBS"; fxml2_lib=true]
      ) ])

@@ -146,10 +146,10 @@ void clEnvmapSetKeyPrivate(struct EnvMap *em, const char *key);
 
 /** \brief Sets a key in an EnvMap as "marked"
  *
- *  A key set as "marked" by clEnvmapSetKeyMarked() indicates that its
- *  corresponding value has been retrieved through the clEnvmapValueForKey()
- *  function.  CompLearn keeps track of this information so that a user knows
- *  which EnvMap keys have been used by their program.
+ *  A key set as "marked" by clEnvmapSetKeyMarked() indicates that its corresponding
+ *  value has been retrieved through the clEnvmapValueForKey() function.  CompLearn
+ *  keeps track of this information so that a user knows which EnvMap keys have
+ *  been used by their program.
  *  \param em pointer to EnvMap
  *  \param key pointer to character string key
  */
@@ -171,9 +171,9 @@ int clEnvmapIsPrivateAt(struct EnvMap *em, int where);
 
 /** \brief Merges the contents of two EnvMaps
  *
- *  clEnvmapMerge() merges key-value pairs from the src EnvMap into the dest
- *  EnvMap, overwriting values for already existing keys, and pushing on
- *  key-value pairs for new ones.
+ *  clEnvmapMerge() merges key-value pairs from the src EnvMap into the dest EnvMap,
+ *  overwriting values for already existing keys, and pushing on key-value
+ *  pairs for new ones.
  *  \param dest pointer to dest EnvMap
  *  \param src pointer to src EnvMap
  *  \return CL_OK upon success
