@@ -1,3 +1,0 @@
-src/ncd usr/bin/
-src/maketree usr/bin/
-doc/man/*.1 usr/share/man/man1

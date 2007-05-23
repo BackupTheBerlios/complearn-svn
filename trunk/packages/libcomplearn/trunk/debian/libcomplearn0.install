@@ -1,2 +1,0 @@
-src/.libs/libcomplearn.so.* usr/lib
-examples/config.yml /etc/complearn
