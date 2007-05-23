@@ -1,8 +1,0 @@
-Please note:
-
-Several files in these directories have been compressed using .gz to save space.
-
-These must be decompressed before use in CompLearn.
-
-gunzip *.gz
-
