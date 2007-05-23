@@ -1,0 +1,61 @@
+EXENAME=clds
+NEXE=gncd
+MAIN1=gncd.o
+MAIN2=main.o
+all: $(EXENAME) $(NEXE)
+GOBS=$(wildcard *.gob)
+XMLS=$(wildcard *.xml)
+XMLCS=$(patsubst %.xml, %-server.c, $(XMLS))
+GOBCS=$(patsubst %.gob, %.c, $(GOBS)) $(patsubst %.gob, %-private.c, $(GOBS))
+GOBHS=$(patsubst %.gob, %.h, $(GOBS)) $(patsubst %.gob, %-private.h, $(GOBS))
+GOBHLINKS=$(patsubst %.gob, complearn/%-private.h, $(GOBS)) $(patsubst %.gob, complearn/%.h, $(GOBS))
+GOBOBJS=$(patsubst %.gob, %.o, $(GOBS))
+#SERVERGEN=dbus-complearn-rcbridge-client.c dbus-complearn-rcbridge-client.h dbus-complearn-rcbridge-server.c dbus-complearn-rcbridge-server.h
+SERVERGEN=dbus-complearn-rcbridge-client.h dbus-complearn-rcbridge-server.h
+SERVEROBJS=$(patsubst %.c, %.o, $(SERVERGEN))
+OBJS=real-compressor.o clds.o dbus-complearn-rcbridge-server-wrapper.o util.o
+
+CFLAGS=`pkg-config --cflags dbus-1 dbus-glib-1` -g '-DG_LOG_DOMAIN="complearn"' -I complearn
+
+$(NEXE): $(MAIN1) $(OBJS) $(GOBOBJS)
+	gcc -g $(MAIN1) $(OBJS) $(GOBOBJS)  -o $@ `pkg-config --libs dbus-1 dbus-glib-1 complearn` -lrt
+
+$(EXENAME): $(MAIN2) $(OBJS) $(GOBOBJS)
+	gcc -g $(MAIN2) $(OBJS) $(GOBOBJS)  -o $@ `pkg-config --libs dbus-1 dbus-glib-1 complearn` -lrt
+
+dbus-complearn-rcbridge-server-wrapper.o: dbus-complearn-rcbridge-server.c complearn-rcbridge.h
+
+dbus-complearn-rcbridge-server.o: complearn-rcbridge.h
+
+clds.o: complearn-rcbridge.o  $(GOBHS)
+
+main.o: complearn-rcbridge.o $(GOBHS)
+
+complearn-rcbridge.o: $(GOBHS)
+
+dbus-complearn-rcbridge-server.c: dbus-complearn-rcbridge.xml
+	dbus-binding-tool --mode=glib-server "--prefix=rcbridge" $< >$@
+
+DPRE=complearn
+
+%.o: %.c
+	gcc -c $< -o $@ $(CFLAGS)
+
+realcomp: $(OBJS)
+	gcc -g $(OBJS) -o realcomp `pkg-config --libs dbus-1 dbus-glib-1 complearn`
+
+%.c %.h %-private.c %-private.h: %.gob
+	gob2 --always-private-header $< && cd complearn && ln -f $(patsubst %.gob, ../%.h, $<) . && ln -f $(patsubst %.gob, ../%-private.h, $<) .
+
+complearn-rcbridge.o: complearn-rczlib.h complearn-real-compressor-adaptor.h
+
+complearn-rczlib.o: complearn-real-compressor-adaptor.h
+
+complearn-rcbzlib.o: complearn-real-compressor-adaptor.h complearn-rcbzlib.c
+
+#%-client.h: %.xml
+#	dbus-binding-tool --mode=glib-client "--prefix=$(DPRE)" $< >$@
+
+clean:
+	rm -f o $(OBJS) $(GOBCS) $(GOBHS) $(SERVERGEN) $(EXENAME) $(GOBOBJS) $(NEXE) $(SERVEROBJS) $(XMLCS) $(MAIN1) $(MAIN2) $(GOBHLINKS)
+

@@ -1,0 +1,81 @@
+requires 2.0.0
+%headertop{
+#include <glib/garray.h>
+#include <libintl.h>
+#include <stdlib.h>
+#include "real-compressor.h"
+#include "complearn-real-compressor-adaptor.h"
+#include "complearn-external-compressor.h"
+%}
+
+%{
+#include <stdio.h>
+#define _( O ) gettext( O )
+#include "util.h"
+#include "complearn/complearn.h"
+#include "complearn-compressor-driver.h"
+#include "complearn-compressor-driver-private.h"
+%}
+class CompLearn:Compressor:Driver from G:Object
+{
+  private G:Array *blockstore destroy {
+    int i;
+    for (i = 0; i < VAR->len; i += 1)
+      g_string_free(g_array_index(VAR, GString *, i), TRUE);
+    g_array_free(VAR, FALSE);
+  };
+  private CompLearn:RealCompressor *rc;
+  public G:Object *
+  new(void) {
+    GObject *ret = (GObject *) GET_NEW;
+    CompLearnCompressorDriver *self = COMPLEARN_COMPRESSOR_DRIVER(ret);
+    self->_priv = calloc(1, sizeof(*self->_priv));
+    self->_priv->blockstore = g_array_new(FALSE, TRUE, sizeof(gpointer));
+    return G_OBJECT (ret);
+  }
+  public guint32 set_compressor(CompLearn:CompressorDriver *cd, CompLearn:RealCompressor *rc) {
+    cd->_priv->rc = rc;
+  }
+  public guint32 size(CompLearn:CompressorDriver *cd) {
+    return cd->_priv->blockstore->len;
+  }
+  public gboolean is_same_block(CompLearn:CompressorDriver *cd,guint a, guint b)
+  {
+    GString *av, *bv;
+    av = g_array_index(cd->_priv->blockstore, GString *, a);
+    bv = g_array_index(cd->_priv->blockstore, GString *, b);
+    return g_string_equal(av, bv);
+  }
+  public guint32 store(CompLearn:CompressorDriver *cd, GString *str) {
+    int val = complearn_compressor_driver_size(cd);
+    GString *realone = g_string_new_len(str->str, str->len);
+    g_array_append_vals(cd->_priv->blockstore, &realone, 1);
+    return val;
+  }
+  private void check_bounds(CompLearn:CompressorDriver *cd, guint32 a) {
+    CompLearnCompressorDriver *self = COMPLEARN_COMPRESSOR_DRIVER(cd);
+    if (self->_priv->rc == NULL)
+      g_error(_("Must set_compressor before trying to compress."));
+    if (a >= self->_priv->blockstore->len)
+      g_error(_("Compressor index %d out of bounds."), a);
+  }
+  public gdouble compress_single(CompLearn:CompressorDriver *cd, guint32 a) {
+    CompLearnCompressorDriver *self = COMPLEARN_COMPRESSOR_DRIVER(cd);
+    complearn_compressor_driver_check_bounds(self, a);
+    GString *block;
+    block = g_array_index(self->_priv->blockstore, GString *, a);
+    return real_compressor_compressed_size(self->_priv->rc, block);
+  }
+  public gdouble compress_pair(CompLearn:CompressorDriver *cd, guint32 a, guint32 b) {
+    CompLearnCompressorDriver *self = COMPLEARN_COMPRESSOR_DRIVER(cd);
+    complearn_compressor_driver_check_bounds(self, a);
+    GString *big, *b1, *b2;
+    b1 = g_array_index(self->_priv->blockstore, GString *, a);
+    b2 = g_array_index(self->_priv->blockstore, GString *, b);
+    big = g_string_new_len(b1->str, b1->len);
+    g_string_append_len(big, b2->str, b2->len);
+    double result = real_compressor_compressed_size(self->_priv->rc, big);
+    g_string_free(big, TRUE);
+    return result;
+  }
+}

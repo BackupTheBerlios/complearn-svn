@@ -1,0 +1,36 @@
+# Example configuration file for CompLearn
+#
+# CompLearn configuration file.  Install in /etc/complearn/config.yml or
+# $HOME/.complearn/config.yml to use
+#
+# In order to use the google compressor you must put your Google API key here.
+#
+# GoogleKey: "T/ouYVHB2UsEpYkX/oqJ/KHU8YYZADLm"
+#
+# Some example parameters specific to the bzip2 compressor:
+#
+# workfactor: 150
+# blocksize: 5
+#
+# Unrecognized parameters will have no effect.
+#
+# You can override the default compressor using the following syntax.
+# The default compressor is blocksort.
+#
+# compressor:blocksort
+# compressor:bzip2
+# compressor:zlib
+#
+# If you have the example / compression module called art installed
+# compressor:art
+#
+# You can also do
+# compressor:real
+# cmd:yourshellscripthere
+#
+# The syntax for virtual compressors is similar:
+# compressor:virtual
+# cmd:yourshellscripthere
+#
+# You can specify other parameters as needed in this file.
+# cmd:catppmd

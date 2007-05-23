@@ -1,0 +1,8 @@
+do manpages for complearn_config, anycompress, anydecompress and fix ncd
+
+Make AM_PATH_CHECK switch to PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+and make optional instead of mandatory.
+
+make gob2 optional instead of mandatory.
+
+fix bzlib missing case so it doesn't mess up...

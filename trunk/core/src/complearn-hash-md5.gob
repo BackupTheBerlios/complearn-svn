@@ -1,0 +1,41 @@
+requires 2.0.0
+%headertop{
+#include <glib/garray.h>
+#include <libintl.h>
+#include "real-compressor.h"
+#include "complearn-hash-function.h"
+%}
+
+%{
+#include <stdio.h>
+#define _( O ) gettext( O )
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <xyssl/md5.h>
+#include "complearn-hash-function.h"
+#include "complearn-hash-function-private.h"
+#include "util.h"
+#define COMPRESSOR_NAME "md5"
+%}
+
+class CompLearn:Hash:MD5 from CompLearn:Hash:Function
+ (interface CompLearn:Real:Compressor)
+{
+  public G:Object *
+  new(void) {
+    GObject *self = (GObject *) GET_NEW;
+    SET_DEFAULT_PROPS(COMPRESSOR_NAME, COMPLEARN_HASH_MD5_GET_CLASS, self);
+    return G_OBJECT (self);
+  }
+  public GString *blurb(CompLearn:Real:Compressor *rc) {
+    return g_string_new("MD5 message digest algorithm");
+  }
+  public GString *name(CompLearn:Real:Compressor *rc) {
+    return g_string_new(COMPRESSOR_NAME);
+  }
+  public GString *hash(CompLearn:Hash:Function *hf, const GString *inp) {
+    char hbuf[16];
+    md5_csum(inp->str, inp->len, hbuf);
+    return g_string_new_len(hbuf, 16);
+  }
+}

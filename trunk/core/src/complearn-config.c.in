@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <getopt.h>
+#include <glib.h>
+#include <gmodule.h>
+#include <libintl.h>
+#include "complearn/complearn.h"
+#include "complearn/clconfig.h"
+
+#define _(O) gettext(O)
+
+static void print_help_and_exit(void)
+{
+  printf(_("Usage: complearn-config [options]\n"));
+  printf("  --prefix\n");
+  printf("  --exec-prefix\n");
+  printf("  --libs\n");
+  printf("  --cflags\n");
+  printf("  --api-version\n");
+  printf("  --version\n");
+  printf("  --help\n");
+  exit(0);
+}
+
+static char *fixup(const char *inp)
+{
+  char *str = strdup(inp);
+  if (strncmp(inp, "${prefix}", 9) == 0) {
+    str = calloc(strlen(inp) + 100, 1);
+    sprintf(str, "%s%s", "@prefix@", inp + 9);
+  }
+  return str;
+}
+
+
+int main(int argc, char **argv)
+{
+  static struct option long_options[] = {
+    {"prefix", 0, 0, 'p'},
+    {"exec-prefix", 0, 0, 'e'},
+    {"api-version", 0, 0, 'a'},
+    {"libs", 0, 0, 'l'},
+    {"cflags", 0, 0, 'c'},
+    {"version", 0, 0, 'v'},
+    {"help", 0, 0, 'h'},
+    {NULL, 0, 0, 0 }
+  };
+  int c;
+  if (argc <= 1)
+    print_help_and_exit();
+  while (1) {
+    int option_index = 0;
+    c = getopt_long(argc, argv, "pavhlce", long_options, &option_index);
+    if (c == -1)
+      break;
+    switch (c) {
+      default:
+        print_help_and_exit();
+        break;
+      case 'h':
+        print_help_and_exit();
+        break;
+      case 'l':
+        printf("-L%s/lib -lcomplearn\n", fixup("@exec_prefix@"));
+        break;
+      case 'c':
+        printf("-I%s/include/complearn-1.0\n", "@prefix@");
+        break;
+      case 'e':
+        printf("%s\n", fixup("@exec_prefix@"));
+        break;
+      case 'p':
+        printf("%s\n", "@prefix@");
+        break;
+      case 'a':
+        printf("1\n");
+        break;
+      case 'v':
+        printf("%s\n", PACKAGE_VERSION);
+        break;
+    }
+  }
+  exit(0);
+}
