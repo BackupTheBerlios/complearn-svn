@@ -1,0 +1,5 @@
+src/complearn/*.h usr/include/complearn-1.0/complearn
+complearn.pc usr/lib/pkgconfig
+complearn.m4 usr/share/aclocal
+src/.libs/libcomplearn.so usr/lib
+src/.libs/libcomplearn.a usr/lib

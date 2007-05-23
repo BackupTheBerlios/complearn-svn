@@ -1,0 +1,3 @@
+src/.libs/libcomplearn.so.* usr/lib
+src/.libs/complearn-config usr/bin/
+doc/man/complearn-config.1 usr/share/man/man1

@@ -1,0 +1,6 @@
+src/.libs/ncd usr/bin/
+src/.libs/anycompress usr/bin/
+src/.libs/anydecompress usr/bin/
+doc/man/ncd.1 usr/share/man/man1
+doc/man/anycompress.1 usr/share/man/man1
+doc/man/anydecompress.1 usr/share/man/man1
