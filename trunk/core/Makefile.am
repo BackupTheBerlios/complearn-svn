@@ -127,7 +127,6 @@ examples/sampleapp/configure.ac \
 examples/sampleapp/Makefile.am \
 examples/sampleapp/NEWS \
 examples/sampleapp/README \
-examples/sampleapp/src \
 examples/sampleapp/src/Makefile.am \
 examples/sampleapp/src/rtest.c \
 examples/speeches/bush-911-address \
