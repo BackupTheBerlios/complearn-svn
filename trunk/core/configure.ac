@@ -51,9 +51,9 @@ AC_CHECK_HEADERS([errno.h])
 PRIVATELIBS="$LIBS"
 
 SONAMEOPTS="-Wl,-soname -Wl,libcomplearn-1.0${shrext_cmds}.0"
-libcomplearn_major=`echo $VERSION | $AWK -F. '{print $1}'`
-libcomplearn_minor=`echo $VERSION | $AWK -F. '{print $2}'`
-libcomplearn_patch=`echo $VERSION | $AWK '-F[.~]' '{print $3}'`
+libcomplearn_major=`echo '$VERSION' | $AWK -F. '{print $1}'`
+libcomplearn_minor=`echo '$VERSION' | $AWK -F. '{print $2}'`
+libcomplearn_patch=`echo '$VERSION' | $AWK '-F[.~]' '{print $3}'`
 libcomplearn_release="$libcomplearn_major.$libcomplearn_minor"
 libcomplearn_version=`expr $libcomplearn_major + $libcomplearn_minor`":$libcomplearn_patch:$libcomplearn_minor"
 
