@@ -1,5 +1,5 @@
 
-AC_INIT(libcomplearn,0.9.9,cilibrar@cilibrar.com)
+AC_INIT(libcomplearn,1.0.0~rc1,cilibrar@cilibrar.com)
 AC_CONFIG_SRCDIR(src/ncd.c)
 AC_GNU_SOURCE
 AM_INIT_AUTOMAKE
@@ -53,7 +53,7 @@ PRIVATELIBS="$LIBS"
 SONAMEOPTS="-Wl,-soname -Wl,libcomplearn-1.0${shrext_cmds}.0"
 libcomplearn_major=`echo $VERSION | $AWK -F. '{print $1}'`
 libcomplearn_minor=`echo $VERSION | $AWK -F. '{print $2}'`
-libcomplearn_patch=`echo $VERSION | $AWK -F. '{print $3}'`
+libcomplearn_patch=`echo $VERSION | $AWK '-F[.~]' '{print $3}'`
 libcomplearn_release="$libcomplearn_major.$libcomplearn_minor"
 libcomplearn_version=`expr $libcomplearn_major + $libcomplearn_minor`":$libcomplearn_patch:$libcomplearn_minor"
 
