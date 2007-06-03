@@ -8,7 +8,6 @@ src/complearn/clconfig.h
 src/complearn/cloutput.h
 src/complearn/complearn-compressor-driver.h
 src/complearn/complearn-compressor-driver-private.h
-src/complearn/complearndbus-server-wrapper.h
 src/complearn/complearn-environment.h
 src/complearn/complearn-environment-private.h
 src/complearn/complearn-external-compressor.h
