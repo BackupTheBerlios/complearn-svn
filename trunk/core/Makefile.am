@@ -48,12 +48,14 @@ distclean: clean
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = complearn.pc
 
-misc = complearn.m4
+m4datadir = $(datadir)/aclocal
+m4files = complearn.m4
+m4data_DATA = $(m4files)
 
 EXTRA_DIST = config.rpath  config.rpath m4/ChangeLog  \
 $(src) \
 $(examples) \
-$(misc) \
+$(m4files) \
 $(doc)
 
 
