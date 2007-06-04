@@ -60,14 +60,22 @@ typing "echo $HOME" command.  In Windows systems, to view, change or add a
   </ul></li>
 </ol>
 
-<p>For each setting in <strong>config.yml</strong>, a key and value is
-specified, separated by a colon.</p>
+<p>For each setting in <strong>complearn.conf</strong>, a key and value is
+specified.  The general format is specified in <a href="http://www.gtkbook.com/tutorial.php?page=keyfile">this GKeyFile document</a>.
 
 <h5>Example:</h5>
-<pre># one key value pair per line
-blocksize:  5
-workfactor: 100
-GoogleKey:  A/OGsJTQFHSpufko/rRS/KLA7NAT8UNf</pre>
+<pre> # one key value pair per line at most
+[complearn]
+
+# directory where modules can be found
+    module-path=/usr/lib/complearn/modules
+# print extra detailed information
+    verbose=yes
+# scheduling priority, higher is less CPU
+    nice-level=19
+[ncd]
+    show-labels=yes
+</pre>
 
 <h3>ncd Configuration Settings</h3>
 
@@ -75,26 +83,11 @@ GoogleKey:  A/OGsJTQFHSpufko/rRS/KLA7NAT8UNf</pre>
 
 <ul>
 <li><strong>compressor</strong> - The builtin compressor to be used.  Valid
-values are: <em>bzip</em>, <em>zlib</em>, and <em>google</em>.
+values are: <em>bzlib</em>, <em>zlib</em>, and <em>blocksort</em>.
 </ul>
 
 <h5>Example:</h5>
-<pre>compressor: google</pre>
-
-<h3>Google-Specific Configuration Settings</h3>
-
-<p>In order to use the Google compression option, you need only specify one
-setting in your configuration file:</p>
-
-<ul>
-<li><strong>GoogleKey</strong> - which may be obtained from Google.  <a
-href="http://www.google.com/apis/" target="_blank">Sign up for one
-here</a>.</li>
-</ul>
-
-<h5>Example:</h5>
-<pre># sample settings for google compressor
-GoogleKey: D/YOGsJTQEHKauekl/rRS/NLA7NAT8UNf</pre>
+<pre>compressor: zlib</pre>
 
 <h3>Bzip-Specific Configuration Settings</h3>
 

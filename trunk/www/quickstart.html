@@ -37,7 +37,7 @@ given distance matrix.</li>
 </ul>
 
 <h3>Computing NCD: Default Settings</h3>
-<p><strong>ncd</strong>, by default, uses the bzip compressor and file input
+<p><strong>ncd</strong>, by default, uses the bzlib compressor and file input
 format.  Two filenames are passed in as command-line arguments. The contents of
 the files are compressed and the NCD between two files is returned.</p>
 
@@ -47,21 +47,18 @@ the files are compressed and the NCD between two files is returned.</p>
 
 <h3>Selecting a Compressor</h3>
 
-<p>There are currently three compressors supported by the ncd command-line tool:
-bzip, zlib and google. A compressor may be selected by adding a -C or
---compressor option, followed by the compressor type. <strong>Please
-note</strong>: In order for the google compressor to work, you must obtain a
-GoogleKey and place it in your Complearn configuration file.  See <a
-href="config.html">Creating a Configuration File.</a></p>
+<p>There are currently many compressors supported by the ncd command-line tool:
+bzlib, zlib and blocksort for example. A compressor may be selected by adding a
+-c or --compressor option, followed by the compressor type.
 
 <h5>Option:</h5>
 
-  <p class="option">-C, --compressor=[ bzip | zlib | google ]</p>
+  <p class="option">-c, --compressor=[ bzlib | zlib | blocksort ]</p>
 
 <h5>Examples:</h5>
 
-<pre>$ ncd -C zlib <em>filename1</em> <em>filename2</em></pre>
-<pre>$ ncd --compressor=google <em>filename1</em> <em>filename2</em></pre>
+<pre>$ ncd -c zlib <em>filename1</em> <em>filename2</em></pre>
+<pre>$ ncd --compressor=blocksort <em>filename1</em> <em>filename2</em></pre>
 
 
 <h3>Selecting an Input Mode</h3>
@@ -90,11 +87,6 @@ string literal is separated by a linebreak.</li>
 <li><strong>Directory Mode</strong> - Takes as an argument the name of a
 directory whose file contents are individually compressed.</li>
 
-<li><strong>Windowed Mode</strong> - Takes as an argument a filename and
-options which define how the file is to be enumerated into "windows." Windows
-are created using the following criteria in bytes: starting position, step
-size, window width and last position. The resulting windows are then
-individually compressed.</li>
 </ul>
 
 <h5>Options:</h5>
@@ -103,7 +95,6 @@ individually compressed.</li>
   -p, --plainlist-mode=FILE<br>
   -t, --termlist-mode=FILE<br>
   -d, --directory-mode=DIR<br>
-  -w, --windowed-mode=FILE,firstpos,stepsize,width,lastpos</p>
 
 <h5>Examples:</h5>
 
@@ -121,11 +112,6 @@ individually compressed.</li>
 
 <pre>$ ncd -t <em>filename1</em> -d <em>directory1</em></pre>
 <p class="caption">computes a matrix of NCDs for string literals in a term list and the files found in a directory</p>
-
-<pre>$ ncd -w <em>filename1</em>,1,25,50,100 <em>filename1</em>,26,25,50,125</pre>
-<p class="caption">computes a matrix of NCDS for windows created from a
-single file against windows from the same file but with a different starting
-position and ending position</p>
 
 <h3>Creating an Unrooted Binary Tree: Default Settings</h3>
 
@@ -163,20 +149,15 @@ from the files in a directory and saves the results in a file called
 mydistmatrix.clb.  <strong>maketree</strong> stores a best-fitting unrooted
 binary tree in treefile.dot</p>
 
-<pre>$ ncd -b -C zlib -p <em>filename1</em> <em>filename1</em>
+<pre>$ ncd -b -c zlib -p <em>filename1</em> <em>filename1</em>
 $ maketree distmatrix.clb</pre>
 <p class="caption"><strong>ncd</strong> creates a square distance matrix
 from the files in a plain list using the zlib compressor and saves the results
 in a file called distmatrix.clb.  <strong>maketree</strong> stores a
 best-fitting unrooted binary tree in treefile.dot</p>
 
-<h3>Creating a Rooted Binary Tree: Default Settings</h3>
-
-<p>You may create a rooted binary tree by adding -R or --rooted to your
-<strong>maketree</strong> command.</p>
-
 <h5>Example:</h5>
-<pre>$ maketree -R distmatrix.clb</pre>
+<pre>$ maketree distmatrix.clb</pre>
 
 <h3>Laying Out Your Tree:</h3>
 
