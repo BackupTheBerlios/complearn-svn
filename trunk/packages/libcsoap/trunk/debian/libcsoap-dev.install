@@ -1,3 +1,0 @@
-libcsoap/*.h usr/include/libcsoap-1.0/libcsoap
-libcsoap/.libs/libcsoap.so usr/lib
-libcsoap.pc usr/lib/pkgconfig
