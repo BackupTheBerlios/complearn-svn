@@ -1,8 +1,0 @@
-<% @page_title = 'All experiments' %>
-<div id="info">
-  <ul>
-<% @months.each { |m| %>
-    <li><%= link_to "#{m.strftime("%B %Y")}", :controller => 'clo', :action => 'showmonth', :id => m.to_i  %></li>
-<% } %>
-  </ul>
-</div>

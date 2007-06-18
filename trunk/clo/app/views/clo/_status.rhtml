@@ -1,8 +1,0 @@
-<div id="status" name="status">
-<h3>Status</h3>
-<table>
-<% @statuspane.getStatusLines.each { |msg, time| %>
-<tr><td><%= msg %> </td><td> <%= time.strftime("%H:%M") %> </td></tr>
-<% } %>
-</table>
-</div>
